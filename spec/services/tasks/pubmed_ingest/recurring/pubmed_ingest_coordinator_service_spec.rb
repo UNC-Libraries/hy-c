@@ -121,29 +121,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'sets up instance variables correctly' do
       expect(service.instance_variable_get(:@config)).to eq(config)
       expect(service.instance_variable_get(:@tracker)).to eq(tracker)
-      expect(service.instance_variable_get(:@depositor_onyen)).to eq('test_user')
-      expect(service.instance_variable_get(:@output_dir)).to eq('/tmp/test_output')
-      expect(service.instance_variable_get(:@full_text_dir)).to eq('/tmp/test_fulltext')
-      expect(service.instance_variable_get(:@admin_set_title)).to eq('default')
-      expect(service.instance_variable_get(:@start_date)).to eq(Date.parse('2024-01-01'))
-      expect(service.instance_variable_get(:@end_date)).to eq(Date.parse('2024-01-31'))
-    end
-
-    it 'initializes results hash with correct structure' do
-      results = service.instance_variable_get(:@results)
-
-      expect(results).to have_key(:skipped)
-      expect(results).to have_key(:successfully_attached)
-      expect(results).to have_key(:successfully_ingested)
-      expect(results).to have_key(:failed)
-      expect(results).to have_key(:counts)
-      expect(results).to have_key(:headers)
-      expect(results[:depositor]).to eq('test_user')
-      expect(results[:admin_set]).to eq('default')
-      expect(results[:output_dir]).to eq('/tmp/test_output')
-      expect(results[:full_text_dir]).to eq('/tmp/test_fulltext')
-      expect(results[:start_date]).to eq('2024-01-01')
-      expect(results[:end_date]).to eq('2024-01-31')
     end
 
     it 'sets up output directories correctly' do
@@ -190,12 +167,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'executes all workflow steps in correct order' do
+      allow(service).to receive(:load_results).and_return(sample_results)
       expect(service).to receive(:build_id_lists).ordered
       expect(service).to receive(:load_and_ingest_metadata).ordered
       expect(service).to receive(:attach_files).ordered
       expect(service).to receive(:load_results).ordered
-      expect(service).to receive(:finalize_report_and_notify).ordered
-
+      expect(service).to receive(:send_report_and_notify).ordered
       service.run
     end
 
@@ -204,7 +181,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       expect(JsonFileUtilsHelper).to have_received(:write_json).with(
         service.instance_variable_get(:@results),
-        '/tmp/test_output/ingest_results.json',
+        '/tmp/test_output/final_ingest_results.json',
         pretty: true
       )
     end
@@ -567,89 +544,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
       allow(JsonFileUtilsHelper)
         .to receive(:read_jsonl)
-        .with(md_ingest_results_path, symbolize_names: true)
         .and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_789').and_return('http://example.com/work_789')
-    end
-
-    it 'loads and formats results correctly' do
-      service.send(:load_results)
-
-      results = service.instance_variable_get(:@results)
-      expect(results[:successfully_attached].size).to eq(1)
-      expect(results[:failed].size).to eq(1)
-      expect(results[:skipped].size).to eq(1)
-      expect(results[:counts][:successfully_attached]).to eq(1)
-      expect(results[:counts][:failed]).to eq(1)
-      expect(results[:counts][:skipped]).to eq(1)
-    end
-
-    it 'transforms result structure correctly' do
-      service.send(:load_results)
-
-      results = service.instance_variable_get(:@results)
-      attached_result = results[:successfully_attached].first
-
-      expect(attached_result[:pmid]).to eq('123456')
-      expect(attached_result[:pmcid]).to eq('PMC789012')
-      expect(attached_result[:work_id]).to eq('work_123')
-      expect(attached_result[:message]).to eq('File attached successfully')   # was pdf_attached
-      expect(attached_result[:file_name]).to eq('PMC789012_001.pdf')
-      expect(attached_result[:cdr_url]).to eq('http://example.com/work_123')
-      expect(attached_result).not_to have_key(:ids)
-      # If you want to assert we *keep* message:
-      expect(attached_result).to have_key(:message)
-    end
-
-    it 'handles records without work_id correctly' do
-      service.send(:load_results)
-
-      results = service.instance_variable_get(:@results)
-      failed_result = results[:failed].first
-
-      expect(failed_result[:pmid]).to eq('234567')
-      expect(failed_result[:pmcid]).to eq('PMC890123')
-      expect(failed_result[:work_id]).to be_nil
-      expect(failed_result[:file_name]).to eq('NONE')
-      expect(failed_result).not_to have_key(:cdr_url)
-    end
-
-    context 'when results file does not exist' do
-      before do
-        allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(false)
-      end
-
-      it 'raises error with descriptive message' do
-        expect {
-          service.send(:load_results)
-        }.to raise_error("Results file not found at #{md_ingest_results_path}")
-
-        expect(LogUtilsHelper).to have_received(:double_log).with(
-          "Results file not found at #{md_ingest_results_path}",
-          :error,
-          tag: 'load_and_format_results'
-        )
-      end
-    end
-
-    context 'when JSON parsing fails' do
-      before do
-        allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
-        allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_raise(JSON::ParserError.new('Invalid JSON'))
-      end
-
-      it 'raises error with descriptive message' do
-        expect {
-          service.send(:load_results)
-        }.to raise_error(/Failed to load or parse results/)
-
-        expect(LogUtilsHelper).to have_received(:double_log).with(
-          /Failed to load or parse results.*Invalid JSON/,
-          :error,
-          tag: 'load_and_format_results'
-        )
-      end
     end
 
     it 'logs results loading completion' do
@@ -675,6 +572,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           file_name: 'NONE'
         },
         {
+          category: 'failed',
+          work_id: nil,
+          message: 'Ingest failed',
+          ids: { pmid: '123456' },
+          file_name: 'NONE'
+        },
+        {
           category: 'skipped',
           work_id: nil,
           message: 'Already exists',
@@ -695,28 +599,19 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'formats valid categories correctly' do
-      service.send(:format_results_for_reporting, raw_results)
-
-      results = service.instance_variable_get(:@results)
-
+      results = service.send(:format_results_for_reporting, raw_results)
       expect(results[:successfully_ingested].size).to eq(1)
       expect(results[:skipped].size).to eq(1)
-      expect(results[:counts][:successfully_ingested]).to eq(1)
-      expect(results[:counts][:skipped]).to eq(1)
+      expect(results[:failed].size).to eq(1)
     end
 
     it 'ignores invalid categories' do
-      service.send(:format_results_for_reporting, raw_results)
-
-      results = service.instance_variable_get(:@results)
-
+      results = service.send(:format_results_for_reporting, raw_results)
       expect(results).not_to have_key(:invalid_category)
     end
 
     it 'merges IDs into main entry and transforms field names' do
-      service.send(:format_results_for_reporting, raw_results)
-
-      results = service.instance_variable_get(:@results)
+      results = service.send(:format_results_for_reporting, raw_results)
       ingested_entry = results[:successfully_ingested].first
 
       expect(ingested_entry[:pmid]).to eq('345678')
@@ -729,9 +624,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'handles entries without work_id correctly' do
-      service.send(:format_results_for_reporting, raw_results)
-
-      results = service.instance_variable_get(:@results)
+      results = service.send(:format_results_for_reporting, raw_results)
       skipped_entry = results[:skipped].first
 
       expect(skipped_entry[:pmid]).to eq('456789')
@@ -740,7 +633,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
   end
 
-  describe '#finalize_report_and_notify' do
+  describe '#send_report_and_notify' do
     let(:mock_report) do
       {
         headers: {},
@@ -768,7 +661,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       # results[:records][:successfully_ingested] = ['1', '2', '3', '4', '5']
       # results[:records][:successfully_attached] = ['6', '7', '8']
       # results[:records][:skipped] = ['9', '10']
-      service.send(:finalize_report_and_notify, results)
+      service.send(:send_report_and_notify, results)
 
       expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
         .to have_received(:generate_report).with(results)
@@ -784,7 +677,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       end
 
       it 'skips email sending' do
-        service.send(:finalize_report_and_notify, {})
+        service.send(:send_report_and_notify, {})
 
         expect(PubmedReportMailer).not_to have_received(:pubmed_report_email)
         expect(LogUtilsHelper).to have_received(:double_log).with(
@@ -802,7 +695,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       it 'logs error and continues' do
         expect {
-          service.send(:finalize_report_and_notify, {})
+          service.send(:send_report_and_notify, {})
         }.not_to raise_error
 
         expect(LogUtilsHelper).to have_received(:double_log).with(

@@ -2,55 +2,23 @@
 class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   BUILD_ID_LISTS_OUTPUT_DIR = '01_build_id_lists'
   LOAD_METADATA_OUTPUT_DIR  = '02_load_and_ingest_metadata'
-  ATTACH_FILES_OUTPUT_DIR    = '03_attach_files_to_works'
+  ATTACH_FILES_OUTPUT_DIR   = '03_attach_files_to_works'
   SUBDIRS                   = [BUILD_ID_LISTS_OUTPUT_DIR, LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR].freeze
   REQUIRED_ARGS             = %w[start_date end_date admin_set_title].freeze
 
   def initialize(config, tracker)
     @config = config
     @tracker = tracker
-    @depositor_onyen = config['depositor_onyen']
-    @results = {
-      skipped: [],
-      successfully_attached: [],
-      successfully_ingested: [],
-      headers: {
-        total_unique_records: 0
-      },
-      failed: [],
-      time: Time.now,
-      depositor: config['depositor_onyen'],
-      output_dir: config['output_dir'],
-      admin_set: config['admin_set_title'],
-      counts: {
-        skipped: 0,
-        successfully_attached: 0,
-        successfully_ingested: 0,
-        failed: 0
-      }
-    }
-    @output_dir = config['output_dir']
-    @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_OUTPUT_DIR)
-    @metadata_ingest_output_directory = File.join(@output_dir, LOAD_METADATA_OUTPUT_DIR)
-    @attachment_output_directory = File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR)
-    @full_text_dir    = config['full_text_dir']
-    @admin_set_title  = config['admin_set_title']
-    @start_date       = config['start_date']
-    @end_date         = config['end_date']
-
-    @results[:full_text_dir] = @full_text_dir
-    @results[:start_date]    = @start_date.strftime('%Y-%m-%d') if @start_date
-    @results[:end_date]      = @end_date.strftime('%Y-%m-%d')   if @end_date
+    @id_list_output_directory = File.join(config['output_dir'], BUILD_ID_LISTS_OUTPUT_DIR)
+    @metadata_ingest_output_directory = File.join(config['output_dir'], LOAD_METADATA_OUTPUT_DIR)
+    @attachment_output_directory = File.join(config['output_dir'], ATTACH_FILES_OUTPUT_DIR)
   end
 
   def run
     build_id_lists
     load_and_ingest_metadata
     attach_files
-    load_results
-    finalize_report_and_notify(@results)
-    JsonFileUtilsHelper.write_json(@results, File.join(@output_dir, 'ingest_results.json'), pretty: true)
-
+    build_and_finalize_results
     LogUtilsHelper.double_log('PubMed ingest workflow completed successfully.', :info, tag: 'PubmedIngestCoordinator')
     rescue => e
       LogUtilsHelper.double_log("PubMed ingest workflow failed: #{e.message}", :error, tag: 'PubmedIngestCoordinator')
@@ -152,23 +120,27 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   end
 
   def load_results
-    path = File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
+    path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
     unless File.exist?(path)
       LogUtilsHelper.double_log("Results file not found at #{path}", :error, tag: 'load_and_format_results')
       raise "Results file not found at #{path}"
     end
-
-    begin
-      raw_results_array = JsonFileUtilsHelper.read_jsonl(path, symbolize_names: true)
-      format_results_for_reporting(raw_results_array)
-      LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}. Current counts: #{@results[:counts]}", :info, tag: 'load_and_format_results')
-    rescue => e
-      LogUtilsHelper.double_log("Failed to load or parse results from #{path}: #{e.message}", :error, tag: 'load_and_format_results')
-      raise "Failed to load or parse results from #{path}: #{e.message}"
-    end
+    raw_results_array = JsonFileUtilsHelper.read_jsonl(path, symbolize_names: true)
+    LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}.", :info, tag: 'load_and_format_results')
+    raw_results_array
   end
 
   def format_results_for_reporting(raw_results_array)
+    results = {
+      skipped: [],
+      successfully_attached: [],
+      successfully_ingested: [],
+      failed: [],
+      time: @tracker['restart_time'] || @tracker['start_time'],
+      headers: { total_unique_records: 0 },
+    }
+    puts "INSPECT RAW RESULTS ARRAY: #{raw_results_array.inspect}" 
+
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
       next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
@@ -177,12 +149,13 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       entry.merge!(entry.delete(:ids) || {})
       entry[:cdr_url] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry[:work_id]) if entry[:work_id].present?
 
-      @results[category] << entry
-      @results[:counts][category] += 1
+      results[category] << entry
     end
+
+    results
   end
 
-  def finalize_report_and_notify(attachment_results)
+  def send_report_and_notify(attachment_results)
     if @tracker['progress']['send_summary_email']['completed']
       LogUtilsHelper.double_log('Skipping email notification as it has already been sent.', :info, tag: 'send_summary_email')
       return
@@ -208,6 +181,14 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       LogUtilsHelper.double_log("Failed to send email notification: #{e.message}", :error, tag: 'send_summary_email')
       Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
     end
+  end
+
+
+  def build_and_finalize_results
+    raw_results = load_results
+    @results     = format_results_for_reporting(raw_results) 
+    send_report_and_notify(@results)
+    JsonFileUtilsHelper.write_json(@results, File.join(@config['output_dir'], 'final_ingest_results.json'), pretty: true)
   end
 
   def self.build_pubmed_ingest_config_and_tracker(args:)
