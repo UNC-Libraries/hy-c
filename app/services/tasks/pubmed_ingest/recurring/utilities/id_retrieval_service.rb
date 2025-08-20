@@ -100,13 +100,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         end
       end
       unless buffer.empty?
-        write_batch_alternate_ids(ids: buffer.dup, db: db, output_file: output_file)
+        write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file)
         # Update tracker progress, clear buffer and increment cursor
         job_progress['cursor'] = line_index
         @tracker.save
       end
     end
-    # Rails.logger.info("[stream_and_write_alternate_ids] Finished writing alternate IDs to #{output_path} for #{db} database")
     LogUtilsHelper.double_log("Finished writing alternate IDs to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
   end
 
