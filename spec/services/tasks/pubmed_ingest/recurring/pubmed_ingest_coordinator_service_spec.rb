@@ -488,32 +488,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
   describe '#load_results' do
     let(:md_ingest_results_path) { '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl' }
-    # let(:sample_results) do
-    #   [
-    #     {
-    #       'category' => 'successfully_attached',
-    #       'work_id' => 'work_123',
-    #       'message' => 'File attached successfully',
-    #       'ids' => { 'pmid' => '123456', 'pmcid' => 'PMC789012' },
-    #       'file_name' => 'PMC789012_001.pdf'
-    #     },
-    #     {
-    #       'category' => 'failed',
-    #       'work_id' => nil,
-    #       'message' => 'File attachment failed',
-    #       'ids' => { 'pmid' => '234567', 'pmcid' => 'PMC890123' },
-    #       'file_name' => 'NONE'
-    #     },
-    #     {
-    #       'category' => 'skipped',
-    #       'work_id' => 'work_789',
-    #       'message' => 'Already has files',
-    #       'ids' => { 'pmid' => '345678', 'pmcid' => 'PMC901234' },
-    #       'file_name' => 'NONE'
-    #     }
-    #   ]
-    # end
-
     let(:sample_results) do
       [
         {
@@ -653,14 +627,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'generates report and sends email' do
-      # results = service.instance_variable_get(:@results)
       results = { records: {}, headers: {} }
-      # results[:counts][:successfully_ingested] = 5
-      # results[:counts][:successfully_attached] = 3
-      # results[:counts][:skipped] = 2
-      # results[:records][:successfully_ingested] = ['1', '2', '3', '4', '5']
-      # results[:records][:successfully_attached] = ['6', '7', '8']
-      # results[:records][:skipped] = ['9', '10']
       service.send(:send_report_and_notify, results)
 
       expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
