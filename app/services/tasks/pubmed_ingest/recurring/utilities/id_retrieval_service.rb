@@ -149,8 +149,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
 
     log_adjustment_start(pubmed_path, pmc_path)
 
-    pubmed_records = read_jsonl(pubmed_path)
-    pmc_records    = read_jsonl(pmc_path)
+    pubmed_records = JsonFileUtilsHelper.read_jsonl(pubmed_path, symbolize_names: true)
+    pmc_records    = JsonFileUtilsHelper.read_jsonl(pmc_path, symbolize_names: true)
 
     original_sizes = {
       pubmed: pubmed_records.size,
@@ -186,10 +186,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
 
   def log_adjustment_summary(original_sizes, adjusted_pubmed_size, adjusted_pmc_size)
     LogUtilsHelper.double_log("Adjusted ID lists - PubMed: #{original_sizes[:pubmed]} ➝ #{adjusted_pubmed_size}, PMC: #{original_sizes[:pmc]} ➝ #{adjusted_pmc_size}", :info, tag: 'adjust_id_lists')
-  end
-
-  def read_jsonl(path)
-    File.readlines(path).map { |line| JSON.parse(line) }
   end
 
   def write_deduped_records(path, records)
