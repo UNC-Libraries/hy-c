@@ -240,7 +240,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     entries = @write_buffer.dup
     File.open(@md_ingest_results_path, 'a') { |file| entries.each { |entry| file.puts(entry.to_json) } }
     @write_buffer.clear
-    LogUtilsHelper.double_log("Flushed #{@write_buffer.size} entries to #{@md_ingest_results_path}", :info, tag: 'MetadataIngestService')
+    LogUtilsHelper.double_log("Flushed #{entries.size} entries to #{@md_ingest_results_path}", :info, tag: 'MetadataIngestService')
     rescue => e
       LogUtilsHelper.double_log("Failed to flush buffer to file: #{e.message}", :error, tag: 'MetadataIngestService')
       Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")

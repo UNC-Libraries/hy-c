@@ -383,14 +383,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
     end
   end
 
-  describe '#pubmed_affiliation_clause' do
-    it 'wraps UNC terms as an OR [AD] clause' do
-      stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill', 'UNCCH'])
-      clause = service.send(:pubmed_affiliation_clause)
-      expect(clause).to eq('("UNC Chapel Hill"[AD] OR "UNCCH"[AD])')
-    end
-  end
-
   describe '#build_pubmed_term' do
     it 'builds affiliation AND date' do
       stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill'])

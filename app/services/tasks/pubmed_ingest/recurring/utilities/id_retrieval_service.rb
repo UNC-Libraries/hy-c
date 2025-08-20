@@ -248,12 +248,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
 
-  # Build an [AD] (affiliation) OR-clause for PubMed
-  def pubmed_affiliation_clause(terms = UNC_AFFILIATION_TERMS)
-    parts = terms.uniq.map { |t| %("#{t}"[AD]) }
-    "(#{parts.join(' OR ')})"
-  end
-
   # Build a PubMed term with date range + optional UNC affiliation + extras
   def build_pubmed_term(start_date:, end_date:, extras: nil)
     date = "#{start_date.strftime('%Y/%m/%d')}:#{end_date.strftime('%Y/%m/%d')}[PDAT]"
