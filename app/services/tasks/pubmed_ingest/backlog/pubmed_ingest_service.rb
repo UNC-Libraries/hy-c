@@ -132,26 +132,26 @@ module Tasks
           works_with_pmids = @new_pubmed_works.select { |w| w['pmid'].present? }
           works_with_pmcids = @new_pubmed_works.select { |w| !w['pmid'].present?  && w['pmcid'].present? }
 
-          [works_with_pmids, works_with_pmcids].each do |works|
-            db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
-            works.each_slice(200) do |batch|
-              ids = batch.map { |w| w['pmid'] || w['pmcid'].sub(/^PMC/, '') }
-              request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
-              res = HTTParty.get(request_url)
-
-              if res.code != 200
-                Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
-                next
-              end
-
-              xml_doc = Nokogiri::XML(res.body)
-              current_arr = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
-              @retrieved_metadata += current_arr
-            end
-          end
+          retrieve_metadata_for_db(works_with_pmids, 'pubmed', '//PubmedArticle')
+          retrieve_metadata_for_db(works_with_pmcids, 'pmc', '//article')
 
           Rails.logger.info('Metadata retrieval complete')
           @retrieved_metadata
+        end
+
+        def retrieve_metadata_for_db(works, db, db_matcher)
+          works.each_slice(200) do |batch|
+            ids = batch.map { |w| w['pmid'] || w['pmcid'].sub(/^PMC/, '') }
+            request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
+            res = HTTParty.get(request_url)
+            if res.code != 200
+              Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
+              next
+            end
+            xml_doc = Nokogiri::XML(res.body)
+            current_arr = xml_doc.xpath(db_matcher)
+            @retrieved_metadata += current_arr
+          end
         end
 
         def new_article(metadata)
