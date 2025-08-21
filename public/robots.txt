@@ -24,7 +24,6 @@ User-agent: Sogou web spider
 Crawl-delay: 10
 
 # Block specific bots from crawling anything
-User-agent: GoogleOther
 User-agent: SemrushBot
 User-agent: PetalBot
 User-agent: Pipl
@@ -32,4 +31,4 @@ User-agent: Yandex
 Disallow: /
 
 # resource sync sitemap
-Sitemap: https://finding-aids.lib.unc.edu/sitemap
+Sitemap: https://cdr.lib.unc.edu/sitemap
