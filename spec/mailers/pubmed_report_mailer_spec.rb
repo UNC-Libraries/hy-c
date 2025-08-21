@@ -52,7 +52,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
           results[:failed].size
         m.call(report)
       end
-      coordinator.send(:finalize_report_and_notify, results)
+      coordinator.send(:send_report_and_notify, results)
     end
 
     let(:report) do
