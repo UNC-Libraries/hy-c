@@ -95,8 +95,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
         attach_pdf_to_work_with_binary!(record, pdf_data, filename)
       elsif tgz_url.present?
+        tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
         uri = URI.parse(tgz_url)
-        tgz_data = fetch_ftp_binary(uri)
+        tgz_data = fetch_ftp_binary(uri, local_file_path: tgz_path)
         process_and_attach_tgz_file(record, tgz_data)
       end
     rescue => e
@@ -119,7 +120,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
   end
 
-  def fetch_ftp_binary(uri)
+  def fetch_ftp_binary(uri, local_file_path: nil)
     LogUtilsHelper.double_log("Fetching FTP file from #{uri}", :info, tag: 'FTP')
     Net::FTP.open(uri.host) do |ftp|
       ftp.login
@@ -127,9 +128,16 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       remote_path = uri.path
       # Normalize remote path to ensure it starts with a slash
       remote_path = "/#{remote_path}" unless remote_path.start_with?('/')
-      data = +''
-      ftp.getbinaryfile(remote_path, nil) { |block| data << block }
-      data
+      if local_file_path
+        # Stream directly to disk (better for large files like TGZ archives)
+        ftp.getbinaryfile(remote_path, local_file_path)
+        return local_file_path
+      else
+        # Fallback: capture into memory (suitable for small PDFs)
+        data = +''
+        ftp.getbinaryfile(remote_path, nil) { |block| data << block }
+        return data
+      end
     end
   end
 
