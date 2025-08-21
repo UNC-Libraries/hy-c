@@ -3,11 +3,33 @@
 # To ban all spiders from the entire site uncomment the next two lines:
 # User-agent: *
 # Disallow: /
+
 User-agent: *
 Crawl-delay: 8
 Disallow: /catalog
 Disallow: /files/*/stats
 Disallow: /works/*/stats
+Disallow: /assets/
+Disallow: /vite/
+
+# Throttle crawl rate for some aggressive bots
+User-agent: Baiduspider
+User-agent: Baiduspider-image
+User-agent: Sogou blog
+User-agent: Sogou inst spider
+User-agent: Sogou News Spider
+User-agent: Sogou Orion spider
+User-agent: Sogou spider2
+User-agent: Sogou web spider
+Crawl-delay: 10
+
+# Block specific bots from crawling anything
+User-agent: GoogleOther
+User-agent: SemrushBot
+User-agent: PetalBot
+User-agent: Pipl
+User-agent: Yandex
+Disallow: /
 
 # resource sync sitemap
-Sitemap: https://cdr.lib.unc.edu/resourcelist.xml
+Sitemap: https://finding-aids.lib.unc.edu/sitemap
