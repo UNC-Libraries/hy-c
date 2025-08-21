@@ -100,16 +100,19 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         process_and_attach_tgz_file(record, tgz_data)
       end
     rescue => e
-      retries += 1
-      if retries <= RETRY_LIMIT
-        sleep(1)
-        retry
-      elsif e.message.include?('No PDF or TGZ link found')
+      # Do not retry if no PDF or TGZ link is found in the response
+      if e.message.include?('No PDF or TGZ link found')
         log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
       else
-        log_result(record, category: :failed, message: "File attachment failed -- #{e.message}", file_name: 'NONE')
-        LogUtilsHelper.double_log("Error processing record: #{e.message}. Request URL: #{url}", :error, tag: 'Attachment')
-        Rails.logger.error e.backtrace.join("\n")
+        retries += 1
+        if retries <= RETRY_LIMIT
+          sleep(1)
+          retry
+        else
+          log_result(record, category: :failed, message: "File attachment failed -- #{e.message}", file_name: 'NONE')
+          LogUtilsHelper.double_log("Error processing record: #{e.message}. Request URL: #{url}", :error, tag: 'Attachment')
+          Rails.logger.error e.backtrace.join("\n")
+        end
       end
     ensure
       sleep(SLEEP_BETWEEN_REQUESTS)
