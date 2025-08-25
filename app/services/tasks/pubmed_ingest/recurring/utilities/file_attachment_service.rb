@@ -29,14 +29,18 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   end
 
   def load_records_to_attach
-    LogUtilsHelper.double_log('Loading records to attach files to.', :info, tag: 'File Attachment Service')
     records = []
-    File.foreach(@metadata_ingest_result_path) do |line|
-      record = JSON.parse(line)
-      next if filter_record?(record)
-      records << record
+    if !File.exist?(@metadata_ingest_result_path)
+      LogUtilsHelper.double_log("No metadata ingest results file found at #{@metadata_ingest_result_path}, starting with empty record set.", :warn, tag: 'File Attachment Service')
+    else
+      LogUtilsHelper.double_log('Loading records to attach files to.', :info, tag: 'File Attachment Service')
+      File.foreach(@metadata_ingest_result_path) do |line|
+        record = JSON.parse(line)
+        next if filter_record?(record)
+        records << record
+      end
+      LogUtilsHelper.double_log("Loaded #{records.size} records to attach files to.", :info, tag: 'File Attachment Service')
     end
-    LogUtilsHelper.double_log("Loaded #{records.size} records to attach files to.", :info, tag: 'File Attachment Service')
     records
   end
 
