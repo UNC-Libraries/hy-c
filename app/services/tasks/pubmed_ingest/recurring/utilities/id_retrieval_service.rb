@@ -198,7 +198,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
   def dedup_key(record)
-    record['doi'].presence || record['pmcid'].presence || record['pmid']
+     record[:doi].presence || record[:pmcid].presence || record[:pmid].presence
   end
 
   def deduplicate_pmc_records(records)
