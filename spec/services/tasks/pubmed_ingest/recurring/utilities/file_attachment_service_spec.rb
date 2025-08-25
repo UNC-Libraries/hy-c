@@ -415,28 +415,30 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
   end
 
   describe '#process_and_attach_tgz_file' do
-    let(:tgz_binary) { 'tgz_binary_data' }
+    let(:tgz_path) { '/full/path/PMC123456.tar.gz' }
     let(:mock_article) { double('article', id: 'work_123', reload: true, update_index: true) }
     let(:mock_user) { double('user', uid: 'admin') }
     let(:mock_gz_reader) { double('gz_reader', close: true) }
     let(:mock_tar_reader) { double('tar_reader') }
-    let(:mock_entry) { double('entry', file?: true, full_name: 'article.pdf', read: 'pdf_binary') }
+    let(:mock_pdf_entry) { double('entry', file?: true, full_name: 'article.pdf', read: 'pdf_binary') }
 
     before do
       allow(Article).to receive(:find).with('work_123').and_return(mock_article)
       allow(User).to receive(:find_by).with(uid: 'admin').and_return(mock_user)
-      allow(File).to receive(:expand_path).and_return('/full/path/PMC123456.tar.gz')
-      allow(File).to receive(:open).with('/full/path/PMC123456.tar.gz', 'wb').and_yield(double(write: true))
+      allow(File).to receive(:expand_path).with(tgz_path).and_return(tgz_path)
       allow(service).to receive(:safe_gzip_reader).and_return(mock_gz_reader)
       allow(Gem::Package::TarReader).to receive(:new).with(mock_gz_reader).and_yield(mock_tar_reader)
-      allow(mock_tar_reader).to receive(:each).and_yield(mock_entry)
       allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
       allow(service).to receive(:attach_pdf_to_work_with_binary!).and_return([double('fileset'), 'PMC123456_001.pdf'])
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:delete)
+      allow(File).to receive(:exist?).with(tgz_path).and_return(true)
+      allow(File).to receive(:delete).with(tgz_path)
     end
 
     context 'when work ID is present' do
+      before do
+        allow(mock_tar_reader).to receive(:each).and_yield(mock_pdf_entry)
+      end
+
       it 'processes TGZ file and attaches PDFs' do
         expect(service).to receive(:log_result).with(
           sample_record,
@@ -445,21 +447,36 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
           file_name: 'PMC123456_001.pdf'
         )
 
-        service.process_and_attach_tgz_file(sample_record, tgz_binary)
+        service.process_and_attach_tgz_file(sample_record, tgz_path)
 
         expect(mock_article).to have_received(:reload)
         expect(mock_article).to have_received(:update_index)
-        expect(File).to have_received(:delete).with('/full/path/PMC123456.tar.gz')
+        expect(File).to have_received(:delete).with(tgz_path)
+      end
+    end
+
+    context 'when TGZ contains a nested PDF file' do
+      let(:nested_pdf_entry) { double('entry', file?: true, full_name: 'nested/article.pdf', read: 'pdf_binary') }
+
+      before do
+        allow(mock_tar_reader).to receive(:each).and_yield(nested_pdf_entry)
+      end
+
+      it 'still attaches the PDF' do
+        expect(service).to receive(:log_result).with(
+          sample_record,
+          category: :successfully_attached,
+          message: 'PDF successfully attached from TGZ.',
+          file_name: 'PMC123456_001.pdf'
+        )
+
+        service.process_and_attach_tgz_file(sample_record, tgz_path)
       end
     end
 
     context 'when work ID is blank' do
       let(:record_without_work_id) do
-        {
-          'ids' => {
-            'pmcid' => 'PMC123456'
-          }
-        }
+        { 'ids' => { 'pmcid' => 'PMC123456' } }
       end
 
       it 'logs skip message and returns early' do
@@ -470,7 +487,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
           file_name: 'NONE'
         )
 
-        service.process_and_attach_tgz_file(record_without_work_id, tgz_binary)
+        service.process_and_attach_tgz_file(record_without_work_id, tgz_path)
       end
     end
 
@@ -489,7 +506,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
           file_name: 'NONE'
         )
 
-        service.process_and_attach_tgz_file(sample_record, tgz_binary)
+        service.process_and_attach_tgz_file(sample_record, tgz_path)
       end
     end
 
@@ -506,10 +523,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
           file_name: 'NONE'
         )
 
-        service.process_and_attach_tgz_file(sample_record, tgz_binary)
+        service.process_and_attach_tgz_file(sample_record, tgz_path)
       end
     end
   end
+
 
   describe '#generate_filename_for_work' do
     context 'when work exists and has file sets' do

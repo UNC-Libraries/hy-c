@@ -152,7 +152,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   end
 
 
-  def process_and_attach_tgz_file(record, tgz_binary)
+  def process_and_attach_tgz_file(record, tgz_path)
     pmcid = record.dig('ids', 'pmcid')
     work_id = record.dig('ids', 'work_id')
     return log_result(record, category: :skipped, message: 'No article ID found to attach TGZ', file_name: 'NONE') if work_id.blank?
@@ -163,11 +163,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       raise 'No depositor found' unless depositor
 
       pdf_count = 0
-      attached_files = []
 
-      tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
       tgz_absolute_path = File.expand_path(tgz_path)
-      File.open(tgz_absolute_path, 'wb') { |f| f.write(tgz_binary) }
 
       gz = safe_gzip_reader(tgz_absolute_path)
       Gem::Package::TarReader.new(gz) do |tar|
@@ -178,26 +175,22 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
           pdf_binary = entry.read
           LogUtilsHelper.double_log("Extracting PDF from TGZ: #{entry.full_name} (#{pdf_binary.bytesize} bytes)", :info, tag: 'TGZ Processing')
 
-          # Attach the PDF binary directly
           filename = generate_filename_for_work(work.id, pmcid)
           file_set, basename = attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
           if file_set
             log_result(record,
-                       category: :successfully_attached,
-                       message: 'PDF successfully attached from TGZ.',
-                       file_name: basename)
+                      category: :successfully_attached,
+                      message: 'PDF successfully attached from TGZ.',
+                      file_name: basename)
             pdf_count += 1
           end
         end
       end
       gz.close
 
-      # Clean up the temporary TGZ file
       File.delete(tgz_absolute_path) if File.exist?(tgz_absolute_path)
 
-      if pdf_count == 0
-        raise 'No PDF files found in TGZ archive'
-      end
+      raise 'No PDF files found in TGZ archive' if pdf_count == 0
 
       work.reload
       work.update_index
