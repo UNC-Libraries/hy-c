@@ -908,4 +908,51 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       end
     end
   end
+
+  describe '#delete_full_text_pdfs' do
+    let(:full_text_dir_path) { '/tmp/test_fulltext' }
+
+    before do
+      service.instance_variable_set(:@config, { 'full_text_dir' => full_text_dir_path })
+      allow(LogUtilsHelper).to receive(:double_log)
+      allow(FileUtils).to receive(:rm_rf)
+      allow(Pathname).to receive(:new).with(full_text_dir_path).and_call_original
+    end
+
+    it 'removes the directory and logs info when it exists' do
+      # Create a mock Pathname object
+      mock_pathname = double('pathname')
+      allow(Pathname).to receive(:new).with(full_text_dir_path).and_return(mock_pathname)
+      allow(mock_pathname).to receive(:exist?).and_return(true)
+      allow(mock_pathname).to receive(:directory?).and_return(true)
+      allow(mock_pathname).to receive(:to_s).and_return(full_text_dir_path)
+
+      service.send(:delete_full_text_pdfs)
+
+      expect(FileUtils).to have_received(:rm_rf).with(full_text_dir_path)
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        "Deleted full text PDFs directory: #{mock_pathname}",
+        :info,
+        tag: 'cleanup'
+      )
+    end
+
+    it 'logs a warning if the directory does not exist' do
+      # Create a mock Pathname object
+      mock_pathname = double('pathname')
+      allow(Pathname).to receive(:new).with(full_text_dir_path).and_return(mock_pathname)
+      allow(mock_pathname).to receive(:exist?).and_return(false)
+      allow(mock_pathname).to receive(:directory?).and_return(false)
+
+      service.send(:delete_full_text_pdfs)
+
+      expect(FileUtils).not_to have_received(:rm_rf)
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        "Full text PDFs directory not found or is not a directory: #{mock_pathname}",
+        :warn,
+        tag: 'cleanup'
+      )
+    end
+  end
+
 end

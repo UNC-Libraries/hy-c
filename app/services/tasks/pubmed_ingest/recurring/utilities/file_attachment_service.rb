@@ -98,7 +98,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
         uri = URI.parse(tgz_url)
         tgz_data = fetch_ftp_binary(uri, local_file_path: tgz_path)
-        process_and_attach_tgz_file(record, tgz_data)
+        process_and_attach_tgz_file(record, tgz_path)
       end
     rescue => e
       # Do not retry if no PDF or TGZ link is found in the response
