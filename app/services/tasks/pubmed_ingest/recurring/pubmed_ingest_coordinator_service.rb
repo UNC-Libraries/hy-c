@@ -94,7 +94,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
       LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
       record_id_path = File.join(@id_list_output_directory, "#{db}_ids.jsonl")
-      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db)
+      # WIP: Temporarily limit the number of IDs retrieved for testing
+      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db, retmax: 10)
       @tracker['progress']['retrieve_ids_within_date_range'][db]['completed'] = true
       @tracker.save
     end
@@ -140,8 +141,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       time: @tracker['restart_time'] || @tracker['start_time'],
       headers: { total_unique_records: 0 },
     }
-    puts "INSPECT RAW RESULTS ARRAY: #{raw_results_array.inspect}"
-
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
       next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
@@ -235,6 +234,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         resume: true
       )
       config['full_text_dir'] = tracker['full_text_dir']
+      config['depositor_onyen'] = tracker['depositor_onyen']
+      config['admin_set_title'] = tracker['admin_set_title']
       unless tracker
         puts '❌ Failed to load existing tracker.'
         exit(1)
