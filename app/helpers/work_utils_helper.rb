@@ -21,7 +21,6 @@ module WorkUtilsHelper
     # Retrieve the work related to the fileset
     work_data = ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with fileset id: #{fileset_id}") if work_data.blank?
-    # Set the admin set to an empty hash if the solr query returns nil
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id, :fileset)) if admin_set_data.blank?
@@ -92,8 +91,60 @@ module WorkUtilsHelper
     permissions_array
   end
 
+  def self.fetch_model_instance(work_type, work_id)
+    raise ArgumentError, 'Both work_type and work_id are required' unless work_type.present? && work_id.present?
 
-  private_class_method
+    work_type.constantize.find(work_id)
+  rescue NameError, ActiveRecord::RecordNotFound => e
+    Rails.logger.error("[WorkUtils] Failed to fetch model instance: #{e.message}")
+    nil
+  end
+
+  def self.generate_cdr_url_for_alternate_id(identifier)
+    generate_cdr_url(identifier: identifier)
+  end
+
+  def self.generate_cdr_url_for_work_id(work_id)
+    generate_cdr_url(work_id: work_id)
+  end
+
+  def self.generate_cdr_url(work_id: nil, identifier: nil)
+    raise ArgumentError, 'Provide either work_id or identifier' if work_id.blank? && identifier.blank?
+
+    result =
+      if work_id.present?
+        self.fetch_work_data_by_id(work_id)
+      else
+        self.fetch_work_data_by_alternate_identifier(identifier)
+      end
+
+    if result.blank?
+      return log_and_nil('No Solr record found', work_id: work_id, identifier: identifier)
+    end
+
+    resolved_work_id = result[:work_id].presence || work_id
+    work_type = result[:work_type]
+
+    return log_and_nil('Missing work_id', work_id: resolved_work_id, identifier: identifier) if resolved_work_id.blank?
+    return log_and_nil('Missing work_type', work_id: resolved_work_id, identifier: identifier) if work_type.blank?
+
+    build_cdr_url(work_type, resolved_work_id)
+  rescue StandardError => e
+    Rails.logger.warn("[CDR_URL] Failed (work_id=#{work_id.inspect}, identifier=#{identifier.inspect}): #{e.class}: #{e.message}")
+    nil
+  end
+
+  # Only for when we have work_type + work_id from Solr and don’t want to use a Fedora object. Use Rails URL helpers for Fedora objects instead.
+  def self.build_cdr_url(work_type, work_id)
+    host = ENV['HYRAX_HOST'].presence or raise 'HYRAX_HOST not set'
+    model = work_type.to_s.underscore.pluralize
+    URI.join(host, "/concern/#{model}/#{work_id}").to_s
+  end
+
+  def self.log_and_nil(msg, **ctx)
+    Rails.logger.warn("[CDR_URL] #{msg} #{ctx.compact}")
+    nil
+  end
 
   def self.generate_warning_message(admin_set_name, id, concern = :id)
     if admin_set_name.blank?
@@ -110,13 +161,5 @@ module WorkUtilsHelper
     end
   end
 
-  def self.fetch_model_instance(work_type, work_id)
-    raise ArgumentError, 'Both work_type and work_id are required' unless work_type.present? && work_id.present?
-
-    work_type.constantize.find(work_id)
-  rescue NameError, ActiveRecord::RecordNotFound => e
-    Rails.logger.error("[WorkUtils] Failed to fetch model instance: #{e.message}")
-    nil
-  end
-
+  private_class_method :build_cdr_url, :log_and_nil, :generate_warning_message
 end

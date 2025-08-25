@@ -6,6 +6,7 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 RSpec.describe WorkUtilsHelper, type: :module do
   let(:fileset_ids) { ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3'] }
   let(:admin_set_name) { 'Open_Access_Articles_and_Book_Chapters' }
+  let(:host) { 'http://cdr-example.lib.unc.edu' }
 
   let(:mock_records) { [[{
     'has_model_ssim' => ['Article'],
@@ -58,6 +59,11 @@ RSpec.describe WorkUtilsHelper, type: :module do
   }
   ]
   }
+
+  before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with('HYRAX_HOST').and_return(host)
+  end
 
   describe '#fetch_work_data_by_fileset_id' do
     it 'fetches the work data correctly' do
@@ -272,6 +278,86 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
     it 'finds manager and viewer groups for an admin set' do
       expect(described_class.get_permissions_attributes(admin_set.id)).to match_array expected_result
+    end
+  end
+
+  describe '#generate_cdr_url' do
+    before do
+      allow(Rails.logger).to receive(:warn)
+    end
+
+    it 'returns a URL when work_id resolves to a record with type' do
+      allow(described_class).to receive(:fetch_work_data_by_id)
+        .with('abc123')
+        .and_return({ work_id: 'abc123', work_type: 'Article' })
+
+      expect(described_class.generate_cdr_url(work_id: 'abc123'))
+        .to eq("#{host}/concern/articles/abc123")
+    end
+
+    it 'raises when HYRAX_HOST is not set' do
+      allow(ENV).to receive(:[]).with('HYRAX_HOST').and_return(nil)
+
+      allow(described_class).to receive(:fetch_work_data_by_id).with('abc123')
+        .and_return({ work_id: 'abc123', work_type: 'Article' })
+
+      described_class.generate_cdr_url(work_id: 'abc123')
+      expect(Rails.logger).to have_received(:warn).with('[CDR_URL] Failed (work_id="abc123", identifier=nil): RuntimeError: HYRAX_HOST not set')
+    end
+
+    it 'returns nil and logs when no Solr record is found' do
+      allow(described_class).to receive(:fetch_work_data_by_alternate_identifier)
+        .with('PMC999')
+        .and_return(nil)
+
+      expect(described_class.generate_cdr_url(identifier: 'PMC999')).to be_nil
+      expect(Rails.logger).to have_received(:warn).with('[CDR_URL] No Solr record found {:identifier=>"PMC999"}')
+    end
+
+    it 'returns nil and logs when work_type is missing' do
+      allow(described_class).to receive(:fetch_work_data_by_id)
+        .with('abc123')
+        .and_return({ work_id: 'abc123', work_type: nil })
+
+      expect(described_class.generate_cdr_url(work_id: 'abc123')).to be_nil
+      expect(Rails.logger).to have_received(:warn).with('[CDR_URL] Missing work_type {:work_id=>"abc123"}')
+    end
+
+    it 'raises ArgumentError when both work_id and identifier are blank' do
+      expect(described_class.generate_cdr_url).to be_nil
+      expect(Rails.logger).to have_received(:warn).with('[CDR_URL] Failed (work_id=nil, identifier=nil): ArgumentError: Provide either work_id or identifier')
+    end
+
+    it 'rescues build failures, logs, and returns nil' do
+      allow(described_class).to receive(:fetch_work_data_by_id)
+        .with('abc123')
+        .and_return({ work_id: 'abc123', work_type: 'Article' })
+      allow(ENV).to receive(:[]).with('HYRAX_HOST').and_return(nil) # triggers build_cdr_url raise
+
+      expect(described_class.generate_cdr_url(work_id: 'abc123')).to be_nil
+      expect(Rails.logger).to have_received(:warn).with(/^\[CDR_URL\] Failed \(work_id="abc123", identifier=nil\): RuntimeError: HYRAX_HOST not set$/)
+    end
+  end
+
+  describe '#fetch_model_instance' do
+    it 'raises ArgumentError when required args are missing' do
+      expect { described_class.fetch_model_instance(nil, 'id') }
+        .to raise_error(ArgumentError, 'Both work_type and work_id are required')
+      expect { described_class.fetch_model_instance('Article', nil) }
+        .to raise_error(ArgumentError, 'Both work_type and work_id are required')
+    end
+
+    it 'returns nil and logs on NameError (bad class)' do
+      allow(Rails.logger).to receive(:error)
+      expect(described_class.fetch_model_instance('NotARealModel', 'id')).to be_nil
+      expect(Rails.logger).to have_received(:error).with(/\[WorkUtils\] Failed to fetch model instance: uninitialized constant/i)
+    end
+
+    it 'returns the model instance when found' do
+      article = FactoryBot.create(:article)
+      found = described_class.fetch_model_instance('Article', article.id)
+      expect(found).to be_a(Article)
+      expect(found.id).to eq(article.id)
     end
   end
 end

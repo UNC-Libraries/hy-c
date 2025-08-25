@@ -2,7 +2,7 @@
 require 'rails_helper'
 require 'json'
 
-RSpec.describe Tasks::PubmedIngest::PubmedReportingService do
+RSpec.describe Tasks::PubmedIngest::SharedUtilities::PubmedReportingService do
   describe '#generate_report' do
     let(:fixture_path) do
       Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
