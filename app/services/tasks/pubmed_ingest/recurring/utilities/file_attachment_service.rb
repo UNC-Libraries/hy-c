@@ -103,7 +103,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     rescue => e
       # Do not retry if no PDF or TGZ link is found in the response
       if e.message.include?('No PDF or TGZ link found')
-        log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
+        log_result(record, category: :successfully_attached, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
       else
         retries += 1
         if retries <= RETRY_LIMIT

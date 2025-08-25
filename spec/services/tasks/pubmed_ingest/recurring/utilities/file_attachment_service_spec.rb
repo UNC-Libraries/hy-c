@@ -312,7 +312,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       it 'logs successful ingestion with no attachment' do
         expect(service).to receive(:log_result).with(
           sample_record,
-          category: :successfully_ingested,
+          category: :successfully_attached,
           message: 'No PDF or TGZ link found, skipping attachment',
           file_name: 'NONE'
         )
