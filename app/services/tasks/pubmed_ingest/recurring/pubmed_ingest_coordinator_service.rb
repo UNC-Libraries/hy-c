@@ -194,7 +194,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   def delete_full_text_pdfs
     full_text_dir = Pathname.new(@config['full_text_dir'])
     if full_text_dir.exist? && full_text_dir.directory?
-      puts "Deleting full text PDFs directory: #{full_text_dir.inspect}"
       FileUtils.rm_rf(full_text_dir.to_s)
       LogUtilsHelper.double_log("Deleted full text PDFs directory: #{full_text_dir}", :info, tag: 'cleanup')
     else
