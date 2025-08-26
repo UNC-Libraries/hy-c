@@ -61,8 +61,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
           raise e
         end
         break if cursor > parsed_response.xpath('//Count').text.to_i
-        # WIP: Temporarily limit the number of IDs retrieved for testing
-        break if count >= 30
 
         # Respect NCBI rate limits
         sleep(0.34)
