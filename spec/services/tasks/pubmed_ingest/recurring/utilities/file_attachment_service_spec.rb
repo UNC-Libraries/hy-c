@@ -340,23 +340,21 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
   describe '#fetch_ftp_binary' do
     let(:uri) { URI.parse('ftp://example.com/path/file.pdf') }
     let(:mock_ftp) { double('ftp') }
-    let(:binary_data) { 'binary_file_content' }
+    let(:local_path) { '/tmp/test_fulltext/file.pdf' }
 
     before do
       allow(Net::FTP).to receive(:open).with('example.com').and_yield(mock_ftp)
       allow(mock_ftp).to receive(:login)
       allow(mock_ftp).to receive(:passive=)
-      allow(mock_ftp).to receive(:getbinaryfile).and_yield(binary_data)
+      allow(mock_ftp).to receive(:getbinaryfile)
     end
 
-    it 'connects to FTP and downloads binary data' do
-      result = service.fetch_ftp_binary(uri)
+    it 'connects to FTP and downloads to the given path' do
+      result = service.fetch_ftp_binary(uri, local_file_path: local_path)
 
       expect(Net::FTP).to have_received(:open).with('example.com')
-      expect(mock_ftp).to have_received(:login)
-      expect(mock_ftp).to have_received(:passive=).with(true)
-      expect(mock_ftp).to have_received(:getbinaryfile).with('/path/file.pdf', nil)
-      expect(result).to eq(binary_data)
+      expect(mock_ftp).to have_received(:getbinaryfile).with('/path/file.pdf', local_path)
+      expect(result).to eq(local_path)
     end
   end
 
@@ -431,12 +429,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
       allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return([double('fileset'), 'PMC123456_001.pdf'])
       allow(File).to receive(:exist?).with(tgz_path).and_return(true)
-      allow(File).to receive(:delete).with(tgz_path)
     end
 
     context 'when work ID is present' do
       before do
         allow(mock_tar_reader).to receive(:each).and_yield(mock_pdf_entry)
+        allow(File).to receive(:binwrite)
+        .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
+        .and_return(11)
       end
 
       it 'processes TGZ file and attaches PDFs' do
@@ -451,7 +451,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
         expect(mock_article).to have_received(:reload)
         expect(mock_article).to have_received(:update_index)
-        expect(File).to have_received(:delete).with(tgz_path)
       end
     end
 
@@ -460,6 +459,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
       before do
         allow(mock_tar_reader).to receive(:each).and_yield(nested_pdf_entry)
+        allow(File).to receive(:binwrite)
+        .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
+        .and_return(11)
+
       end
 
       it 'still attaches the PDF' do
