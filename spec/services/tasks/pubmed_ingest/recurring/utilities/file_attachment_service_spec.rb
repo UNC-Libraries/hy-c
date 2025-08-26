@@ -135,7 +135,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       it 'returns true' do
         expect(service).not_to receive(:log_result).with(
             sample_record,
-            category: :successfully_attached,
+            category: :successfully_ingested,
             message: 'No PMCID found - can only retrieve files with PMCID',
             file_name: 'NONE'
         )
@@ -149,7 +149,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       it 'returns true and logs skip message' do
         expect(service).to receive(:log_result).with(
           sample_record_without_pmcid,
-          category: :successfully_attached,
+          category: :successfully_ingested,
           message: 'No PMCID found - can only retrieve files with PMCID',
           file_name: 'NONE'
         )
@@ -312,7 +312,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       it 'logs successful ingestion with no attachment' do
         expect(service).to receive(:log_result).with(
           sample_record,
-          category: :successfully_attached,
+          category: :successfully_ingested,
           message: 'No PDF or TGZ link found, skipping attachment',
           file_name: 'NONE'
         )
