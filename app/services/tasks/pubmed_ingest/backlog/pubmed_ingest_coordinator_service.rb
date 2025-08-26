@@ -152,6 +152,7 @@ module Tasks
           double_log('Sending email with results', :info)
           begin
             report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(@pubmed_ingest_service.attachment_results)
+            report[:headers][:total_files] = @pubmed_ingest_service.attachment_results[:counts][:total_files]
             PubmedReportMailer.pubmed_report_email(report).deliver_now
             double_log('Email sent successfully', :info)
           rescue StandardError => e
