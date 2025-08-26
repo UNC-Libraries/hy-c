@@ -53,7 +53,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
     if pmcid.blank?
         # Can only retrieve files using PMCID
-      log_result(record, category: :successfully_attached, message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
+      log_result(record, category: :successfully_ingested, message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
       return true
     end
     if work_id.present? && has_fileset?(work_id)
@@ -91,9 +91,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
       if pdf_url.present?
         uri = URI.parse(pdf_url)
-        pdf_data = fetch_ftp_binary(uri)
         filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
-        attach_pdf_to_work_with_binary!(record, pdf_data, filename)
+        file_path = File.join(@full_text_path, filename)
+        fetch_ftp_binary(uri, local_file_path: file_path)
+        attach_pdf_to_work_with_file_path!(record, file_path)
       elsif tgz_url.present?
         tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
         uri = URI.parse(tgz_url)
@@ -103,7 +104,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     rescue => e
       # Do not retry if no PDF or TGZ link is found in the response
       if e.message.include?('No PDF or TGZ link found')
-        log_result(record, category: :successfully_attached, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
+        log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
       else
         retries += 1
         if retries <= RETRY_LIMIT
@@ -120,27 +121,17 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
   end
 
-  def fetch_ftp_binary(uri, local_file_path: nil)
+  def fetch_ftp_binary(uri, local_file_path:)
     LogUtilsHelper.double_log("Fetching FTP file from #{uri}", :info, tag: 'FTP')
     Net::FTP.open(uri.host) do |ftp|
       ftp.login
       ftp.passive = true
       remote_path = uri.path
-      # Normalize remote path to ensure it starts with a slash
       remote_path = "/#{remote_path}" unless remote_path.start_with?('/')
-      if local_file_path
-        # Stream directly to disk (better for large files like TGZ archives)
-        ftp.getbinaryfile(remote_path, local_file_path)
-        return local_file_path
-      else
-        # Fallback: capture into memory (suitable for small PDFs)
-        data = +''
-        ftp.getbinaryfile(remote_path, nil) { |block| data << block }
-        return data
-      end
+      ftp.getbinaryfile(remote_path, local_file_path)
     end
+    local_file_path
   end
-
 
   def safe_gzip_reader(path)
     content = File.binread(path)
@@ -176,19 +167,21 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
           LogUtilsHelper.double_log("Extracting PDF from TGZ: #{entry.full_name} (#{pdf_binary.bytesize} bytes)", :info, tag: 'TGZ Processing')
 
           filename = generate_filename_for_work(work.id, pmcid)
-          file_set, basename = attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
+          file_path = File.join(@full_text_path, filename)
+          File.binwrite(file_path, pdf_binary)
+
+
+          file_set = attach_pdf_to_work_with_file_path!(record, file_path)
           if file_set
             log_result(record,
                       category: :successfully_attached,
                       message: 'PDF successfully attached from TGZ.',
-                      file_name: basename)
+                      file_name: filename)
             pdf_count += 1
           end
         end
       end
       gz.close
-
-      File.delete(tgz_absolute_path) if File.exist?(tgz_absolute_path)
 
       raise 'No PDF files found in TGZ archive' if pdf_count == 0
 

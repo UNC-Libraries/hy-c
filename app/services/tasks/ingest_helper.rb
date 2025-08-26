@@ -12,7 +12,7 @@ module Tasks
       attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
     end
 
-    def attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
+    def attach_pdf_to_work_with_file_path!(record, file_path)
       work_id = record.dig('ids', 'work_id')
       raise ArgumentError, 'No article ID found to attach PDF' unless work_id.present?
 
@@ -20,12 +20,8 @@ module Tasks
       depositor = ::User.find_by(uid: 'admin')
       raise 'No depositor found' unless depositor
 
-      file_path = File.join(@full_text_path, filename)
-      File.binwrite(file_path, pdf_binary)
-
       file_set = attach_pdf_to_work(article, file_path, depositor, article.visibility)
-
-      [file_set, filename]
+      file_set
     end
 
     def attach_file_set_to_work(work:, file_path:, user:, visibility:)
