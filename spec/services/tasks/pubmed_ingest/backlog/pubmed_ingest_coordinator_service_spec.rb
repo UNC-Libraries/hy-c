@@ -359,7 +359,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
           counts: hash_including(total_files: 2)
         ))
         .and_return(report_hash)
-        
+
       expect(PubmedReportMailer)
         .to receive(:pubmed_report_email)
         .with(satisfy { |r| r[:headers][:total_files] == 2 })
