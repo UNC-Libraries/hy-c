@@ -65,60 +65,59 @@ RSpec.describe Tasks::IngestHelper do
 
   end
 
-  describe '#attach_pdf_to_work_with_binary!' do
+  describe '#attach_pdf_to_work_with_file_path!' do
+    let(:admin_user) { FactoryBot.create(:user, uid: 'admin') }
     let(:tmp_full_text_dir) { Dir.mktmpdir('fulltext') }
-    let(:pdf_binary)        { File.binread(file_path) }
     let(:filename)          { 'PMC123_001.pdf' }
-    let(:admin_user)        { FactoryBot.create(:user, uid: 'admin') }
+    let(:source_pdf)        { Rails.root.join('spec/fixtures/files/sample_pdf.pdf') }
+    let(:dest_path)         { File.join(tmp_full_text_dir, filename) }
 
     before do
+      admin_user # ensure depositor exists
       helper.instance_variable_set(:@full_text_path, tmp_full_text_dir)
-      admin_user # create the admin user
+      FileUtils.cp(source_pdf, dest_path)
+      work.save!
     end
 
     after do
       FileUtils.remove_entry_secure(tmp_full_text_dir) if File.exist?(tmp_full_text_dir)
     end
 
-    it 'writes the PDF to disk, attaches a FileSet, and returns [file_set, basename]' do
-      work.save!
+    it 'attaches a FileSet from a file path and returns the FileSet' do
       record = { 'ids' => { 'work_id' => work.id } }
 
+      # let the helper call the real attach method so we assert behavior
       allow(helper).to receive(:attach_pdf_to_work).and_call_original
 
-      file_set, basename = helper.attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
+      file_set = helper.attach_pdf_to_work_with_file_path!(record, dest_path)
 
-      full_path = File.join(tmp_full_text_dir, filename)
-      expect(File.exist?(full_path)).to be true
-      expect(basename).to eq(filename)
-
+      expect(File.exist?(dest_path)).to be true
       expect(file_set).to be_a(FileSet)
       expect(file_set.read_groups).to include('public')
 
+      # verify it attached the file we passed in and used admin depositor visibility
       expect(helper).to have_received(:attach_pdf_to_work).with(
         an_instance_of(Article),
-        full_path,
+        dest_path,
         admin_user,
         work.visibility
       )
     end
 
     it 'raises when no depositor user exists' do
-      # Remove the admin user so the lookup fails
       User.where(uid: 'admin').delete_all
-
-      work.save!
       record = { 'ids' => { 'work_id' => work.id } }
 
       expect {
-        helper.attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
+        helper.attach_pdf_to_work_with_file_path!(record, dest_path)
       }.to raise_error(RuntimeError, 'No depositor found')
     end
 
     it 'raises ArgumentError when work_id is missing' do
-      record = { 'ids' => { } }
+      record = { 'ids' => {} }
+
       expect {
-        helper.attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
+        helper.attach_pdf_to_work_with_file_path!(record, dest_path)
       }.to raise_error(ArgumentError, 'No article ID found to attach PDF')
     end
   end
