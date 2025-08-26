@@ -245,7 +245,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     before do
       allow(HTTParty).to receive(:get).and_return(mock_response)
       allow(service).to receive(:fetch_ftp_binary).and_return('pdf_binary_data')
-      allow(service).to receive(:attach_pdf_to_work_with_binary!)
+      allow(service).to receive(:attach_pdf_to_work_with_file_path!)
       allow(service).to receive(:sleep)
     end
 
@@ -260,7 +260,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       before do
         stub_const('Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService::RETRY_LIMIT', 0)
         allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
-        allow(service).to receive(:attach_pdf_to_work_with_binary!).and_return([double('fileset'), 'PMC123456_001.pdf'])
+        allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return([double('fileset'), 'PMC123456_001.pdf'])
       end
       it 'fetches and processes PDF' do
         service.process_record(sample_record)
@@ -270,7 +270,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
           timeout: 10
         )
         expect(service).to have_received(:fetch_ftp_binary)
-        expect(service).to have_received(:attach_pdf_to_work_with_binary!)
+        expect(service).to have_received(:attach_pdf_to_work_with_file_path!)
       end
     end
 
@@ -429,7 +429,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       allow(service).to receive(:safe_gzip_reader).and_return(mock_gz_reader)
       allow(Gem::Package::TarReader).to receive(:new).with(mock_gz_reader).and_yield(mock_tar_reader)
       allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
-      allow(service).to receive(:attach_pdf_to_work_with_binary!).and_return([double('fileset'), 'PMC123456_001.pdf'])
+      allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return([double('fileset'), 'PMC123456_001.pdf'])
       allow(File).to receive(:exist?).with(tgz_path).and_return(true)
       allow(File).to receive(:delete).with(tgz_path)
     end

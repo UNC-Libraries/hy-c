@@ -345,9 +345,24 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
   end
 
   describe '#finalize_report_and_notify' do
+    let(:report_hash) { { headers: {}, rows: [] } }
+
+    before do
+      allow(PubmedReportMailer).to receive_message_chain(:pubmed_report_email, :deliver_now)
+    end
+
     it 'generates report and sends email' do
-      expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report).with(mock_attachment_results)
-      expect(PubmedReportMailer).to receive(:pubmed_report_email).with('test report')
+      expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+        .to receive(:generate_report)
+        .with(hash_including(
+          admin_set: admin_set.title.first,
+          counts: hash_including(total_files: 2)
+        ))
+        .and_return(report_hash)
+        
+      expect(PubmedReportMailer)
+        .to receive(:pubmed_report_email)
+        .with(satisfy { |r| r[:headers][:total_files] == 2 })
 
       service.send(:finalize_report_and_notify)
     end

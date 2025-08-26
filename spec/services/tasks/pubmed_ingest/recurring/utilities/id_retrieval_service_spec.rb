@@ -423,19 +423,19 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
   describe 'private methods' do
     describe '#dedup_key' do
       it 'returns doi when present' do
-        record = { 'doi' => 'test_doi', 'pmcid' => 'PMC123', 'pmid' => '456' }
+        record = { doi: 'test_doi', pmcid: 'PMC123', pmid: '456' }
         key = service.send(:dedup_key, record)
         expect(key).to eq('test_doi')
       end
 
       it 'returns pmcid when doi is blank' do
-        record = { 'doi' => '', 'pmcid' => 'PMC123', 'pmid' => '456' }
+        record = { doi: nil, pmcid: 'PMC123', pmid: '456' }
         key = service.send(:dedup_key, record)
         expect(key).to eq('PMC123')
       end
 
       it 'returns pmid when doi and pmcid are blank' do
-        record = { 'doi' => nil, 'pmcid' => '', 'pmid' => '456' }
+        record = { doi: nil, pmcid: '', pmid: '456' }
         key = service.send(:dedup_key, record)
         expect(key).to eq('456')
       end
@@ -444,10 +444,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
     describe '#deduplicate_pmc_records' do
       let(:records) do
         [
-          { 'pmcid' => 'PMC123', 'doi' => 'doi1' },
-          { 'pmcid' => 'PMC456', 'doi' => 'doi1' },  # duplicate doi
-          { 'pmcid' => '', 'doi' => 'doi2' },        # blank pmcid
-          { 'pmcid' => 'PMC789', 'doi' => 'doi3' }
+          { pmcid: 'PMC123', doi: 'doi1' },
+          { pmcid: 'PMC456', doi: 'doi1' },  # duplicate doi
+          { pmcid: '', doi: 'doi2' },        # blank pmcid
+          { pmcid: 'PMC789', doi: 'doi3' }
         ]
       end
 
@@ -455,7 +455,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
         deduped, seen_keys = service.send(:deduplicate_pmc_records, records)
 
         expect(deduped.size).to eq(2)
-        expect(deduped.map { |r| r['pmcid'] }).to contain_exactly('PMC123', 'PMC789')
+        expect(deduped.map { |r| r[:pmcid] }).to contain_exactly('PMC123', 'PMC789')
         expect(seen_keys).to include('doi1', 'doi3')
       end
     end
@@ -463,9 +463,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
     describe '#deduplicate_pubmed_records' do
       let(:records) do
         [
-          { 'pmid' => '123', 'doi' => 'doi1' },
-          { 'pmid' => '456', 'doi' => 'doi2' },
-          { 'pmid' => '789', 'doi' => 'doi3' }
+          { pmid: '123', doi: 'doi1' },
+          { pmid: '456', doi: 'doi2' },
+          { pmid: '789', doi: 'doi3' }
         ]
       end
       let(:seen_keys) { Set.new(['doi1']) }
@@ -474,7 +474,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
         deduped = service.send(:deduplicate_pubmed_records, records, seen_keys)
 
         expect(deduped.size).to eq(2)
-        expect(deduped.map { |r| r['doi'] }).to contain_exactly('doi2', 'doi3')
+        expect(deduped.map { |r| r[:doi] }).to contain_exactly('doi2', 'doi3')
       end
     end
   end

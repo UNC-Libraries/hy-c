@@ -204,7 +204,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   def deduplicate_pmc_records(records)
     seen_keys = Set.new
     deduped = records.each_with_object([]) do |record, acc|
-      next if record['pmcid'].blank?
+      next if record[:pmcid].blank?
 
       key = dedup_key(record)
       next if key.blank? || seen_keys.include?(key)
