@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::PubmedIngest::PubmedAttributeBuilder, type: :model do
+RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder, type: :model do
   let(:admin_set) { FactoryBot.create(:admin_set) }
   let(:depositor) { FactoryBot.create(:admin, uid: 'admin') }
   let(:skipped_rows) do

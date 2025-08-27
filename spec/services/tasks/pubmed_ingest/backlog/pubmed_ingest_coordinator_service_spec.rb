@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
+RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
   let(:logger_spy) { double('Logger').as_null_object }
   let(:admin_set) do
     FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
@@ -28,7 +28,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
   end
 
   let(:service) { described_class.new(config) }
-  let(:mock_pubmed_service) { instance_double(Tasks::PubmedIngest::PubmedIngestService) }
+  let(:mock_pubmed_service) { instance_double(Tasks::PubmedIngest::Backlog::PubmedIngestService) }
   let(:mock_attachment_results) do
     {
       skipped: [],
@@ -58,16 +58,14 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     workflow_state
 
     # Mock file system operations
-    allow(Dir).to receive(:entries).with(Rails.root.join('spec/fixtures/files')).and_return(['.', '..', 'sample_pdf.pdf', 'test_article.pdf'])
+    allow(Dir).to receive(:children).with(Rails.root.join('spec/fixtures/files')).and_return(['sample_pdf.pdf', 'test_article.pdf'])
     allow(File).to receive(:directory?).and_return(false)
-    allow(File).to receive(:directory?).with(Rails.root.join('spec/fixtures/files') + '/.').and_return(true)
-    allow(File).to receive(:directory?).with(Rails.root.join('spec/fixtures/files') + '/..').and_return(true)
 
     # Mock AdminSet lookup
     allow(AdminSet).to receive(:where).with(title: admin_set.title.first).and_return([admin_set])
 
-    # Mock PubmedIngestService
-    allow(Tasks::PubmedIngest::PubmedIngestService).to receive(:new).and_return(mock_pubmed_service)
+    # Mock Backlog::PubmedIngestService
+    allow(Tasks::PubmedIngest::Backlog::PubmedIngestService).to receive(:new).and_return(mock_pubmed_service)
     allow(mock_pubmed_service).to receive(:attachment_results).and_return(mock_attachment_results)
     allow(mock_pubmed_service).to receive(:record_result)
     allow(mock_pubmed_service).to receive(:attach_pdf_for_existing_work)
@@ -84,7 +82,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
     # Mock mailer
     mock_mailer = double('mailer', deliver_now: nil)
-    allow(Tasks::PubmedIngest::PubmedReportingService).to receive(:generate_report).and_return('test report')
+    allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report).and_return('test report')
     allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
 
     # Stub virus checking
@@ -109,7 +107,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
     it 'successfully initializes with a valid config' do
       service = described_class.new(valid_config)
-      expect(service).to be_a(Tasks::PubmedIngest::PubmedIngestCoordinatorService)
+      expect(service).to be_a(Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService)
     end
 
     it 'sets up the service with correct configuration' do
@@ -129,10 +127,10 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       expect(results[:admin_set]).to eq(admin_set.title.first)
     end
 
-    it 'creates PubmedIngestService with correct parameters' do
+    it 'creates Backlog::PubmedIngestService with correct parameters' do
       service = described_class.new(valid_config)
       expected_path = Pathname.new(Rails.root.join('spec/fixtures/files'))
-      expect(Tasks::PubmedIngest::PubmedIngestService).to have_received(:new).with(
+      expect(Tasks::PubmedIngest::Backlog::PubmedIngestService).to have_received(:new).with(
         hash_including(
           'admin_set_title' => admin_set.title.first,
           'depositor_onyen' => admin.uid,
@@ -327,9 +325,13 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
   describe '#write_results_to_file' do
     it 'writes JSON results to file' do
-      expect(File).to receive(:open).with(satisfy { |arg|
-                                            arg.is_a?(Pathname) && arg.basename.to_s.match?(/pdf_attachment_results_\d{14}\.json/)
-                                          }, 'w').and_yield(double('file', write: nil))
+      expect(JsonFileUtilsHelper).to receive(:write_json).with(
+        kind_of(Hash),
+        satisfy { |arg|
+          arg.is_a?(Pathname) &&
+            arg.basename.to_s.match?(/pdf_attachment_results_\d{14}\.json/)
+        }
+      ).and_return(true)
 
       service.send(:write_results_to_file)
     end
@@ -343,9 +345,24 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
   end
 
   describe '#finalize_report_and_notify' do
+    let(:report_hash) { { headers: {}, rows: [] } }
+
+    before do
+      allow(PubmedReportMailer).to receive_message_chain(:pubmed_report_email, :deliver_now)
+    end
+
     it 'generates report and sends email' do
-      expect(Tasks::PubmedIngest::PubmedReportingService).to receive(:generate_report).with(mock_attachment_results)
-      expect(PubmedReportMailer).to receive(:pubmed_report_email).with('test report')
+      expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+        .to receive(:generate_report)
+        .with(hash_including(
+          admin_set: admin_set.title.first,
+          counts: hash_including(total_files: 2)
+        ))
+        .and_return(report_hash)
+
+      expect(PubmedReportMailer)
+        .to receive(:pubmed_report_email)
+        .with(satisfy { |r| r[:headers][:total_files] == 2 })
 
       service.send(:finalize_report_and_notify)
     end
@@ -511,9 +528,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       allow(Pathname).to receive(:new).with('spec/fixtures/files').and_return(test_pathname)
       allow(test_pathname).to receive(:absolute?).and_return(true)
 
-      allow(Dir).to receive(:entries).with(test_pathname).and_return(['.', '..', 'file1.pdf', 'file2.txt', 'file1.pdf'])
-      allow(File).to receive(:directory?).with(test_pathname.join('.')).and_return(true)
-      allow(File).to receive(:directory?).with(test_pathname.join('..')).and_return(true)
+      allow(Dir).to receive(:children).with(test_pathname).and_return(['file1.pdf', 'file2.txt', 'file1.pdf'])
       allow(File).to receive(:directory?).with(test_pathname.join('file1.pdf')).and_return(false)
       allow(File).to receive(:directory?).with(test_pathname.join('file2.txt')).and_return(false)
     end
@@ -525,9 +540,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
         allow(Pathname).to receive(:new).with('/absolute/path').and_return(absolute_pathname)
         allow(absolute_pathname).to receive(:absolute?).and_return(true)
 
-        allow(Dir).to receive(:entries).with('/absolute/path').and_return(['.', '..', 'test.pdf'])
-        allow(File).to receive(:directory?).with(absolute_pathname.join('.')).and_return(true)
-        allow(File).to receive(:directory?).with(absolute_pathname.join('..')).and_return(true)
+        allow(Dir).to receive(:children).with('/absolute/path').and_return(['test.pdf'])
         allow(File).to receive(:directory?).with(absolute_pathname.join('test.pdf')).and_return(false)
 
         result = service.send(:retrieve_filenames, '/absolute/path')
@@ -543,10 +556,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
         allow(relative_pathname).to receive(:absolute?).and_return(false)
 
         full_path = Rails.root.join('relative/path')
-        allow(Dir).to receive(:entries).with(full_path).and_return(['.', '..', 'test.pdf'])
+        allow(Dir).to receive(:children).with(full_path).and_return(['test.pdf'])
         allow(File).to receive(:directory?).with(full_path.join('test.pdf')).and_return(false)
-        allow(File).to receive(:directory?).with(full_path.join('.')).and_return(true)
-        allow(File).to receive(:directory?).with(full_path.join('..')).and_return(true)
 
         result = service.send(:retrieve_filenames, 'relative/path')
         expect(result).to eq([['test', 'pdf']])
