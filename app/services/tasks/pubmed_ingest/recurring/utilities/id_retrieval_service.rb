@@ -61,6 +61,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
           raise e
         end
         break if cursor > parsed_response.xpath('//Count').text.to_i
+        break if count > 90
 
         # Respect NCBI rate limits
         sleep(0.34)
