@@ -94,7 +94,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
         file_path = File.join(@full_text_path, filename)
         fetch_ftp_binary(uri, local_file_path: file_path)
-        attach_pdf_to_work_with_file_path!(record, file_path)
+        attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
       elsif tgz_url.present?
         tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
         uri = URI.parse(tgz_url)
@@ -171,7 +171,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
           File.binwrite(file_path, pdf_binary)
 
 
-          file_set = attach_pdf_to_work_with_file_path!(record, file_path)
+          file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
           if file_set
             log_result(record,
                       category: :successfully_attached,
