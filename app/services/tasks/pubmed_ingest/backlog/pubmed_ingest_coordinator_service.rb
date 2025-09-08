@@ -144,7 +144,10 @@ module Tasks
           JsonFileUtilsHelper.write_json(@pubmed_ingest_service.attachment_results, json_output_path)
 
           double_log("Results written to #{json_output_path}", :info)
-          double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}, Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}, Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}, Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
+          double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}," \
+                      " Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}," \
+                      " Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}," \
+                      " Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
         end
 
         def finalize_report_and_notify
@@ -172,7 +175,7 @@ module Tasks
         def flatten_result_hash(results)
           flat = []
           results.each do |category, value|
-            next unless [:skipped, :successfully_attached, :successfully_ingested_metadata_only, :failed].include?(category)
+            next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
             Array(value).each do |record|
               flat << record.merge('category' => category.to_s)
             end

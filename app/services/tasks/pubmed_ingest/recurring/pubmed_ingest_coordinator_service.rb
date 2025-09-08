@@ -133,7 +133,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
   def format_results_for_reporting(raw_results_array)
     results = {
-      skipped_ingest: [],
+      skipped: [],
       skipped_file_attachment: [],
       successfully_attached: [],
       successfully_ingested_metadata_only: [],
@@ -144,7 +144,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     }
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
-      next unless [:skipped_ingest, :skipped_file_attachment, :successfully_attached, :successfully_ingested_metadata_only, :successfully_ingested_and_attached, :failed].include?(category)
+      next unless [:skipped, :skipped_file_attachment, :successfully_attached, :successfully_ingested_metadata_only, :successfully_ingested_and_attached, :failed].include?(category)
 
       # Move ids to the top level to match what the reporting service expects
       entry.merge!(entry.delete(:ids) || {})
@@ -176,7 +176,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
                             successfully_ingested_metadata_only: 'Successfully Ingested (Metadata Only)',
                             successfully_attached: 'Successfully Attached To Existing Work',
                             skipped_file_attachment: 'Skipped File Attachment',
-                            skipped_ingest: 'Skipped',
+                            skipped: 'Skipped',
                             failed: 'Failed'
                           }
       PubmedReportMailer.pubmed_report_email(report).deliver_now

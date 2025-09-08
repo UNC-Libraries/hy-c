@@ -42,10 +42,6 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
       admin_set: admin_set.title.first,
       counts: {
         total_files: 2,
-        skipped: 0,
-        successfully_attached: 0,
-        successfully_ingested: 0,
-        failed: 0
       }
     }
   end

@@ -27,7 +27,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       if match.present? && match[:work_id].present?
         Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
         article = WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
-        record_result(category: :skipped_ingest, message: 'Pre-filtered: work exists', ids: record, article: article)
+        record_result(category: :skipped, message: 'Pre-filtered: work exists', ids: record, article: article)
         next
       end
 
@@ -145,7 +145,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         if match&.dig(:work_id).present?
           Rails.logger.info("[MetadataIngestService] Work with IDs #{alternate_ids.inspect} already exists: #{match[:work_id]}")
           record_result(
-              category: :skipped_ingest,
+              category: :skipped,
               ids: alternate_ids,
               message: 'Filtered after retrieving metadata: work exists',
               article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
@@ -252,6 +252,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     ['doi', 'pmcid', 'pmid'].each do |key|
       id = alt_ids[key]
       next if id.blank?
+
+      work_data = key == :doi ?
+        WorkUtilsHelper.fetch_work_data_by_doi(id) :
+        WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
+
 
       work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
       return work_data if work_data.present?

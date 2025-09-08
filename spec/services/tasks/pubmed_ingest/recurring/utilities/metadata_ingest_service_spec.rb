@@ -192,7 +192,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
         service.load_alternate_ids_from_file(path: test_path)
 
         expect(service).to have_received(:record_result).with(
-          category: :skipped_ingest,
+          category: :skipped,
           message: 'Pre-filtered: work exists',
           ids: JSON.parse(sample_alternate_ids[0]),
           article: mock_article
@@ -349,7 +349,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
         expect(service).not_to have_received(:new_article)
         expect(service).to have_received(:record_result).with(
-          category: :skipped_ingest,
+          category: :skipped,
           ids: alternate_ids,
           message: 'Filtered after retrieving metadata: work exists',
           article: mock_existing_article

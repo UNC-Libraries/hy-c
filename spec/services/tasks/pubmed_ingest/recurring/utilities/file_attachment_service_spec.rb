@@ -158,8 +158,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         expect(result).to be true
       end
 
-      it 'logs as skipped_file_attachment if record category is skipped_ingest' do
-        record = sample_record_without_pmcid.merge('category' => 'skipped_ingest')
+      it 'logs as skipped_file_attachment if record category is skipped' do
+        record = sample_record_without_pmcid.merge('category' => 'skipped')
         expect(service).to receive(:log_attachment_outcome).with(
           record,
           category: :skipped_file_attachment,
@@ -299,8 +299,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         )
       end
 
-      it 'logs as successfully_attached if record.category is skipped_ingest' do
-        sample_record['category'] = 'skipped_ingest'
+      it 'logs as successfully_attached if record.category is skipped' do
+        sample_record['category'] = 'skipped'
         service.process_record(sample_record)
 
         expect(service).to have_received(:log_attachment_outcome).with(
@@ -358,8 +358,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         service.process_record(sample_record)
       end
 
-      it 'logs skipped_file_attachment if record.category is skipped_ingest' do
-        sample_record['category'] = 'skipped_ingest'
+      it 'logs skipped_file_attachment if record.category is skipped' do
+        sample_record['category'] = 'skipped'
         expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :skipped_file_attachment,

@@ -57,7 +57,7 @@ module Tasks
 
           def apply_additional_basic_attributes
             article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
-            article.abstract = [metadata.xpath('front/article-meta/abstract').text]
+            article.abstract = [metadata.xpath('front/article-meta/abstract').text.presence || 'N/A']
             article.date_issued = get_date_issued.strftime('%Y-%m-%d')
             article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
             article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)

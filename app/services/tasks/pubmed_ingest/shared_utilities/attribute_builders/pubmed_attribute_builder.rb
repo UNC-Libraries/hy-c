@@ -47,7 +47,7 @@ module Tasks
 
           def apply_additional_basic_attributes
             article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
-            article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text]
+            article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text.presence || 'N/A']
             article.date_issued = get_date_issued.strftime('%Y-%m-%d')
             article.publisher = [] # No explicit publisher in PubMed XML
             article.keyword = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)

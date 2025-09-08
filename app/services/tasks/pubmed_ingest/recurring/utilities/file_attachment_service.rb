@@ -228,13 +228,13 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   # - If the record existed before the current run, categorize as :skipped_file_attachment
   # - Otherwise, categorize as :successfully_ingested_metadata_only
   def category_for_skipped_file_attachment(record)
-    record['category'] == 'skipped_ingest' ? :skipped_file_attachment : :successfully_ingested_metadata_only
+    record['category'] == 'skipped' ? :skipped_file_attachment : :successfully_ingested_metadata_only
   end
 
   # Determine category for file attachment success
   # - If the record existed before the current run, categorize as :successfully_attached
   # - Otherwise, categorize as :successfully_ingested_and_attached
   def category_for_successful_attachment(record)
-    record['category'] == 'skipped_ingest' ? :successfully_attached : :successfully_ingested_and_attached
+    record['category'] == 'skipped' ? :successfully_attached : :successfully_ingested_and_attached
   end
 end

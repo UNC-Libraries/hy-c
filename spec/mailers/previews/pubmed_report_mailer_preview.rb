@@ -17,7 +17,7 @@ class PubmedReportMailerPreview < ActionMailer::Preview
                             successfully_ingested_metadata_only: 'Successfully Ingested (Metadata Only)',
                             successfully_attached: 'Successfully Attached To Existing Work',
                             skipped_file_attachment: 'Skipped File Attachment',
-                            skipped_ingest: 'Skipped',
+                            skipped: 'Skipped',
                             failed: 'Failed'
                           }
       # Send Email

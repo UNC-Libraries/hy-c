@@ -37,7 +37,7 @@
             "doi": "10.1177/00938548221081447"
         }
     ],
-    "skipped_ingest": [
+    "skipped": [
         {
             "file_name": "38784917",
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/0z7099690",
@@ -224,7 +224,7 @@
     "counts": {
       "total": 23,
       "skipped_file_attachment": 4,
-      "skipped_ingest": 3,
+      "skipped": 3,
       "successfully_attached": 5,
       "successfully_ingested_and_attached": 3,
       "successfully_ingested_metadata_only": 3,

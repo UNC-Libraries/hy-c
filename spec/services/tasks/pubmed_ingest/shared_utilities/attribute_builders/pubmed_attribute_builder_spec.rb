@@ -86,5 +86,14 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
       expect(article.keyword).to all(be_a(String))
       expect(article.funder).to all(be_a(String))
     end
+
+    it 'handles missing abstract gracefully' do
+      allow(article_node).to receive(:xpath).and_call_original
+      allow(article_node).to receive(:xpath)
+        .with('MedlineCitation/Article/Abstract/AbstractText')
+        .and_return(double('Nokogiri::XML::Node', text: ''))
+      builder.send(:apply_additional_basic_attributes)
+      expect(article.abstract).to eq(['N/A'])
+    end
   end
 end
