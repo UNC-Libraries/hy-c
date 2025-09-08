@@ -113,7 +113,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
         allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
         # fallback match succeeds
-        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
+        fallback_query = "identifier_tesim:\"DOI: https://dx.doi.org/#{normalized_doi}\" NOT has_model_ssim:(\"FileSet\")"
         allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => mock_records[0] })
 
         allow(ActiveFedora::SolrService).to receive(:get).with(
@@ -128,7 +128,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       it 'returns nil and logs if fallback also fails' do
         allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
-        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
+        fallback_query = "identifier_tesim:\"DOI: https://dx.doi.org/#{normalized_doi}\" NOT has_model_ssim:(\"FileSet\")"
         allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [] })
 
         allow(Rails.logger).to receive(:warn)
@@ -173,7 +173,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
         'title_tesim' => ['Sample Admin Set']
       }
 
-      fallback_query = "identifier_tesim:*#{raw_doi}* NOT has_model_ssim:(\"FileSet\")"
+      fallback_query = "identifier_tesim:\"DOI: https://dx.doi.org/#{raw_doi}\" NOT has_model_ssim:(\"FileSet\")"
       allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [identifier_doc] })
       allow(ActiveFedora::SolrService).to receive(:get).with('title_tesim:Sample Admin Set AND has_model_ssim:("AdminSet")', { 'df' => 'title_tesim', :rows => 1 }).and_return('response' => { 'docs' => [admin_set_doc] })
 
