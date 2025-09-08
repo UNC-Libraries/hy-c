@@ -153,6 +153,12 @@ module Tasks
           begin
             report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(@pubmed_ingest_service.attachment_results)
             report[:headers][:total_files] = @pubmed_ingest_service.attachment_results[:counts][:total_files]
+            report[:categories] = {
+                                    successfully_attached: 'Successfully Ingested and Attached',
+                                    successfully_ingested: 'Successfully Ingested',
+                                    skipped: 'Skipped',
+                                    failed: 'Failed'
+                                  }
             PubmedReportMailer.pubmed_report_email(report).deliver_now
             double_log('Email sent successfully', :info)
           rescue StandardError => e
@@ -166,7 +172,7 @@ module Tasks
         def flatten_result_hash(results)
           flat = []
           results.each do |category, value|
-            next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
+            next unless [:skipped, :successfully_attached, :successfully_ingested_metadata_only, :failed].include?(category)
             Array(value).each do |record|
               flat << record.merge('category' => category.to_s)
             end

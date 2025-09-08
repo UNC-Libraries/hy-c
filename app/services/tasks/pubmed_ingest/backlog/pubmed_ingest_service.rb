@@ -73,7 +73,7 @@ module Tasks
               skipped_row['cdr_url'] = Rails.application.routes.url_helpers.url_for(article)
               skipped_row['article'] = article
               record_result(
-                category: :successfully_ingested,
+                category: :successfully_ingested_metadata_only,
                 file_name: skipped_row['file_name'],
                 message: 'Success',
                 ids: {

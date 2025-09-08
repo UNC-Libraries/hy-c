@@ -1,5 +1,5 @@
 {
-    "skipped": [
+    "skipped_file_attachment": [
         {
             "file_name": "39050868",
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/pk02cr76x",
@@ -35,7 +35,9 @@
             "pmid": "38881730",
             "pmcid": "PMC11178324",
             "doi": "10.1177/00938548221081447"
-        },
+        }
+    ],
+    "skipped_ingest": [
         {
             "file_name": "38784917",
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/0z7099690",
@@ -111,7 +113,7 @@
             "doi": "10.1016/j.celrep.2024.114165"
           }
     ],
-    "successfully_ingested": [
+    "successfully_ingested_and_attached": [
         {
             "file_name": "PMC22168832",
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/t248fx873",
@@ -138,7 +140,9 @@
             "pmid": "31181730",
             "pmcid": "PMC10078324",
             "doi": "10.1155/00938548221081447"
-        },
+        }
+    ],
+    "successfully_ingested_metadata_only": [
         {
             "file_name": "32724917",
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/0z7011690",
@@ -219,10 +223,12 @@
     "file_retrieval_directory": "/opt/fake/full_text_dir/",
     "counts": {
       "total": 23,
-      "failed": 5,
-      "successfully_ingested": 5,
-      "successfully_attached": 6,
-      "skipped": 7
+      "skipped_file_attachment": 4,
+      "skipped_ingest": 3,
+      "successfully_attached": 5,
+      "successfully_ingested_and_attached": 3,
+      "successfully_ingested_metadata_only": 3,
+      "failed": 5
     },
     "headers": {
       "total_unique_records": 23,

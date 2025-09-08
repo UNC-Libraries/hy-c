@@ -181,7 +181,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
       allow(service).to receive(:write_batch_alternate_ids)
       allow(File).to receive(:open).and_call_original
-      allow(File).to receive(:open).with(output_temp_file.path, 'w').and_yield(output_temp_file)
+      allow(File).to receive(:open).with(output_temp_file.path, 'a').and_yield(output_temp_file)
       allow(File).to receive(:foreach).with(input_temp_file.path).and_yield(input_file_content.lines[0]).and_yield(input_file_content.lines[1])
     end
 

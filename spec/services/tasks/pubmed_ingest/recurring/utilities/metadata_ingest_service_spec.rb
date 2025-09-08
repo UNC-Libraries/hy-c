@@ -192,7 +192,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
         service.load_alternate_ids_from_file(path: test_path)
 
         expect(service).to have_received(:record_result).with(
-          category: :skipped,
+          category: :skipped_ingest,
           message: 'Pre-filtered: work exists',
           ids: JSON.parse(sample_alternate_ids[0]),
           article: mock_article
@@ -326,7 +326,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
         expect(service).to have_received(:new_article).with(batch_articles.first)
         expect(mock_article).to have_received(:save!)
         expect(service).to have_received(:record_result).with(
-          category: :successfully_ingested,
+          category: :successfully_ingested_metadata_only,
           ids: alternate_ids,
           article: mock_article
         )
@@ -349,7 +349,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
         expect(service).not_to have_received(:new_article)
         expect(service).to have_received(:record_result).with(
-          category: :skipped,
+          category: :skipped_ingest,
           ids: alternate_ids,
           message: 'Filtered after retrieving metadata: work exists',
           article: mock_existing_article
@@ -498,7 +498,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'adds entry to write buffer with correct format' do
       service.send(:record_result,
-        category: :successfully_ingested,
+        category: :successfully_ingested_metadata_only,
         message: 'Success',
         ids: ids,
         article: mock_article
@@ -511,7 +511,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       expect(entry[:ids][:pmid]).to eq('123456')
       expect(entry[:ids][:pmcid]).to eq('PMC789012')
       expect(entry[:ids][:work_id]).to eq('article_123')
-      expect(entry[:category]).to eq(:successfully_ingested)
+      expect(entry[:category]).to eq(:successfully_ingested_metadata_only)
       expect(entry[:message]).to eq('Success')
       expect(entry[:timestamp]).to eq('2024-01-01T12:00:00Z')
     end

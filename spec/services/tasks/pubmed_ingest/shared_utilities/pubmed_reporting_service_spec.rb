@@ -20,7 +20,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::PubmedReportingService do
       expect(report[:headers][:depositor]).to eq(ingest_output[:depositor])
       expect(report[:headers][:total_unique_files]).to eq(ingest_output[:counts][:total_unique_files])
       expect(report[:records][:successfully_attached]).to eq(ingest_output[:successfully_attached])
-      expect(report[:records][:successfully_ingested]).to eq(ingest_output[:successfully_ingested])
+      expect(report[:records][:successfully_ingested_metadata_only]).to eq(ingest_output[:successfully_ingested_metadata_only])
       expect(report[:records][:skipped]).to eq(ingest_output[:skipped])
       expect(report[:records][:failed]).to eq(ingest_output[:failed])
     end

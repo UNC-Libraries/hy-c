@@ -13,14 +13,15 @@ module Tasks
               depositor: ingest_output[:depositor]
             },
             records: {
+              successfully_ingested_and_attached: ingest_output[:successfully_ingested_and_attached].map(&:symbolize_keys),
+              successfully_ingested_metadata_only: ingest_output[:successfully_ingested_metadata_only].map(&:symbolize_keys),
               successfully_attached: ingest_output[:successfully_attached].map(&:symbolize_keys),
-              successfully_ingested: ingest_output[:successfully_ingested].map(&:symbolize_keys),
-              skipped: ingest_output[:skipped].map(&:symbolize_keys),
+              skipped_file_attachment: ingest_output[:skipped_file_attachment].map(&:symbolize_keys),
+              skipped_ingest: ingest_output[:skipped_ingest].map(&:symbolize_keys),
               failed: ingest_output[:failed].map(&:symbolize_keys)
             }
           }
         end
-
       end
     end
 end

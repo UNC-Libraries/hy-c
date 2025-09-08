@@ -574,7 +574,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'formats valid categories correctly' do
       results = service.send(:format_results_for_reporting, raw_results)
-      expect(results[:successfully_ingested].size).to eq(1)
+      expect(results[:successfully_ingested_metadata_only].size).to eq(1)
       expect(results[:skipped].size).to eq(1)
       expect(results[:failed].size).to eq(1)
     end
@@ -586,7 +586,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'merges IDs into main entry and transforms field names' do
       results = service.send(:format_results_for_reporting, raw_results)
-      ingested_entry = results[:successfully_ingested].first
+      ingested_entry = results[:successfully_ingested_metadata_only].first
 
       expect(ingested_entry[:pmid]).to eq('345678')
       expect(ingested_entry[:pmcid]).to eq('PMC901234')

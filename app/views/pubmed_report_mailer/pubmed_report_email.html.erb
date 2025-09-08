@@ -30,12 +30,7 @@
 </p>
 
 <!-- Generate tables for each record category -->
-<% {
-  successfully_attached: 'Successfully Ingested and Attached',
-  successfully_ingested: 'Successfully Ingested',
-  skipped: 'Skipped',
-  failed: 'Failed'
-}.each do |key, label| %>
+<% @report[:categories].each do |key, label| %>
 
   <!-- spacer instead of margin-top (Outlook-safe) -->
   <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
@@ -78,7 +73,7 @@
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmid] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmcid] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
-            <% if [:skipped, :failed, :successfully_ingested].include?(key) %>
+            <% if [:skipped, :failed, :successfully_ingested_metadata_only].include?(key) %>
               <%= record[:message].presence || 'N/A' %>
             <% else %>
               N/A

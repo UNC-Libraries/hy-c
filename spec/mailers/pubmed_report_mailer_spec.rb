@@ -47,7 +47,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
         # Force the report to have the expected structure
         report[:headers][:total_unique_records] =
           results[:skipped].size +
-          results[:successfully_ingested].size +
+          results[:successfully_ingested_metadata_only].size +
           results[:successfully_attached].size +
           results[:failed].size
         m.call(report)
@@ -66,7 +66,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
     it 'sets total_unique_records and date range from tracker' do
       expect(report[:headers][:total_unique_records]).to eq(
         results[:skipped].size +
-        results[:successfully_ingested].size +
+        results[:successfully_ingested_metadata_only].size +
         results[:successfully_attached].size +
         results[:failed].size
       )

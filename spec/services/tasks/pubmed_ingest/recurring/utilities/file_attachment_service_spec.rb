@@ -133,9 +133,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'returns true' do
-        expect(service).not_to receive(:log_result).with(
+        expect(service).not_to receive(:log_attachment_outcome).with(
             sample_record,
-            category: :successfully_ingested,
+            category: :successfully_ingested_metadata_only,
             message: 'No PMCID found - can only retrieve files with PMCID',
             file_name: 'NONE'
         )
@@ -146,15 +146,28 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
 
     context 'when record has no PMCID' do
-      it 'returns true and logs skip message' do
-        expect(service).to receive(:log_result).with(
+      it 'logs as successfully_ingested_metadata_only by default' do
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record_without_pmcid,
-          category: :successfully_ingested,
+          category: :successfully_ingested_metadata_only,
           message: 'No PMCID found - can only retrieve files with PMCID',
           file_name: 'NONE'
         )
 
         result = service.filter_record?(sample_record_without_pmcid)
+        expect(result).to be true
+      end
+
+      it 'logs as skipped_file_attachment if record category is skipped_ingest' do
+        record = sample_record_without_pmcid.merge('category' => 'skipped_ingest')
+        expect(service).to receive(:log_attachment_outcome).with(
+          record,
+          category: :skipped_file_attachment,
+          message: 'No PMCID found - can only retrieve files with PMCID',
+          file_name: 'NONE'
+        )
+
+        result = service.filter_record?(record)
         expect(result).to be true
       end
     end
@@ -165,9 +178,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'returns true and logs skip message' do
-        expect(service).to receive(:log_result).with(
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
-          category: :skipped,
+          category: :skipped_file_attachment,
           message: 'Work already has files attached',
           file_name: 'NONE'
         )
@@ -261,7 +274,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         stub_const('Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService::RETRY_LIMIT', 0)
         allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
         allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return([double('fileset'), 'PMC123456_001.pdf'])
+        allow(service).to receive(:log_attachment_outcome) # stub to observe
       end
+
       it 'fetches and processes PDF' do
         service.process_record(sample_record)
 
@@ -271,6 +286,29 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         )
         expect(service).to have_received(:fetch_ftp_binary)
         expect(service).to have_received(:attach_pdf_to_work_with_file_path!)
+      end
+
+      it 'logs as successfully_ingested_and_attached by default' do
+        service.process_record(sample_record)
+
+        expect(service).to have_received(:log_attachment_outcome).with(
+          sample_record,
+          category: :successfully_ingested_and_attached,
+          message: 'PDF successfully attached.',
+          file_name: 'PMC123456_001.pdf'
+        )
+      end
+
+      it 'logs as successfully_attached if record.category is skipped_ingest' do
+        sample_record['category'] = 'skipped_ingest'
+        service.process_record(sample_record)
+
+        expect(service).to have_received(:log_attachment_outcome).with(
+          sample_record,
+          category: :successfully_attached,
+          message: 'PDF successfully attached.',
+          file_name: 'PMC123456_001.pdf'
+        )
       end
     end
 
@@ -310,13 +348,24 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'logs successful ingestion with no attachment' do
-        expect(service).to receive(:log_result).with(
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
-          category: :successfully_ingested,
+          category: :successfully_ingested_metadata_only,
           message: 'No PDF or TGZ link found, skipping attachment',
           file_name: 'NONE'
         )
 
+        service.process_record(sample_record)
+      end
+
+      it 'logs skipped_file_attachment if record.category is skipped_ingest' do
+        sample_record['category'] = 'skipped_ingest'
+        expect(service).to receive(:log_attachment_outcome).with(
+          sample_record,
+          category: :skipped_file_attachment,
+          message: 'No PDF or TGZ link found, skipping attachment',
+          file_name: 'NONE'
+        )
         service.process_record(sample_record)
       end
     end
@@ -325,7 +374,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       let(:mock_response) { double('response', code: 500, body: '') }
 
       it 'retries and eventually logs failure' do
-        expect(service).to receive(:log_result).with(
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :failed,
           message: /File attachment failed -- Bad response: 500/,
@@ -440,7 +489,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'processes TGZ file and attaches PDFs' do
-        expect(service).to receive(:log_result).with(
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :successfully_attached,
           message: 'PDF successfully attached from TGZ.',
@@ -466,7 +515,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'still attaches the PDF' do
-        expect(service).to receive(:log_result).with(
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :successfully_attached,
           message: 'PDF successfully attached from TGZ.',
@@ -482,10 +531,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         { 'ids' => { 'pmcid' => 'PMC123456' } }
       end
 
-      it 'logs skip message and returns early' do
-        expect(service).to receive(:log_result).with(
+      it 'logs metadata only message and returns early' do
+        expect(service).to receive(:log_attachment_outcome).with(
           record_without_work_id,
-          category: :skipped,
+          category: :successfully_ingested_metadata_only,
           message: 'No article ID found to attach TGZ',
           file_name: 'NONE'
         )
@@ -502,7 +551,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'logs failure message' do
-        expect(service).to receive(:log_result).with(
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :failed,
           message: /No PDF files found in TGZ archive/,
@@ -519,7 +568,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'logs failure and error details' do
-        expect(service).to receive(:log_result).with(
+        expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :failed,
           message: /TGZ PDF processing failed: Article not found/,
@@ -571,7 +620,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
   end
 
-  describe '#log_result' do
+  describe '#log_attachment_outcome' do
     let(:log_file_handle) { double('file') }
 
     before do
@@ -581,7 +630,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
 
     it 'writes log entry to file and saves tracker' do
-      service.log_result(
+      service.log_attachment_outcome(
         sample_record,
         category: :successfully_attached,
         message: 'File attached successfully',

@@ -169,21 +169,21 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestService do
       expect {
         @res = service.ingest_publications
       }.to change { Article.count }.by(2)
-      success_pmids = @res[:successfully_ingested].map { |row| row['pmid'] }
+      success_pmids = @res[:successfully_ingested_metadata_only].map { |row| row['pmid'] }
       failed_pmids = @res[:failed].map { |row| row['pmid'] }
 
     # Expect the PMIDs from the success sample to be in "successfully_ingested" and the failing sample to be in "failed"
       expect(success_pmids).to match_array(sample['success'].map { |a| a.xpath('MedlineCitation/PMID').text })
       expect(failed_pmids).to match_array(failing_sample_pmids)
     # Expect the newly ingested array size to be 2 and the failed array size to be 2
-      expect(@res[:successfully_ingested].length).to eq(2)
+      expect(@res[:successfully_ingested_metadata_only].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
 
-      expect(@res[:counts][:successfully_ingested]).to eq(2)
+      expect(@res[:counts][:successfully_ingested_metadata_only]).to eq(2)
       expect(@res[:counts][:failed]).to eq(2)
 
       # Grab the first successfully ingested article and validate metadata
-      ingested_article = @res[:successfully_ingested][0]['article']
+      ingested_article = @res[:successfully_ingested_metadata_only][0]['article']
       # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
       # Identifier field assertions
@@ -267,20 +267,20 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestService do
       }.to change { Article.count }.by(2)
       debug_out_path = Rails.root.join('tmp', 'pubmed_ingest_debug_output.json')
       File.open(debug_out_path, 'w') { |f| f.write(JSON.pretty_generate(@res)) }
-      success_pmcids = @res[:successfully_ingested].map { |row| row['pmcid'] }
+      success_pmcids = @res[:successfully_ingested_metadata_only].map { |row| row['pmcid'] }
       failed_pmcids = @res[:failed].map { |row| row['pmcid'] }
 
       # Expect the PMIDs from the success sample to be in "successfully_ingested" and the failing sample to be in "failed"
       expect(success_pmcids).to match_array(sample['success'].map { |a| a.xpath('.//article-id[@pub-id-type="pmcid"]').text })
       expect(failed_pmcids).to match_array(failing_sample_pmcids)
       # Expect the newly ingested array size to be 2 and the failed array size to be 2
-      expect(@res[:successfully_ingested].length).to eq(2)
+      expect(@res[:successfully_ingested_metadata_only].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
 
-      expect(@res[:counts][:successfully_ingested]).to eq(2)
+      expect(@res[:counts][:successfully_ingested_metadata_only]).to eq(2)
       expect(@res[:counts][:failed]).to eq(2)
       # Grab the first successfully ingested article and validate metadata
-      ingested_article = @res[:successfully_ingested][0]['article']
+      ingested_article = @res[:successfully_ingested_metadata_only][0]['article']
       # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
       # Identifier field assertions
@@ -334,7 +334,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestService do
       expect(ingested_article.rights_statement_label).to eq('In Copyright')
       expect(ingested_article.dcmi_type).to include('http://purl.org/dc/dcmitype/Text')
       # Retrieve two more samples to validate fallback logic
-      ingested_article = @res[:successfully_ingested][1]['article']
+      ingested_article = @res[:successfully_ingested_metadata_only][1]['article']
       # Validate specific creators for fallback logic
       fallback_logic_sample = [
         ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Carrillo-Kappus, Kristen' },
