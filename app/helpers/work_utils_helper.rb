@@ -52,11 +52,35 @@ module WorkUtilsHelper
   end
 
   def self.fetch_work_data_by_doi(doi)
-    work_data = ActiveFedora::SolrService.get("doi_tesim:\"#{doi}\"", rows: 1)['response']['docs'].first || {}
-    Rails.logger.warn("No work found associated with doi: #{doi}") if work_data.blank?
+    # Step 1: Exact match on doi_tesim
+    query = "doi_tesim:\"#{doi}\""
+    work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first
+
+    # Step 2: If that fails, normalize DOI and search identifier_tesim with wildcard
+    if work_data.blank?
+      normalized_doi = normalize_if_doi(doi)
+      if normalized_doi
+        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
+        work_data = ActiveFedora::SolrService.get(fallback_query, rows: 1)['response']['docs'].first
+      else
+        Rails.logger.warn("Identifier does not appear to be a valid DOI: #{doi}. Ending search.")
+        return nil
+      end
+    end
+
+    if work_data.blank?
+      Rails.logger.warn("No work found associated with doi: #{doi}")
+      return nil
+    end
+
     admin_set_name = work_data['admin_set_tesim']&.first
-    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
+    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get(
+      "title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",
+      { :rows => 1, 'df' => 'title_tesim'}
+      )['response']['docs'].first : {}
+
     Rails.logger.warn(self.generate_warning_message(admin_set_name, doi, :doi)) if admin_set_data.blank?
+
     result = {
       work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),
@@ -65,6 +89,7 @@ module WorkUtilsHelper
       admin_set_name: admin_set_name,
       file_set_ids: work_data['file_set_ids_ssim']
     }
+
     result.compact.empty? ? nil : result
   end
 
@@ -158,6 +183,18 @@ module WorkUtilsHelper
       return "Could not find an admin set, the work with #{logged_concern}: #{id} has no admin set name."
     else
       return "No admin set found with title_tesim: #{admin_set_name}."
+    end
+  end
+
+  def self.normalize_if_doi(identifier)
+    return identifier unless identifier.is_a?(String)
+    # Strip prefix if it's a full DOI URL
+    if identifier.match?(%r{\Ahttps?://(dx\.)?doi\.org/}i)
+      return identifier.strip.sub(%r{\Ahttps?://(dx\.)?doi\.org/}i, '')
+    elsif identifier.match?(/\A10\.\d{4,9}/) && identifier.include?('/')
+      return identifier.strip
+    else
+      return nil
     end
   end
 

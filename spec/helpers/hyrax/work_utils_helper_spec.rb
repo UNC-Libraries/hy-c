@@ -103,6 +103,84 @@ RSpec.describe WorkUtilsHelper, type: :module do
         expect(result[:admin_set_id]).to be_nil
       end
     end
+
+    context 'when fallback to identifier_tesim is used' do
+      let(:raw_doi) { 'https://dx.doi.org/10.1016/j.psc.2025.01.001' }
+      let(:normalized_doi) { '10.1016/j.psc.2025.01.001' }
+
+      it 'uses identifier_tesim fallback when doi_tesim query returns no results' do
+        # doi_tesim returns nothing
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+
+        # fallback match succeeds
+        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
+        allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => mock_records[0] })
+
+        allow(ActiveFedora::SolrService).to receive(:get).with(
+          "title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",
+          { 'df' => 'title_tesim', :rows => 1 }
+        ).and_return('response' => { 'docs' => mock_admin_set })
+
+        result = WorkUtilsHelper.fetch_work_data_by_doi(raw_doi)
+        expect(result).to eq(expected_work_data[0])
+      end
+
+      it 'returns nil and logs if fallback also fails' do
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+
+        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
+        allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [] })
+
+        allow(Rails.logger).to receive(:warn)
+
+        result = WorkUtilsHelper.fetch_work_data_by_doi(raw_doi)
+        expect(result).to be_nil
+        expect(Rails.logger).to have_received(:warn).with("No work found associated with doi: #{raw_doi}")
+      end
+
+      it 'does not perform fallback if doi is unrecognizable' do
+        bad_doi = 'not-a-doi'
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bad_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+        allow(Rails.logger).to receive(:warn)
+
+        # No identifier_tesim fallback should happen
+        expect(ActiveFedora::SolrService).not_to receive(:get).with(/identifier_tesim:/, rows: 1)
+
+        result = WorkUtilsHelper.fetch_work_data_by_doi(bad_doi)
+        expect(result).to be_nil
+        expect(Rails.logger).to have_received(:warn).with("Identifier does not appear to be a valid DOI: #{bad_doi}. Ending search.")
+      end
+    end
+
+    it 'matches raw DOI input against full DOI URL stored in identifier_tesim' do
+      raw_doi = '10.1016/j.psc.2025.01.001'
+
+      # doi_tesim has no match
+      allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+
+      # identifier_tesim contains full URL
+      identifier_doc = {
+        'id' => 'work-123',
+        'has_model_ssim' => ['GenericWork'],
+        'title_tesim' => ['Some Work'],
+        'identifier_tesim' => ['DOI: https://dx.doi.org/10.1016/j.psc.2025.01.001'],
+        'file_set_ids_ssim' => ['fs1'],
+        'admin_set_tesim' => ['Sample Admin Set']
+      }
+
+      admin_set_doc = {
+        'id' => 'adminset-999',
+        'title_tesim' => ['Sample Admin Set']
+      }
+
+      fallback_query = "identifier_tesim:*#{raw_doi}* NOT has_model_ssim:(\"FileSet\")"
+      allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [identifier_doc] })
+      allow(ActiveFedora::SolrService).to receive(:get).with('title_tesim:Sample Admin Set AND has_model_ssim:("AdminSet")', { 'df' => 'title_tesim', :rows => 1 }).and_return('response' => { 'docs' => [admin_set_doc] })
+
+      result = WorkUtilsHelper.fetch_work_data_by_doi(raw_doi)
+      expect(result[:work_id]).to eq('work-123')
+      expect(result[:admin_set_name]).to eq('Sample Admin Set')
+    end
   end
 
   describe '#fetch_work_data_by_id' do
@@ -222,8 +300,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
       allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
       allow(Rails.logger).to receive(:warn)
       result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
-      expect(Rails.logger).to have_received(:warn).with("No work found associated with doi: #{mock_record_doi}")
-      expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with doi: #{mock_record_doi} has no admin set name.")
       expect(result).to be_nil
     end
 

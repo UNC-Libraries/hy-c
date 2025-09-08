@@ -539,7 +539,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     let(:raw_results) do
       [
         {
-          category: 'successfully_ingested',
+          category: 'successfully_ingested_metadata_only',
           work_id: 'work_456',
           message: 'Successfully ingested',
           ids: { pmid: '345678', pmcid: 'PMC901234', doi: '10.1000/example' },
@@ -553,7 +553,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           file_name: 'NONE'
         },
         {
-          category: 'skipped',
+          skipped_ingest: 'skipped',
           work_id: nil,
           message: 'Already exists',
           ids: { pmid: '456789' },
@@ -620,6 +620,20 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       }
     end
 
+    let(:tracker_double) do
+      double('IngestTracker', :[]= => nil, :save => true)
+    end
+
+    let(:mock_progress) do
+      {
+        'progress' => {
+          'adjust_id_lists' => {
+            'pmc' => { 'adjusted_size' => 5 },
+            'pubmed' => { 'adjusted_size' => 5 }
+          },
+        }
+      }
+    end
 
     before do
       allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
@@ -627,6 +641,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'generates report and sends email' do
+      allow(tracker_double).to receive(:[]).with('progress').and_return(mock_progress)
+      service.instance_variable_set(:@tracker, tracker_double)
       results = { records: {}, headers: {} }
       service.send(:send_report_and_notify, results)
 
