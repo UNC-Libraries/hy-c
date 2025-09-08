@@ -212,7 +212,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     "#{pmcid}_#{suffix}.pdf"
   end
 
-  def log_attachment_outcome(record, category:, message:, file_name: nil)          
+  def log_attachment_outcome(record, category:, message:, file_name: nil)
     entry = {
       ids: record['ids'],
       timestamp: Time.now.utc.iso8601,
