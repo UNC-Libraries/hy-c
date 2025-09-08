@@ -60,7 +60,8 @@ module WorkUtilsHelper
     if work_data.blank?
       normalized_doi = normalize_if_doi(doi)
       if normalized_doi
-        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
+        fallback_value = "DOI: https://dx.doi.org/#{normalized_doi}"
+        fallback_query = "identifier_tesim:\"#{fallback_value}\" NOT has_model_ssim:(\"FileSet\")"
         work_data = ActiveFedora::SolrService.get(fallback_query, rows: 1)['response']['docs'].first
       else
         Rails.logger.warn("Identifier does not appear to be a valid DOI: #{doi}. Ending search.")
