@@ -95,8 +95,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       error_node = doc.at_xpath('//error')
       if error_node
         error_code = error_node['code']
-        Rails.logger.warn "Skipping PMCID #{pmcid} — Open Acces API Error: #{error_code}"
-        log_attachment_outcome(record, category: :skipped_file_attachment, message: "Open Acces API Error - #{error_code}", file_name: 'NONE')
+        Rails.logger.warn "Skipping PMCID #{pmcid} — Open Access API Error: #{error_code}"
+        log_attachment_outcome(record, category: :skipped_file_attachment, message: "Open Access API Error - #{error_code}", file_name: 'NONE')
         return
       end
       pdf_url = doc.at_xpath('//record/link[@format="pdf"]')&.[]('href')
