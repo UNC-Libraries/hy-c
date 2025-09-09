@@ -97,7 +97,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         successfully_attached: [],
         successfully_ingested_metadata_only: [],
         successfully_ingested_and_attached: [],
-        failed: []
+        failed: [],
+        skipped_non_unc_affiliation: []
       },
       summary: 'Test report'
     }
@@ -587,6 +588,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           message: 'Should be ignored',
           ids: { pmid: '999999' },
           file_name: 'NONE'
+        },
+           {
+          category: 'skipped_non_unc_affiliation',
+          work_id: nil,
+          message: 'N/A',
+          ids: { pmid: '456789' },
+          file_name: 'NONE'
         }
       ]
     end
@@ -602,6 +610,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(results[:successfully_attached].size).to eq(1)
       expect(results[:skipped].size).to eq(1)
       expect(results[:skipped_file_attachment].size).to eq(1)
+      expect(results[:skipped_non_unc_affiliation].size).to eq(1)
       expect(results[:failed].size).to eq(1)
     end
 
@@ -643,6 +652,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           successfully_attached: ['9', '10'],
           skipped: ['11', '12'],
           skipped_file_attachment: ['13', '14'],
+          skipped_non_unc_affiliation: ['15', '16'],
           failed: []
         }
       }
@@ -652,8 +662,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       tracker_data = {
         'progress' => {
           'adjust_id_lists' => {
-            'pmc'    => { 'adjusted_size' => 7 },
-            'pubmed' => { 'adjusted_size' => 7 }
+            'pmc'    => { 'adjusted_size' => 8 },
+            'pubmed' => { 'adjusted_size' => 8 }
           },
           'send_summary_email' => { 'completed' => false }
         },

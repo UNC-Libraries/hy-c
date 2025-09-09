@@ -170,6 +170,19 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         result = service.filter_record?(record)
         expect(result).to be true
       end
+
+      it 'logs as skipped_non_unc_affiliation if record category is skipped_non_unc_affiliation' do
+        record = sample_record_without_pmcid.merge('category' => 'skipped_non_unc_affiliation')
+        expect(service).to receive(:log_attachment_outcome).with(
+          record,
+          category: :skipped_non_unc_affiliation,
+          message: 'N/A',
+          file_name: 'NONE'
+        )
+
+        result = service.filter_record?(record)
+        expect(result).to be true
+      end
     end
 
     context 'when work already has files attached' do

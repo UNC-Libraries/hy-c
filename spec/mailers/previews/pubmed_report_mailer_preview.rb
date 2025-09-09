@@ -18,7 +18,8 @@ class PubmedReportMailerPreview < ActionMailer::Preview
                             successfully_attached: 'Successfully Attached To Existing Work',
                             skipped_file_attachment: 'Skipped File Attachment',
                             skipped: 'Skipped',
-                            failed: 'Failed'
+                            failed: 'Failed',
+                            skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
                           }
       # Send Email
     PubmedReportMailer.pubmed_report_email(report)

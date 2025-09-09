@@ -18,7 +18,8 @@ module Tasks
               successfully_attached: ingest_output[:successfully_attached].map(&:symbolize_keys),
               skipped_file_attachment: ingest_output[:skipped_file_attachment].map(&:symbolize_keys),
               skipped: ingest_output[:skipped].map(&:symbolize_keys),
-              failed: ingest_output[:failed].map(&:symbolize_keys)
+              failed: ingest_output[:failed].map(&:symbolize_keys),
+              skipped_non_unc_affiliation: ingest_output[:skipped_non_unc_affiliation].map(&:symbolize_keys)
             }
           }
         end

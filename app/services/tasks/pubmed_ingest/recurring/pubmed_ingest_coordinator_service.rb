@@ -139,13 +139,15 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       successfully_ingested_metadata_only: [],
       successfully_ingested_and_attached: [],
       failed: [],
+      skipped_non_unc_affiliation: [],
       time: @tracker['restart_time'] || @tracker['start_time'],
       headers: { total_unique_records: 0 },
     }
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
-      next unless [:skipped, :skipped_file_attachment, :successfully_attached, :successfully_ingested_metadata_only, :successfully_ingested_and_attached, :failed].include?(category)
-
+      next unless [:skipped, :skipped_file_attachment, :successfully_attached,
+                   :successfully_ingested_metadata_only, :successfully_ingested_and_attached,
+                    :failed, :skipped_non_unc_affiliation].include?(category)
       # Move ids to the top level to match what the reporting service expects
       entry.merge!(entry.delete(:ids) || {})
       entry[:cdr_url] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry[:work_id]) if entry[:work_id].present?
@@ -177,7 +179,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
                             successfully_attached: 'Successfully Attached To Existing Work',
                             skipped_file_attachment: 'Skipped File Attachment',
                             skipped: 'Skipped',
-                            failed: 'Failed'
+                            failed: 'Failed',
+                            skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
                           }
       PubmedReportMailer.pubmed_report_email(report).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true

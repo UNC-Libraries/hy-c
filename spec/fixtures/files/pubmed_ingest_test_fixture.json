@@ -218,6 +218,26 @@
             "doi": "10.1016/j.celrep.2024.112211"
           }
     ],
+    "skipped_non_unc_affiliation": [
+      {
+            "file_name": "68707222",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz612333p",
+            "has_fileset": "false",
+            "message": "N/A",
+            "pmid": "55507606",
+            "pmcid": "PMC61065555",
+            "doi": "10.1177/55549825231156945"
+          },
+          {
+            "file_name": "PMC11252444",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/111933311",
+            "has_fileset": "false",
+            "message": "N/A",
+            "pmid": "11172211",
+            "pmcid": "PMC33352222",
+            "doi": "10.1016/j.celrep.2024.444211"
+          }
+    ],
     "time": "2025-04-14 14:26:13 -0400",
     "depositor": "dcam",
     "file_retrieval_directory": "/opt/fake/full_text_dir/",
