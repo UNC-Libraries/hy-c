@@ -398,7 +398,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
     end
 
-    context 'when OA API returns an error node' do
+    context 'when Open Acces API Error returns an error node' do
       let(:oa_response_body) do
         <<~XML
           <?xml version="1.0"?>
@@ -412,7 +412,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :skipped_file_attachment,
-          message: 'OA API: idDoesNotExist',
+          message: 'Open Acces API Error - idDoesNotExist',
           file_name: 'NONE'
         )
 

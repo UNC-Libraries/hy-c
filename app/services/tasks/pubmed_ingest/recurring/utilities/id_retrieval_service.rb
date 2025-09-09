@@ -9,7 +9,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     @tracker = tracker
   end
 
-  def retrieve_ids_within_date_range(output_path:, db:, retmax: 200, extras: nil)
+  # WIP -- limit for testing
+  def retrieve_ids_within_date_range(output_path:, db:, retmax: 20, extras: nil)
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
@@ -63,7 +64,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         total_count = parsed_response.at_xpath('//Count').text.to_i
         break if cursor >= total_count
         # WIP -- limit for testing
-        break if count > 150
+        break if count > 60
 
         # Respect NCBI rate limits
         sleep(0.34)
