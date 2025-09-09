@@ -193,7 +193,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       it 'returns true and logs skip message' do
         expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
-          category: :skipped_file_attachment,
+          category: :skipped,
           message: 'Work already has files attached',
           file_name: 'NONE'
         )
