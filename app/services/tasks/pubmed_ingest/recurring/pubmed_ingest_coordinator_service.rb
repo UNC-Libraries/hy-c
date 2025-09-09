@@ -177,7 +177,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
                             successfully_ingested_and_attached: 'Successfully Ingested + Attached',
                             successfully_ingested_metadata_only: 'Successfully Ingested (Metadata Only)',
                             successfully_attached: 'Successfully Attached To Existing Work',
-                            skipped_file_attachment: 'Skipped File Attachment',
+                            skipped_file_attachment: 'Skipped File Attachment To Existing Work',
                             skipped: 'Skipped',
                             failed: 'Failed',
                             skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'

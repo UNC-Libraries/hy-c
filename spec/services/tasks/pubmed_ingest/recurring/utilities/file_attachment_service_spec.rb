@@ -397,6 +397,28 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         service.process_record(sample_record)
       end
     end
+
+    context 'when OA API returns an error node' do
+      let(:oa_response_body) do
+        <<~XML
+          <?xml version="1.0"?>
+          <oa>
+            <error code="idDoesNotExist">identifier 'PMC99999999' does not exist</error>
+          </oa>
+        XML
+      end
+
+      it 'logs skipped_file_attachment with the error code as message' do
+        expect(service).to receive(:log_attachment_outcome).with(
+          sample_record,
+          category: :skipped_file_attachment,
+          message: 'OA API: idDoesNotExist',
+          file_name: 'NONE'
+        )
+
+        service.process_record(sample_record)
+      end
+    end
   end
 
   describe '#fetch_ftp_binary' do

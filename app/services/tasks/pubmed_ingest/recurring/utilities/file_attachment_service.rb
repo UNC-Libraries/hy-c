@@ -92,6 +92,13 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       raise "Bad response: #{response.code}" unless response.code == 200
 
       doc = Nokogiri::XML(response.body)
+      error_node = doc.at_xpath('//error')
+      if error_node
+        error_code = error_node['code']
+        Rails.logger.warn "Skipping PMCID #{pmcid} — OA API: #{error_code}"
+        log_attachment_outcome(record, category: :skipped_file_attachment, message: "OA API: #{error_code}", file_name: 'NONE')
+        return
+      end
       pdf_url = doc.at_xpath('//record/link[@format="pdf"]')&.[]('href')
       tgz_url = doc.at_xpath('//record/link[@format="tgz"]')&.[]('href')
       raise 'No PDF or TGZ link found' if pdf_url.blank? && tgz_url.blank?
