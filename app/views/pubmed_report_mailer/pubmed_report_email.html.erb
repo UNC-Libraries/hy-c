@@ -73,7 +73,7 @@
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmid] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmcid] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
-            <% if [:skipped, :failed, :successfully_ingested_metadata_only, :skipped_file_attachment:].include?(key) %>
+            <% if [:skipped, :failed, :successfully_ingested_metadata_only, :skipped_file_attachment].include?(key) %>
               <%= record[:message].presence || 'N/A' %>
             <% else %>
               N/A
