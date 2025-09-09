@@ -64,7 +64,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
     # Skip if work already has files attached
     if work_id.present? && has_fileset?(work_id)
-      log_attachment_outcome(record, category: :skipped, message: 'Work already has files attached', file_name: 'NONE')
+      log_attachment_outcome(record, category: :skipped, message: 'Already exists and has files attached', file_name: 'NONE')
       return true
     end
 
