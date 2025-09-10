@@ -174,7 +174,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
       report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
       report[:categories] = {
-                            successfully_ingested_and_attached: 'Successfully Ingested + Attached',
+                            successfully_ingested_and_attached: 'Successfully Ingested and Attached',
                             successfully_ingested_metadata_only: 'Successfully Ingested (Metadata Only)',
                             successfully_attached: 'Successfully Attached To Existing Work',
                             skipped_file_attachment: 'Skipped File Attachment To Existing Work',
