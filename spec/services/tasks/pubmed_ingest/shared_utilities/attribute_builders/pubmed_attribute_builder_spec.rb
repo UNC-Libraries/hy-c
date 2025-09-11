@@ -56,7 +56,12 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
       expect(article.identifier).to include(a_string_matching(/^PMCID:/)).or be_present
       expect(article.identifier).to include(a_string_matching(/^DOI:/)).or be_present
 
-      expect(article.doi).to start_with('https://doi.org/').or be_empty
+      # Expect all DOIs to follow the standard "10.xxxx/..." format, without a URL prefix.
+      # - \A and \z ensure the whole string is matched
+      # - 10. is the fixed DOI prefix
+      # - \d{4,9} is the registrant code (4–9 digits)
+      # - /.+ is the suffix assigned by the publisher
+      expect(article.doi).to match(%r{\A10\.\d{4,9}/.+\z}).or be_empty
       expect(article.issn).to all(be_a(String))
     end
   end
