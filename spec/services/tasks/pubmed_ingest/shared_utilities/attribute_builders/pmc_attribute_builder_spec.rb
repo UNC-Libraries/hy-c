@@ -50,11 +50,12 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
   end
 
   describe '#set_identifiers' do
-    it 'sets article.identifier and issn' do
+    it 'sets article.identifier, doi, and issn' do
       builder.send(:set_identifiers)
       expect(article.identifier).to include(a_string_matching(/^PMID:/))
       expect(article.identifier).to include(a_string_matching(/^PMCID:/))
       expect(article.identifier).to include(a_string_matching(/^DOI:/))
+      expect(article.doi).to start_with('https://doi.org/').or be_empty
       expect(article.issn).to all(be_a(String))
     end
   end

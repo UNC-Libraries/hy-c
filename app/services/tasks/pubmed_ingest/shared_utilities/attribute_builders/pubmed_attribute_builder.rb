@@ -58,6 +58,8 @@ module Tasks
             article.identifier = format_publication_identifiers
             electronic_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence
             print_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Print"]')&.text.presence
+            doi = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="doi"]')&.text.presence
+            article.doi = "https://doi.org/#{doi}" if doi
 
             # Fallback logic for ISSN
             if electronic_issn

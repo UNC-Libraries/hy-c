@@ -68,6 +68,8 @@ module Tasks
             article.identifier = format_publication_identifiers
             epub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="epub"]')&.text.presence
             ppub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="ppub"]')&.text.presence
+            doi = metadata.at_xpath('front/article-meta/article-id[@pub-id-type="doi"]')&.text.presence
+            article.doi = "https://doi.org/#{doi}" if doi
 
             # Fallback logic for ISSN
             if epub_issn
