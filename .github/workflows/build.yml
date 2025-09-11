@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, hyrax-4 ]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
 
@@ -157,9 +161,9 @@ jobs:
         name: test-coverage-report
         path: coverage/coverage.json
 
-    - name: Report to CodeClimate
-      uses: paambaati/codeclimate-action@v3.0.0
+    - name: Upload coverage to Qlty
+      uses: qltysh/qlty-action/coverage@v2
       with:
-        debug: false
-        coverageLocations: |
-          ${{github.workspace}}/coverage/coverage.json:simplecov
+        oidc: true
+        files: coverage/coverage.json
+
