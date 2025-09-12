@@ -51,18 +51,25 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     category = record['category']
     # Skip records that have already been processed if resuming
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
-    if pmcid.blank?
-        # Can only retrieve files using PMCID
-      log_result(record, category: :successfully_ingested, message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
+    # Skip records that were skipped due to no UNC affiliation
+    if category == 'skipped_non_unc_affiliation'
+      log_attachment_outcome(record, category: :skipped_non_unc_affiliation, message: 'N/A', file_name: 'NONE')
       return true
     end
+
+    if pmcid.blank?
+        # Can only retrieve files using PMCID
+      log_attachment_outcome(record, category: category_for_skipped_file_attachment(record), message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
+      return true
+    end
+    # Skip if work already has files attached
     if work_id.present? && has_fileset?(work_id)
-      log_result(record, category: :skipped, message: 'Work already has files attached', file_name: 'NONE')
+      log_attachment_outcome(record, category: :skipped, message: 'Already exists and has files attached', file_name: 'NONE')
       return true
     end
 
     if category == 'failed'
-      log_result(record, category: :failed, message: record['pdf_attached'] || 'No message provided', file_name: 'NONE')
+      log_attachment_outcome(record, category: :failed, message: record['pdf_attached'] || 'No message provided', file_name: 'NONE')
       return true
     end
 
@@ -85,6 +92,13 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       raise "Bad response: #{response.code}" unless response.code == 200
 
       doc = Nokogiri::XML(response.body)
+      error_node = doc.at_xpath('//error')
+      if error_node
+        error_code = error_node['code']
+        Rails.logger.warn "Skipping PMCID #{pmcid} — Open Access API Error: #{error_code}"
+        log_attachment_outcome(record, category: :skipped_file_attachment, message: "Open Access API Error - #{error_code}", file_name: 'NONE')
+        return
+      end
       pdf_url = doc.at_xpath('//record/link[@format="pdf"]')&.[]('href')
       tgz_url = doc.at_xpath('//record/link[@format="tgz"]')&.[]('href')
       raise 'No PDF or TGZ link found' if pdf_url.blank? && tgz_url.blank?
@@ -94,7 +108,13 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
         file_path = File.join(@full_text_path, filename)
         fetch_ftp_binary(uri, local_file_path: file_path)
-        attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+        file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+        if file_set
+          log_attachment_outcome(record,
+                    category: category_for_successful_attachment(record),
+                    message: 'PDF successfully attached.',
+                    file_name: filename)
+        end
       elsif tgz_url.present?
         tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
         uri = URI.parse(tgz_url)
@@ -104,14 +124,14 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     rescue => e
       # Do not retry if no PDF or TGZ link is found in the response
       if e.message.include?('No PDF or TGZ link found')
-        log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
+        log_attachment_outcome(record, category: category_for_skipped_file_attachment(record), message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
       else
         retries += 1
         if retries <= RETRY_LIMIT
           sleep(1)
           retry
         else
-          log_result(record, category: :failed, message: "File attachment failed -- #{e.message}", file_name: 'NONE')
+          log_attachment_outcome(record, category: :failed, message: "File attachment failed -- #{e.message}", file_name: 'NONE')
           LogUtilsHelper.double_log("Error processing record: #{e.message}. Request URL: #{url}", :error, tag: 'Attachment')
           Rails.logger.error e.backtrace.join("\n")
         end
@@ -146,7 +166,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   def process_and_attach_tgz_file(record, tgz_path)
     pmcid = record.dig('ids', 'pmcid')
     work_id = record.dig('ids', 'work_id')
-    return log_result(record, category: :skipped, message: 'No article ID found to attach TGZ', file_name: 'NONE') if work_id.blank?
+    return log_attachment_outcome(record, category: category_for_skipped_file_attachment(record), message: 'No article ID found to attach TGZ', file_name: 'NONE') if work_id.blank?
 
     begin
       work = Article.find(work_id)
@@ -173,7 +193,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
           file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
           if file_set
-            log_result(record,
+            log_attachment_outcome(record,
                       category: :successfully_attached,
                       message: 'PDF successfully attached from TGZ.',
                       file_name: filename)
@@ -189,7 +209,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       work.update_index
 
     rescue => e
-      log_result(record, category: :failed, message: "TGZ PDF processing failed: #{e.message}", file_name: 'NONE')
+      log_attachment_outcome(record, category: :failed, message: "TGZ PDF processing failed: #{e.message}", file_name: 'NONE')
       Rails.logger.error "TGZ PDF processing failed for #{pmcid}: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
     end
@@ -206,7 +226,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     "#{pmcid}_#{suffix}.pdf"
   end
 
-  def log_result(record, category:, message:, file_name: nil)
+  def log_attachment_outcome(record, category:, message:, file_name: nil)
     entry = {
       ids: record['ids'],
       timestamp: Time.now.utc.iso8601,
@@ -216,5 +236,19 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     }
     @tracker.save
     File.open(@log_file, 'a') { |f| f.puts(entry.to_json) }
+  end
+
+  # Determine category for records that are skipped for file attachment
+  # - If the record existed before the current run, categorize as :skipped_file_attachment
+  # - Otherwise, categorize as :successfully_ingested_metadata_only
+  def category_for_skipped_file_attachment(record)
+    record['category'] == 'skipped' ? :skipped_file_attachment : :successfully_ingested_metadata_only
+  end
+
+  # Determine category for file attachment success
+  # - If the record existed before the current run, categorize as :successfully_attached
+  # - Otherwise, categorize as :successfully_ingested_and_attached
+  def category_for_successful_attachment(record)
+    record['category'] == 'skipped' ? :successfully_attached : :successfully_ingested_and_attached
   end
 end

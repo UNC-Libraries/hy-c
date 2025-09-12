@@ -84,8 +84,8 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
             'pmc' => { 'original_size' => 0, 'adjusted_size' => 0 }
         },
         'metadata_ingest' => {
-            'pubmed' => { 'cursor' => 0, 'completed' => false },
-            'pmc' => { 'cursor' => 0, 'completed' => false }
+            'pubmed' => { 'completed' => false },
+            'pmc' => { 'completed' => false }
         },
         'attach_files_to_works' => {
             'completed' => false,

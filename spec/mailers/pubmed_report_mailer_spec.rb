@@ -10,7 +10,13 @@ RSpec.describe PubmedReportMailer, type: :mailer do
     let(:results) { JSON.parse(File.read(fixture_path), symbolize_names: true) }
 
     let(:tracker) do
-      progress_hash = { 'send_summary_email' => { 'completed' => false } }
+      progress_hash = {
+        'send_summary_email' => { 'completed' => false },
+        'adjust_id_lists' => {
+          'pubmed' => { 'adjusted_size' => 3 },
+          'pmc'    => { 'adjusted_size' => 2 }
+        }
+      }
       instance_double(
         'IngestTracker',
         'progress' => progress_hash,
@@ -43,15 +49,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
 
     before do
       coordinator.instance_variable_set(:@results, results)
-      allow(PubmedReportMailer).to receive(:pubmed_report_email).and_wrap_original do |m, report|
-        # Force the report to have the expected structure
-        report[:headers][:total_unique_records] =
-          results[:skipped].size +
-          results[:successfully_ingested].size +
-          results[:successfully_attached].size +
-          results[:failed].size
-        m.call(report)
-      end
+      allow(PubmedReportMailer).to receive(:pubmed_report_email).and_call_original
       coordinator.send(:send_report_and_notify, results)
     end
 
@@ -65,10 +63,8 @@ RSpec.describe PubmedReportMailer, type: :mailer do
 
     it 'sets total_unique_records and date range from tracker' do
       expect(report[:headers][:total_unique_records]).to eq(
-        results[:skipped].size +
-        results[:successfully_ingested].size +
-        results[:successfully_attached].size +
-        results[:failed].size
+        tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
+        tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']
       )
       expect(report[:headers][:depositor]).to eq('recurring_user')
       expect(report[:headers][:start_date]).to eq('2025-08-01')
@@ -82,7 +78,10 @@ RSpec.describe PubmedReportMailer, type: :mailer do
     end
 
     it 'lists a sample record from each category' do
-      %i[skipped successfully_attached successfully_ingested failed].each do |category|
+      # %i[successfully_ingested_and_attached successfully_ingested_metadata_only successfully_ingested failed].each do |category|
+      %i[successfully_ingested_and_attached successfully_ingested_metadata_only
+          successfully_attached skipped_file_attachment skipped
+          failed skipped_non_unc_affiliation].each do |category|
         sample = results[category].first
         expect(mail.body.encoded).to include(sample[:file_name].to_s)
         expect(mail.body.encoded).to include(sample[:cdr_url].to_s)

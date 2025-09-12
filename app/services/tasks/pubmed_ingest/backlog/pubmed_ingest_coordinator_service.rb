@@ -144,7 +144,10 @@ module Tasks
           JsonFileUtilsHelper.write_json(@pubmed_ingest_service.attachment_results, json_output_path)
 
           double_log("Results written to #{json_output_path}", :info)
-          double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}, Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}, Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}, Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
+          double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}," \
+                      " Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}," \
+                      " Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}," \
+                      " Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
         end
 
         def finalize_report_and_notify
@@ -153,6 +156,12 @@ module Tasks
           begin
             report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(@pubmed_ingest_service.attachment_results)
             report[:headers][:total_files] = @pubmed_ingest_service.attachment_results[:counts][:total_files]
+            report[:categories] = {
+                                    successfully_attached: 'Successfully Ingested and Attached',
+                                    successfully_ingested: 'Successfully Ingested',
+                                    skipped: 'Skipped',
+                                    failed: 'Failed'
+                                  }
             PubmedReportMailer.pubmed_report_email(report).deliver_now
             double_log('Email sent successfully', :info)
           rescue StandardError => e

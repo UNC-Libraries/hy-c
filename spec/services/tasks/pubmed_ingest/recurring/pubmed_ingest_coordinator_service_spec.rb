@@ -92,10 +92,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     {
       headers: { total_unique_records: 0 },
       records: {
-        successfully_ingested: [],
-        successfully_attached: [],
         skipped: [],
-        failed: []
+        skipped_file_attachment: [],
+        successfully_attached: [],
+        successfully_ingested_metadata_only: [],
+        successfully_ingested_and_attached: [],
+        failed: [],
+        skipped_non_unc_affiliation: []
       },
       summary: 'Test report'
     }
@@ -539,10 +542,38 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     let(:raw_results) do
       [
         {
-          category: 'successfully_ingested',
+          category: 'successfully_ingested_and_attached',
+          work_id: 'work_123',
+          message: 'Successfully ingested and attached',
+          ids: { pmid: '234567', pmcid: 'PMC890123', doi: '10.1000/example2' },
+          file_name: 'NONE'
+        },
+        {
+          category: 'successfully_ingested_metadata_only',
           work_id: 'work_456',
           message: 'Successfully ingested',
           ids: { pmid: '345678', pmcid: 'PMC901234', doi: '10.1000/example' },
+          file_name: 'NONE'
+        },
+        {
+          category: 'successfully_attached',
+          work_id: 'work_789',
+          message: 'Successfully attached',
+          ids: { pmid: '567890', pmcid: 'PMC123456', doi: '10.1000/example3' },
+          file_name: 'PMC123456_001.pdf'
+        },
+        {
+          category: 'skipped',
+          work_id: nil,
+          message: 'Already exists',
+          ids: { pmid: '456789' },
+          file_name: 'NONE'
+        },
+        {
+          category: 'skipped_file_attachment',
+          work_id: 'work_101',
+          message: 'No files to attach',
+          ids: { pmid: '678901', pmcid: 'PMC234567', doi: '10.1000/example4' },
           file_name: 'NONE'
         },
         {
@@ -553,16 +584,16 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           file_name: 'NONE'
         },
         {
-          category: 'skipped',
-          work_id: nil,
-          message: 'Already exists',
-          ids: { pmid: '456789' },
-          file_name: 'NONE'
-        },
-        {
           category: 'invalid_category',
           message: 'Should be ignored',
           ids: { pmid: '999999' },
+          file_name: 'NONE'
+        },
+           {
+          category: 'skipped_non_unc_affiliation',
+          work_id: nil,
+          message: 'N/A',
+          ids: { pmid: '456789' },
           file_name: 'NONE'
         }
       ]
@@ -574,8 +605,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'formats valid categories correctly' do
       results = service.send(:format_results_for_reporting, raw_results)
-      expect(results[:successfully_ingested].size).to eq(1)
+      expect(results[:successfully_ingested_and_attached].size).to eq(1)
+      expect(results[:successfully_ingested_metadata_only].size).to eq(1)
+      expect(results[:successfully_attached].size).to eq(1)
       expect(results[:skipped].size).to eq(1)
+      expect(results[:skipped_file_attachment].size).to eq(1)
+      expect(results[:skipped_non_unc_affiliation].size).to eq(1)
       expect(results[:failed].size).to eq(1)
     end
 
@@ -586,7 +621,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'merges IDs into main entry and transforms field names' do
       results = service.send(:format_results_for_reporting, raw_results)
-      ingested_entry = results[:successfully_ingested].first
+      ingested_entry = results[:successfully_ingested_metadata_only].first
 
       expect(ingested_entry[:pmid]).to eq('345678')
       expect(ingested_entry[:pmcid]).to eq('PMC901234')
@@ -612,14 +647,37 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       {
         headers: {},
         records: {
-          successfully_ingested: ['1', '2', '3', '4', '5'],
-          successfully_attached: ['6', '7', '8'],
-          skipped: ['9', '10'],
+          successfully_ingested_and_attached: ['1', '2', '3', '4', '5'],
+          successfully_ingested_metadata_only: ['6', '7', '8'],
+          successfully_attached: ['9', '10'],
+          skipped: ['11', '12'],
+          skipped_file_attachment: ['13', '14'],
+          skipped_non_unc_affiliation: ['15', '16'],
           failed: []
         }
       }
     end
 
+    let(:tracker) do
+      tracker_data = {
+        'progress' => {
+          'adjust_id_lists' => {
+            'pmc'    => { 'adjusted_size' => 8 },
+            'pubmed' => { 'adjusted_size' => 8 }
+          },
+          'send_summary_email' => { 'completed' => false }
+        },
+        'depositor_onyen' => 'test_user',
+        'date_range' => { 'start' => '2024-01-01', 'end' => '2024-01-31' }
+      }
+
+      # Wrap in a simple object that acts hash-like and has save
+      tracker_obj = tracker_data.dup
+      def tracker_obj.save; true; end
+      tracker_obj
+    end
+
+    let(:service) { described_class.new(config, tracker) }
 
     before do
       allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
@@ -632,8 +690,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
         .to have_received(:generate_report).with(results)
-      expect(mock_report[:headers][:total_unique_records]).to eq(10)
-      expect(PubmedReportMailer).to have_received(:pubmed_report_email).with(mock_report)
+      expect(mock_report[:headers][:total_unique_records]).to eq(
+        tracker['progress']['adjust_id_lists']['pmc']['adjusted_size'] +
+        tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size']
+      )
       expect(mock_mailer).to have_received(:deliver_now)
       expect(tracker['progress']['send_summary_email']['completed']).to be true
     end

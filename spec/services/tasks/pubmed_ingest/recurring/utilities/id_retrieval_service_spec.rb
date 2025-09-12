@@ -87,6 +87,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
         second_entry = JSON.parse(lines[1])
         expect(second_entry).to eq({ 'id' => '789012' })
+        expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor']).to eq(2)
       end
 
       it 'makes correct API call' do
@@ -120,6 +121,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
         second_entry = JSON.parse(lines[1])
         expect(second_entry['id']).to eq('PMC789012')
+        expect(tracker['progress']['retrieve_ids_within_date_range']['pmc']['cursor']).to eq(2)
       end
     end
 
@@ -162,6 +164,47 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
         )
       end
     end
+
+
+    context 'when multiple pages of results' do
+      let(:xml_response_page1) do
+        <<~XML
+          <eSearchResult>
+            <Count>4</Count>
+            <IdList>
+              <Id>111</Id><Id>222</Id>
+            </IdList>
+          </eSearchResult>
+        XML
+      end
+
+      let(:xml_response_page2) do
+        <<~XML
+          <eSearchResult>
+            <Count>4</Count>
+            <IdList>
+              <Id>333</Id><Id>444</Id>
+            </IdList>
+          </eSearchResult>
+        XML
+      end
+
+      before do
+        allow(HTTParty).to receive(:get)
+          .and_return(double(code: 200, body: xml_response_page1, message: 'OK'),
+                      double(code: 200, body: xml_response_page2, message: 'OK'))
+      end
+
+      it 'advances cursor and writes all IDs sequentially' do
+        service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
+
+        expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor']).to eq(4)
+
+        temp_file.rewind
+        ids = temp_file.readlines.map { |l| JSON.parse(l)['id'] }
+        expect(ids).to eq(%w[111 222 333 444])
+      end
+    end
   end
 
   describe '#stream_and_write_alternate_ids' do
@@ -181,7 +224,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
       allow(service).to receive(:write_batch_alternate_ids)
       allow(File).to receive(:open).and_call_original
-      allow(File).to receive(:open).with(output_temp_file.path, 'w').and_yield(output_temp_file)
+      allow(File).to receive(:open).with(output_temp_file.path, 'a').and_yield(output_temp_file)
       allow(File).to receive(:foreach).with(input_temp_file.path).and_yield(input_file_content.lines[0]).and_yield(input_file_content.lines[1])
     end
 

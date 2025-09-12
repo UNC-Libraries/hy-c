@@ -76,7 +76,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       handle_pubmed_errors(xml_doc, batch_ids) if db == 'pubmed'
 
       current_batch = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
-      current_batch = generate_filtered_batch(current_batch, db: db)
+      current_batch, non_unc_records = generate_filtered_batch(current_batch, db: db)
+      log_non_unc_records(non_unc_records, db)
       process_batch(current_batch)
 
       batch_count += 1
@@ -158,7 +159,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         article = new_article(doc)
         article.save!
         record_result(
-            category: :successfully_ingested,
+            category: :successfully_ingested_metadata_only,
             ids: alternate_ids,
             article: article
         )
@@ -253,6 +254,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       id = alt_ids[key]
       next if id.blank?
 
+      work_data = key == :doi ?
+        WorkUtilsHelper.fetch_work_data_by_doi(id) :
+        WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
+
+
       work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
       return work_data if work_data.present?
     end
@@ -273,17 +279,41 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   # Despite filters defined while retrieving IDs, this ensures we only process records with UNC affiliations.
   # The API otherwise may return records without any affiliation or with affiliations that do not match our criteria.
   def generate_filtered_batch(batch, db:)
-    # Always require a UNC affiliation
-    filtered_batch = batch.select do |doc|
+    # Partition into UNC-affiliated and non-UNC-affiliated
+    filtered_batch, non_unc = batch.partition do |doc|
       db == 'pubmed' ? pubmed_xml_has_unc_affiliation?(doc) : pmc_xml_has_unc_affiliation?(doc)
     end
 
-    skipped = batch.size - filtered_batch.size
     LogUtilsHelper.double_log(
-      "Filtered out #{skipped} #{db} records with no UNC affiliation; #{filtered_batch.size} remain.",
+      "Filtered out #{non_unc.size} #{db} records with no UNC affiliation; #{filtered_batch.size} remain.",
       :info,
       tag: 'MetadataIngestService'
     )
-    filtered_batch
+
+    # Return both arrays
+    [filtered_batch, non_unc]
+  end
+
+  def log_non_unc_records(non_unc_records, db)
+    return if non_unc_records.empty?
+    begin
+      non_unc_records.each do |doc|
+        alternate_ids = retrieve_alternate_ids_for_doc(doc) || { 'pmid' => nil, 'pmcid' => nil, 'doi' => nil }
+        record_result(
+          category: :skipped_non_unc_affiliation,
+          message: 'N/A',
+          ids: alternate_ids
+        )
+      end
+
+      LogUtilsHelper.double_log(
+        "Logged #{non_unc_records.size} #{db} records filtered out due to no UNC affiliation.",
+        :info,
+        tag: 'MetadataIngestService'
+      )
+    rescue => e
+      LogUtilsHelper.double_log("Error logging non-UNC records: #{e.message}", :error, tag: 'MetadataIngestService')
+      Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+    end
   end
 end

@@ -53,14 +53,15 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
             file.puts({ 'id' => id }.to_json)
           end
           count += ids.size
-          cursor += retmax
+          cursor += ids.size
           job_progress['cursor'] = cursor
           @tracker.save
         rescue => e
           Rails.logger.error("Failed to write or save tracker: #{e.message}")
           raise e
         end
-        break if cursor > parsed_response.xpath('//Count').text.to_i
+        total_count = parsed_response.at_xpath('//Count').text.to_i
+        break if cursor >= total_count
 
         # Respect NCBI rate limits
         sleep(0.34)
@@ -76,7 +77,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     LogUtilsHelper.double_log("Streaming and writing alternate IDs from #{input_path} to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
     LogUtilsHelper.double_log("Last cursor position: #{last_cursor}", :info, tag: 'stream_and_write_alternate_ids')
 
-    File.open(output_path, 'w') do |output_file|
+    File.open(output_path, 'a') do |output_file|
       line_index = 0
       File.foreach(input_path) do |line|
         if line_index < last_cursor

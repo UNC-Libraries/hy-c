@@ -47,7 +47,7 @@ module Tasks
 
           def apply_additional_basic_attributes
             article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
-            article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text]
+            article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text.presence || 'N/A']
             article.date_issued = get_date_issued.strftime('%Y-%m-%d')
             article.publisher = [] # No explicit publisher in PubMed XML
             article.keyword = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)
@@ -58,6 +58,8 @@ module Tasks
             article.identifier = format_publication_identifiers
             electronic_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence
             print_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Print"]')&.text.presence
+            doi = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="doi"]')&.text.presence
+            article.doi = doi if doi
 
             # Fallback logic for ISSN
             if electronic_issn
