@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PubmedIngestRemediationService
   def self.find_and_resolve_duplicates!(since:, report_filepath:, dry_run: false)
     duplicates = find_duplicate_dois(since: since, filepath: report_filepath)
@@ -9,8 +10,11 @@ class PubmedIngestRemediationService
   end
 
   def self.find_and_update_empty_abstracts(since:, report_filepath:, dry_run: false)
+    since_str = since.respond_to?(:iso8601) ? since.iso8601 : Date.parse(since.to_s).iso8601
+    solr_range = "#{since_str}T00:00:00Z"..'*'
+
     updated_work_ids = []
-    Article.where('deposited_at >= ?', since).where(abstract: ['', nil]).find_each(batch_size: 100) do |work|
+    Article.where(deposited_at_dtsi: solr_range, abstract: ['', nil]).find_each do |work|
       if dry_run
         LogUtilsHelper.double_log("DRY RUN: Would update abstract for #{work.id}", :info, tag: 'find_and_update_empty_abstracts')
       else
@@ -24,16 +28,21 @@ class PubmedIngestRemediationService
       JsonFileUtilsHelper.write_json({ updated_count: updated_work_ids.size, work_ids: updated_work_ids }, report_filepath)
     end
 
-    action = dry_run ? "Would update" : "Updated"
+    action = dry_run ? 'Would update' : 'Updated'
     LogUtilsHelper.double_log("#{action} abstracts for #{updated_work_ids.size} Articles ingested since #{since}", :info, tag: 'find_and_update_empty_abstracts')
   end
 
   private
 
   def self.find_duplicate_dois(since:, filepath:)
+    since_str = since.respond_to?(:iso8601) ? since.iso8601 : Date.parse(since.to_s).iso8601
+    lower_bound = "#{since_str}T00:00:00Z"
+
     duplicates = Hash.new { |h, k| h[k] = [] }
 
-    Article.where('deposited_at >= ?', since).find_each(batch_size: 1000) do |work|
+    # Fix: Use a range instead of array, or use proper Solr query syntax
+    # Option 1: Use range syntax (preferred)
+    Article.where(deposited_at_dtsi: lower_bound..'*').find_each do |work|
       Array(work.identifier).each do |id_val|
         next unless id_val.start_with?('DOI: https://dx.doi.org/')
         doi = id_val.sub('DOI: https://dx.doi.org/', '')
