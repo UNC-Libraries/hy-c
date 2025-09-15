@@ -57,7 +57,7 @@ module Tasks
 
           def apply_additional_basic_attributes
             article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
-            article.abstract = [metadata.xpath('front/article-meta/abstract').text]
+            article.abstract = [metadata.xpath('front/article-meta/abstract').text.presence || 'N/A']
             article.date_issued = get_date_issued.strftime('%Y-%m-%d')
             article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
             article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)
@@ -68,6 +68,8 @@ module Tasks
             article.identifier = format_publication_identifiers
             epub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="epub"]')&.text.presence
             ppub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="ppub"]')&.text.presence
+            doi = metadata.at_xpath('front/article-meta/article-id[@pub-id-type="doi"]')&.text.presence
+            article.doi = doi if doi
 
             # Fallback logic for ISSN
             if epub_issn

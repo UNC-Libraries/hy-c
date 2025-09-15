@@ -12,6 +12,15 @@ class PubmedReportMailerPreview < ActionMailer::Preview
     report[:headers][:total_unique_records] = 23
     report[:headers][:start_date] = '2024-01-01'
     report[:headers][:end_date] = '2024-01-31'
+    report[:categories] = {
+                            successfully_ingested_and_attached: 'Successfully Ingested and Attached',
+                            successfully_ingested_metadata_only: 'Successfully Ingested (Metadata Only)',
+                            successfully_attached: 'Successfully Attached To Existing Work',
+                            skipped_file_attachment: 'Skipped File Attachment To Existing Work',
+                            skipped: 'Skipped',
+                            failed: 'Failed',
+                            skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
+                          }
       # Send Email
     PubmedReportMailer.pubmed_report_email(report)
   end

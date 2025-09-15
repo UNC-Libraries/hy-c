@@ -50,11 +50,18 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
   end
 
   describe '#set_identifiers' do
-    it 'sets article.identifier and issn' do
+    it 'sets article.identifier, doi, and issn' do
       builder.send(:set_identifiers)
       expect(article.identifier).to include(a_string_matching(/^PMID:/))
       expect(article.identifier).to include(a_string_matching(/^PMCID:/))
       expect(article.identifier).to include(a_string_matching(/^DOI:/))
+
+      # Expect all DOIs to follow the standard "10.xxxx/..." format, without a URL prefix.
+      # - \A and \z ensure the whole string is matched
+      # - 10. is the fixed DOI prefix
+      # - \d{4,9} is the registrant code (4–9 digits)
+      # - /.+ is the suffix assigned by the publisher
+      expect(article.doi).to match(%r{\A10\.\d{4,9}/.+\z}).or be_empty
       expect(article.issn).to all(be_a(String))
     end
   end
@@ -84,6 +91,15 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
       expect(article.publisher).to all(be_a(String)).or be_empty
       expect(article.keyword).to all(be_a(String))
       expect(article.funder).to all(be_a(String))
+    end
+
+    it 'handles missing abstract gracefully' do
+      allow(article_node).to receive(:xpath).and_call_original
+      allow(article_node).to receive(:xpath)
+        .with('front/article-meta/abstract')
+        .and_return(double('Nokogiri::XML::Node', text: ''))
+      builder.send(:apply_additional_basic_attributes)
+      expect(article.abstract).to eq(['N/A'])
     end
   end
 end

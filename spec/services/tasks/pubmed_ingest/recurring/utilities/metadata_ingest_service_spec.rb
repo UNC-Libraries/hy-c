@@ -326,7 +326,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
         expect(service).to have_received(:new_article).with(batch_articles.first)
         expect(mock_article).to have_received(:save!)
         expect(service).to have_received(:record_result).with(
-          category: :successfully_ingested,
+          category: :successfully_ingested_metadata_only,
           ids: alternate_ids,
           article: mock_article
         )
@@ -498,7 +498,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'adds entry to write buffer with correct format' do
       service.send(:record_result,
-        category: :successfully_ingested,
+        category: :successfully_ingested_metadata_only,
         message: 'Success',
         ids: ids,
         article: mock_article
@@ -511,7 +511,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       expect(entry[:ids][:pmid]).to eq('123456')
       expect(entry[:ids][:pmcid]).to eq('PMC789012')
       expect(entry[:ids][:work_id]).to eq('article_123')
-      expect(entry[:category]).to eq(:successfully_ingested)
+      expect(entry[:category]).to eq(:successfully_ingested_metadata_only)
       expect(entry[:message]).to eq('Success')
       expect(entry[:timestamp]).to eq('2024-01-01T12:00:00Z')
     end
@@ -658,10 +658,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'keeps only UNC-affiliated docs and logs the skip count' do
       batch = pubmed_doc.xpath('//PubmedArticle')
-      keep  = service.send(:generate_filtered_batch, batch, db: 'pubmed')
-      kept  = keep.is_a?(Nokogiri::XML::NodeSet) ? keep.to_a : Array(keep)
+      keep, non_keep = service.send(:generate_filtered_batch, batch, db: 'pubmed')
+
+      kept = keep.is_a?(Nokogiri::XML::NodeSet) ? keep.to_a : Array(keep)
+      not_kept = non_keep.is_a?(Nokogiri::XML::NodeSet) ? non_keep.to_a : Array(non_keep)
 
       expect(kept.length).to eq(1)
+      expect(not_kept.length).to eq(2)
+
       expect(kept.first.at_xpath('.//Affiliation').text).to match(/UNC/i)
 
       expect(LogUtilsHelper).to have_received(:double_log).with(
@@ -670,7 +674,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
         tag: 'MetadataIngestService'
       )
     end
-
   end
 
 end

@@ -134,16 +134,20 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   def format_results_for_reporting(raw_results_array)
     results = {
       skipped: [],
+      skipped_file_attachment: [],
       successfully_attached: [],
-      successfully_ingested: [],
+      successfully_ingested_metadata_only: [],
+      successfully_ingested_and_attached: [],
       failed: [],
+      skipped_non_unc_affiliation: [],
       time: @tracker['restart_time'] || @tracker['start_time'],
       headers: { total_unique_records: 0 },
     }
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
-      next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
-
+      next unless [:skipped, :skipped_file_attachment, :successfully_attached,
+                   :successfully_ingested_metadata_only, :successfully_ingested_and_attached,
+                    :failed, :skipped_non_unc_affiliation].include?(category)
       # Move ids to the top level to match what the reporting service expects
       entry.merge!(entry.delete(:ids) || {})
       entry[:cdr_url] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry[:work_id]) if entry[:work_id].present?
@@ -165,13 +169,19 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
       report[:headers][:depositor] = @tracker['depositor_onyen']
       report[:headers][:total_unique_records] =
-        report[:records][:successfully_ingested].size +
-        report[:records][:successfully_attached].size +
-        report[:records][:skipped].size +
-        report[:records][:failed].size
+        @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
+        @tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']
       report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
       report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
-
+      report[:categories] = {
+                            successfully_ingested_and_attached: 'Successfully Ingested and Attached',
+                            successfully_ingested_metadata_only: 'Successfully Ingested (Metadata Only)',
+                            successfully_attached: 'Successfully Attached To Existing Work',
+                            skipped_file_attachment: 'Skipped File Attachment To Existing Work',
+                            skipped: 'Skipped',
+                            failed: 'Failed',
+                            skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
+                          }
       PubmedReportMailer.pubmed_report_email(report).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
