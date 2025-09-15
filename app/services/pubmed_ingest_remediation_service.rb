@@ -60,7 +60,15 @@ class PubmedIngestRemediationService
     removed_count = 0
 
     pairs.each do |pair|
-      works = pair[:work_ids].filter_map { |id| Article.find_by(id: id) }
+      works = pair[:work_ids].filter_map do |id|
+        begin
+          Article.find(id)
+        rescue ActiveFedora::ObjectNotFoundError
+          LogUtilsHelper.double_log("Skipping missing Article #{id}", :warn, tag: 'resolve_duplicates')
+          nil
+        end
+      end
+
       next if works.empty?
 
       work_to_keep = works.min_by(&:deposited_at)
