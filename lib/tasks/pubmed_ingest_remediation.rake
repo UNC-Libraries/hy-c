@@ -12,7 +12,7 @@ namespace :pubmed do
       exit 1
     end
 
-    output_dir = File.join(args[:output_dir], "pubmed_remediation_#{timestamp}")
+    output_dir = Pathname.new(args[:output_dir]).join("pubmed_remediation_#{timestamp}")
     FileUtils.mkdir_p(output_dir)
 
     unless since
