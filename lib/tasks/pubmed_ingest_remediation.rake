@@ -2,11 +2,17 @@
 # frozen_string_literal: true
 namespace :pubmed do
   desc 'Remediate duplicate DOIs and/or empty abstracts from a recent ingest run'
-  task :remediate, [:since, :dry_run] => :environment do |_t, args|
+  task :remediate, [:since, :dry_run, :output_dir] => :environment do |_t, args|
     since     = args[:since]
     dry_run   = args[:dry_run].to_s.downcase == 'true'
     timestamp = Time.now.strftime('%Y-%m-%d_%H-%M-%S')
-    output_dir = Rails.root.join('tmp', 'pubmed_remediation', timestamp)
+
+    unless args[:output_dir]
+      puts '❌ You must specify an OUTPUT_DIR (e.g., OUTPUT_DIR=tmp/pubmed_remediation)'
+      exit 1
+    end
+
+    output_dir = File.join(args[:output_dir], "pubmed_remediation_#{timestamp}")
     FileUtils.mkdir_p(output_dir)
 
     unless since
