@@ -10,14 +10,14 @@ class PubmedIngestRemediationService
   end
 
   def self.find_and_update_empty_abstracts(start_date:, end_date:, report_filepath:, dry_run: false)
-    start_time = Time.zone.parse("#{start_date}T00:00:00Z")
-    end_time   = Time.zone.parse("#{end_date}T23:59:59Z")
-    range      = (start_time..end_time)
+    start_str = start_date.iso8601
+    end_str   = end_date&.iso8601
+    solr_range = "[#{start_str}T00:00:00Z TO #{end_str}T23:59:59Z]"
     wip_count = 0
 
     updated_work_ids = []
     LogUtilsHelper.double_log("Searching for Articles with empty abstracts between #{start_date} and #{end_date}", :info, tag: 'find_and_update_empty_abstracts')
-    Article.where(deposited_at_dtsi: range, abstract: ['', nil]).find_each do |work|
+    Article.where(deposited_at_dtsi: solr_range, abstract: ['', nil]).find_each do |work|
       if dry_run
         LogUtilsHelper.double_log("DRY RUN: Would update abstract for #{work.id}", :info, tag: 'find_and_update_empty_abstracts')
       else
@@ -41,9 +41,9 @@ class PubmedIngestRemediationService
   private
 
   def self.find_duplicate_dois(start_date:, end_date:, filepath:)
-    start_time = Time.zone.parse("#{start_date}T00:00:00Z")
-    end_time   = Time.zone.parse("#{end_date}T23:59:59Z")
-    range      = (start_time..end_time)
+    start_str = start_date.iso8601
+    end_str   = end_date&.iso8601
+    solr_range = "[#{start_str}T00:00:00Z TO #{end_str}T23:59:59Z]"
 
     wip_count = 0
 
