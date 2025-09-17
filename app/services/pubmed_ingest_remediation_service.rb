@@ -65,7 +65,6 @@ class PubmedIngestRemediationService
     docs.each do |doc|
       work_id = doc['id']
       Array(doc['identifier_tesim']).each do |id_val|
-        LogUtilsHelper.double_log("Checking identifier #{id_val} for work #{work_id}", :debug, tag: 'find_duplicate_dois')
         if id_val.start_with?('DOI: https://')
           normalized = id_val.sub(/^DOI:\s*https?:\/\/(dx\.)?doi\.org\//i, '')
           duplicates[normalized] << { id: work_id, created_at: doc['system_create_dtsi'] }
