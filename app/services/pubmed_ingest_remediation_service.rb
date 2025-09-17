@@ -50,9 +50,11 @@ class PubmedIngestRemediationService
     Article.where(deposited_at_dtsi: lower_bound..'*').find_each do |work|
       Array(work.identifier).each do |id_val|
         LogUtilsHelper.double_log("Checking identifier #{id_val} for work #{work.id}", :debug, tag: 'find_duplicate_dois')
-        next unless id_val.start_with?('DOI: https://dx.doi.org/')
-        doi = id_val.sub('DOI: https://dx.doi.org/', '')
-        duplicates[doi] << work
+        # Match any DOI with dx.doi.org OR doi.org 
+        if id_val.start_with?('DOI: https://')
+          normalized = id_val.sub(/^DOI:\s*https?:\/\/(dx\.)?doi\.org\//i, '')
+          duplicates[normalized] << work
+        end
       end
       # WIP Break
       break if wip_count >= 30
