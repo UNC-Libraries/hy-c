@@ -7,6 +7,7 @@ RSpec.describe PubmedIngestRemediationService do
   describe '.find_and_resolve_duplicates!' do
     let(:article1) { double(Article, id: 'A1', deposited_at: Time.parse('2025-09-01'), identifier: ['DOI: https://dx.doi.org/10.123/abc']) }
     let(:article2) { double(Article, id: 'A2', deposited_at: Time.parse('2025-09-02'), identifier: ['DOI: https://dx.doi.org/10.123/abc']) }
+    let(:article3) { double(Article, id: 'A3', deposited_at: Time.parse('2025-09-03'), identifier: ['DOI: https://doi.org/10.123/abc']) }
 
     before do
       fake_relation = double('ActiveFedora::Relation')
@@ -14,12 +15,23 @@ RSpec.describe PubmedIngestRemediationService do
       allow(Article).to receive(:where).and_return(fake_relation)
 
       allow(JsonFileUtilsHelper).to receive(:write_jsonl)
-      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([{ doi: '10.123/abc', work_ids: ['A1', 'A2'] }])
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([{ doi: '10.123/abc', work_ids: ['A1', 'A2', 'A3'] }])
     end
 
     it 'writes a duplicate report' do
       described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
       expect(JsonFileUtilsHelper).to have_received(:write_jsonl)
+    end
+
+    it 'normalizes both dx.doi.org and doi.org formats to the same key' do
+      expect(JsonFileUtilsHelper).to receive(:write_jsonl) do |payload, *_|
+        # Grab the DOI keys that were written and ensure it's normalized
+        doi_keys = payload.map { |h| h[:doi] }
+        expect(doi_keys).to include('10.123/abc')
+        expect(doi_keys).not_to include('https://dx.doi.org/10.123/abc')
+        expect(doi_keys).not_to include('https://doi.org/10.123/abc')
+      end
+      described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
     end
 
     context 'dry run' do
@@ -32,8 +44,9 @@ RSpec.describe PubmedIngestRemediationService do
 
     context 'actual run' do
       it 'destroys the newer duplicate' do
-        allow(Article).to receive(:find).and_return(article1, article2)
+        allow(Article).to receive(:find).and_return(article1, article2, article3)
         expect(article2).to receive(:destroy)
+        expect(article3).to receive(:destroy)
         described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: false)
       end
     end
