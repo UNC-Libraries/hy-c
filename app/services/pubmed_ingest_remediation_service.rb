@@ -10,58 +10,67 @@ class PubmedIngestRemediationService
   end
 
   def self.find_and_update_empty_abstracts(start_date:, end_date:, report_filepath:, dry_run: false)
-    start_str = start_date.iso8601
-    end_str   = end_date&.iso8601
-    solr_range = "[#{start_str}T00:00:00Z TO #{end_str}T23:59:59Z]"
-    wip_count = 0
+    start_str = start_date.strftime('%Y-%m-%dT00:00:00Z')
+    end_str   = end_date.strftime('%Y-%m-%dT23:59:59Z')
+    query     = [
+      'has_model_ssim:"Article"',
+      "system_create_dtsi:[#{start_str} TO #{end_str}]",
+      # Find works with missing abstract
+      '-abstract_tesim:["" TO *]'
+    ].join(' AND ')
 
-    updated_work_ids = []
-    LogUtilsHelper.double_log("Searching for Articles with empty abstracts between #{start_date} and #{end_date}", :info, tag: 'find_and_update_empty_abstracts')
-    Article.where(deposited_at_dtsi: solr_range, abstract: ['', nil]).find_each do |work|
+    LogUtilsHelper.double_log("Running Solr query for empty abstracts: #{query}", :info, tag: 'find_and_update_empty_abstracts')
+
+    response = ActiveFedora::SolrService.get(query, rows: 10_000)
+    docs = response['response']['docs']
+    LogUtilsHelper.double_log("Found #{docs.size} works with empty abstract", :info, tag: 'find_and_update_empty_abstracts')
+
+
+    updated_ids = []
+    docs.each do |doc|
+      work_id = doc['id']
       if dry_run
-        LogUtilsHelper.double_log("DRY RUN: Would update abstract for #{work.id}", :info, tag: 'find_and_update_empty_abstracts')
+        LogUtilsHelper.double_log("DRY RUN: Would update abstract for #{work_id}", :info, tag: 'find_and_update_empty_abstracts')
       else
+        work = Article.find(work_id)
         work.update!(abstract: ['N/A'])
         work.update_index
       end
-      updated_work_ids << work.id
-      # WIP Break
-      break if wip_count >= 30
-      wip_count += 1
+      updated_ids << work_id
     end
 
-    if updated_work_ids.any?
-      JsonFileUtilsHelper.write_json({ updated_count: updated_work_ids.size, work_ids: updated_work_ids }, report_filepath)
-    end
+    JsonFileUtilsHelper.write_json({ updated_count: updated_ids.size, work_ids: updated_ids }, report_filepath) if updated_ids.any?
 
     action = dry_run ? 'Would update' : 'Updated'
-    LogUtilsHelper.double_log("#{action} abstracts for #{updated_work_ids.size} Articles ingested between #{start_date} and #{end_date}", :info, tag: 'find_and_update_empty_abstracts')
+    LogUtilsHelper.double_log("#{action} abstracts for #{updated_ids.size} Articles", :info, tag: 'find_and_update_empty_abstracts')
   end
 
   private
 
   def self.find_duplicate_dois(start_date:, end_date:, filepath:)
-    start_str = start_date.iso8601
-    end_str   = end_date&.iso8601
-    solr_range = "[#{start_str}T00:00:00Z TO #{end_str}T23:59:59Z]"
+    start_str = start_date.strftime('%Y-%m-%dT00:00:00Z')
+    end_str   = end_date.strftime('%Y-%m-%dT23:59:59Z')
+    query     = [
+      'has_model_ssim:"Article"',
+      "system_create_dtsi:[#{start_str} TO #{end_str}]"
+    ].join(' AND ')
 
-    wip_count = 0
+    LogUtilsHelper.double_log("Running Solr query for duplicate DOIs: #{query}", :info, tag: 'find_duplicate_dois')
 
+    response = ActiveFedora::SolrService.get(query, rows: 10_000)
+    docs = response['response']['docs']
+    LogUtilsHelper.double_log("Found #{docs.size} Article records in date range", :info, tag: 'find_duplicate_dois')
     duplicates = Hash.new { |h, k| h[k] = [] }
 
-    LogUtilsHelper.double_log("Searching for duplicate DOIs in Articles deposited between #{start_date} and #{end_date}", :info, tag: 'find_duplicate_dois')
-    Article.where(deposited_at_dtsi: range).find_each do |work|
-      Array(work.identifier).each do |id_val|
-        LogUtilsHelper.double_log("Checking identifier #{id_val} for work #{work.id}", :debug, tag: 'find_duplicate_dois')
-        # Match any DOI with dx.doi.org OR doi.org
+    docs.each do |doc|
+      work_id = doc['id']
+      Array(doc['identifier_tesim']).each do |id_val|
+        LogUtilsHelper.double_log("Checking identifier #{id_val} for work #{work_id}", :debug, tag: 'find_duplicate_dois')
         if id_val.start_with?('DOI: https://')
           normalized = id_val.sub(/^DOI:\s*https?:\/\/(dx\.)?doi\.org\//i, '')
-          duplicates[normalized] << work
+          duplicates[normalized] << work_id
         end
       end
-      # WIP Break
-      break if wip_count >= 30
-      wip_count += 1
     end
 
     refined_duplicates = duplicates.select { |_doi, works| works.size > 1 }
@@ -109,7 +118,7 @@ class PubmedIngestRemediationService
   end
 
   def self.save_duplicate_report(duplicates, filepath:)
-    payload = duplicates.map { |doi, works| { doi: doi, work_ids: works.map(&:id) } }
+    payload = duplicates.map { |doi, works| { doi: doi, work_ids: works } }
     LogUtilsHelper.double_log("Writing duplicate report with #{payload.size} entries to #{filepath}", :info, tag: 'save_duplicate_report')
     JsonFileUtilsHelper.write_jsonl(payload, filepath, mode: 'w')
     LogUtilsHelper.double_log("Saved duplicate report with #{payload.size} entries to #{filepath}", :info, tag: 'save_duplicate_report')
