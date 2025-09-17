@@ -84,10 +84,10 @@ class PubmedIngestRemediationService
     LogUtilsHelper.double_log("Resolving #{pairs.size} duplicate DOI groups from #{filepath}", :info, tag: 'resolve_duplicates')
 
     pairs.each do |pair|
-      works = pair[:work_ids].filter_map do |id|
+      works = pair[:work_ids].zip(pair[:timestamps]).filter_map do |id, timestamp|
         begin
-          Article.find(id)
-          { id: id, obj: obj, created_at: created_at }
+          obj = Article.find(id)
+          { id: id, obj: obj, created_at: timestamp }
         rescue ActiveFedora::ObjectNotFoundError
           LogUtilsHelper.double_log("Skipping missing Article #{id}", :warn, tag: 'resolve_duplicates')
           nil
@@ -100,9 +100,13 @@ class PubmedIngestRemediationService
       works_to_remove = works.reject { |w| w[:id] == work_to_keep[:id] }
 
       if dry_run
-        LogUtilsHelper.double_log("DRY RUN: Would keep #{work_to_keep.id}, would delete #{works_to_remove.map(&:id).join(', ')}", :info, tag: 'resolve_duplicates')
+        LogUtilsHelper.double_log(
+          "DRY RUN: Would keep #{work_to_keep[:id]}, would delete #{works_to_remove.map { |w| w[:id] }.join(', ')}",
+          :info,
+          tag: 'resolve_duplicates'
+        )
       else
-        works_to_remove.each(&:destroy)
+        works_to_remove.each { |w| w[:obj].destroy }
         removed_count += works_to_remove.size
       end
     end
