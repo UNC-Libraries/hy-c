@@ -2,8 +2,9 @@
 # frozen_string_literal: true
 namespace :pubmed do
   desc 'Remediate duplicate DOIs and/or empty abstracts from a recent ingest run'
-  task :remediate, [:since, :dry_run, :output_dir] => :environment do |_t, args|
-    since     = args[:since]
+  task :remediate, [:start_date, :end_date, :dry_run, :output_dir] => :environment do |_t, args|
+    start_date = args[:start_date]
+    end_date   = args[:end_date]
     dry_run   = args[:dry_run].to_s.downcase == 'true'
     timestamp = Time.now.strftime('%Y-%m-%d_%H-%M-%S')
 
@@ -15,26 +16,28 @@ namespace :pubmed do
     output_dir = Pathname.new(args[:output_dir]).join("pubmed_remediation_#{timestamp}")
     FileUtils.mkdir_p(output_dir)
 
-    unless since
-      puts '❌ You must specify a SINCE date (e.g., SINCE=2025-09-01)'
+    unless start_date && end_date
+      puts '❌ You must specify both START_DATE and END_DATE (e.g., START_DATE=2023-01-01 END_DATE=2023-01-31)'
       exit 1
     end
 
 
     begin
-      since_date = Date.parse(since)
+      start_date_obj = Date.parse(start_date)
+      end_date_obj = Date.parse(end_date)
     rescue ArgumentError
-      puts "❌ Invalid date format for SINCE: #{since}"
+      puts '❌ Invalid date format for START_DATE or END_DATE'
       exit 1
     end
 
-    puts "🔍 Running PubMed remediation since #{since} (dry_run=#{dry_run})"
+    puts "🔍 Running PubMed remediation from #{start_date}#{end_date ? " to #{end_date}" : ''} (dry_run=#{dry_run})"
     puts "📂 Reports will be saved under: #{output_dir}"
 
     # 1️⃣ Find and resolve duplicates
     duplicate_report = output_dir.join('duplicate_dois.jsonl')
     PubmedIngestRemediationService.find_and_resolve_duplicates!(
-      since: since_date,
+      start_date: start_date_obj,
+      end_date: end_date_obj,
       report_filepath: duplicate_report,
       dry_run: dry_run
     )
@@ -42,7 +45,8 @@ namespace :pubmed do
     # 2️⃣ Find and update empty abstracts
     abstract_report = output_dir.join('empty_abstracts.json')
     PubmedIngestRemediationService.find_and_update_empty_abstracts(
-      since: since_date,
+      start_date: start_date_obj,
+      end_date: end_date_obj,
       report_filepath: abstract_report,
       dry_run: dry_run
     )

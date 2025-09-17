@@ -3,6 +3,8 @@ require 'rails_helper'
 
 RSpec.describe PubmedIngestRemediationService do
   let(:report_path) { Rails.root.join('tmp', 'test_duplicate_report.jsonl') }
+  let(:start_date_obj) { Date.parse('2025-09-01') }
+  let(:end_date_obj) { Date.parse('2025-09-30') }
 
   describe '.find_and_resolve_duplicates!' do
     let(:article1) { double(Article, id: 'A1', deposited_at: Time.parse('2025-09-01'), identifier: ['DOI: https://dx.doi.org/10.123/abc']) }
@@ -19,7 +21,8 @@ RSpec.describe PubmedIngestRemediationService do
     end
 
     it 'writes a duplicate report' do
-      described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
+      # described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
+      described_class.find_and_resolve_duplicates!(start_date: start_date_obj, end_date: end_date_obj, report_filepath: report_path, dry_run: true)
       expect(JsonFileUtilsHelper).to have_received(:write_jsonl)
     end
 
@@ -31,14 +34,16 @@ RSpec.describe PubmedIngestRemediationService do
         expect(doi_keys).not_to include('https://dx.doi.org/10.123/abc')
         expect(doi_keys).not_to include('https://doi.org/10.123/abc')
       end
-      described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
+      # described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
+      described_class.find_and_resolve_duplicates!(start_date: start_date_obj, end_date: end_date_obj, report_filepath: report_path, dry_run: true)
     end
 
     context 'dry run' do
       it 'does not destroy any works' do
         allow(Article).to receive(:find).and_return(article1, article2)
         expect(article2).not_to receive(:destroy)
-        described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
+        # described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: true)
+        described_class.find_and_resolve_duplicates!(start_date: start_date_obj, end_date: end_date_obj, report_filepath: report_path, dry_run: true)
       end
     end
 
@@ -47,7 +52,8 @@ RSpec.describe PubmedIngestRemediationService do
         allow(Article).to receive(:find).and_return(article1, article2, article3)
         expect(article2).to receive(:destroy)
         expect(article3).to receive(:destroy)
-        described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: false)
+        # described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: false)
+        described_class.find_and_resolve_duplicates!(start_date: start_date_obj, end_date: end_date_obj, report_filepath: report_path, dry_run: false)
       end
     end
   end
@@ -75,7 +81,8 @@ RSpec.describe PubmedIngestRemediationService do
     context 'dry run' do
       it 'does not update the work' do
         described_class.find_and_update_empty_abstracts(
-          since: Date.today,
+          start_date: start_date_obj,
+          end_date: end_date_obj,
           report_filepath: report_path,
           dry_run: true
         )
@@ -86,7 +93,8 @@ RSpec.describe PubmedIngestRemediationService do
     context 'actual run' do
       it 'updates the abstract and reindexes the work' do
         described_class.find_and_update_empty_abstracts(
-          since: Date.today,
+          start_date: start_date_obj,
+          end_date: end_date_obj,
           report_filepath: report_path,
           dry_run: false
         )

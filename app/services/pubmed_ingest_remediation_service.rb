@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 class PubmedIngestRemediationService
-  def self.find_and_resolve_duplicates!(since:, report_filepath:, dry_run: false)
-    duplicates = find_duplicate_dois(since: since, filepath: report_filepath)
+  def self.find_and_resolve_duplicates!(start_date:, end_date:, report_filepath:, dry_run: false)
+    duplicates = find_duplicate_dois(start_date: start_date, end_date: end_date, filepath: report_filepath)
     if duplicates.any?
       resolve_duplicates!(filepath: report_filepath, dry_run: dry_run)
     else
-      LogUtilsHelper.double_log("No duplicates found since #{since}", :info, tag: 'find_and_resolve_duplicates')
+      LogUtilsHelper.double_log("No duplicates found in range #{start_date} to #{end_date}", :info, tag: 'find_and_resolve_duplicates')
     end
   end
 
-  def self.find_and_update_empty_abstracts(since:, report_filepath:, dry_run: false)
-    since_str = since.respond_to?(:iso8601) ? since.iso8601 : Date.parse(since.to_s).iso8601
-    solr_range = "#{since_str}T00:00:00Z"..'*'
+  def self.find_and_update_empty_abstracts(start_date:, end_date:, report_filepath:, dry_run: false)
+    start_str = start_date.iso8601
+    end_str   = end_date&.iso8601
+    solr_range = end_str ? "#{start_str}T00:00:00Z..#{end_str}T23:59:59Z" : "#{start_str}T00:00:00Z..*"
     wip_count = 0
 
     updated_work_ids = []
-    LogUtilsHelper.double_log("Searching for Articles with empty abstracts deposited since #{since}", :info, tag: 'find_and_update_empty_abstracts')
+    LogUtilsHelper.double_log("Searching for Articles with empty abstracts between #{start_date} and #{end_date}", :info, tag: 'find_and_update_empty_abstracts')
     Article.where(deposited_at_dtsi: solr_range, abstract: ['', nil]).find_each do |work|
       if dry_run
         LogUtilsHelper.double_log("DRY RUN: Would update abstract for #{work.id}", :info, tag: 'find_and_update_empty_abstracts')
@@ -34,20 +35,22 @@ class PubmedIngestRemediationService
     end
 
     action = dry_run ? 'Would update' : 'Updated'
-    LogUtilsHelper.double_log("#{action} abstracts for #{updated_work_ids.size} Articles ingested since #{since}", :info, tag: 'find_and_update_empty_abstracts')
+    LogUtilsHelper.double_log("#{action} abstracts for #{updated_work_ids.size} Articles ingested between #{start_date} and #{end_date}", :info, tag: 'find_and_update_empty_abstracts')
   end
 
   private
 
-  def self.find_duplicate_dois(since:, filepath:)
-    since_str = since.respond_to?(:iso8601) ? since.iso8601 : Date.parse(since.to_s).iso8601
-    lower_bound = "#{since_str}T00:00:00Z"
+  def self.find_duplicate_dois(start_date:, end_date:, filepath:)
+    start_str = start_date.iso8601
+    end_str   = end_date&.iso8601
+    range     = end_str ? "#{start_str}T00:00:00Z..#{end_str}T23:59:59Z" : "#{start_str}T00:00:00Z..*"
+
     wip_count = 0
 
     duplicates = Hash.new { |h, k| h[k] = [] }
 
-    LogUtilsHelper.double_log("Searching for duplicate DOIs in Articles deposited since #{since}", :info, tag: 'find_duplicate_dois')
-    Article.where(deposited_at_dtsi: lower_bound..'*').find_each do |work|
+    LogUtilsHelper.double_log("Searching for duplicate DOIs in Articles deposited between #{start_date} and #{end_date}", :info, tag: 'find_duplicate_dois')
+    Article.where(deposited_at_dtsi: range).find_each do |work|
       Array(work.identifier).each do |id_val|
         LogUtilsHelper.double_log("Checking identifier #{id_val} for work #{work.id}", :debug, tag: 'find_duplicate_dois')
         # Match any DOI with dx.doi.org OR doi.org
