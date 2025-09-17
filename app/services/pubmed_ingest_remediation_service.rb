@@ -68,7 +68,7 @@ class PubmedIngestRemediationService
         LogUtilsHelper.double_log("Checking identifier #{id_val} for work #{work_id}", :debug, tag: 'find_duplicate_dois')
         if id_val.start_with?('DOI: https://')
           normalized = id_val.sub(/^DOI:\s*https?:\/\/(dx\.)?doi\.org\//i, '')
-          duplicates[normalized] << work_id
+          duplicates[normalized] << { id: work_id, created_at: doc['system_create_dtsi'] }
         end
       end
     end
@@ -81,13 +81,13 @@ class PubmedIngestRemediationService
   def self.resolve_duplicates!(filepath:, dry_run: false)
     pairs = JsonFileUtilsHelper.read_jsonl(filepath, symbolize_names: true)
     removed_count = 0
-    wip_count = 0
     LogUtilsHelper.double_log("Resolving #{pairs.size} duplicate DOI groups from #{filepath}", :info, tag: 'resolve_duplicates')
 
     pairs.each do |pair|
       works = pair[:work_ids].filter_map do |id|
         begin
           Article.find(id)
+          { id: id, obj: obj, created_at: created_at }
         rescue ActiveFedora::ObjectNotFoundError
           LogUtilsHelper.double_log("Skipping missing Article #{id}", :warn, tag: 'resolve_duplicates')
           nil
@@ -96,8 +96,8 @@ class PubmedIngestRemediationService
 
       next if works.empty?
 
-      work_to_keep = works.min_by(&:deposited_at)
-      works_to_remove = works - [work_to_keep]
+      work_to_keep = works.min_by { |w| w[:created_at] }
+      works_to_remove = works.reject { |w| w[:id] == work_to_keep[:id] }
 
       if dry_run
         LogUtilsHelper.double_log("DRY RUN: Would keep #{work_to_keep.id}, would delete #{works_to_remove.map(&:id).join(', ')}", :info, tag: 'resolve_duplicates')
@@ -105,9 +105,6 @@ class PubmedIngestRemediationService
         works_to_remove.each(&:destroy)
         removed_count += works_to_remove.size
       end
-      # WIP Break
-      break if wip_count >= 30
-      wip_count += 1
     end
 
     LogUtilsHelper.double_log(
@@ -118,7 +115,9 @@ class PubmedIngestRemediationService
   end
 
   def self.save_duplicate_report(duplicates, filepath:)
-    payload = duplicates.map { |doi, works| { doi: doi, work_ids: works } }
+    payload = duplicates.map do |doi, works|
+      { doi: doi, work_ids: works.map { |w| w[:id] }, timestamps: works.map { |w| w[:created_at] } }
+    end
     LogUtilsHelper.double_log("Writing duplicate report with #{payload.size} entries to #{filepath}", :info, tag: 'save_duplicate_report')
     JsonFileUtilsHelper.write_jsonl(payload, filepath, mode: 'w')
     LogUtilsHelper.double_log("Saved duplicate report with #{payload.size} entries to #{filepath}", :info, tag: 'save_duplicate_report')
