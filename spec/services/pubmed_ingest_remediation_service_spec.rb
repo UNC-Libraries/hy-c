@@ -12,12 +12,35 @@ RSpec.describe PubmedIngestRemediationService do
     let(:article3) { double(Article, id: 'A3', deposited_at: Time.parse('2025-09-03'), identifier: ['DOI: https://doi.org/10.123/abc']) }
 
     before do
-      fake_relation = double('ActiveFedora::Relation')
-      allow(fake_relation).to receive(:find_each).and_yield(article1).and_yield(article2)
-      allow(Article).to receive(:where).and_return(fake_relation)
+      allow(ActiveFedora::SolrService).to receive(:get).and_wrap_original do |m, query, opts|
+        if query.include?('system_create_dtsi')
+          {
+            'response' => {
+              'docs' => [
+                { 'id' => 'A1', 'identifier_tesim' => ['DOI: https://dx.doi.org/10.123/abc'], 'system_create_dtsi' => '2025-09-01T00:00:00Z' },
+                { 'id' => 'A2', 'identifier_tesim' => ['DOI: https://dx.doi.org/10.123/abc'], 'system_create_dtsi' => '2025-09-02T00:00:00Z' }
+              ]
+            }
+          }
+        elsif query.include?('10.123/abc')
+          {
+            'response' => {
+              'docs' => [
+                { 'id' => 'A1', 'system_create_dtsi' => '2025-09-01T00:00:00Z' },
+                { 'id' => 'A2', 'system_create_dtsi' => '2025-09-02T00:00:00Z' },
+                { 'id' => 'A3', 'system_create_dtsi' => '2025-09-03T00:00:00Z' }
+              ]
+            }
+          }
+        else
+          { 'response' => { 'docs' => [] } }
+        end
+      end
 
       allow(JsonFileUtilsHelper).to receive(:write_jsonl)
-      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([{ doi: '10.123/abc', work_ids: ['A1', 'A2', 'A3'] }])
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([
+        { doi: '10.123/abc', work_ids: ['A1', 'A2', 'A3'], timestamps: ['2025-09-01T00:00:00Z', '2025-09-02T00:00:00Z', '2025-09-03T00:00:00Z'] }
+      ])
     end
 
     it 'writes a duplicate report' do
@@ -48,12 +71,24 @@ RSpec.describe PubmedIngestRemediationService do
     end
 
     context 'actual run' do
-      it 'destroys the newer duplicate' do
-        allow(Article).to receive(:find).and_return(article1, article2, article3)
-        expect(article2).to receive(:destroy)
-        expect(article3).to receive(:destroy)
-        # described_class.find_and_resolve_duplicates!(since: Date.today, report_filepath: report_path, dry_run: false)
-        described_class.find_and_resolve_duplicates!(start_date: start_date_obj, end_date: end_date_obj, report_filepath: report_path, dry_run: false)
+      it 'destroys all but the oldest duplicate' do
+        a1 = instance_double(Article, id: 'A1')
+        a2 = instance_double(Article, id: 'A2')
+        a3 = instance_double(Article, id: 'A3')
+
+        allow(Article).to receive(:find).with('A1').and_return(a1)
+        allow(Article).to receive(:find).with('A2').and_return(a2)
+        allow(Article).to receive(:find).with('A3').and_return(a3)
+
+        expect(a2).to receive(:destroy)
+        expect(a3).to receive(:destroy)
+
+        described_class.find_and_resolve_duplicates!(
+          start_date: start_date_obj,
+          end_date: end_date_obj,
+          report_filepath: report_path,
+          dry_run: false
+        )
       end
     end
   end
@@ -69,10 +104,11 @@ RSpec.describe PubmedIngestRemediationService do
     end
 
     before do
-      fake_relation = double('ActiveFedora::Relation')
-      allow(fake_relation).to receive(:find_each).and_yield(article_with_empty_abstract)
-      allow(Article).to receive(:where).and_return(fake_relation)
+      allow(ActiveFedora::SolrService).to receive(:get).and_return({
+        'response' => { 'docs' => [{ 'id' => 'A3' }] }
+      })
 
+      allow(Article).to receive(:find).with('A3').and_return(article_with_empty_abstract)
       allow(article_with_empty_abstract).to receive(:update!)
       allow(article_with_empty_abstract).to receive(:update_index)
       allow(JsonFileUtilsHelper).to receive(:write_json)
