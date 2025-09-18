@@ -21,6 +21,10 @@ namespace :pubmed do
       exit 1
     end
 
+    if Date.parse(end_date) < Date.parse(start_date)
+      puts '❌ END_DATE must be on or after START_DATE'
+      exit 1
+    end
 
     begin
       start_date_obj = Date.parse(start_date)

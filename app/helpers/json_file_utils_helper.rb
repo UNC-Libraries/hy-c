@@ -9,11 +9,9 @@ module JsonFileUtilsHelper
     json = pretty ? JSON.pretty_generate(data) : JSON.generate(data)
     File.write(path, json, mode: 'w', encoding: 'utf-8')
     Rails.logger.debug("[JsonFileUtilsHelper] Wrote JSON to #{path}")
-    LogUtilsHelper.double_log("[JsonFileUtilsHelper] Wrote JSON to #{path}", :info, tag: 'wip-hyc-2126')
     true
   rescue => e
     Rails.logger.warn("[JsonFileUtilsHelper] write_json failed for #{path}: #{e.message}")
-    LogUtilsHelper.double_log("[JsonFileUtilsHelper] write_json failed for #{path}: #{e.message}", :warn, tag: 'wip-hyc-2126')
     false
   end
 
@@ -24,7 +22,6 @@ module JsonFileUtilsHelper
     JSON.parse(content, symbolize_names: symbolize_names)
   rescue => e
     Rails.logger.warn("[JsonFileUtilsHelper] read_json failed for #{path}: #{e.message}")
-    LogUtilsHelper.double_log("[JsonFileUtilsHelper] read_json failed for #{path}: #{e.message}", :warn, tag: 'wip-hyc-2126')
     nil
   end
 
@@ -40,11 +37,9 @@ module JsonFileUtilsHelper
       end
     end
     Rails.logger.debug("[JsonFileUtilsHelper] Wrote #{count} JSONL records to #{path}")
-    LogUtilsHelper.double_log("[JsonFileUtilsHelper] Wrote #{count} JSONL records to #{path}", :info, tag: 'wip-hyc-2126')
     count
   rescue => e
     Rails.logger.warn("[JsonFileUtilsHelper] write_jsonl failed for #{path}: #{e.message}")
-    LogUtilsHelper.double_log("[JsonFileUtilsHelper] write_jsonl failed for #{path}: #{e.message}", :warn, tag: 'wip-hyc-2126')
     0
   end
 
@@ -60,7 +55,6 @@ module JsonFileUtilsHelper
     out
   rescue => e
     Rails.logger.warn("[JsonFileUtilsHelper] read_jsonl failed for #{path}: #{e.message}")
-    LogUtilsHelper.double_log("[JsonFileUtilsHelper] read_jsonl failed for #{path}: #{e.message}", :warn, tag: 'wip-hyc-2126')
     []
   end
 
