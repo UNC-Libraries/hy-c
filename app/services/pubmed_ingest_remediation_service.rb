@@ -50,29 +50,38 @@ class PubmedIngestRemediationService
   def self.find_duplicate_dois(start_date:, end_date:, filepath:)
     start_str = start_date.strftime('%Y-%m-%dT00:00:00Z')
     end_str   = end_date.strftime('%Y-%m-%dT23:59:59Z')
-    query     = [
+    batch_query = [
       'has_model_ssim:"Article"',
       "system_create_dtsi:[#{start_str} TO #{end_str}]"
     ].join(' AND ')
 
-    LogUtilsHelper.double_log("Running Solr query for duplicate DOIs: #{query}", :info, tag: 'find_duplicate_dois')
+    LogUtilsHelper.double_log("Fetching candidate DOIs from #{start_date} to #{end_date}", :info, tag: 'find_duplicate_dois')
 
-    response = ActiveFedora::SolrService.get(query, rows: 10_000)
+    response = ActiveFedora::SolrService.get(batch_query, rows: 10_000)
     docs = response['response']['docs']
-    LogUtilsHelper.double_log("Found #{docs.size} Article records in date range", :info, tag: 'find_duplicate_dois')
+    LogUtilsHelper.double_log("Found #{docs.size} candidate Articles", :info, tag: 'find_duplicate_dois')
+
     duplicates = Hash.new { |h, k| h[k] = [] }
 
     docs.each do |doc|
-      work_id = doc['id']
       Array(doc['identifier_tesim']).each do |id_val|
-        if id_val.start_with?('DOI: https://')
-          normalized = id_val.sub(/^DOI:\s*https?:\/\/(dx\.)?doi\.org\//i, '')
-          duplicates[normalized] << { id: work_id, created_at: doc['system_create_dtsi'] }
+        next unless id_val.start_with?('DOI: https://')
+        normalized = id_val.sub(/^DOI:\s*https?:\/\/(dx\.)?doi\.org\//i, '')
+
+        doi_query = "identifier_tesim:\"DOI: https://dx.doi.org/#{normalized}\" OR identifier_tesim:\"DOI: https://doi.org/#{normalized}\""
+        all_matches = ActiveFedora::SolrService.get(doi_query, rows: 100)['response']['docs']
+
+        if all_matches.size > 1
+          duplicates[normalized].concat(
+            all_matches.map { |match| { id: match['id'], created_at: match['system_create_dtsi'] } }
+          )
         end
       end
     end
 
-    refined_duplicates = duplicates.select { |_doi, works| works.size > 1 }
+    refined_duplicates = duplicates.transform_values { |works| works.uniq { |w| w[:id] } }
+                                   .select { |_doi, works| works.size > 1 }
+
     save_duplicate_report(refined_duplicates, filepath: filepath)
     refined_duplicates
   end
@@ -83,10 +92,10 @@ class PubmedIngestRemediationService
     LogUtilsHelper.double_log("Resolving #{pairs.size} duplicate DOI groups from #{filepath}", :info, tag: 'resolve_duplicates')
 
     pairs.each do |pair|
-      works = pair[:work_ids].zip(pair[:timestamps]).filter_map do |id, timestamp|
+      works = pair[:work_ids].zip(pair[:timestamps]).filter_map do |id, ts|
         begin
           obj = Article.find(id)
-          { id: id, obj: obj, created_at: timestamp }
+          { id: id, obj: obj, created_at: ts ? Time.parse(ts) : Time.at(0) }
         rescue ActiveFedora::ObjectNotFoundError
           LogUtilsHelper.double_log("Skipping missing Article #{id}", :warn, tag: 'resolve_duplicates')
           nil
@@ -119,7 +128,11 @@ class PubmedIngestRemediationService
 
   def self.save_duplicate_report(duplicates, filepath:)
     payload = duplicates.map do |doi, works|
-      { doi: doi, work_ids: works.map { |w| w[:id] }, timestamps: works.map { |w| w[:created_at] } }
+      {
+        doi: doi,
+        work_ids: works.map { |w| w[:id] },
+        timestamps: works.map { |w| w[:created_at] }
+      }
     end
     LogUtilsHelper.double_log("Writing duplicate report with #{payload.size} entries to #{filepath}", :info, tag: 'save_duplicate_report')
     JsonFileUtilsHelper.write_jsonl(payload, filepath, mode: 'w')
