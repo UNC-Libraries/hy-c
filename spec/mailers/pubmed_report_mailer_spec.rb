@@ -78,7 +78,6 @@ RSpec.describe PubmedReportMailer, type: :mailer do
     end
 
     it 'lists a sample record from each category' do
-      # %i[successfully_ingested_and_attached successfully_ingested_metadata_only successfully_ingested failed].each do |category|
       %i[successfully_ingested_and_attached successfully_ingested_metadata_only
           successfully_attached skipped_file_attachment skipped
           failed skipped_non_unc_affiliation].each do |category|
