@@ -6,8 +6,13 @@ class PubmedReportMailer < ApplicationMailer
   end
 
   def truncated_pubmed_report_email(report, csv_paths)
-    csv_paths.each do |path|
-      attachments[File.basename(path)] = File.read(path)
+    if csv_paths.nil? || !csv_paths.is_a?(Array) || csv_paths.empty?
+      LogUtilsHelper.double_log('No CSV paths provided for attachment; sending email without attachments.', :warn, tag: 'truncated_pubmed_report_email')
+    else
+      LogUtilsHelper.double_log("Attaching CSV files: #{csv_paths.join(', ')})", :info, tag: 'truncated_pubmed_report_email')
+      csv_paths.each do |path|
+        attachments[File.basename(path)] = File.read(path)
+      end
     end
 
     @report = report

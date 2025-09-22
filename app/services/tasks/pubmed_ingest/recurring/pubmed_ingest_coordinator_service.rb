@@ -188,7 +188,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       report[:truncated_categories] = generate_truncated_categories(report[:records])
       report[:max_display_rows] = MAX_ROWS
       csv_paths = generate_result_csvs(report[:records])
-      PubmedReportMailer.truncated_pubmed_report_email(report).deliver_now
+      PubmedReportMailer.truncated_pubmed_report_email(report, csv_paths).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
       LogUtilsHelper.double_log('Email notification sent successfully.', :info, tag: 'send_summary_email')
@@ -315,7 +315,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       next if records.empty? || !records.is_a?(Array)
       path = File.join(@result_output_directory, "#{category}.csv")
       CSV.open(path, 'wb') do |csv|
-        csv << category.to_s
         csv << records.first.keys # header row
         records.each { |record| csv << record.values }
       end
@@ -328,7 +327,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   def generate_truncated_categories(report)
     trunc_categories = []
     report.each do |category, records|
-      next if records.empty? || !records.is_a?(Array)
+      if records.empty? || !records.is_a?(Array)
+        LogUtilsHelper.double_log("No records for #{category}, skipping CSV generation", :info, tag: 'generate_result_csvs')
+        next
+      end
       trunc_categories << category.to_s if records.size > MAX_ROWS
     end
     trunc_categories

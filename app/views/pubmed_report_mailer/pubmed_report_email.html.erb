@@ -67,7 +67,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @report[:records][key].first(max_display_rows).each_with_index do |record, index| %>
+      <% @report[:records][key].first(@report[:max_display_rows]).each_with_index do |record, index| %>
         <tr>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:file_name] %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
@@ -86,6 +86,14 @@
             <% else %>
               N/A
             <% end %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @report[:records][key].size > @report[:max_display_rows] %>
+        <tr>
+          <td colspan="6" style="border:2px solid #dddddd; padding:10px; background-color:#ffeeba; font-weight:bold; color:#856404;">
+            Showing first <%= @report[:max_display_rows] %> of <%= @report[:records][key].size %> records.
+            Full list available in attached CSV.
           </td>
         </tr>
       <% end %>
