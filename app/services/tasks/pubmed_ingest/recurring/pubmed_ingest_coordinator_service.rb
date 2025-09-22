@@ -6,6 +6,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   RESULT_CSV_OUTPUT_DIR      = '04_generate_result_csvs'
   SUBDIRS                   = [BUILD_ID_LISTS_OUTPUT_DIR, LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR, RESULT_CSV_OUTPUT_DIR].freeze
   REQUIRED_ARGS             = %w[start_date end_date admin_set_title].freeze
+  MAX_ROWS = 100
 
   def initialize(config, tracker)
     @config = config
@@ -169,7 +170,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     LogUtilsHelper.double_log('Finalizing report and sending notification email...', :info, tag: 'send_summary_email')
     begin
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
-      csv_paths = generate_result_csvs(attachment_results)
       report[:headers][:depositor] = @tracker['depositor_onyen']
       report[:headers][:total_unique_records] =
         @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
@@ -185,7 +185,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
                             failed: 'Failed',
                             skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
                           }
-      PubmedReportMailer.pubmed_report_email(report).deliver_now
+      report[:truncated_categories] = generate_truncated_categories(report[:records])
+      report[:max_display_rows] = MAX_ROWS
+      csv_paths = generate_result_csvs(report[:records])
+      PubmedReportMailer.truncated_pubmed_report_email(report).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
       LogUtilsHelper.double_log('Email notification sent successfully.', :info, tag: 'send_summary_email')
@@ -320,6 +323,15 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       LogUtilsHelper.double_log("Generated CSV for #{category} at #{path}", :info, tag: 'generate_result_csvs')
     end
     csv_paths
+  end
+
+  def generate_truncated_categories(report)
+    trunc_categories = []
+    report.each do |category, records|
+      next if records.empty? || !records.is_a?(Array)
+      trunc_categories << category.to_s if records.size > MAX_ROWS
+    end
+    trunc_categories
   end
 
   def self.resolve_output_dir(raw_output_dir, script_start_time)
