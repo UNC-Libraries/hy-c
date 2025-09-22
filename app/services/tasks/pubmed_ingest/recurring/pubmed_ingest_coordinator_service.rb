@@ -3,7 +3,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   BUILD_ID_LISTS_OUTPUT_DIR = '01_build_id_lists'
   LOAD_METADATA_OUTPUT_DIR  = '02_load_and_ingest_metadata'
   ATTACH_FILES_OUTPUT_DIR   = '03_attach_files_to_works'
-  SUBDIRS                   = [BUILD_ID_LISTS_OUTPUT_DIR, LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR].freeze
+  RESULT_CSV_OUTPUT_DIR      = '04_generate_result_csvs'
+  SUBDIRS                   = [BUILD_ID_LISTS_OUTPUT_DIR, LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR, RESULT_CSV_OUTPUT_DIR].freeze
   REQUIRED_ARGS             = %w[start_date end_date admin_set_title].freeze
 
   def initialize(config, tracker)
@@ -12,6 +13,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @id_list_output_directory = File.join(config['output_dir'], BUILD_ID_LISTS_OUTPUT_DIR)
     @metadata_ingest_output_directory = File.join(config['output_dir'], LOAD_METADATA_OUTPUT_DIR)
     @attachment_output_directory = File.join(config['output_dir'], ATTACH_FILES_OUTPUT_DIR)
+    @result_output_directory = File.join(config['output_dir'], RESULT_CSV_OUTPUT_DIR)
   end
 
   def run
@@ -167,6 +169,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     LogUtilsHelper.double_log('Finalizing report and sending notification email...', :info, tag: 'send_summary_email')
     begin
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
+      csv_paths = generate_result_csvs(attachment_results)
       report[:headers][:depositor] = @tracker['depositor_onyen']
       report[:headers][:total_unique_records] =
         @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
@@ -301,6 +304,22 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
 
     [config, tracker]
+  end
+
+  def generate_result_csvs(results)
+    csv_paths = []
+    results.each do |category, records|
+      next if records.empty? || !records.is_a?(Array)
+      path = File.join(@result_output_directory, "#{category}.csv")
+      CSV.open(path, 'wb') do |csv|
+        csv << category.to_s
+        csv << records.first.keys # header row
+        records.each { |record| csv << record.values }
+      end
+      csv_paths << path
+      LogUtilsHelper.double_log("Generated CSV for #{category} at #{path}", :info, tag: 'generate_result_csvs')
+    end
+    csv_paths
   end
 
   def self.resolve_output_dir(raw_output_dir, script_start_time)
