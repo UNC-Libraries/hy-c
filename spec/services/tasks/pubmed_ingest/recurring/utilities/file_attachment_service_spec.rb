@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService do
-  let(:config) { { test: 'config' } }
+  let(:config) { { 'depositor_onyen' => 'admin' } }
   let(:tracker) { double('tracker', save: true) }
   let(:output_path) { '/tmp/test_output' }
   let(:full_text_path) { '/tmp/test_fulltext' }
