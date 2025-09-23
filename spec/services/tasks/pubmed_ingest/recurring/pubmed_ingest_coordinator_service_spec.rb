@@ -682,6 +682,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     before do
       allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
         .to receive(:generate_report).and_return(mock_report)
+      allow(service).to receive(:generate_result_csvs).and_return(['path/to/csv1', 'path/to/csv2'])
+      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_return(mock_mailer)
     end
 
     it 'generates report and sends email' do
@@ -717,7 +719,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     context 'when email sending fails' do
       before do
-        allow(PubmedReportMailer).to receive(:pubmed_report_email).and_raise(StandardError.new('Email failed'))
+        allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_raise(StandardError.new('Email failed'))
       end
 
       it 'logs error and continues' do
@@ -736,6 +738,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
   describe 'workflow integration' do
     it 'maintains proper tracker state throughout workflow' do
+      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email)
+      .and_return(double(deliver_now: true))
       # Start with all steps incomplete
       expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed']).to be false
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be false

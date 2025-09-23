@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe PubmedReportMailer, type: :mailer do
-  describe 'pubmed_report_email for recurring pubmed ingests' do
+  describe 'truncated_pubmed_report_email for recurring pubmed ingests' do
     let(:fixture_path) do
       Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
     end
@@ -47,19 +47,31 @@ RSpec.describe PubmedReportMailer, type: :mailer do
       Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new(config, tracker)
     end
 
+    let(:csv_paths) do
+      [
+        '/fake/path/successfully_ingested_and_attached.csv',
+        '/fake/path/failed.csv'
+      ]
+    end
+
     before do
       coordinator.instance_variable_set(:@results, results)
-      allow(PubmedReportMailer).to receive(:pubmed_report_email).and_call_original
+      # Prevent real file writes and just return fake CSV paths
+      allow(coordinator).to receive(:generate_result_csvs).and_return(csv_paths)
+      # Stub File.read so the mailer can "attach" them without error
+      allow(File).to receive(:read).with(/\.csv$/).and_return('fake,csv,content')
+
+      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_call_original
       coordinator.send(:send_report_and_notify, results)
     end
 
     let(:report) do
-      expect(PubmedReportMailer).to have_received(:pubmed_report_email) do |arg|
+      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email) do |arg|
         return arg
       end
     end
 
-    let(:mail) { described_class.pubmed_report_email(report) }
+    let(:mail) { described_class.truncated_pubmed_report_email(report, csv_paths) }
 
     it 'sets total_unique_records and date range from tracker' do
       expect(report[:headers][:total_unique_records]).to eq(

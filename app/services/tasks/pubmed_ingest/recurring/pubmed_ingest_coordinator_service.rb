@@ -3,8 +3,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   BUILD_ID_LISTS_OUTPUT_DIR = '01_build_id_lists'
   LOAD_METADATA_OUTPUT_DIR  = '02_load_and_ingest_metadata'
   ATTACH_FILES_OUTPUT_DIR   = '03_attach_files_to_works'
-  SUBDIRS                   = [BUILD_ID_LISTS_OUTPUT_DIR, LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR].freeze
+  RESULT_CSV_OUTPUT_DIR      = '04_generate_result_csvs'
+  SUBDIRS                   = [BUILD_ID_LISTS_OUTPUT_DIR, LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR, RESULT_CSV_OUTPUT_DIR].freeze
   REQUIRED_ARGS             = %w[start_date end_date admin_set_title].freeze
+  MAX_ROWS = 100
 
   def initialize(config, tracker)
     @config = config
@@ -12,6 +14,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @id_list_output_directory = File.join(config['output_dir'], BUILD_ID_LISTS_OUTPUT_DIR)
     @metadata_ingest_output_directory = File.join(config['output_dir'], LOAD_METADATA_OUTPUT_DIR)
     @attachment_output_directory = File.join(config['output_dir'], ATTACH_FILES_OUTPUT_DIR)
+    @result_output_directory = File.join(config['output_dir'], RESULT_CSV_OUTPUT_DIR)
   end
 
   def run
@@ -182,7 +185,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
                             failed: 'Failed',
                             skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
                           }
-      PubmedReportMailer.pubmed_report_email(report).deliver_now
+      report[:truncated_categories] = generate_truncated_categories(report[:records])
+      report[:max_display_rows] = MAX_ROWS
+      csv_paths = generate_result_csvs(report[:records])
+      PubmedReportMailer.truncated_pubmed_report_email(report, csv_paths).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
       LogUtilsHelper.double_log('Email notification sent successfully.', :info, tag: 'send_summary_email')
@@ -301,6 +307,33 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
 
     [config, tracker]
+  end
+
+  def generate_result_csvs(results)
+    csv_paths = []
+    results.each do |category, records|
+      next if records.empty? || !records.is_a?(Array)
+      path = File.join(@result_output_directory, "#{category}.csv")
+      CSV.open(path, 'wb') do |csv|
+        csv << records.first.keys # header row
+        records.each { |record| csv << record.values }
+      end
+      csv_paths << path
+      LogUtilsHelper.double_log("Generated CSV for #{category} at #{path}", :info, tag: 'generate_result_csvs')
+    end
+    csv_paths
+  end
+
+  def generate_truncated_categories(report)
+    trunc_categories = []
+    report.each do |category, records|
+      if records.empty? || !records.is_a?(Array)
+        LogUtilsHelper.double_log("No records for #{category}, skipping CSV generation", :info, tag: 'generate_result_csvs')
+        next
+      end
+      trunc_categories << category.to_s if records.size > MAX_ROWS
+    end
+    trunc_categories
   end
 
   def self.resolve_output_dir(raw_output_dir, script_start_time)
