@@ -170,7 +170,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
     begin
       work = Article.find(work_id)
-      depositor = ::User.find_by(uid: 'admin')
+      depositor = ::User.find_by(uid: @config['depositor_onyen'])
       raise 'No depositor found' unless depositor
 
       pdf_count = 0
