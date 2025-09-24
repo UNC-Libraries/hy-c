@@ -16,6 +16,7 @@ class PubmedReportMailer < ApplicationMailer
     end
 
     @report = report
-    mail(to: 'cdr@unc.edu', subject: report[:subject], template_name: 'pubmed_report_email')
+    # WIP: Remove hardcoded email
+    mail(to: 'dcam@@unc.edu', subject: report[:subject], template_name: 'pubmed_report_email')
   end
 end
