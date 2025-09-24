@@ -311,17 +311,17 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     let(:batch_articles) { pubmed_xml_doc.xpath('//PubmedArticle') }
     let(:mock_article) { double('article', save!: true, id: 'new_article_123', persisted?: true, destroy: true) }
     let(:alternate_ids) { { 'pmid' => '123456', 'pmcid' => 'PMC789012', 'doi' => '10.1000/example1' } }
-    let(:mock_user) { instance_double(User) }
-    let(:mock_env) { instance_double(Hyrax::Actors::Environment) }
+    let(:test_user) { User.new(uid: 'test_user', email: 'test@example.com') }
+    # let(:mock_env) { instance_double(Hyrax::Actors::Environment) }
 
     before do
+      allow(User).to receive(:find_by).with(uid: 'test_user').and_return(test_user)
       allow(service).to receive(:retrieve_alternate_ids_for_doc).and_return(alternate_ids)
       allow(service).to receive(:find_best_work_match).and_return(nil)
       allow(service).to receive(:new_article).and_return(mock_article)
       allow(service).to receive(:record_result)
-      allow(Hyrax::Actors::Environment).to receive(:new).and_return(mock_env)
+      allow(Hyrax::Actors::Environment).to receive(:new).and_call_original
       allow(Hyrax::CurationConcern.actor).to receive(:create).and_return(true)
-      allow(User).to receive(:find_by).and_return(mock_user)
     end
 
     it 'calls the actor stack to apply workflow/permissions' do
@@ -329,7 +329,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       expect(Hyrax::Actors::Environment).to have_received(:new)
         .with(mock_article, instance_of(Ability), hash_including({}))
-      expect(Hyrax::CurationConcern.actor).to have_received(:create).with(mock_env)
+      expect(Hyrax::CurationConcern.actor).to have_received(:create).with(instance_of(Hyrax::Actors::Environment))
     end
 
     context 'when work does not exist' do
