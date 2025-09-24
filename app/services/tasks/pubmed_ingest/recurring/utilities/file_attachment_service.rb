@@ -121,6 +121,22 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         tgz_data = fetch_ftp_binary(uri, local_file_path: tgz_path)
         process_and_attach_tgz_file(record, tgz_path)
       end
+
+      work_id = record.dig('ids', 'work_id')
+      if work_id.present?
+        work = Article.find(work_id)
+        entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+
+        if entity.nil?
+          Rails.logger.info "No Sipity entity found for #{work.id}; applying workflow/permissions"
+          user = User.find_by(uid: @config['depositor_onyen'])
+          env  = Hyrax::Actors::Environment.new(work, Ability.new(user), {})
+          Hyrax::CurationConcern.actor.create(env)
+        end
+
+        work.reload
+        work.update_index
+      end
     rescue => e
       # Do not retry if no PDF or TGZ link is found in the response
       if e.message.include?('No PDF or TGZ link found')

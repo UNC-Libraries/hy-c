@@ -312,7 +312,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     let(:mock_article) { double('article', save!: true, id: 'new_article_123', persisted?: true, destroy: true) }
     let(:alternate_ids) { { 'pmid' => '123456', 'pmcid' => 'PMC789012', 'doi' => '10.1000/example1' } }
     let(:test_user) { User.new(uid: 'test_user', email: 'test@example.com') }
-    # let(:mock_env) { instance_double(Hyrax::Actors::Environment) }
 
     before do
       allow(User).to receive(:find_by).with(uid: 'test_user').and_return(test_user)
