@@ -22,10 +22,14 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   end
 
   def run
+    work_ids = []
     @records.each_with_index do |record, index|
       LogUtilsHelper.double_log("Processing record #{index + 1} of #{@records.size}", :info, tag: 'Attachment')
       process_record(record)
+      work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
     end
+
+    work_ids.uniq.each { |work_id| ensure_work_permissions!(work_id) }
   end
 
   def load_records_to_attach
@@ -122,21 +126,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         process_and_attach_tgz_file(record, tgz_path)
       end
 
-      work_id = record.dig('ids', 'work_id')
-      if work_id.present?
-        work = Article.find(work_id)
-        entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
-
-        if entity.nil?
-          Rails.logger.info "No Sipity entity found for #{work.id}; applying workflow/permissions"
-          user = User.find_by(uid: @config['depositor_onyen'])
-          env  = Hyrax::Actors::Environment.new(work, Ability.new(user), {})
-          Hyrax::CurationConcern.actor.create(env)
-        end
-
-        work.reload
-        work.update_index
-      end
     rescue => e
       # Do not retry if no PDF or TGZ link is found in the response
       if e.message.include?('No PDF or TGZ link found')
@@ -252,6 +241,28 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     }
     @tracker.save
     File.open(@log_file, 'a') { |f| f.puts(entry.to_json) }
+  end
+
+  def ensure_work_permissions!(work_id)
+    begin
+      return if work_id.blank?
+
+      work = Article.find(work_id)
+      entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+
+      if entity.nil?
+        Rails.logger.info "No Sipity entity found for #{work.id}; applying workflow/permissions"
+        user = User.find_by(uid: @config['depositor_onyen'])
+        env  = Hyrax::Actors::Environment.new(work, Ability.new(user), {})
+        Hyrax::CurationConcern.actor.create(env)
+      end
+
+      work.reload
+      work.update_index
+    rescue => e
+      Rails.logger.error "Error ensuring permissions for work #{work_id}: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+    end
   end
 
   # Determine category for records that are skipped for file attachment

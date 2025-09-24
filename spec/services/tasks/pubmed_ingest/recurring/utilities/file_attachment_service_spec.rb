@@ -286,33 +286,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       allow(service).to receive(:attach_pdf_to_work_with_file_path!)
       allow(service).to receive(:sleep)
       allow(Article).to receive(:find).with('work_123').and_return(mock_article)
-    end
-
-    context 'when attaching to a pre-existing work without Sipity entity' do
-      let(:mock_user) { User.new(uid: 'admin', email: 'admin@example.com') }
-
-      before do
-        allow(HTTParty).to receive(:get).and_return(mock_response)
-        allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
-        allow(service).to receive(:fetch_ftp_binary).and_return('pdf_binary_data')
-        allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return([double('fileset'), 'PMC123456_001.pdf'])
-
-        allow(User).to receive(:find_by).with(uid: 'admin').and_return(mock_user)
-        allow(Sipity::Entity).to receive(:find_by).and_return(nil)
-        allow(Hyrax::Actors::Environment).to receive(:new).and_call_original
-        allow(Hyrax::CurationConcern.actor).to receive(:create)
-      end
-
-      it 'applies workflow/permissions via actor stack' do
-        service.process_record(sample_record)
-
-        expect(Hyrax::Actors::Environment).to have_received(:new).with(
-          mock_article,
-          instance_of(Ability),
-          hash_including({})
-        )
-        expect(Hyrax::CurationConcern.actor).to have_received(:create)
-      end
+      # RSpec::Mocks.space.proxy_for(service).reset
     end
 
     context 'when record has no PMCID' do
@@ -377,15 +351,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         XML
       end
 
-      before do
-        allow(service).to receive(:process_and_attach_tgz_file)
-      end
-
       it 'fetches and processes TGZ' do
-        service.process_record(sample_record)
+        expect(service).to receive(:fetch_ftp_binary).and_return('tgz_binary_data')
+        expect(service).to receive(:process_and_attach_tgz_file)
 
-        expect(service).to have_received(:fetch_ftp_binary).once
-        expect(service).to have_received(:process_and_attach_tgz_file)
+        service.process_record(sample_record)
       end
     end
 
@@ -723,6 +693,40 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       expect(tracker).to have_received(:save)
     end
   end
+
+  describe '#ensure_work_permissions!' do
+    let(:mock_article) do
+      double(
+        'article',
+        id: 'work_123',
+        to_global_id: 'gid://hyrax/Article/work_123',
+        reload: true,
+        update_index: true
+      )
+    end
+
+    let(:mock_user) { User.new(uid: 'admin', email: 'admin@example.com') }
+
+    before do
+      allow(Article).to receive(:find).with('work_123').and_return(mock_article)
+      allow(Sipity::Entity).to receive(:find_by).and_return(nil)
+      allow(User).to receive(:find_by).with(uid: 'admin').and_return(mock_user)
+      allow(Hyrax::Actors::Environment).to receive(:new).and_call_original
+      allow(Hyrax::CurationConcern.actor).to receive(:create)
+    end
+
+    it 'applies workflow/permissions via actor stack' do
+      service.ensure_work_permissions!('work_123')
+
+      expect(Hyrax::Actors::Environment).to have_received(:new).with(
+        mock_article,
+        instance_of(Ability),
+        hash_including({})
+      )
+      expect(Hyrax::CurationConcern.actor).to have_received(:create)
+    end
+  end
+
 
   describe '#run' do
     let(:records) { [sample_record, sample_record_without_pmcid] }
