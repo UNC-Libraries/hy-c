@@ -19,8 +19,11 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
   def run
     build_id_lists
-    load_and_ingest_metadata
-    attach_files
+     # Suppress emails during metadata ingest and file attachment in production to avoid spam
+    NotificationUtilsHelper.suppress_emails do
+      load_and_ingest_metadata
+      attach_files
+    end
     build_and_finalize_results
     delete_full_text_pdfs
     LogUtilsHelper.double_log('PubMed ingest workflow completed successfully.', :info, tag: 'PubmedIngestCoordinator')
@@ -46,14 +49,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         metadata_ingest_result_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
       )
 
-      # Suppress emails during file attachment in production to avoid spamming
-      if Rails.env.production?
-        NotificationUtilsHelper.suppress_emails do
-          file_attachment_service.run
-        end
-      else
-        file_attachment_service.run
-      end
+      file_attachment_service.run
 
       @tracker['progress']['attach_files_to_works']['completed'] = true
       @tracker.save
