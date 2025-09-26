@@ -694,40 +694,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
   end
 
-  describe '#ensure_work_permissions!' do
-    let(:mock_article) do
-      double(
-        'article',
-        id: 'work_123',
-        to_global_id: 'gid://hyrax/Article/work_123',
-        reload: true,
-        update_index: true
-      )
-    end
-
-    let(:mock_user) { User.new(uid: 'admin', email: 'admin@example.com') }
-
-    before do
-      allow(Article).to receive(:find).with('work_123').and_return(mock_article)
-      allow(Sipity::Entity).to receive(:find_by).and_return(nil)
-      allow(User).to receive(:find_by).with(uid: 'admin').and_return(mock_user)
-      allow(Hyrax::Actors::Environment).to receive(:new).and_call_original
-      allow(Hyrax::CurationConcern.actor).to receive(:create)
-    end
-
-    it 'applies workflow/permissions via actor stack' do
-      service.ensure_work_permissions!('work_123')
-
-      expect(Hyrax::Actors::Environment).to have_received(:new).with(
-        mock_article,
-        instance_of(Ability),
-        hash_including({})
-      )
-      expect(Hyrax::CurationConcern.actor).to have_received(:create)
-    end
-  end
-
-
   describe '#run' do
     let(:records) { [sample_record, sample_record_without_pmcid] }
 

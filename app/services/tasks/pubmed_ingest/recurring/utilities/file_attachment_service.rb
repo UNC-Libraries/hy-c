@@ -243,28 +243,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     File.open(@log_file, 'a') { |f| f.puts(entry.to_json) }
   end
 
-  def ensure_work_permissions!(work_id)
-    begin
-      return if work_id.blank?
-
-      work = Article.find(work_id)
-      entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
-
-      if entity.nil?
-        Rails.logger.info "No Sipity entity found for #{work.id}; applying workflow/permissions"
-        user = User.find_by(uid: @config['depositor_onyen'])
-        env  = Hyrax::Actors::Environment.new(work, Ability.new(user), {})
-        Hyrax::CurationConcern.actor.create(env)
-      end
-
-      work.reload
-      work.update_index
-    rescue => e
-      Rails.logger.error "Error ensuring permissions for work #{work_id}: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
-    end
-  end
-
   # Determine category for records that are skipped for file attachment
   # - If the record existed before the current run, categorize as :skipped_file_attachment
   # - Otherwise, categorize as :successfully_ingested_metadata_only
