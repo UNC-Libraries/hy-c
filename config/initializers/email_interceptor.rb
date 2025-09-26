@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class EmailSuppressionInterceptor
   def self.delivering_email(message)
     if Thread.current[:suppress_hyrax_emails]

@@ -4,11 +4,12 @@ module NotificationUtilsHelper
     return yield unless Rails.env.production?
 
     Thread.current[:suppress_hyrax_emails] = true
-    Rails.logger.info "[NotificationUtilsHelper] Email suppression enabled for current thread"
+    Rails.logger.info '[NotificationUtilsHelper] Email suppression enabled for current thread'
     yield
   ensure
-    Thread.current[:suppress_hyrax_emails] = false
-    Rails.logger.info "[NotificationUtilsHelper] Email suppression disabled"
+    if Rails.env.production?
+      Thread.current[:suppress_hyrax_emails] = nil
+      Rails.logger.info '[NotificationUtilsHelper] Email suppression disabled'
+    end
   end
 end
-

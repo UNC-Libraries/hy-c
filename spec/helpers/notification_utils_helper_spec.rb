@@ -3,10 +3,8 @@ require 'rails_helper'
 
 RSpec.describe NotificationUtilsHelper do
   describe '.suppress_emails' do
-    let(:config) { Rails.application.config.action_mailer }
-
     before do
-      allow(LogUtilsHelper).to receive(:double_log)
+      allow(Rails.logger).to receive(:info)
     end
 
     context 'when not in production' do
@@ -14,14 +12,14 @@ RSpec.describe NotificationUtilsHelper do
         allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
       end
 
-      it 'does not modify perform_deliveries and just yields' do
-        config.perform_deliveries = true
+      it 'does not set the thread-local flag and just yields' do
+        expect(Thread.current[:suppress_hyrax_emails]).to be_nil
 
         result = described_class.suppress_emails { :block_executed }
 
         expect(result).to eq(:block_executed)
-        expect(config.perform_deliveries).to be true
-        expect(LogUtilsHelper).not_to have_received(:double_log)
+        expect(Thread.current[:suppress_hyrax_emails]).to be_nil
+        expect(Rails.logger).not_to have_received(:info).with(/Email suppression enabled/)
       end
     end
 
@@ -30,27 +28,26 @@ RSpec.describe NotificationUtilsHelper do
         allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
       end
 
-      it 'disables perform_deliveries inside the block and restores it after' do
-        config.perform_deliveries = true
+      it 'sets and unsets the thread-local suppression flag' do
+        expect(Thread.current[:suppress_hyrax_emails]).to be_nil
 
         described_class.suppress_emails do
-          expect(config.perform_deliveries).to be false
+          expect(Thread.current[:suppress_hyrax_emails]).to be true
         end
 
-        expect(config.perform_deliveries).to be true
-        expect(LogUtilsHelper).to have_received(:double_log).with(/Suppressing emails/, :info, tag: 'suppress_emails')
-        expect(LogUtilsHelper).to have_received(:double_log).with(/Restored email delivery setting to: true/, :info, tag: 'suppress_emails')
+        expect(Thread.current[:suppress_hyrax_emails]).to be_nil
+        expect(Rails.logger).to have_received(:info).with(/\[NotificationUtilsHelper\] Email suppression enabled/)
+        expect(Rails.logger).to have_received(:info).with(/\[NotificationUtilsHelper\] Email suppression disabled/)
       end
 
-      it 'restores previous value even if block raises an exception' do
-        config.perform_deliveries = false
-
+      it 'unsets the flag even if an exception is raised' do
         expect {
-          described_class.suppress_emails { raise 'boom' }
-        }.to raise_error(RuntimeError, 'boom')
+          described_class.suppress_emails do
+            raise 'boom'
+          end
+        }.to raise_error('boom')
 
-        expect(config.perform_deliveries).to be false
-        expect(LogUtilsHelper).to have_received(:double_log).with(/Restored email delivery setting to: false/, :info, tag: 'suppress_emails')
+        expect(Thread.current[:suppress_hyrax_emails]).to be_nil
       end
     end
   end
