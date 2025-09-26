@@ -72,8 +72,6 @@ module Tasks
     #
     # Use this when you just need to register a work in the workflow system
     def create_sipity_workflow(work:)
-      LogUtilsHelper.double_log("Creating Sipity workflow for work #{work.id}", :info, tag: 'Sipity')
-
       join = Sipity::Workflow.joins(:permission_template)
       workflow = join.where(permission_templates: { source_id: work.admin_set_id }, active: true)
       unless workflow.present?
@@ -85,7 +83,7 @@ module Tasks
         raise(ActiveRecord::RecordNotFound, "Could not find Sipity::WorkflowState with workflow_id: #{workflow.first.id} and name: 'deposited'")
       end
 
-      LogUtilsHelper.double_log("Creating Sipity::Entity for work #{work.id}", :info, tag: 'Sipity')
+      Rails.logger.info("Creating Sipity::Entity for work #{work.id}")
       Sipity::Entity.create!(
         proxy_for_global_id: work.to_global_id.to_s,
         workflow: workflow.first,
@@ -95,29 +93,27 @@ module Tasks
 
     # Ensures that a work has proper permissions and workflow setup, creating them if needed.
     # Also forces pre-existing works into a specific workflow state (default: 'deposited').
-    def ensure_work_permissions_and_state!(work_id, depositor_uid, state: 'deposited')
+    def sync_permissions_and_state_and_state!(work_id, depositor_uid, state: 'deposited')
       work = Article.find(work_id)
-      ensure_work_permissions!(work, depositor_uid)
+      sync_permissions_and_state!(work, depositor_uid)
       force_workflow_state!(work, state: state)
       reindex_work!(work)
     end
 
     # Ensures that a work has proper permissions and workflow setup, creating them if needed.
     #
-    # Uses the Hyrax actor stack to "replay" the work creation process for an existing work.
     # This reapplies depositor permissions, workflow participants, and ensures the Sipity
     # entity + workflow state are present.
-    def ensure_work_permissions!(work, depositor_uid)
+    def sync_permissions_and_state!(work, depositor_uid)
       begin
         throw ArgumentError, 'No work provided to ensure permissions' if work.nil?
-        entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
 
-        if entity.nil?
-          Rails.logger.info "No Sipity entity found for #{work.id}; applying workflow/permissions"
-          user = User.find_by(uid: depositor_uid)
-          env  = Hyrax::Actors::Environment.new(work, Ability.new(user), {})
-          Hyrax::CurationConcern.actor.create(env)
-        end
+        entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+        create_sipity_workflow(work: work) if entity.nil?
+
+        # Sync permissions with admin set groups
+        work.permissions_attributes = group_permissions(work.admin_set)
+        work.save!
       rescue => e
         Rails.logger.error "Error ensuring permissions for work #{work_id}: #{e.message}"
         Rails.logger.error e.backtrace.join("\n")
