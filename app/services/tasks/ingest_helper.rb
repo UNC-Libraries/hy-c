@@ -93,9 +93,9 @@ module Tasks
 
     # Ensures that a work has proper permissions and workflow setup, creating them if needed.
     # Also forces pre-existing works into a specific workflow state (default: 'deposited').
-    def sync_permissions_and_state_and_state!(work_id, depositor_uid, state: 'deposited')
+    def sync_permissions_and_state!(work_id, depositor_uid, state: 'deposited')
       work = Article.find(work_id)
-      sync_permissions_and_state!(work, depositor_uid)
+      sync_permissions!(work, depositor_uid)
       force_workflow_state!(work, state: state)
       reindex_work!(work)
     end
@@ -104,7 +104,7 @@ module Tasks
     #
     # This reapplies depositor permissions, workflow participants, and ensures the Sipity
     # entity + workflow state are present.
-    def sync_permissions_and_state!(work, depositor_uid)
+    def sync_permissions!(work, depositor_uid)
       begin
         throw ArgumentError, 'No work provided to ensure permissions' if work.nil?
 

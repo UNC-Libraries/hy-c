@@ -122,7 +122,7 @@ RSpec.describe Tasks::IngestHelper do
     end
   end
 
-  describe '#sync_permissions_and_state_and_state!' do
+  describe '#sync_permissions_and_state!' do
     let(:admin_user) { FactoryBot.create(:user, uid: 'admin') }
     let(:admin_set) { FactoryBot.create(:admin_set) }
     let(:workflow) do
@@ -142,7 +142,7 @@ RSpec.describe Tasks::IngestHelper do
 
     context 'when work has no Sipity entity' do
       it 'creates the entity and sets it to deposited' do
-        helper.sync_permissions_and_state_and_state!(work.id, 'admin')
+        helper.sync_permissions_and_state!(work.id, 'admin')
 
         entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
         expect(entity).not_to be_nil
@@ -161,7 +161,7 @@ RSpec.describe Tasks::IngestHelper do
       end
 
       it 'updates the state to deposited' do
-        helper.sync_permissions_and_state_and_state!(work.id, 'admin')
+        helper.sync_permissions_and_state!(work.id, 'admin')
 
         expect(existing_entity.reload.workflow_state.name).to eq('deposited')
       end
