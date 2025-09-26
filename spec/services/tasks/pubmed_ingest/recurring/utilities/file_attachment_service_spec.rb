@@ -700,6 +700,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     before do
       service.instance_variable_set(:@records, records)
       allow(service).to receive(:process_record)
+      allow(service).to receive(:ensure_work_permissions_and_state!)
     end
 
     it 'processes all records' do
@@ -707,6 +708,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
       expect(service).to have_received(:process_record).with(sample_record)
       expect(service).to have_received(:process_record).with(sample_record_without_pmcid)
+      expect(service).to have_received(:ensure_work_permissions_and_state!).with('work_123', 'admin')
       expect(LogUtilsHelper).to have_received(:double_log).with(
         'Processing record 1 of 2', :info, tag: 'Attachment'
       )

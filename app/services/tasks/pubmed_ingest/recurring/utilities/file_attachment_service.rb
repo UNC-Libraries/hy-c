@@ -29,7 +29,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
     end
 
-    work_ids.uniq.each { |work_id| ensure_work_permissions!(work_id) }
+    work_ids.uniq.each { |work_id| ensure_work_permissions_and_state!(work_id, @config['depositor_onyen'])  }
   end
 
   def load_records_to_attach

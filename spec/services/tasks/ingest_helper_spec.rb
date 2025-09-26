@@ -122,38 +122,49 @@ RSpec.describe Tasks::IngestHelper do
     end
   end
 
-  describe '#ensure_work_permissions!' do
-    let(:mock_article) do
-      double(
-        'article',
-        id: 'work_123',
-        to_global_id: 'gid://hyrax/Article/work_123',
-        reload: true,
-        update_index: true
-      )
+  describe '#ensure_work_permissions_and_state!' do
+    let(:admin_user) { FactoryBot.create(:user, uid: 'admin') }
+    let(:admin_set) { FactoryBot.create(:admin_set) }
+    let(:workflow) do
+      # create a workflow + deposited state like Hyrax expects
+      permission_template = Hyrax::PermissionTemplate.find_or_create_by!(source_id: admin_set.id)
+      Sipity::Workflow.create!(permission_template: permission_template, active: true, name: 'default') do |wf|
+        Sipity::WorkflowState.create!(workflow: wf, name: 'deposited')
+      end
     end
 
-    let(:mock_env) { instance_double(Hyrax::Actors::Environment) }
-    let(:mock_user) { User.new(uid: 'admin', email: 'admin@example.com') }
+    let(:work) { FactoryBot.create(:article, admin_set: admin_set, depositor: admin_user.uid) }
 
     before do
+      workflow # ensure workflow + state exist
       helper.instance_variable_set(:@config, { 'depositor_onyen' => 'admin' })
-      allow(Article).to receive(:find).with('work_123').and_return(mock_article)
-      allow(Sipity::Entity).to receive(:find_by).and_return(nil)
-      allow(User).to receive(:find_by).with(uid: 'admin').and_return(mock_user)
-      allow(Hyrax::Actors::Environment).to receive(:new).and_return(mock_env)
-      allow(Hyrax::CurationConcern.actor).to receive(:create)
     end
 
-    it 'applies workflow/permissions via actor stack' do
-      helper.ensure_work_permissions!('work_123')
+    context 'when work has no Sipity entity' do
+      it 'creates the entity and sets it to deposited' do
+        helper.ensure_work_permissions_and_state!(work.id, 'admin')
 
-      expect(Hyrax::Actors::Environment).to have_received(:new).with(
-        mock_article,
-        instance_of(Ability),
-        hash_including({})
-      )
-      expect(Hyrax::CurationConcern.actor).to have_received(:create)
+        entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+        expect(entity).not_to be_nil
+        expect(entity.workflow).to eq(workflow)
+        expect(entity.workflow_state.name).to eq('deposited')
+      end
+    end
+
+    context 'when work already has a non-deposited state' do
+      let!(:existing_entity) do
+        Sipity::Entity.create!(
+          proxy_for_global_id: work.to_global_id.to_s,
+          workflow: workflow,
+          workflow_state: Sipity::WorkflowState.create!(workflow: workflow, name: 'draft')
+        )
+      end
+
+      it 'updates the state to deposited' do
+        helper.ensure_work_permissions_and_state!(work.id, 'admin')
+
+        expect(existing_entity.reload.workflow_state.name).to eq('deposited')
+      end
     end
   end
 end
