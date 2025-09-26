@@ -96,8 +96,9 @@ module Tasks
     # Ensures that a work has proper permissions and workflow setup, creating them if needed.
     # Also forces pre-existing works into a specific workflow state (default: 'deposited').
     def ensure_work_permissions_and_state!(work_id, depositor_uid, state: 'deposited')
-      work = ensure_work_permissions!(work_id, depositor_uid)
-      force_workflow_state!(work_id, state: state)
+      work = Article.find(work_id)
+      ensure_work_permissions!(work, depositor_uid)
+      force_workflow_state!(work, state: state)
       reindex_work!(work)
     end
 
@@ -106,11 +107,9 @@ module Tasks
     # Uses the Hyrax actor stack to "replay" the work creation process for an existing work.
     # This reapplies depositor permissions, workflow participants, and ensures the Sipity
     # entity + workflow state are present.
-    def ensure_work_permissions!(work_id, depositor_uid)
+    def ensure_work_permissions!(work, depositor_uid)
       begin
-        return if work_id.blank?
-
-        work = Article.find(work_id)
+        throw ArgumentError, 'No work provided to ensure permissions' if work.nil?
         entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
 
         if entity.nil?
@@ -119,9 +118,6 @@ module Tasks
           env  = Hyrax::Actors::Environment.new(work, Ability.new(user), {})
           Hyrax::CurationConcern.actor.create(env)
         end
-
-        work.reload
-        work.update_index
       rescue => e
         Rails.logger.error "Error ensuring permissions for work #{work_id}: #{e.message}"
         Rails.logger.error e.backtrace.join("\n")
@@ -129,8 +125,8 @@ module Tasks
     end
 
     # Forces a work into a specific workflow state, creating the Sipity::Entity if needed.
-    def force_workflow_state!(work_id, state: 'deposited')
-      work = Article.find(work_id)
+    def force_workflow_state!(work, state: 'deposited')
+      throw ArgumentError, 'No work provided to enforce workflow state' if work.nil?
       entity = Sipity::Entity.find_or_create_by!(proxy_for_global_id: work.to_global_id.to_s) do |e|
         e.workflow = Sipity::Workflow.joins(:permission_template)
                                     .find_by!(permission_templates: { source_id: work.admin_set_id }, active: true)
@@ -139,11 +135,11 @@ module Tasks
       target_state = Sipity::WorkflowState.find_by!(workflow: entity.workflow, name: state)
 
       if entity.workflow_state != target_state
-        Rails.logger.info "Updating workflow state for #{work_id} to #{state}"
+        Rails.logger.info "Updating workflow state for #{work.id} to #{state}"
         entity.update!(workflow_state: target_state)
       end
     rescue => e
-      Rails.logger.error "Failed to enforce workflow state for #{work_id}: #{e.message}"
+      Rails.logger.error "Failed to enforce workflow state for #{work.id}: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
     end
 
