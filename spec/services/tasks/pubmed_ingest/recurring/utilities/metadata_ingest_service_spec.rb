@@ -527,6 +527,31 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       expect(entry[:message]).to eq('Success')
       expect(entry[:timestamp]).to eq('2024-01-01T12:00:00Z')
     end
+
+    it 'does not record a duplicate for the same IDs' do
+      2.times do
+        service.send(:record_result,
+          category: :successfully_ingested_metadata_only,
+          ids: ids,
+          article: mock_article
+        )
+      end
+
+      buffer = service.instance_variable_get(:@write_buffer)
+      expect(buffer.size).to eq(1) # second call was skipped
+    end
+
+    it 'treats different IDs as distinct entries' do
+      first_ids = { 'pmid' => '123456', 'pmcid' => 'PMC789012' }
+      second_ids = { 'pmid' => '999999', 'pmcid' => 'PMC000111' }
+
+      service.send(:record_result, category: :successfully_ingested_metadata_only, ids: first_ids)
+      service.send(:record_result, category: :successfully_ingested_metadata_only, ids: second_ids)
+
+      buffer = service.instance_variable_get(:@write_buffer)
+      expect(buffer.size).to eq(2)
+      expect(buffer.map { |e| e[:ids][:pmid] }).to match_array(['123456', '999999'])
+    end
   end
 
   describe '#flush_buffer_to_file' do
