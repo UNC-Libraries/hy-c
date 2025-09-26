@@ -45,7 +45,16 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         full_text_path: @config['full_text_dir'],
         metadata_ingest_result_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
       )
-      file_attachment_service.run
+
+      # Suppress emails during file attachment in production to avoid spamming
+      if Rails.env.production?
+        NotificationUtilsHelper.suppress_emails do
+          file_attachment_service.run
+        end
+      else
+        file_attachment_service.run
+      end
+
       @tracker['progress']['attach_files_to_works']['completed'] = true
       @tracker.save
 
