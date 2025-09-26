@@ -92,42 +92,28 @@ module Tasks
     end
 
     # Ensures that a work has proper permissions and workflow setup, creating them if needed.
-    # Also forces pre-existing works into a specific workflow state (default: 'deposited').
+    # Forces pre-existing works into a specific workflow state (default: 'deposited').
     def sync_permissions_and_state!(work_id, depositor_uid, state: 'deposited')
       work = Article.find(work_id)
-      sync_permissions!(work, depositor_uid)
+      entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+
+      create_sipity_workflow(work: work) if entity.nil?
+      work.permissions_attributes = group_permissions(work.admin_set)
+      work.save!
+
       force_workflow_state!(work, state: state)
       reindex_work!(work)
-    end
-
-    # Ensures that a work has proper permissions and workflow setup, creating them if needed.
-    #
-    # This reapplies depositor permissions, workflow participants, and ensures the Sipity
-    # entity + workflow state are present.
-    def sync_permissions!(work, depositor_uid)
-      begin
-        throw ArgumentError, 'No work provided to ensure permissions' if work.nil?
-
-        entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
-        create_sipity_workflow(work: work) if entity.nil?
-
-        # Sync permissions with admin set groups
-        work.permissions_attributes = group_permissions(work.admin_set)
-        work.save!
-      rescue => e
-        Rails.logger.error "Error ensuring permissions for work #{work_id}: #{e.message}"
-        Rails.logger.error e.backtrace.join("\n")
-      end
+      work
     end
 
     # Forces a work into a specific workflow state, creating the Sipity::Entity if needed.
     def force_workflow_state!(work, state: 'deposited')
-      throw ArgumentError, 'No work provided to enforce workflow state' if work.nil?
-      entity = Sipity::Entity.find_or_create_by!(proxy_for_global_id: work.to_global_id.to_s) do |e|
-        e.workflow = Sipity::Workflow.joins(:permission_template)
-                                    .find_by!(permission_templates: { source_id: work.admin_set_id }, active: true)
+      raise ArgumentError, 'No work provided to enforce workflow state' if work.nil?
+      entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+      if entity.nil?
+        Rails.logger.warn "Sipity entity missing for #{work.id} when forcing workflow state."
+        raise ActiveRecord::RecordNotFound, "Sipity entity not found for #{work.id}"
       end
-
       target_state = Sipity::WorkflowState.find_by!(workflow: entity.workflow, name: state)
 
       if entity.workflow_state != target_state
