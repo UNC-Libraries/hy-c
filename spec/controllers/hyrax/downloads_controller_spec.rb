@@ -188,7 +188,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
                                     'e_n' => file_set.id,
                                     'e_v' => 'direct',
                                     'urlref' => nil,
-                                    'url' => "http://test.host/downloads/#{file_set.id}"
+                                    'url' => ERB.Util.html_escape("http://test.host/downloads/#{file_set.id}")
                                     }))
                .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
