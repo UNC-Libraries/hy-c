@@ -122,4 +122,49 @@ RSpec.describe Tasks::IngestHelper do
     end
   end
 
+  describe '#sync_permissions_and_state!' do
+    let(:admin_user) { FactoryBot.create(:user, uid: 'admin') }
+    let(:admin_set) { FactoryBot.create(:admin_set) }
+    let(:workflow) do
+      # create a workflow + deposited state like Hyrax expects
+      permission_template = Hyrax::PermissionTemplate.find_or_create_by!(source_id: admin_set.id)
+      Sipity::Workflow.create!(permission_template: permission_template, active: true, name: 'default') do |wf|
+        Sipity::WorkflowState.create!(workflow: wf, name: 'deposited')
+      end
+    end
+
+    let(:work) { FactoryBot.create(:article, admin_set: admin_set, depositor: admin_user.uid) }
+
+    before do
+      workflow # ensure workflow + state exist
+      helper.instance_variable_set(:@config, { 'depositor_onyen' => 'admin' })
+    end
+
+    context 'when work has no Sipity entity' do
+      it 'creates the entity and sets it to deposited' do
+        helper.sync_permissions_and_state!(work.id, 'admin')
+
+        entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+        expect(entity).not_to be_nil
+        expect(entity.workflow).to eq(workflow)
+        expect(entity.workflow_state.name).to eq('deposited')
+      end
+    end
+
+    context 'when work already has a non-deposited state' do
+      let!(:existing_entity) do
+        Sipity::Entity.create!(
+          proxy_for_global_id: work.to_global_id.to_s,
+          workflow: workflow,
+          workflow_state: Sipity::WorkflowState.create!(workflow: workflow, name: 'draft')
+        )
+      end
+
+      it 'updates the state to deposited' do
+        helper.sync_permissions_and_state!(work.id, 'admin')
+
+        expect(existing_entity.reload.workflow_state.name).to eq('deposited')
+      end
+    end
+  end
 end

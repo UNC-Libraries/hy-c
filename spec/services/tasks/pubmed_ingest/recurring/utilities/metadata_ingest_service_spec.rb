@@ -311,12 +311,24 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     let(:batch_articles) { pubmed_xml_doc.xpath('//PubmedArticle') }
     let(:mock_article) { double('article', save!: true, id: 'new_article_123', persisted?: true, destroy: true) }
     let(:alternate_ids) { { 'pmid' => '123456', 'pmcid' => 'PMC789012', 'doi' => '10.1000/example1' } }
+    let(:test_user) { User.new(uid: 'test_user', email: 'test@example.com') }
 
     before do
+      allow(User).to receive(:find_by).with(uid: 'test_user').and_return(test_user)
       allow(service).to receive(:retrieve_alternate_ids_for_doc).and_return(alternate_ids)
       allow(service).to receive(:find_best_work_match).and_return(nil)
       allow(service).to receive(:new_article).and_return(mock_article)
       allow(service).to receive(:record_result)
+      allow(Hyrax::Actors::Environment).to receive(:new).and_call_original
+      allow(Hyrax::CurationConcern.actor).to receive(:create).and_return(true)
+    end
+
+    it 'calls the actor stack to apply workflow/permissions' do
+      service.send(:process_batch, batch_articles)
+
+      expect(Hyrax::Actors::Environment).to have_received(:new)
+        .with(mock_article, instance_of(Ability), hash_including({}))
+      expect(Hyrax::CurationConcern.actor).to have_received(:create).with(instance_of(Hyrax::Actors::Environment))
     end
 
     context 'when work does not exist' do
@@ -514,6 +526,31 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       expect(entry[:category]).to eq(:successfully_ingested_metadata_only)
       expect(entry[:message]).to eq('Success')
       expect(entry[:timestamp]).to eq('2024-01-01T12:00:00Z')
+    end
+
+    it 'does not record a duplicate for the same IDs' do
+      2.times do
+        service.send(:record_result,
+          category: :successfully_ingested_metadata_only,
+          ids: ids,
+          article: mock_article
+        )
+      end
+
+      buffer = service.instance_variable_get(:@write_buffer)
+      expect(buffer.size).to eq(1) # second call was skipped
+    end
+
+    it 'treats different IDs as distinct entries' do
+      first_ids = { 'pmid' => '123456', 'pmcid' => 'PMC789012' }
+      second_ids = { 'pmid' => '999999', 'pmcid' => 'PMC000111' }
+
+      service.send(:record_result, category: :successfully_ingested_metadata_only, ids: first_ids)
+      service.send(:record_result, category: :successfully_ingested_metadata_only, ids: second_ids)
+
+      buffer = service.instance_variable_get(:@write_buffer)
+      expect(buffer.size).to eq(2)
+      expect(buffer.map { |e| e[:ids][:pmid] }).to match_array(['123456', '999999'])
     end
   end
 

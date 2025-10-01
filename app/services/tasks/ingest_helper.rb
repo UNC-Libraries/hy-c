@@ -68,9 +68,10 @@ module Tasks
       @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
     end
 
+    # Creates a Sipity::Entity for a work and links it to an *existing* workflow/state.
+    #
+    # Use this when you just need to register a work in the workflow system
     def create_sipity_workflow(work:)
-      LogUtilsHelper.double_log("Creating Sipity workflow for work #{work.id}", :info, tag: 'Sipity')
-
       join = Sipity::Workflow.joins(:permission_template)
       workflow = join.where(permission_templates: { source_id: work.admin_set_id }, active: true)
       unless workflow.present?
@@ -82,12 +83,51 @@ module Tasks
         raise(ActiveRecord::RecordNotFound, "Could not find Sipity::WorkflowState with workflow_id: #{workflow.first.id} and name: 'deposited'")
       end
 
-      LogUtilsHelper.double_log("Creating Sipity::Entity for work #{work.id}", :info, tag: 'Sipity')
+      Rails.logger.info("Creating Sipity::Entity for work #{work.id}")
       Sipity::Entity.create!(
         proxy_for_global_id: work.to_global_id.to_s,
         workflow: workflow.first,
         workflow_state: workflow_state.first
       )
+    end
+
+    # Ensures that a work has proper permissions and workflow setup, creating them if needed.
+    # Forces pre-existing works into a specific workflow state (default: 'deposited').
+    def sync_permissions_and_state!(work_id, depositor_uid, state: 'deposited')
+      work = Article.find(work_id)
+      entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+
+      create_sipity_workflow(work: work) if entity.nil?
+      work.permissions_attributes = group_permissions(work.admin_set)
+      work.save!
+
+      force_workflow_state!(work, state: state)
+      reindex_work!(work)
+      work
+    end
+
+    # Forces a work into a specific workflow state, creating the Sipity::Entity if needed.
+    def force_workflow_state!(work, state: 'deposited')
+      raise ArgumentError, 'No work provided to enforce workflow state' if work.nil?
+      entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
+      if entity.nil?
+        Rails.logger.warn "Sipity entity missing for #{work.id} when forcing workflow state."
+        raise ActiveRecord::RecordNotFound, "Sipity entity not found for #{work.id}"
+      end
+      target_state = Sipity::WorkflowState.find_by!(workflow: entity.workflow, name: state)
+
+      if entity.workflow_state != target_state
+        Rails.logger.info "Updating workflow state for #{work.id} to #{state}"
+        entity.update!(workflow_state: target_state)
+      end
+    rescue => e
+      Rails.logger.error "Failed to enforce workflow state for #{work.id}: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+    end
+
+    def reindex_work!(work)
+      work.reload
+      work.update_index
     end
   end
 end

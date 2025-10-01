@@ -9,6 +9,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     @tracker = tracker
     @write_buffer = []
     @flush_threshold = 200
+    @seen_ids = Set.new
   end
 
   def load_alternate_ids_from_file(path:)
@@ -158,6 +159,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         Rails.logger.info("[MetadataIngestService] No existing work found for IDs: #{alternate_ids.inspect}. Creating new article.")
         article = new_article(doc)
         article.save!
+
+        # Apply workflow and permissions via actor stack
+        user = User.find_by(uid: @config['depositor_onyen'])
+        env  = Hyrax::Actors::Environment.new(article, Ability.new(user), {})
+        Hyrax::CurationConcern.actor.create(env)
+
         record_result(
             category: :successfully_ingested_metadata_only,
             ids: alternate_ids,
@@ -216,6 +223,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def record_result(category:, message: '', ids: {}, article: nil)
+    key = ids.compact.values.join('-') # unique key based on pmid/pmcid/doi/work_id
+    return if @seen_ids.include?(key) # skip duplicate
+    @seen_ids << key
     # Merge article id into ids if article is provided
     log_entry = {
         ids: {

@@ -267,12 +267,26 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
 
     let(:mock_response) { double('response', code: 200, body: oa_response_body) }
+    let(:mock_article) do
+      double(
+        'article',
+        id: 'work_123',
+        to_global_id: 'gid://hyrax/Article/work_123',
+        admin_set_id: 'admin_set_123',
+        title: ['Dummy Title'],
+        human_readable_type: 'Article',
+        reload: true,
+        update_index: true
+      )
+    end
 
     before do
       allow(HTTParty).to receive(:get).and_return(mock_response)
       allow(service).to receive(:fetch_ftp_binary).and_return('pdf_binary_data')
       allow(service).to receive(:attach_pdf_to_work_with_file_path!)
       allow(service).to receive(:sleep)
+      allow(Article).to receive(:find).with('work_123').and_return(mock_article)
+      # RSpec::Mocks.space.proxy_for(service).reset
     end
 
     context 'when record has no PMCID' do
@@ -337,15 +351,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         XML
       end
 
-      before do
-        allow(service).to receive(:process_and_attach_tgz_file)
-      end
-
       it 'fetches and processes TGZ' do
-        service.process_record(sample_record)
+        expect(service).to receive(:fetch_ftp_binary).and_return('tgz_binary_data')
+        expect(service).to receive(:process_and_attach_tgz_file)
 
-        expect(service).to have_received(:fetch_ftp_binary)
-        expect(service).to have_received(:process_and_attach_tgz_file)
+        service.process_record(sample_record)
       end
     end
 
@@ -498,15 +508,16 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
   describe '#process_and_attach_tgz_file' do
     let(:tgz_path) { '/full/path/PMC123456.tar.gz' }
-    let(:mock_article) { double('article', id: 'work_123', reload: true, update_index: true) }
     let(:mock_user) { double('user', uid: 'admin') }
     let(:mock_gz_reader) { double('gz_reader', close: true) }
     let(:mock_tar_reader) { double('tar_reader') }
     let(:mock_pdf_entry) { double('entry', file?: true, full_name: 'article.pdf', read: 'pdf_binary') }
+    let(:article) { double('article', id: 'work_123', reload: true, update_index: true) }
 
     before do
-      allow(Article).to receive(:find).with('work_123').and_return(mock_article)
       allow(User).to receive(:find_by).with(uid: 'admin').and_return(mock_user)
+      allow(Article).to receive(:find).with('work_123').and_return(article)
+      allow(File).to receive(:expand_path).and_call_original
       allow(File).to receive(:expand_path).with(tgz_path).and_return(tgz_path)
       allow(service).to receive(:safe_gzip_reader).and_return(mock_gz_reader)
       allow(Gem::Package::TarReader).to receive(:new).with(mock_gz_reader).and_yield(mock_tar_reader)
@@ -519,8 +530,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       before do
         allow(mock_tar_reader).to receive(:each).and_yield(mock_pdf_entry)
         allow(File).to receive(:binwrite)
-        .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
-        .and_return(11)
+          .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
+          .and_return(11)
       end
 
       it 'processes TGZ file and attaches PDFs' do
@@ -533,8 +544,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
         service.process_and_attach_tgz_file(sample_record, tgz_path)
 
-        expect(mock_article).to have_received(:reload)
-        expect(mock_article).to have_received(:update_index)
+        expect(article).to have_received(:reload)
+        expect(article).to have_received(:update_index)
       end
     end
 
@@ -544,9 +555,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       before do
         allow(mock_tar_reader).to receive(:each).and_yield(nested_pdf_entry)
         allow(File).to receive(:binwrite)
-        .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
-        .and_return(11)
-
+          .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
+          .and_return(11)
       end
 
       it 'still attaches the PDF' do
@@ -599,14 +609,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
     context 'when processing fails' do
       before do
-        allow(Article).to receive(:find).and_raise(StandardError.new('Article not found'))
+        allow(Article).to receive(:find).and_raise(ActiveFedora::ObjectNotFoundError.new("Couldn't find Article with 'id'=work_123"))
       end
 
       it 'logs failure and error details' do
         expect(service).to receive(:log_attachment_outcome).with(
           sample_record,
           category: :failed,
-          message: /TGZ PDF processing failed: Article not found/,
+          message: "TGZ PDF processing failed: Couldn't find Article with 'id'=work_123",
           file_name: 'NONE'
         )
 
@@ -614,7 +624,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
     end
   end
-
 
   describe '#generate_filename_for_work' do
     context 'when work exists and has file sets' do
@@ -691,6 +700,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     before do
       service.instance_variable_set(:@records, records)
       allow(service).to receive(:process_record)
+      allow(service).to receive(:sync_permissions_and_state!)
     end
 
     it 'processes all records' do
@@ -698,6 +708,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
       expect(service).to have_received(:process_record).with(sample_record)
       expect(service).to have_received(:process_record).with(sample_record_without_pmcid)
+      expect(service).to have_received(:sync_permissions_and_state!).with('work_123', 'admin')
       expect(LogUtilsHelper).to have_received(:double_log).with(
         'Processing record 1 of 2', :info, tag: 'Attachment'
       )

@@ -22,10 +22,14 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   end
 
   def run
+    work_ids = []
     @records.each_with_index do |record, index|
       LogUtilsHelper.double_log("Processing record #{index + 1} of #{@records.size}", :info, tag: 'Attachment')
       process_record(record)
+      work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
     end
+
+    work_ids.uniq.each { |work_id| sync_permissions_and_state!(work_id, @config['depositor_onyen'])  }
   end
 
   def load_records_to_attach
@@ -121,6 +125,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         tgz_data = fetch_ftp_binary(uri, local_file_path: tgz_path)
         process_and_attach_tgz_file(record, tgz_path)
       end
+
     rescue => e
       # Do not retry if no PDF or TGZ link is found in the response
       if e.message.include?('No PDF or TGZ link found')
