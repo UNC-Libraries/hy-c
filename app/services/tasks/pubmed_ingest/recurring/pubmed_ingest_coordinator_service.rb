@@ -193,7 +193,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       report[:truncated_categories] = generate_truncated_categories(report[:records])
       report[:max_display_rows] = MAX_ROWS
       csv_paths = generate_result_csvs(report[:records])
-      PubmedReportMailer.truncated_pubmed_report_email(report, csv_paths).deliver_now
+      zip_path  = compress_result_csvs(csv_paths)
+      PubmedReportMailer.truncated_pubmed_report_email(report, zip_path).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
       LogUtilsHelper.double_log('Email notification sent successfully.', :info, tag: 'send_summary_email')
@@ -328,6 +329,23 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
     csv_paths
   end
+
+  def compress_result_csvs(csv_paths)
+    if csv_paths.blank?
+      raise 'No CSV paths provided for compression'
+    end
+
+    zip_path = File.join(@result_output_directory, 'pubmed_ingest_results.zip')
+    Zip::File.open(zip_path, Zip::File::CREATE) do |zip|
+      csv_paths.each do |path|
+        next unless File.exist?(path)
+        zip.add(File.basename(path), path)
+      end
+    end
+    LogUtilsHelper.double_log("Compressed CSVs into #{zip_path}", :info, tag: 'generate_result_csvs')
+    zip_path
+  end
+
 
   def generate_truncated_categories(report)
     trunc_categories = []
