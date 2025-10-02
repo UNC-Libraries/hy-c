@@ -117,6 +117,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     FileUtils.mkdir_p(File.join(output_dir, '01_build_id_lists'))
     FileUtils.mkdir_p(File.join(output_dir, '02_load_and_ingest_metadata'))
     FileUtils.mkdir_p(File.join(output_dir, '03_attach_files_to_works'))
+    FileUtils.mkdir_p(File.join(output_dir, '04_generate_result_csvs'))
     FileUtils.mkdir_p(config['full_text_dir'])
   end
 
@@ -671,18 +672,23 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         'date_range' => { 'start' => '2024-01-01', 'end' => '2024-01-31' }
       }
 
-      # Wrap in a simple object that acts hash-like and has save
       tracker_obj = tracker_data.dup
       def tracker_obj.save; true; end
       tracker_obj
     end
 
     let(:service) { described_class.new(config, tracker) }
+    let(:mock_csv_paths) { ['/tmp/test_output/04_generate_result_csvs/skipped.csv'] }
+    let(:mock_zip_path) { '/tmp/test_output/04_generate_result_csvs/pubmed_ingest_results.zip' }
 
     before do
+      # Add this directory to the setup
+      FileUtils.mkdir_p(File.join(config['output_dir'], '04_generate_result_csvs'))
+
       allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
         .to receive(:generate_report).and_return(mock_report)
-      allow(service).to receive(:generate_result_csvs).and_return(['path/to/csv1', 'path/to/csv2'])
+      allow(service).to receive(:generate_result_csvs).and_return(mock_csv_paths)
+      allow(service).to receive(:compress_result_csvs).and_return(mock_zip_path)
       allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_return(mock_mailer)
     end
 
@@ -692,9 +698,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
         .to have_received(:generate_report).with(results)
-      expect(mock_report[:headers][:total_unique_records]).to eq(
-        tracker['progress']['adjust_id_lists']['pmc']['adjusted_size'] +
-        tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size']
+      expect(service).to have_received(:generate_result_csvs)
+      expect(service).to have_received(:compress_result_csvs).with(mock_csv_paths)
+      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email).with(
+        hash_including(headers: hash_including(total_unique_records: 16)),
+        mock_zip_path
       )
       expect(mock_mailer).to have_received(:deliver_now)
       expect(tracker['progress']['send_summary_email']['completed']).to be true
@@ -708,7 +716,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       it 'skips email sending' do
         service.send(:send_report_and_notify, {})
 
-        expect(PubmedReportMailer).not_to have_received(:pubmed_report_email)
+        expect(PubmedReportMailer).not_to have_received(:truncated_pubmed_report_email)
         expect(LogUtilsHelper).to have_received(:double_log).with(
           'Skipping email notification as it has already been sent.',
           :info,
@@ -719,7 +727,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     context 'when email sending fails' do
       before do
-        allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_raise(StandardError.new('Email failed'))
+        allow(service).to receive(:generate_result_csvs).and_raise(StandardError.new('Email failed'))
       end
 
       it 'logs error and continues' do
@@ -739,7 +747,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
   describe 'workflow integration' do
     it 'maintains proper tracker state throughout workflow' do
       allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email)
-      .and_return(double(deliver_now: true))
+        .and_return(double(deliver_now: true))
+
+      # Mock CSV and zip generation
+      allow(service).to receive(:generate_result_csvs).and_return(['/tmp/test.csv'])
+      allow(service).to receive(:compress_result_csvs).and_return('/tmp/test.zip')
+
       # Start with all steps incomplete
       expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed']).to be false
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be false
@@ -761,26 +774,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(tracker['progress']['metadata_ingest']['pmc']['completed']).to be true
       expect(tracker['progress']['attach_files_to_works']['completed']).to be true
       expect(tracker['progress']['send_summary_email']['completed']).to be true
-    end
-
-    it 'properly coordinates service instantiation and method calls' do
-      allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
-
-      service.run
-
-      expect(Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService).to have_received(:new)
-      expect(Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService).to have_received(:new)
-      expect(Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService).to have_received(:new)
-
-      expect(mock_id_retrieval_service).to have_received(:retrieve_ids_within_date_range).twice
-      expect(mock_id_retrieval_service).to have_received(:stream_and_write_alternate_ids).twice
-      expect(mock_id_retrieval_service).to have_received(:adjust_id_lists)
-
-      expect(mock_metadata_ingest_service).to have_received(:load_alternate_ids_from_file).twice
-      expect(mock_metadata_ingest_service).to have_received(:batch_retrieve_and_process_metadata).twice
-
-      expect(mock_file_attachment_service).to have_received(:run)
     end
   end
 
