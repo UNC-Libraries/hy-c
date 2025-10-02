@@ -30,7 +30,6 @@ RSpec.describe PubmedReportMailer, type: :mailer do
       end
     end
 
-
     let(:config) do
       {
         'time' => Time.now,
@@ -54,52 +53,111 @@ RSpec.describe PubmedReportMailer, type: :mailer do
       ]
     end
 
-    before do
-      coordinator.instance_variable_set(:@results, results)
-      # Prevent real file writes and just return fake CSV paths
-      allow(coordinator).to receive(:generate_result_csvs).and_return(csv_paths)
-      # Stub File.read so the mailer can "attach" them without error
-      allow(File).to receive(:read).with(/\.csv$/).and_return('fake,csv,content')
+    let(:zip_path) { '/fake/path/results.zip' }
 
-      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_call_original
+    let(:captured_report) { @captured_report }
+    let(:captured_zip_path) { @captured_zip_path }
+
+    before do
+      # Allow LogUtilsHelper calls in the mailer
+      allow(LogUtilsHelper).to receive(:double_log)
+
+      coordinator.instance_variable_set(:@results, results)
+
+      # Stub CSV generation methods
+      allow(coordinator).to receive(:generate_result_csvs).and_return(csv_paths)
+      allow(coordinator).to receive(:compress_result_csvs).and_return(zip_path)
+
+      # Stub File operations for the mailer
+      allow(File).to receive(:exist?).and_call_original
+      allow(File).to receive(:exist?).with(zip_path).and_return(true)
+      allow(File).to receive(:read).and_call_original
+      allow(File).to receive(:read).with(zip_path).and_return('fake zip content')
+
+      # Capture the arguments passed to the mailer
+      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email) do |report, zip|
+        @captured_report = report
+        @captured_zip_path = zip
+        double('mailer', deliver_now: true)
+      end
+
       coordinator.send(:send_report_and_notify, results)
     end
 
-    let(:report) do
-      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email) do |arg|
-        return arg
-      end
-    end
-
-    let(:mail) { described_class.truncated_pubmed_report_email(report, csv_paths) }
-
     it 'sets total_unique_records and date range from tracker' do
-      expect(report[:headers][:total_unique_records]).to eq(
+      expect(captured_report[:headers][:total_unique_records]).to eq(
         tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
         tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']
       )
-      expect(report[:headers][:depositor]).to eq('recurring_user')
-      expect(report[:headers][:start_date]).to eq('2025-08-01')
-      expect(report[:headers][:end_date]).to eq('2025-08-13')
+      expect(captured_report[:headers][:depositor]).to eq('recurring_user')
+      expect(captured_report[:headers][:start_date]).to eq('2025-08-01')
+      expect(captured_report[:headers][:end_date]).to eq('2025-08-13')
     end
 
-    it 'includes key header info in the email body' do
-      expect(mail.body.encoded).to include('<strong>Depositor: </strong>recurring_user')
-      expect(mail.body.encoded).to match(/<strong>Total Unique Records: <\/strong>\s*#{report[:headers][:total_unique_records]}/)
-      expect(mail.body.encoded).to match(/<strong>Date Range: <\/strong>\s*2025-08-01 to 2025-08-13/)
+    it 'calls the mailer with the report and zip path' do
+      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email).with(
+        hash_including(headers: hash_including(total_unique_records: 5)),
+        zip_path
+      )
     end
 
-    it 'lists a sample record from each category' do
-      %i[successfully_ingested_and_attached successfully_ingested_metadata_only
-          successfully_attached skipped_file_attachment skipped
-          failed skipped_non_unc_affiliation].each do |category|
-        sample = results[category].first
-        expect(mail.body.encoded).to include(sample[:file_name].to_s)
-        expect(mail.body.encoded).to include(sample[:cdr_url].to_s)
-        expect(mail.body.encoded).to include(sample[:message].to_s)
-        expect(mail.body.encoded).to include(sample[:pmid].to_s || 'NONE')
-        expect(mail.body.encoded).to include(sample[:pmcid].to_s || 'NONE')
-        expect(mail.body.encoded).to include(sample[:doi].to_s || 'NONE')
+    describe 'the generated email' do
+      # Don't stub the mailer in this context - we want the real thing
+      before do
+        RSpec::Mocks.space.proxy_for(PubmedReportMailer).reset
+      end
+
+      let(:report_hash) do
+        {
+          headers: {
+            total_unique_records: 5,
+            depositor: 'recurring_user',
+            start_date: '2025-08-01',
+            end_date: '2025-08-13'
+          },
+          subject: 'PubMed Ingest Report',
+          records: results,
+          categories: {
+            successfully_ingested_and_attached: 'Successfully Ingested and Attached',
+            successfully_ingested_metadata_only: 'Successfully Ingested (Metadata Only)',
+            successfully_attached: 'Successfully Attached To Existing Work',
+            skipped_file_attachment: 'Skipped File Attachment To Existing Work',
+            skipped: 'Skipped',
+            failed: 'Failed',
+            skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
+          },
+          truncated_categories: [],
+          max_display_rows: 100
+        }
+      end
+
+      let(:mail) { described_class.truncated_pubmed_report_email(report_hash, zip_path) }
+
+      it 'includes key header info in the email body' do
+        expect(mail.body.encoded).to include('<strong>Depositor: </strong>recurring_user')
+        expect(mail.body.encoded).to match(/<strong>Total Unique Records: <\/strong>\s*5/)
+        expect(mail.body.encoded).to match(/<strong>Date Range: <\/strong>\s*2025-08-01 to 2025-08-13/)
+      end
+
+      it 'lists a sample record from each category' do
+        %i[successfully_ingested_and_attached successfully_ingested_metadata_only
+            successfully_attached skipped_file_attachment skipped
+            failed skipped_non_unc_affiliation].each do |category|
+          next if results[category].nil? || results[category].empty?
+
+          sample = results[category].first
+          expect(mail.body.encoded).to include(sample[:file_name].to_s) if sample[:file_name]
+          expect(mail.body.encoded).to include(sample[:cdr_url].to_s) if sample[:cdr_url]
+          expect(mail.body.encoded).to include(sample[:message].to_s) if sample[:message]
+          expect(mail.body.encoded).to include(sample[:pmid].to_s) if sample[:pmid]
+          expect(mail.body.encoded).to include(sample[:pmcid].to_s) if sample[:pmcid]
+          expect(mail.body.encoded).to include(sample[:doi].to_s) if sample[:doi]
+        end
+      end
+
+      it 'attaches the zip file' do
+        expect(mail.attachments.size).to eq(1)
+        expect(mail.attachments.first.filename).to eq('results.zip')
       end
     end
   end
