@@ -330,7 +330,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       raise 'No CSV paths provided for compression'
     end
 
-    zip_path = File.join(@result_output_directory, "pubmed_ingest_results.zip")
+    zip_path = File.join(@result_output_directory, 'pubmed_ingest_results.zip')
     Zip::File.open(zip_path, Zip::File::CREATE) do |zip|
       csv_paths.each do |path|
         next unless File.exist?(path)
