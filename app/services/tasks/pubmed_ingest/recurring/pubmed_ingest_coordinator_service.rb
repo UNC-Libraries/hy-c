@@ -249,10 +249,11 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         'restart_time' => script_start
       }
 
-      tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+      tracker = Tasks::PubmedIngestTracker.build(
         config: config,
         resume: true
       )
+
       config['full_text_dir'] = tracker['full_text_dir']
       config['depositor_onyen'] = tracker['depositor_onyen']
       config['admin_set_title'] = tracker['admin_set_title']

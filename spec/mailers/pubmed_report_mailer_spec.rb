@@ -18,7 +18,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
         }
       }
       instance_double(
-        'IngestTracker',
+        'PubmedIngestTracker',
         'progress' => progress_hash,
         'depositor_onyen' => 'recurring_user',
         'date_range' => { 'start' => '2025-08-01', 'end' => '2025-08-13' },

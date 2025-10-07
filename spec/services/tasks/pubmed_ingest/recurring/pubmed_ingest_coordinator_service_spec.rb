@@ -869,7 +869,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           admin_set_rel = double('rel', first: double('admin_set'))
           allow(AdminSet).to receive(:where).with(title_tesim: 'default').and_return(admin_set_rel)
 
-          allow(Tasks::PubmedIngest::SharedUtilities::IngestTracker)
+          allow(Tasks::PubmedIngestTracker)
           .to receive(:build)
           .and_return(tracker_double)
         end
@@ -882,7 +882,22 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           expect(config['depositor_onyen']).to eq('someone')
           expect(config['output_dir']).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
           expect(config['full_text_dir']).to match(%r{/full_text_pdfs_2024-01-02_03-04-05$})
-          expect(tracker).to eq(tracker_double)
+          expect(tracker['full_text_dir']).to match(%r{/full_text_pdfs_2024-01-02_03-04-05$})
+          expect(tracker['output_dir']).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
+          expect(tracker['depositor_onyen']).to eq('someone')
+          expect(tracker['date_range']['start']).to eq('2024-01-01')
+          expect(tracker['date_range']['end']).to eq('2024-01-31')
+          %w[
+          retrieve_ids_within_date_range
+          stream_and_write_alternate_ids
+          adjust_id_lists
+          metadata_ingest
+          attach_files_to_works
+          send_summary_email
+          ].each do |key|
+            expect(tracker['progress'][key]).not_to be_nil
+          end
+
 
             # created base + subdirs + full text
           expect(FileUtils).to have_received(:mkdir_p).with(Pathname.new(config['output_dir']))
@@ -906,7 +921,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
             # Pretend tracker file exists
           allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
 
-          allow(Tasks::PubmedIngest::SharedUtilities::IngestTracker)
+          allow(Tasks::PubmedIngestTracker)
           .to receive(:build)
           .with(config: hash_including('output_dir' => '/var/out/existing', 'restart_time' => now), resume: true)
           .and_return(tracker_double)
