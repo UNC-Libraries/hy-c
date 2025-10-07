@@ -37,8 +37,6 @@ class Tasks::BaseIngestTracker
     LogUtilsHelper.double_log("Failed to save ingest tracker: #{e.message}", :error, tag: 'Ingest Tracker')
   end
 
-    private
-
   def resume!(config)
     LogUtilsHelper.double_log('Resuming ingest from previous tracker state.', :info, tag: self.class.name)
     @data = load_tracker_file
@@ -50,6 +48,9 @@ class Tasks::BaseIngestTracker
     LogUtilsHelper.double_log('Initializing new ingest tracker.', :info, tag: self.class.name)
     @data = build_base_tracker(config)
   end
+
+
+    private
 
   def load_tracker_file
     LogUtilsHelper.double_log("Found existing ingest tracker at #{@path}. Loading data.", :info, tag: 'Ingest Tracker')
@@ -63,7 +64,7 @@ class Tasks::BaseIngestTracker
   def build_base_tracker(config)
     {
         'start_time' => config['time']&.strftime('%Y-%m-%d %H:%M:%S'),
-        'restart_time' => nil,
+        'restart_time' => config['restart_time']&.strftime('%Y-%m-%d %H:%M:%S'),
         'date_range' => {
         'start' => config['start_date']&.strftime('%Y-%m-%d'),
         'end' => config['end_date']&.strftime('%Y-%m-%d')

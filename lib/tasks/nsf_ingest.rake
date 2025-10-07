@@ -1,45 +1,94 @@
 # frozen_string_literal: true
 desc 'Ingest new PDFs from the NSF backlog and attach them to Hyrax works if matched'
-task :nsf_backlog_ingest, [:file_info_csv, :file_retrieval_directory, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |task, args|
-  return unless valid_args('nsf_ingest', args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title], args[:depositor_onyen], args[:file_info_csv])
+task :nsf_backlog_ingest, [:resume, :file_info_csv, :file_retrieval_directory, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |task, args|
+  return unless valid_args([args[:resume], args[:file_info_csv], args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title], args[:depositor_onyen]])
   config = build_config(args)
+  config['output_dir'] = resolve_output_directory(args, config)
   coordinator = Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService.new(config)
-  res = coordinator.run
+#   res = coordinator.run
+end
+
+def valid_args(args)
+  missing_args = []
+  missing_args << 'resume' if args[0].nil?
+  missing_args << 'file_info_csv' if args[1].nil?
+  missing_args << 'file_retrieval_directory' if args[2].nil?
+  missing_args << 'output_dir' if args[3].nil?
+  missing_args << 'admin_set_title' if args[4].nil?
+  missing_args << 'depositor_onyen' if args[5].nil?
+  unless missing_args.empty?
+    puts "❌ Missing required arguments: #{missing_args.join(', ')}"
+    exit(1)
+  end
+  true
 end
 
 def build_config(args)
-  now = Time.now
+  resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
   file_retrieval_directory = Pathname.new(args[:file_retrieval_directory]).absolute? ?
                                args[:file_retrieval_directory] :
                                Rails.root.join(args[:file_retrieval_directory])
+  output_directory = Pathname.new(args[:output_dir]).absolute? ?
+                               args[:output_dir] :
+                                  Rails.root.join(args[:output_dir])
   config = {
-    'time' => now,
-    'start_date' => args[:start_date] ? Date.parse(args[:start_date]) : nil,
-    'end_date' => args[:end_date] ? Date.parse(args[:end_date]) : nil,
+    'time' => resume ? nil : Time.now,
+    'restart_time' => resume ? Time.now : nil,
+    'resume' => ActiveModel::Type::Boolean.new.cast(args[:resume]),
     'admin_set_title' => args[:admin_set_title],
     'depositor_onyen' => args[:depositor_onyen],
-    'output_dir' => args[:output_dir] || Rails.root.join('tmp', "nsf_ingest_#{now.strftime('%Y-%m-%d_%H-%M-%S')}").to_s,
+    'output_dir' => args[:output_dir],
     'file_retrieval_directory' => file_retrieval_directory,
     'file_info_csv' => args[:file_info_csv]
   }
   write_intro_banner(config: config)
   config
-rescue ArgumentError => e
-  puts "❌ Invalid date format: #{e.message}"
-  exit(1)
+ rescue ArgumentError => e
+   puts "❌ Invalid date format: #{e.message}"
+   exit(1)
+end
+
+def resolve_output_directory(args, config)
+  output_dir = args[:output_dir]
+  # Check that the output dir exists
+  if !Dir.exist?(output_dir)
+    puts "❌ The specified output_dir '#{output_dir}' does not exist."
+    exit(1)
+  end
+  if args[:resume].to_s.downcase == 'true'
+      # Check that the output dir matches our format
+      # Retrieve the last part of the output dir path
+    output_dir_basename = File.basename(output_dir)
+    unless output_dir_basename.start_with?('nsf_backlog_ingest_')
+      puts "❌ When resuming, the output_dir must match the format 'nsf_backlog_ingest_YYYYMMDD_HHMMSS'"
+      exit(1)
+    end
+  else
+    timestamp = config['time'].strftime('%Y%m%d_%H%M%S')
+    output_dir = File.join(output_dir, "nsf_backlog_ingest_#{timestamp}")
+      # Create the directory if it doesn't exist
+    Dir.mkdir(output_dir) unless Dir.exist?(output_dir)
+    output_dir = File.expand_path(output_dir)
+  end
+
+  output_dir
 end
 
 def write_intro_banner(config:)
+  time_banner = config['time'] ?
+        "  Start Time: #{config['time'].strftime('%Y-%m-%d %H:%M:%S')}" :
+        "  Restart Time: #{config['restart_time'].strftime('%Y-%m-%d %H:%M:%S')}"
+
   banner_lines = [
     '=' * 80,
     '  NSF Ingest',
     '-' * 80,
-    "  Start Time: #{config['time'].strftime('%Y-%m-%d %H:%M:%S')}",
+     time_banner,
     "  Output Dir: #{config['output_dir']}",
     "  File Retrieval Dir: #{config['file_retrieval_directory']}",
+    "  File Info CSV: #{config['file_info_csv']}",
     "  Depositor:  #{config['depositor_onyen']}",
     "  Admin Set:  #{config['admin_set_title']}",
-    "  Date Range: #{config['start_date']} to #{config['end_date']}",
     '=' * 80
   ]
   banner_lines.each { |line| puts(line); Rails.logger.info(line) }
