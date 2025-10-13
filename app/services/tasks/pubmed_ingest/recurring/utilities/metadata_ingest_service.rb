@@ -24,7 +24,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       # Skip existing works in the results file
       next if existing_ids.include?(record['pmid']) || existing_ids.include?(record['pmcid'])
       # Skip if record is in hyrax
-      match = find_best_work_match(record.slice('pmid', 'pmcid', 'doi'))
+      match = WorkUtilsHelper.find_best_work_match_by_alternate_id(**record.slice('pmid', 'pmcid', 'doi').symbolize_keys)
       if match.present? && match[:work_id].present?
         Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
         article = WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
@@ -142,7 +142,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       alternate_ids = { 'pmid' => nil, 'pmcid' => nil, 'doi' => nil}
       begin
         alternate_ids = retrieve_alternate_ids_for_doc(doc)
-        match = find_best_work_match(alternate_ids)
+        match = WorkUtilsHelper.find_best_work_match_by_alternate_id(**alternate_ids.symbolize_keys)
         # Skip if work with these IDs already exists
         if match&.dig(:work_id).present?
           Rails.logger.info("[MetadataIngestService] Work with IDs #{alternate_ids.inspect} already exists: #{match[:work_id]}")
@@ -255,24 +255,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     rescue => e
       LogUtilsHelper.double_log("Failed to flush buffer to file: #{e.message}", :error, tag: 'MetadataIngestService')
       Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
-  end
-
-  def find_best_work_match(alternate_ids)
-    # ensures string keys
-    alt_ids = alternate_ids.transform_keys(&:to_s)
-    ['doi', 'pmcid', 'pmid'].each do |key|
-      id = alt_ids[key]
-      next if id.blank?
-
-      work_data = key == :doi ?
-        WorkUtilsHelper.fetch_work_data_by_doi(id) :
-        WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
-
-
-      work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
-      return work_data if work_data.present?
-    end
-    nil
   end
 
   def pubmed_xml_has_unc_affiliation?(nokogiri_doc)

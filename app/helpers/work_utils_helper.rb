@@ -199,5 +199,27 @@ module WorkUtilsHelper
     end
   end
 
+  # Wrapper to find best work match by trying each alternate identifier in order
+  def self.find_best_work_match_by_alternate_id(doi: nil, pmcid: nil, pmid: nil)
+    alt_ids = { doi: doi, pmcid: pmcid, pmid: pmid }.compact
+    return nil if alt_ids.empty?
+
+    alt_ids.each do |key, id|
+      next if id.blank?
+
+      work_data =
+        case key.to_s
+        when 'doi'
+          WorkUtilsHelper.fetch_work_data_by_doi(id)
+        else
+          WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
+        end
+
+      return work_data if work_data.present?
+    end
+
+    nil
+  end
+
   private_class_method :build_cdr_url, :log_and_nil, :generate_warning_message
 end

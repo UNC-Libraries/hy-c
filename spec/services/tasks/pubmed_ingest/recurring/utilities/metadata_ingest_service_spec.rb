@@ -150,7 +150,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     before do
       allow(File).to receive(:foreach).with(test_path).and_yield(sample_alternate_ids[0]).and_yield(sample_alternate_ids[1])
       allow(service).to receive(:load_last_results).and_return(Set.new)
-      allow(service).to receive(:find_best_work_match).and_return(nil)
+      allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return(nil)
       allow(service).to receive(:flush_buffer_to_file)
     end
 
@@ -180,7 +180,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     context 'when work already exists in Hyrax' do
       before do
-        allow(service).to receive(:find_best_work_match).and_return({
+        allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return({
           work_id: 'existing_work_123',
           work_type: 'Article'
         })
@@ -316,7 +316,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     before do
       allow(User).to receive(:find_by).with(uid: 'test_user').and_return(test_user)
       allow(service).to receive(:retrieve_alternate_ids_for_doc).and_return(alternate_ids)
-      allow(service).to receive(:find_best_work_match).and_return(nil)
+      allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return(nil)
       allow(service).to receive(:new_article).and_return(mock_article)
       allow(service).to receive(:record_result)
       allow(Hyrax::Actors::Environment).to receive(:new).and_call_original
@@ -352,7 +352,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       let(:mock_existing_article) { double('existing_article') }
 
       before do
-        allow(service).to receive(:find_best_work_match).and_return(existing_work_match)
+        allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return(existing_work_match)
         allow(WorkUtilsHelper).to receive(:fetch_model_instance).and_return(mock_existing_article)
       end
 
@@ -590,51 +590,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
           :error,
           tag: 'MetadataIngestService'
         )
-      end
-    end
-  end
-
-  describe '#find_best_work_match' do
-    let(:alternate_ids) { { pmid: '123456', pmcid: 'PMC789012', doi: '10.1000/example' } }
-
-    context 'when DOI matches existing work' do
-      let(:work_data) { { work_id: 'work_123', work_type: 'Article' } }
-
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_alternate_identifier)
-          .with('10.1000/example').and_return(work_data)
-      end
-
-      it 'returns work data for DOI match' do
-        result = service.send(:find_best_work_match, alternate_ids)
-        expect(result).to eq(work_data)
-      end
-    end
-
-    context 'when PMCID matches existing work' do
-      let(:work_data) { { work_id: 'work_456', work_type: 'Article' } }
-
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_alternate_identifier)
-          .with('10.1000/example').and_return(nil)
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_alternate_identifier)
-          .with('PMC789012').and_return(work_data)
-      end
-
-      it 'returns work data for PMCID match' do
-        result = service.send(:find_best_work_match, alternate_ids)
-        expect(result).to eq(work_data)
-      end
-    end
-
-    context 'when no matches found' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_alternate_identifier).and_return(nil)
-      end
-
-      it 'returns nil' do
-        result = service.send(:find_best_work_match, alternate_ids)
-        expect(result).to be_nil
       end
     end
   end

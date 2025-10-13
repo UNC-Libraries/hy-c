@@ -436,4 +436,50 @@ RSpec.describe WorkUtilsHelper, type: :module do
       expect(found.id).to eq(article.id)
     end
   end
+
+  describe '#find_best_work_match_by_alternate_id' do
+    let(:alternate_ids) { { pmid: '123456', pmcid: 'PMC789012', doi: '10.1000/example' } }
+
+    context 'when DOI matches existing work' do
+      let(:work_data) { { work_id: 'work_123', work_type: 'Article' } }
+
+      before do
+        allow(described_class).to receive(:fetch_work_data_by_doi)
+          .with('10.1000/example').and_return(work_data)
+      end
+
+      it 'returns work data for DOI match' do
+        result = described_class.send(:find_best_work_match_by_alternate_id, **alternate_ids)
+        expect(result).to eq(work_data)
+      end
+    end
+
+    context 'when PMCID matches existing work' do
+      let(:work_data) { { work_id: 'work_456', work_type: 'Article' } }
+
+      before do
+        allow(described_class).to receive(:fetch_work_data_by_alternate_identifier)
+          .with('10.1000/example').and_return(nil)
+        allow(described_class).to receive(:fetch_work_data_by_alternate_identifier)
+          .with('PMC789012').and_return(work_data)
+      end
+
+      it 'returns work data for PMCID match' do
+        result = described_class.send(:find_best_work_match_by_alternate_id, **alternate_ids)
+        expect(result).to eq(work_data)
+      end
+    end
+
+    context 'when no matches found' do
+      before do
+        allow(described_class).to receive(:fetch_work_data_by_doi).and_return(nil)
+        allow(described_class).to receive(:fetch_work_data_by_alternate_identifier).and_return(nil)
+      end
+
+      it 'returns nil' do
+        result = described_class.send(:find_best_work_match_by_alternate_id, **alternate_ids)
+        expect(result).to be_nil
+      end
+    end
+  end
 end
