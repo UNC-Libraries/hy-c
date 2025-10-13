@@ -27,18 +27,18 @@ module Tasks::NsfIngest::Backlog::Utilities
     def apply_additional_basic_attributes
       article.title = [metadata['title']&.first].compact.presence
       article.abstract = [metadata['abstract'] || 'N/A']
-      article.date_issued = metadata['indexed']['date-time'] ? DateTime.parse(metadata['indexed']['date-time']) : nil
+      article.date_issued = metadata['indexed']['date-time']
       article.publisher = [metadata['publisher']].compact.presence
       article.keyword = [metadata['subject']].flatten.compact.uniq
-      article.funder = [metadata.dig('funder', 0, 'name')].compact.presence
-      puts "WIP Additional attributes: #{article.title}, #{article.date_issued}, #{article.publisher}, #{article.funder}, keywords: #{article.keyword.inspect}, abstract: #{article.abstract}"
+      article.funder = retrieve_funder_names
+      puts "WIP Additional attributes: #{article.title.inspect}, date_issued: #{article.date_issued.inspect}, publisher: #{article.publisher.inspect}, keywords: #{article.keyword.inspect}, funders: #{article.funder.inspect}"
     end
 
     def set_identifiers
       article.doi = metadata['DOI'].presence
-      article.alternate_ids = format_publication_identifiers
+      article.identifier = format_publication_identifiers
       article.issn = retrieve_issn
-      puts "WIP Alternate IDs: #{article.alternate_ids.inspect}"
+      puts "WIP Alternate IDs: #{article.identifier.inspect}"
       puts "WIP ISSNs: #{article.issn.inspect}"
       puts "WIP DOI: #{article.doi}"
     end
@@ -53,6 +53,10 @@ module Tasks::NsfIngest::Backlog::Utilities
         pmcid ? "PMCID: #{pmcid}" : nil,
         doi   ? "DOI: https://dx.doi.org/#{doi}" : nil
       ].compact
+    end
+
+    def retrieve_funder_names
+      Array(metadata['funder']).map { |f| f['name'] }.compact.uniq
     end
 
     def retrieve_issn
@@ -110,8 +114,8 @@ module Tasks::NsfIngest::Backlog::Utilities
       end
     end
 
-    def extract_journal_title(msg)
-      Array(msg['container-title']).first || Array(msg['short-container-title']).first
+    def extract_journal_title
+      Array(metadata['container-title']).first || Array(metadata['short-container-title']).first
     end
   end
 end

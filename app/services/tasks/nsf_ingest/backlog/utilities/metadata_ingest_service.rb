@@ -53,6 +53,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       metadata = crossref_metadata_for_doi(record['doi'])
       # Instantiate new article
       article = new_article(metadata)
+      article.save!
 
       record_result(category: :successfully_ingested_metadata_only, ids: record.slice('pmid', 'pmcid', 'doi'), article: article)
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
@@ -63,6 +64,9 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     ensure
       flush_buffer_if_needed
     end
+    # Flush any remaining write buffer to file
+    flush_buffer_to_file unless @write_buffer.empty?
+    LogUtilsHelper.double_log("[MetadataIngestService] Ingest complete. Processed #{records_from_csv.size} records.", :info, tag: 'MetadataIngestService')
   end
 
   private
@@ -73,8 +77,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     url = URI.join(base_url, CGI.escape(doi))
     res = HTTParty.get(url)
     if res.code == 200
-      metadata = JSON.parse(res.body)['message']
-      new_article(metadata)
+      JSON.parse(res.body)['message']
     else
       raise "Failed to retrieve metadata from Crossref for DOI #{doi}: HTTP #{res.code}"
     end
