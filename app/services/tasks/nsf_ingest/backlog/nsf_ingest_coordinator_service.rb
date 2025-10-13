@@ -13,6 +13,19 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
     generate_output_subdirectories
   end
 
+  def run
+    # Step 1: Ingest metadata from CSV
+    unless @tracker['progress']['metadata_ingest']['completed']
+      md_ingest_service = Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService.new(
+        config: @config,
+        tracker: @tracker,
+        md_ingest_results_path: File.join(@config['output_dir'], LOAD_METADATA_OUTPUT_DIR, 'metadata_ingest_results.jsonl')
+      )
+      md_ingest_service.process_backlog
+      @tracker.save
+    end
+  end
+
   def generate_output_subdirectories
     [LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR, RESULT_CSV_OUTPUT_DIR].each do |dir|
       full_path = File.join(@config['output_dir'], dir)

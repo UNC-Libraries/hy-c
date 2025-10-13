@@ -5,7 +5,7 @@ task :nsf_backlog_ingest, [:resume, :file_info_csv, :file_retrieval_directory, :
   config = build_config(args)
   config['output_dir'] = resolve_output_directory(args, config)
   coordinator = Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService.new(config)
-#   res = coordinator.run
+  res = coordinator.run
 end
 
 def valid_args(args)

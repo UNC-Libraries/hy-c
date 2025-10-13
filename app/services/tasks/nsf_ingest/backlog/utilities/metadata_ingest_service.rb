@@ -11,7 +11,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     @tracker = tracker
     @write_buffer = []
     @flush_threshold = 100
-    @seen_dois = load_last_results
+    @seen_doi_list = load_last_results
   end
 
   def load_last_results
@@ -35,10 +35,10 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
   def process_backlog
     # Read the CSV file
-    records_from_csv = remaining_records_from_csv(@seen_dois)
+    records_from_csv = remaining_records_from_csv(@seen_doi_list)
     records_from_csv.each do |record|
       # Skip existing works in the results file
-      next if existing_ids.include?(record['pmid']) || existing_ids.include?(record['pmcid'])
+      next if @seen_doi_list.include?(record['doi']) && record['doi'].present?
       # Skip if record is in hyrax
       match = WorkUtilsHelper.find_best_work_match_by_alternate_id(**record.slice('pmid', 'pmcid', 'doi').symbolize_keys)
       if match.present? && match[:work_id].present?
@@ -50,7 +50,9 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
       # WIP: Add logic to check if file exists in the retrieval directory
       # Retrieve metadata from Crossref
+      metadata = crossref_metadata_for_doi(record['doi'])
       # Instantiate new article
+      article = new_article(metadata)
 
       record_result(category: :successfully_ingested_metadata_only, ids: record.slice('pmid', 'pmcid', 'doi'), article: article)
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
@@ -64,6 +66,18 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   private
+
+  def crossref_metadata_for_doi(doi)
+    puts "Retrieving metadata for DOI: #{doi}"
+    base_url = 'https://api.crossref.org/works/'
+    url = URI.join(base_url, CGI.escape(doi))
+    res = HTTParty.get(url)
+    if res.code == 200
+      JSON.parse(res.body)['message']
+    else
+      raise "Failed to retrieve metadata from Crossref for DOI #{doi}: HTTP #{res.code}"
+    end
+  end
 
   def new_article(metadata)
      # Create new work
@@ -81,8 +95,8 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
   def record_result(category:, message: '', ids: {}, article: nil)
     doi = ids['doi']
-    return if seen_doi_list.include?(doi) && doi.present?
-    @seen_dois << doi if doi.present?
+    return if @seen_doi_list.include?(doi) && doi.present?
+    @seen_doi_list << doi if doi.present?
       # Merge article id into ids if article is provided
     log_entry = {
         ids: {
