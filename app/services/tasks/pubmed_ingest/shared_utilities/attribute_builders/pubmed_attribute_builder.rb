@@ -3,7 +3,7 @@ module Tasks
   module PubmedIngest
     module SharedUtilities
       module AttributeBuilders
-        class PubmedAttributeBuilder < BaseAttributeBuilder
+        class PubmedAttributeBuilder < Tasks::BaseAttributeBuilder
 
           def find_skipped_row(new_pubmed_works)
             Rails.logger.info("[PubMed] Finding skipped row for article: #{article.title}")

@@ -57,7 +57,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       record_result(category: :successfully_ingested_metadata_only, ids: record.slice('pmid', 'pmcid', 'doi'), article: article)
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
     rescue => e
-      Rails.logger.error("[MetadataIngestService] Error processing record #{record.inspect}: #{e.message}")
+      Rails.logger.error("[MetadataIngestService] Error processing record for DOI #{record['doi']}: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n"))
       record_result(category: :failed, message: e.message, ids: record.slice('pmid', 'pmcid', 'doi'))
     ensure
@@ -73,7 +73,8 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     url = URI.join(base_url, CGI.escape(doi))
     res = HTTParty.get(url)
     if res.code == 200
-      JSON.parse(res.body)['message']
+      metadata = JSON.parse(res.body)['message']
+      new_article(metadata)
     else
       raise "Failed to retrieve metadata from Crossref for DOI #{doi}: HTTP #{res.code}"
     end
@@ -83,7 +84,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
      # Create new work
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-    builder = Tasks::NsfIngest::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+    builder = Tasks::NsfIngest::Backlog::Utilities::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     builder.populate_article_metadata
     article.save!
 
