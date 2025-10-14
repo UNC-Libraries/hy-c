@@ -70,21 +70,20 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
         raise "No metadata found from Crossref or OpenAlex for DOI #{record['doi']}."
       end
 
-      if crossref_md.present?
-        if openalex_md.present?
-          crossref_md['openalex_abstract'] = generate_open_alex_abstract(openalex_md)
-          concepts = (openalex_md['concepts'] || []).map { |c| c['display_name'] }
-          keywords = (openalex_md['keywords'] || []).map { |k| k['display_name'] }
-          crossref_md['openalex_keywords'] = (concepts + keywords).uniq
-        end
-      else
+      if crossref_md.nil?
         LogUtilsHelper.double_log("No metadata found from Crossref for DOI #{record['doi']}." \
                                   'Falling back to OpenAlex metadata if available.', :warn, tag: 'MetadataIngestService')
-        # WIP: Fallback to OpenAlex metadata if Crossref is unavailable
         source = 'openalex'
       end
+
+      resolved_md = crossref_md || openalex_md
+      resolved_md['openalex_abstract'] = generate_open_alex_abstract(openalex_md)
+      concepts = (resolved_md['concepts'] || []).map { |c| c['display_name'] }
+      keywords = (resolved_md['keywords'] || []).map { |k| k['display_name'] }
+      resolved_md['openalex_keywords'] = (concepts + keywords).uniq
+
       # Instantiate new article
-      article = new_article(crossref_md, source)
+      article = new_article(resolved_md, source)
       article.save!
 
       record_result(category: :successfully_ingested_metadata_only, ids: record.slice('pmid', 'pmcid', 'doi'), article: article)
@@ -134,7 +133,11 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     # WIP: Attribute builder depending on source of metadata
-    builder = Tasks::NsfIngest::Backlog::Utilities::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+    builder = if source == 'openalex'
+                Tasks::NsfIngest::Backlog::Utilities::OpenAlexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+    else
+      Tasks::NsfIngest::Backlog::Utilities::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+    end
     builder.populate_article_metadata
     article.save!
 

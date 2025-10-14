@@ -58,7 +58,7 @@ module WorkUtilsHelper
 
     # Step 2: If that fails, normalize DOI and search identifier_tesim with wildcard
     if work_data.blank?
-      normalized_doi = normalize_if_doi(doi)
+      normalized_doi = normalize_doi(doi)
       if normalized_doi
         fallback_value = "DOI: https://dx.doi.org/#{normalized_doi}"
         fallback_query = "identifier_tesim:\"#{fallback_value}\" NOT has_model_ssim:(\"FileSet\")"
@@ -187,7 +187,7 @@ module WorkUtilsHelper
     end
   end
 
-  def self.normalize_if_doi(identifier)
+  def self.normalize_doi(identifier)
     return identifier unless identifier.is_a?(String)
     # Strip prefix if it's a full DOI URL
     if identifier.match?(%r{\Ahttps?://(dx\.)?doi\.org/}i)
