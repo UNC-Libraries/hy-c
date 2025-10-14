@@ -250,7 +250,7 @@ GEM
       rubyzip
       simple_form
     byebug (11.1.3)
-    cancancan (1.17.0)
+    cancancan (3.6.1)
     capybara (3.40.0)
       addressable
       matrix
@@ -482,14 +482,14 @@ GEM
       deprecation
       mime-types (> 2.0, < 4.0)
       mini_magick (>= 3.2, < 5)
-    hydra-editor (6.1.0)
+    hydra-editor (6.2.0)
       active-fedora (>= 9.0.0)
-      activerecord (>= 5.2, < 6.2)
+      activerecord (>= 5.2, < 7.1)
       almond-rails (~> 0.1)
-      cancancan (~> 1.8)
+      cancancan
       psych (~> 3.3, < 4)
-      rails (>= 5.2, < 6.2)
-      simple_form (>= 4.1.0, < 6.0)
+      rails (>= 5.2, < 7.1)
+      simple_form (>= 4.1.0, < 5.2)
       sprockets (>= 3.7)
       sprockets-es6
     hydra-file_characterization (1.2.0)
@@ -498,20 +498,20 @@ GEM
       hydra-access-controls (= 12.1.0)
       hydra-core (= 12.1.0)
       rails (>= 5.2, < 7.1)
-    hydra-pcdm (1.4.0)
-      active-fedora (>= 10)
+    hydra-pcdm (1.3.0)
+      active-fedora (>= 10, < 15)
       mime-types (>= 1)
       rdf-vocab
-    hydra-role-management (1.2.0)
-      blacklight (< 8)
+    hydra-role-management (1.1.0)
+      blacklight
       bootstrap_form
       bundler (>= 1.5)
       cancancan
       json (>= 1.8)
       psych (~> 3.0)
-    hydra-works (2.2.0)
-      activesupport (>= 5.2, < 8.0)
-      hydra-derivatives (>= 3.6)
+    hydra-works (2.1.0)
+      activesupport (>= 5.2, < 7.1)
+      hydra-derivatives (~> 3.6)
       hydra-file_characterization (~> 1.0)
       hydra-pcdm (>= 0.9)
     i18n (1.14.7)
@@ -988,7 +988,7 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    simple_form (5.3.1)
+    simple_form (5.1.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
     simplecov (0.22.0)
@@ -1140,8 +1140,10 @@ DEPENDENCIES
   fcrepo_wrapper (~> 0.9.0)
   ffaker
   httparty (~> 0.21.0)
-  hydra-editor (~> 6.0)
-  hydra-role-management (~> 1.0)
+  hydra-editor (~> 6.2.0)
+  hydra-pcdm (~> 1.3.0)
+  hydra-role-management (~> 1.1.0)
+  hydra-works (~> 2.1.0)
   hyrax!
   jbuilder (~> 2.11.2)
   jquery-rails (~> 4.5.0)

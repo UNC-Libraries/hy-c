@@ -27,8 +27,10 @@ gem 'edtf-humanize', '~> 2.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.21.0'
-gem 'hydra-editor', '~> 6.0'
-gem 'hydra-role-management', '~> 1.0'
+gem 'hydra-editor', '~> 6.2.0'
+gem 'hydra-pcdm', '~> 1.3.0'
+gem 'hydra-role-management', '~> 1.1.0'
+gem 'hydra-works', '~> 2.1.0'
 gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyrax-4-development'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
