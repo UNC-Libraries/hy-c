@@ -62,20 +62,29 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
         next
       end
 
-      # WIP: Add logic to check if file exists in the retrieval directory
-      # Retrieve metadata from Crossref
-      metadata = crossref_metadata_for_doi(record['doi'])
-      if metadata.present? && (metadata['abstract'].blank? || metadata['subject'].blank?)
-\        openalex = openalex_metadata_for_doi(record['doi'])
-        if openalex.present?
-          metadata['openalex_abstract'] = generate_open_alex_abstract(openalex)
-          concepts = (openalex['concepts'] || []).map { |c| c['display_name'] }
-          keywords = (openalex['keywords'] || []).map { |k| k['display_name'] }
-          metadata['openalex_keywords'] = (concepts + keywords).uniq
+      crossref_md = crossref_metadata_for_doi(record['doi'])
+      openalex_md = openalex_metadata_for_doi(record['doi'])
+      source = 'crossref'
+
+      if crossref_md.nil? && openalex_md.nil?
+        raise "No metadata found from Crossref or OpenAlex for DOI #{record['doi']}."
+      end
+
+      if crossref_md.present?
+        if openalex_md.present?
+          crossref_md['openalex_abstract'] = generate_open_alex_abstract(openalex_md)
+          concepts = (openalex_md['concepts'] || []).map { |c| c['display_name'] }
+          keywords = (openalex_md['keywords'] || []).map { |k| k['display_name'] }
+          crossref_md['openalex_keywords'] = (concepts + keywords).uniq
         end
+      else
+        LogUtilsHelper.double_log("No metadata found from Crossref for DOI #{record['doi']}." \
+                                  'Falling back to OpenAlex metadata if available.', :warn, tag: 'MetadataIngestService')
+        # WIP: Fallback to OpenAlex metadata if Crossref is unavailable
+        source = 'openalex'
       end
       # Instantiate new article
-      article = new_article(metadata)
+      article = new_article(crossref_md, source)
       article.save!
 
       record_result(category: :successfully_ingested_metadata_only, ids: record.slice('pmid', 'pmcid', 'doi'), article: article)
@@ -102,7 +111,8 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     if res.code == 200
       JSON.parse(res.body)['message']
     else
-      raise "Failed to retrieve metadata from Crossref for DOI #{doi}: HTTP #{res.code}"
+      Rails.logger.error("Failed to retrieve metadata from Crossref for DOI #{doi}: HTTP #{res.code}")
+      nil
     end
   end
 
@@ -114,14 +124,16 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     if res.code == 200
       JSON.parse(res.body)
     else
-      raise "Failed to retrieve metadata from OpenAlex for DOI #{doi}: HTTP #{res.code}"
+      Rails.logger.error("Failed to retrieve metadata from OpenAlex for DOI #{doi}: HTTP #{res.code}")
+      nil
     end
   end
 
-  def new_article(metadata)
+  def new_article(metadata, source)
      # Create new work
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+    # WIP: Attribute builder depending on source of metadata
     builder = Tasks::NsfIngest::Backlog::Utilities::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     builder.populate_article_metadata
     article.save!

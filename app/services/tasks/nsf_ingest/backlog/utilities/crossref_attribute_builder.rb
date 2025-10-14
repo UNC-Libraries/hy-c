@@ -26,10 +26,10 @@ module Tasks::NsfIngest::Backlog::Utilities
 
     def apply_additional_basic_attributes
       article.title = [metadata['title']&.first].compact.presence
-      article.abstract = [metadata['abstract'] || 'N/A']
+      article.abstract = [metadata['openalex_abstract'] || 'N/A']
       article.date_issued = metadata['indexed']['date-time']
       article.publisher = [metadata['publisher']].compact.presence
-      article.keyword = [metadata['subject']].flatten.compact.uniq
+      article.keyword = metadata['openalex_keywords'] || []
       article.funder = retrieve_funder_names
       puts "WIP Additional attributes: #{article.title.inspect}, date_issued: #{article.date_issued.inspect}, publisher: #{article.publisher.inspect}, keywords: #{article.keyword.inspect}, funders: #{article.funder.inspect}"
     end
