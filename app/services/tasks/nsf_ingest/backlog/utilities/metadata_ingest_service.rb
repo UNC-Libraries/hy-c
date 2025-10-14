@@ -33,6 +33,20 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     end
   end
 
+  def generate_open_alex_abstract(openalex_metadata)
+    return nil unless openalex_metadata && openalex_metadata['abstract_inverted_index'].present?
+    inverted_index = openalex_metadata['abstract_inverted_index']
+    # Reconstruct abstract from inverted index
+    tokens = inverted_index.flat_map do |word, positions|
+      positions.map { |pos| [word, pos] }
+    end
+    # Sort by position
+    sorted_tokens = tokens.sort_by { |_, pos| pos }
+    # Join words to form the abstract
+    abstract =  sorted_tokens.map { |word, _| word }.join(' ')
+    abstract
+  end
+
   def process_backlog
     # Read the CSV file
     records_from_csv = remaining_records_from_csv(@seen_doi_list)
@@ -51,6 +65,15 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       # WIP: Add logic to check if file exists in the retrieval directory
       # Retrieve metadata from Crossref
       metadata = crossref_metadata_for_doi(record['doi'])
+      if metadata.present? && (metadata['abstract'].blank? || metadata['subject'].blank?)
+\        openalex = openalex_metadata_for_doi(record['doi'])
+        if openalex.present?
+          metadata['openalex_abstract'] = generate_open_alex_abstract(openalex)
+          concepts = (openalex['concepts'] || []).map { |c| c['display_name'] }
+          keywords = (openalex['keywords'] || []).map { |k| k['display_name'] }
+          metadata['openalex_keywords'] = (concepts + keywords).uniq
+        end
+      end
       # Instantiate new article
       article = new_article(metadata)
       article.save!
@@ -83,6 +106,18 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     end
   end
 
+  def openalex_metadata_for_doi(doi)
+    puts "Retrieving OpenAlex metadata for DOI: #{doi}"
+    base_url = 'https://api.openalex.org/works/doi:'
+    url = URI.join(base_url, CGI.escape(doi))
+    res = HTTParty.get(url)
+    if res.code == 200
+      JSON.parse(res.body)
+    else
+      raise "Failed to retrieve metadata from OpenAlex for DOI #{doi}: HTTP #{res.code}"
+    end
+  end
+
   def new_article(metadata)
      # Create new work
     article = Article.new
@@ -95,7 +130,6 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     sync_permissions_and_state!(article.id, @config['depositor_onyen'])
     article
   end
-
 
   def record_result(category:, message: '', ids: {}, article: nil)
     doi = ids['doi']
