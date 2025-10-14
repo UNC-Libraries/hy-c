@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'babel/transpiler'
 
 Rails.application.config.assets.configure do |env|
@@ -24,6 +25,6 @@ Rails.application.config.assets.configure do |env|
     # Override the ES6 transformer
     env.register_transformer 'text/ecmascript-6', 'application/javascript', babel_processor
   else
-    puts("###Babel Initializer: Babel not available")
+    puts('###Babel Initializer: Babel not available')
   end
 end

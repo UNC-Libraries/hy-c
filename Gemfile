@@ -77,12 +77,13 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'fcrepo_wrapper', '~> 0.9.0'
   gem 'rspec-rails', '~> 5.1.2'
-  # Rubocop for style and error checking (linter)
-  gem 'rubocop'
+  # Rubocop for style and error checking (linter), locking version for now since newer versions have more rules
+  gem 'rubocop', '~> 1.58.0'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
   gem 'solr_wrapper', '~> 4.0.2'
-  gem 'rubocop-github'
+  # Locking for now otherwise newer versions reject some of the rules
+  gem 'rubocop-github', '~> 0.20.0'
   gem 'rubocop-performance', require: false
 end
 
