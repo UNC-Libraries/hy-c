@@ -55,7 +55,7 @@ gem 'passenger', '6.0.22', require: 'phusion_passenger/rack_handler'
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0'
-gem 'rdf', '~> 3.2.11'
+gem 'rdf', '~> 3.3.4'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
 gem 'redlock' # version determined by hyrax
