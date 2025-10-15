@@ -98,6 +98,7 @@ end
 
 group :test do
   gem 'capybara', '~> 3.36'
+  gem 'equivalent-xml', '~> 0.6'
   gem 'factory_bot_rails', '~> 6.2.0'
   gem 'ffaker'
   gem 'rspec-mocks'
