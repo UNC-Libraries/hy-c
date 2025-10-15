@@ -142,7 +142,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       alternate_ids = { 'pmid' => nil, 'pmcid' => nil, 'doi' => nil}
       begin
         alternate_ids = retrieve_alternate_ids_for_doc(doc)
-        match = WorkUtilsHelper.find_best_work_match_by_alternate_id(**alternate_ids.symbolize_keys)
+        filtered_ids = alternate_ids.slice('pmid', 'pmcid', 'doi')
+        match = WorkUtilsHelper.find_best_work_match_by_alternate_id(**filtered_ids.symbolize_keys)
         # Skip if work with these IDs already exists
         if match&.dig(:work_id).present?
           Rails.logger.info("[MetadataIngestService] Work with IDs #{alternate_ids.inspect} already exists: #{match[:work_id]}")

@@ -869,7 +869,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           admin_set_rel = double('rel', first: double('admin_set'))
           allow(AdminSet).to receive(:where).with(title_tesim: 'default').and_return(admin_set_rel)
 
-          allow(Tasks::PubmedIngestTracker)
+          allow(Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker)
           .to receive(:build)
           .and_return(tracker_double)
         end
@@ -921,7 +921,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
             # Pretend tracker file exists
           allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
 
-          allow(Tasks::PubmedIngestTracker)
+          allow(Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker)
           .to receive(:build)
           .with(config: hash_including('output_dir' => '/var/out/existing', 'restart_time' => now), resume: true)
           .and_return(tracker_double)

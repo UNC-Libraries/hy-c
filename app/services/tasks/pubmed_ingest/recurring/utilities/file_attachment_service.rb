@@ -1,20 +1,12 @@
 # frozen_string_literal: true
 require 'net/ftp'
-require 'tempfile'
 require 'zlib'
 require 'rubygems/package'
 
-class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
-  include Tasks::IngestHelper
-
-  RETRY_LIMIT = 3
-  SLEEP_BETWEEN_REQUESTS = 0.25
-
+class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::BaseFileAttachmentService
   def initialize(config:, tracker:, output_path:, full_text_path:, metadata_ingest_result_path:)
+    super(config: config, tracker: tracker, output_path: output_path)
     @log_file = File.join(output_path, 'attachment_results.jsonl')
-    @config = config
-    @tracker = tracker
-    @output_path = output_path
     @full_text_path = full_text_path
     @metadata_ingest_result_path = metadata_ingest_result_path
     @existing_ids = load_existing_attachment_ids
@@ -78,12 +70,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
 
     return false
-  end
-
-  def has_fileset?(work_id)
-    work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-    return false if work.nil?
-    work[:file_set_ids]&.any?
   end
 
   def process_record(record)
@@ -222,25 +208,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
   def group_permissions(admin_set)
     @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
-  end
-
-  def generate_filename_for_work(work_id, pmcid)
-    work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-    return nil unless work
-    suffix = work[:file_set_ids].present? ? format('%03d', work[:file_set_ids].size + 1) : '001'
-    "#{pmcid}_#{suffix}.pdf"
-  end
-
-  def log_attachment_outcome(record, category:, message:, file_name: nil)
-    entry = {
-      ids: record['ids'],
-      timestamp: Time.now.utc.iso8601,
-      category: category,
-      message: message,
-      file_name: file_name
-    }
-    @tracker.save
-    File.open(@log_file, 'a') { |f| f.puts(entry.to_json) }
   end
 
   # Determine category for records that are skipped for file attachment

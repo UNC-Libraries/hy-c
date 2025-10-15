@@ -249,7 +249,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         'restart_time' => script_start
       }
 
-      tracker = Tasks::PubmedIngestTracker.build(
+      tracker = Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker.build(
         config: config,
         resume: true
       )
@@ -307,7 +307,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       }
 
       write_intro_banner(config: config)
-      tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+      tracker = Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker.build(
         config: config,
         resume: resume_flag
       )
