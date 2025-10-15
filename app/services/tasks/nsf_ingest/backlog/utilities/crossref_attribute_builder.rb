@@ -26,7 +26,7 @@ module Tasks::NsfIngest::Backlog::Utilities
 
     def apply_additional_basic_attributes
       article.title = [metadata['title']&.first].compact.presence
-      article.abstract = [metadata['openalex_abstract'] || 'N/A']
+      article.abstract = [metadata['openalex_abstract'] || metadata['datacite_abstract'] || 'N/A']
       article.date_issued = metadata['indexed']['date-time']
       article.publisher = [metadata['publisher']].compact.presence
       article.keyword = metadata['openalex_keywords'] || []

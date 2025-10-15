@@ -62,8 +62,9 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
         next
       end
 
-      crossref_md = crossref_metadata_for_doi(record['doi'])
-      openalex_md = openalex_metadata_for_doi(record['doi'])
+      crossref_md = fetch_metadata_for_doi(source: 'crossref', doi: record['doi'])
+      openalex_md = fetch_metadata_for_doi(source: 'openalex', doi: record['doi'])
+      datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
       source = 'crossref'
 
       if crossref_md.nil? && openalex_md.nil?
@@ -78,6 +79,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
       resolved_md = crossref_md || openalex_md
       resolved_md['openalex_abstract'] = generate_open_alex_abstract(openalex_md)
+      resolved_md['datacite_abstract'] = datacite_md['attributes']['description'] if datacite_md && datacite_md['attributes'] && datacite_md['attributes']['description'].present?
       concepts = (resolved_md['concepts'] || []).map { |c| c['display_name'] }
       keywords = (resolved_md['keywords'] || []).map { |k| k['display_name'] }
       resolved_md['openalex_keywords'] = (concepts + keywords).uniq
@@ -103,7 +105,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   private
 
   def crossref_metadata_for_doi(doi)
-    puts "Retrieving metadata for DOI: #{doi}"
+    puts "Retrieving Crossref metadata for DOI: #{doi}"
     base_url = 'https://api.crossref.org/works/'
     url = URI.join(base_url, CGI.escape(doi))
     res = HTTParty.get(url)
@@ -117,7 +119,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
   def openalex_metadata_for_doi(doi)
     puts "Retrieving OpenAlex metadata for DOI: #{doi}"
-    base_url = 'https://api.openalex.org/works/doi:'
+    base_url = 'https://api.openalex.org/works/https://doi.org/'
     url = URI.join(base_url, CGI.escape(doi))
     res = HTTParty.get(url)
     if res.code == 200
@@ -128,13 +130,53 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     end
   end
 
+  def fetch_metadata_for_doi(source:, doi:)
+    raise ArgumentError, 'DOI must be provided' if doi.blank?
+    raise ArgumentError, 'Source must be one of: crossref, openalex, datacite' unless %w[crossref openalex datacite].include?(source)
+
+    base_url =
+      case source
+      when 'crossref'
+        'https://api.crossref.org/works/'
+      when 'openalex'
+        'https://api.openalex.org/works/https://doi.org/'
+      when 'datacite'
+        'https://api.datacite.org/dois/'
+      end
+
+    # build URL and log
+    puts "Retrieving #{source.capitalize} metadata for DOI: #{doi}"
+    url = URI.join(base_url, CGI.escape(doi))
+
+    res = HTTParty.get(url)
+    if res.code == 200
+      parsed = JSON.parse(res.body)
+      case source
+      when 'crossref'
+        parsed['message']
+      when 'openalex'
+        parsed
+      when 'datacite'
+        parsed['data']
+      end
+    else
+      Rails.logger.error("[MetadataIngestService] Failed to retrieve metadata from #{source.capitalize} "\
+                        "for DOI #{doi}: HTTP #{res.code}")
+      nil
+    end
+  rescue => e
+    Rails.logger.error("[MetadataIngestService] Error retrieving #{source.capitalize} metadata for DOI #{doi}: #{e.message}")
+    nil
+  end
+
+
   def new_article(metadata, source)
      # Create new work
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     # WIP: Attribute builder depending on source of metadata
     builder = if source == 'openalex'
-                Tasks::NsfIngest::Backlog::Utilities::OpenAlexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+                Tasks::NsfIngest::Backlog::Utilities::OpenalexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     else
       Tasks::NsfIngest::Backlog::Utilities::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     end

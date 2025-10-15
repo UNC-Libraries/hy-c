@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Tasks::NsfIngest::Backlog::Utilities
-  class OpenAlexAttributeBuilder < Tasks::BaseAttributeBuilder
+  class OpenalexAttributeBuilder < Tasks::BaseAttributeBuilder
     private
 
     def generate_authors
@@ -28,15 +28,16 @@ module Tasks::NsfIngest::Backlog::Utilities
     def apply_additional_basic_attributes
       article.title = [metadata['title']].compact.presence
       article.abstract = [metadata['openalex_abstract'] || 'N/A']
-      article.date_issued = DateTime.parse(metadata['publication_date'])
-      article.publisher = [metadata.dig('primary_location', 'source', 'host_organization_name')]
+      # ('%Y-%m-%dT00:00:00Z')
+      article.date_issued = DateTime.parse(metadata['publication_date']).strftime('%Y-%m-%dT00:00:00Z')
+      article.publisher = metadata.dig('primary_location', 'source', 'host_organization_name')
       article.keyword = metadata['openalex_keywords'] || []
       article.funder = retrieve_funder_names
       puts "WIP Additional attributes: #{article.title.inspect}, date_issued: #{article.date_issued.inspect}, publisher: #{article.publisher.inspect}, keywords: #{article.keyword.inspect}, funders: #{article.funder.inspect}"
     end
 
     def set_identifiers
-      article.doi = metadata['doi'].presence? ? WorkUtilsHelper.normalize_doi(metadata['doi']) : nil
+      article.doi = metadata['doi'].present? ? WorkUtilsHelper.normalize_doi(metadata['doi']) : nil
       article.identifier = format_publication_identifiers
       article.issn = retrieve_issn
       puts "WIP Alternate IDs: #{article.identifier.inspect}"
@@ -45,7 +46,7 @@ module Tasks::NsfIngest::Backlog::Utilities
     end
 
     def format_publication_identifiers
-      doi =  metadata['doi'].presence? ? WorkUtilsHelper.normalize_doi(metadata['doi']) : nil
+      doi =  metadata['doi'].present? ? WorkUtilsHelper.normalize_doi(metadata['doi']) : nil
       pmid, pmcid = retrieve_alt_ids_from_europe_pmc(doi)
 
       puts "WIP Retrieved alternate IDs from Europe PMC for DOI #{doi}: PMID=#{pmid}, PMCID=#{pmcid}"
