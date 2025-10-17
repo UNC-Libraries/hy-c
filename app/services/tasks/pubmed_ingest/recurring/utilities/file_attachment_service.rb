@@ -9,36 +9,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
     @log_file = File.join(output_path, 'attachment_results.jsonl')
     @full_text_path = full_text_path
     @metadata_ingest_result_path = metadata_ingest_result_path
-    @existing_ids = load_existing_attachment_ids
-    @records = load_records_to_attach
-  end
-
-  def run
-    work_ids = []
-    @records.each_with_index do |record, index|
-      LogUtilsHelper.double_log("Processing record #{index + 1} of #{@records.size}", :info, tag: 'Attachment')
-      process_record(record)
-      work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
-    end
-
-    work_ids.uniq.each { |work_id| sync_permissions_and_state!(work_id, @config['depositor_onyen'])  }
-  end
-
-  def load_records_to_attach
-    records = []
-    LogUtilsHelper.double_log('Loading records to attach files to.', :info, tag: 'File Attachment Service')
-    File.foreach(@metadata_ingest_result_path) do |line|
-      record = JSON.parse(line)
-      next if filter_record?(record)
-      records << record
-    end
-    LogUtilsHelper.double_log("Loaded #{records.size} records to attach files to.", :info, tag: 'File Attachment Service')
-    records
-  end
-
-  def load_existing_attachment_ids
-    return Set.new unless File.exist?(@log_file)
-    Set.new(File.readlines(@log_file).map { |line| JSON.parse(line.strip).values_at('ids').flat_map(&:values).compact }.flatten)
+    @existing_ids = load_seen_attachment_ids
+    @records = fetch_attachment_candidates
   end
 
   def filter_record?(record)
@@ -153,7 +125,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
     Zlib::GzipReader.new(str_io)
   end
 
-
   def process_and_attach_tgz_file(record, tgz_path)
     pmcid = record.dig('ids', 'pmcid')
     work_id = record.dig('ids', 'work_id')
@@ -204,10 +175,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
       Rails.logger.error "TGZ PDF processing failed for #{pmcid}: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
     end
-  end
-
-  def group_permissions(admin_set)
-    @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
   end
 
   # Determine category for records that are skipped for file attachment

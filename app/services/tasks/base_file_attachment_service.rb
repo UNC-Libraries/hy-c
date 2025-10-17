@@ -19,7 +19,7 @@ class Tasks::BaseFileAttachmentService
 
   def run
     work_ids = []
-    load_records_to_attach.each_with_index do |record, index|
+    fetch_attachment_candidates.each_with_index do |record, index|
       LogUtilsHelper.double_log("Processing record #{index + 1}", :info, tag: self.class.name)
       process_record(record)
       work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
@@ -29,15 +29,33 @@ class Tasks::BaseFileAttachmentService
   end
 
   # overridable by subclasses
-  def load_records_to_attach
-    raise NotImplementedError, 'Subclasses must implement load_records_to_attach'
-  end
 
   def process_record(record)
     raise NotImplementedError, 'Subclasses must implement process_record'
   end
 
+  def filter_record?(record)
+    raise NotImplementedError, 'Subclasses must implement filter_record?'
+  end
+
   # shared helpers
+
+  def fetch_attachment_candidates
+    records = []
+    LogUtilsHelper.double_log('Loading records to attach files to.', :info, tag: 'File Attachment Service')
+    File.foreach(@metadata_ingest_result_path) do |line|
+      record = JSON.parse(line)
+      next if filter_record?(record)
+      records << record
+    end
+    LogUtilsHelper.double_log("Loaded #{records.size} records to attach files to.", :info, tag: 'File Attachment Service')
+    records
+  end
+
+  def load_seen_attachment_ids
+    return Set.new unless File.exist?(@log_file)
+    Set.new(File.readlines(@log_file).map { |line| JSON.parse(line.strip).values_at('ids').flat_map(&:values).compact }.flatten)
+  end
 
   def has_fileset?(work_id)
     work = WorkUtilsHelper.fetch_work_data_by_id(work_id)

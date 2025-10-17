@@ -67,11 +67,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
   end
 
-  describe '#load_existing_attachment_ids' do
+  describe '#load_seen_attachment_ids' do
     context 'when log file does not exist' do
       it 'returns empty set' do
         allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(false)
-        ids = service.load_existing_attachment_ids
+        ids = service.load_seen_attachment_ids
         expect(ids).to be_a(Set)
         expect(ids).to be_empty
       end
@@ -91,13 +91,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
 
       it 'returns set of existing IDs' do
-        ids = service.load_existing_attachment_ids
+        ids = service.load_seen_attachment_ids
         expect(ids).to include('PMC123', '456', 'PMC789', '012')
       end
     end
   end
 
-  describe '#load_records_to_attach' do
+  describe '#fetch_attachment_candidates' do
     let(:metadata_content) do
       [
         sample_record.to_json,
@@ -111,7 +111,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
 
     it 'loads and parses records from metadata file' do
-      records = service.load_records_to_attach
+      records = service.fetch_attachment_candidates
       expect(records).to be_an(Array)
       expect(records.size).to eq(2)
     end
@@ -120,7 +120,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       allow(service).to receive(:filter_record?).with(sample_record).and_return(true)
       allow(service).to receive(:filter_record?).with(sample_record_without_pmcid).and_return(false)
 
-      records = service.load_records_to_attach
+      records = service.fetch_attachment_candidates
       expect(records.size).to eq(1)
       expect(records.first).to eq(sample_record_without_pmcid)
     end
