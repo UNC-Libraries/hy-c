@@ -14,30 +14,14 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
   end
 
   def filter_record?(record)
+    return true if super
     pmcid = record.dig('ids', 'pmcid')
-    work_id = record.dig('ids', 'work_id')
-    category = record['category']
     # Skip records that have already been processed if resuming
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
-    # Skip records that were skipped due to no UNC affiliation
-    if category == 'skipped_non_unc_affiliation'
-      log_attachment_outcome(record, category: :skipped_non_unc_affiliation, message: 'N/A', file_name: 'NONE')
-      return true
-    end
 
     if pmcid.blank?
         # Can only retrieve files using PMCID
       log_attachment_outcome(record, category: category_for_skipped_file_attachment(record), message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
-      return true
-    end
-    # Skip if work already has files attached
-    if work_id.present? && has_fileset?(work_id)
-      log_attachment_outcome(record, category: :skipped, message: 'Already exists and has files attached', file_name: 'NONE')
-      return true
-    end
-
-    if category == 'failed'
-      log_attachment_outcome(record, category: :failed, message: record['pdf_attached'] || 'No message provided', file_name: 'NONE')
       return true
     end
 
@@ -175,19 +159,5 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
       Rails.logger.error "TGZ PDF processing failed for #{pmcid}: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
     end
-  end
-
-  # Determine category for records that are skipped for file attachment
-  # - If the record existed before the current run, categorize as :skipped_file_attachment
-  # - Otherwise, categorize as :successfully_ingested_metadata_only
-  def category_for_skipped_file_attachment(record)
-    record['category'] == 'skipped' ? :skipped_file_attachment : :successfully_ingested_metadata_only
-  end
-
-  # Determine category for file attachment success
-  # - If the record existed before the current run, categorize as :successfully_attached
-  # - Otherwise, categorize as :successfully_ingested_and_attached
-  def category_for_successful_attachment(record)
-    record['category'] == 'skipped' ? :successfully_attached : :successfully_ingested_and_attached
   end
 end

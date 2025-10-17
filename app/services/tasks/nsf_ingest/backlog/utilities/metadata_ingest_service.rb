@@ -6,7 +6,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
   def initialize(config:, tracker:, md_ingest_results_path:)
     @config = config
-    @file_info_csv = config['file_info_csv']
+    @file_info_csv_path = config['file_info_csv_path']
     @output_dir = config['output_dir']
     @md_ingest_results_path = md_ingest_results_path
     @admin_set = AdminSet.where(title: config['admin_set_title']).first
@@ -78,7 +78,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   def remaining_records_from_csv(seen_doi_list)
-    records = CSV.read(@file_info_csv, headers: true).map(&:to_h)
+    records = CSV.read(@file_info_csv_path, headers: true).map(&:to_h)
     records.reject do |record|
       doi = record['doi']
       doi.present? && seen_doi_list.include?(doi)

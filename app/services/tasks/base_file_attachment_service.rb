@@ -34,11 +34,31 @@ class Tasks::BaseFileAttachmentService
     raise NotImplementedError, 'Subclasses must implement process_record'
   end
 
-  def filter_record?(record)
-    raise NotImplementedError, 'Subclasses must implement filter_record?'
-  end
-
   # shared helpers
+
+  def filter_record?(record)
+    work_id = record.dig('ids', 'work_id')
+    category = record['category']
+  # Skip records that have already been processed if resuming
+    return true if @existing_ids.include?(work_id)
+  # Skip records that were skipped due to no UNC affiliation
+    case category
+    when 'skipped_non_unc_affiliation'
+      log_attachment_outcome(record, category: :skipped_non_unc_affiliation, message: 'N/A', file_name: 'NONE')
+      return true
+    when 'failed'
+      log_attachment_outcome(record, category: :failed, message: record['pdf_attached'] || 'No message provided',
+                            file_name: 'NONE')
+      return true
+    end
+  # Skip if work already has files attached
+    if work_id.present? && has_fileset?(work_id)
+      log_attachment_outcome(record, category: :skipped, message: 'Already exists and has files attached', file_name: 'NONE')
+      return true
+    end
+
+    return false
+  end
 
   def fetch_attachment_candidates
     records = []
@@ -85,5 +105,19 @@ class Tasks::BaseFileAttachmentService
     }
     tracker.save
     File.open(File.join(output_path, 'attachment_results.jsonl'), 'a') { |f| f.puts(entry.to_json) }
+  end
+
+    # Determine category for records that are skipped for file attachment
+    # - If the record existed before the current run, categorize as :skipped_file_attachment
+    # - Otherwise, categorize as :successfully_ingested_metadata_only
+  def category_for_skipped_file_attachment(record)
+    record['category'] == 'skipped' ? :skipped_file_attachment : :successfully_ingested_metadata_only
+  end
+
+    # Determine category for file attachment success
+    # - If the record existed before the current run, categorize as :successfully_attached
+    # - Otherwise, categorize as :successfully_ingested_and_attached
+  def category_for_successful_attachment(record)
+    record['category'] == 'skipped' ? :successfully_attached : :successfully_ingested_and_attached
   end
 end

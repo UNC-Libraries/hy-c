@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 desc 'Ingest new PDFs from the NSF backlog and attach them to Hyrax works if matched'
-task :nsf_backlog_ingest, [:resume, :file_info_csv, :file_retrieval_directory, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |task, args|
-  return unless valid_args([args[:resume], args[:file_info_csv], args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title], args[:depositor_onyen]])
+task :nsf_backlog_ingest, [:resume, :file_info_csv_path, :file_retrieval_directory, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |task, args|
+  return unless valid_args([args[:resume], args[:file_info_csv_path], args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title], args[:depositor_onyen]])
   config = build_config(args)
   config['output_dir'] = resolve_output_directory(args, config)
   coordinator = Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService.new(config)
@@ -11,7 +11,7 @@ end
 def valid_args(args)
   missing_args = []
   missing_args << 'resume' if args[0].nil?
-  missing_args << 'file_info_csv' if args[1].nil?
+  missing_args << 'file_info_csv_path' if args[1].nil?
   missing_args << 'file_retrieval_directory' if args[2].nil?
   missing_args << 'output_dir' if args[3].nil?
   missing_args << 'admin_set_title' if args[4].nil?
@@ -39,7 +39,7 @@ def build_config(args)
     'depositor_onyen' => args[:depositor_onyen],
     'output_dir' => args[:output_dir],
     'file_retrieval_directory' => file_retrieval_directory,
-    'file_info_csv' => args[:file_info_csv]
+    'file_info_csv_path' => args[:file_info_csv_path]
   }
   write_intro_banner(config: config)
   config
@@ -86,7 +86,7 @@ def write_intro_banner(config:)
      time_banner,
     "  Output Dir: #{config['output_dir']}",
     "  File Retrieval Dir: #{config['file_retrieval_directory']}",
-    "  File Info CSV: #{config['file_info_csv']}",
+    "  File Info CSV: #{config['file_info_csv_path']}",
     "  Depositor:  #{config['depositor_onyen']}",
     "  Admin Set:  #{config['admin_set_title']}",
     '=' * 80

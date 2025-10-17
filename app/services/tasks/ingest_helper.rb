@@ -2,17 +2,21 @@
 module Tasks
   require 'tasks/migration_helper'
   module IngestHelper
-    def attach_pdf_to_work(work, file_path, depositor, visibility)
+    def attach_pdf_to_work(work, file_path, depositor, visibility, filename: nil)
       LogUtilsHelper.double_log("Attaching PDF to work #{work.id} from path #{file_path}", :info, tag: 'AttachPDF')
-      attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility)
+      attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility, filename: filename)
     end
 
-    def attach_xml_to_work(work, file_path, depositor)
+    def attach_xml_to_work(work, file_path, depositor, filename: nil)
       LogUtilsHelper.double_log("Attaching XML to work #{work.id} from path #{file_path}", :info, tag: 'AttachXML')
-      attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+      attach_file_set_to_work(work: work, 
+                          file_path: file_path, 
+                          user: depositor, 
+                          visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE,
+                          filename: filename)
     end
 
-    def attach_pdf_to_work_with_file_path!(record, file_path, depositor_onyen)
+    def attach_pdf_to_work_with_file_path!(record, file_path, depositor_onyen, filename: nil)
       work_id = record.dig('ids', 'work_id')
       raise ArgumentError, 'No article ID found to attach PDF' unless work_id.present?
 
@@ -20,11 +24,11 @@ module Tasks
       depositor = ::User.find_by(uid: depositor_onyen)
       raise 'No depositor found' unless depositor
 
-      file_set = attach_pdf_to_work(article, file_path, depositor, article.visibility)
+      file_set = attach_pdf_to_work(article, file_path, depositor, article.visibility, filename: filename)
       file_set
     end
 
-    def attach_file_set_to_work(work:, file_path:, user:, visibility:)
+    def attach_file_set_to_work(work:, file_path:, user:, visibility:, filename:)
       file_set_params = { visibility: visibility }
 
       begin
@@ -50,10 +54,11 @@ module Tasks
 
           file_set.permissions_attributes = group_permissions(work.admin_set)
           file_set.save!
-
-          Rails.logger.info("Successfully attached FileSet #{file_set.id} to work #{work.id}")
-          file_set.label = File.basename(file_path)
-          file_set.title = [File.basename(file_path)]
+          
+          display_filename = filename || File.basename(file_path)
+          file_set.label = display_filename
+          file_set.title = [display_filename]
+          Rails.logger.info("Attached FileSet #{file_set.id} to #{work.id} as #{display_filename}")
           file_set
         end
       rescue StandardError => e
