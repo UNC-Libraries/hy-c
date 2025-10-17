@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::NsfIngest::Backlog::Utilities::ResultLoggerHelper
+module Tasks::IngestResultLogHelper
   def record_result(category:, message: '', ids: {}, article: nil)
     doi = ids['doi']
     return if @seen_doi_list.include?(doi) && doi.present?
