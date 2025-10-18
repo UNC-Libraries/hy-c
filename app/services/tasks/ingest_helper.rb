@@ -2,21 +2,21 @@
 module Tasks
   require 'tasks/migration_helper'
   module IngestHelper
-    def attach_pdf_to_work(work, file_path, depositor, visibility, filename: nil)
+    def attach_pdf_to_work(work:, file_path:, depositor:, visibility:, filename: nil)
       LogUtilsHelper.double_log("Attaching PDF to work #{work.id} from path #{file_path}", :info, tag: 'AttachPDF')
       attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility, filename: filename)
     end
 
-    def attach_xml_to_work(work, file_path, depositor, filename: nil)
+    def attach_xml_to_work(work:, file_path:, depositor:, filename: nil)
       LogUtilsHelper.double_log("Attaching XML to work #{work.id} from path #{file_path}", :info, tag: 'AttachXML')
-      attach_file_set_to_work(work: work, 
-                          file_path: file_path, 
-                          user: depositor, 
+      attach_file_set_to_work(work: work,
+                          file_path: file_path,
+                          user: depositor,
                           visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE,
                           filename: filename)
     end
 
-    def attach_pdf_to_work_with_file_path!(record, file_path, depositor_onyen, filename: nil)
+    def attach_pdf_to_work_with_file_path!(record:, file_path:, depositor_onyen:, filename: nil)
       work_id = record.dig('ids', 'work_id')
       raise ArgumentError, 'No article ID found to attach PDF' unless work_id.present?
 
@@ -24,7 +24,11 @@ module Tasks
       depositor = ::User.find_by(uid: depositor_onyen)
       raise 'No depositor found' unless depositor
 
-      file_set = attach_pdf_to_work(article, file_path, depositor, article.visibility, filename: filename)
+      file_set = attach_pdf_to_work(work: article,
+                            file_path: file_path,
+                            depositor: depositor,
+                            visibility: article.visibility,
+                            filename: filename)
       file_set
     end
 
@@ -54,7 +58,7 @@ module Tasks
 
           file_set.permissions_attributes = group_permissions(work.admin_set)
           file_set.save!
-          
+
           display_filename = filename || File.basename(file_path)
           file_set.label = display_filename
           file_set.title = [display_filename]

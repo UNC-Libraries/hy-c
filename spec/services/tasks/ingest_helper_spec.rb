@@ -89,7 +89,9 @@ RSpec.describe Tasks::IngestHelper do
       # let the helper call the real attach method so we assert behavior
       allow(helper).to receive(:attach_pdf_to_work).and_call_original
 
-      file_set = helper.attach_pdf_to_work_with_file_path!(record, dest_path, 'admin')
+      file_set = helper.attach_pdf_to_work_with_file_path!(record: record,
+                                                           file_path: dest_path,
+                                                           depositor_onyen: 'admin')
 
       expect(File.exist?(dest_path)).to be true
       expect(file_set).to be_a(FileSet)
@@ -109,7 +111,9 @@ RSpec.describe Tasks::IngestHelper do
       record = { 'ids' => { 'work_id' => work.id } }
 
       expect {
-        helper.attach_pdf_to_work_with_file_path!(record, dest_path, 'admin')
+        helper.attach_pdf_to_work_with_file_path!(record: record,
+                                                  file_path: dest_path,
+                                                  depositor_onyen: 'admin')
       }.to raise_error(RuntimeError, 'No depositor found')
     end
 
@@ -117,7 +121,9 @@ RSpec.describe Tasks::IngestHelper do
       record = { 'ids' => {} }
 
       expect {
-        helper.attach_pdf_to_work_with_file_path!(record, dest_path, 'admin')
+        helper.attach_pdf_to_work_with_file_path!(record: record,
+                                                  file_path: dest_path,
+                                                  depositor_onyen: 'admin')
       }.to raise_error(ArgumentError, 'No article ID found to attach PDF')
     end
   end

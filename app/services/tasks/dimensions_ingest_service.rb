@@ -43,7 +43,10 @@ module Tasks
       create_sipity_workflow(work: article)
       pdf_path = extract_pdf(publication)
       if pdf_path
-        pdf_file = attach_pdf_to_work(article, pdf_path, @depositor, article.visibility)
+        pdf_file = attach_pdf_to_work(work: article,
+                                      file_path: pdf_path,
+                                      depositor: @depositor,
+                                      visibility: article.visibility)
         pdf_file.update(permissions_attributes: group_permissions(@admin_set))
       end
       article

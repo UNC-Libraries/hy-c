@@ -18,7 +18,10 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseF
       filenames.each do |filename|
         generated_filename = generate_filename_for_work(record_id, record_id)
         file_path = File.join(@full_text_path, filename)
-        file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'], filename: generated_filename)
+        file_set = attach_pdf_to_work_with_file_path!(record: record,
+                                                file_path: file_path,
+                                                depositor: config['depositor_onyen'],
+                                                filename:  generated_filename)
         if file_set
           log_attachment_outcome(record,
                           category: category_for_successful_attachment(record),

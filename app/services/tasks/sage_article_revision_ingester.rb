@@ -32,7 +32,9 @@ module Tasks
       # upload new version of the metadata file
       metadata_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
       if metadata_fs.nil?
-        attach_xml_to_work(existing_work, @jats_ingest_work.xml_path, depositor)
+        attach_xml_to_work(work: existing_work,
+                            file_path: @jats_ingest_work.xml_path,
+                            depositor: depositor)
         @status_service.status_in_progress(@package_name,
             error: StandardError.new("Package #{@package_name} is a revision but did not have an existing XML file. Adding new file."))
       else
@@ -45,7 +47,10 @@ module Tasks
       pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
       pdf_path = pdf_file_path
       if pdf_fs.nil?
-        attach_pdf_to_work(existing_work, pdf_path, depositor, existing_work.visibility)
+        attach_pdf_to_work(work: existing_work,
+                          file_path: pdf_path,
+                          depositor: depositor,
+                          visibility: existing_work.visibility)
         @status_service.status_in_progress(@package_name,
             error: StandardError.new("Package #{@package_name} is a revision but did not have an existing PDF file. Adding new file."))
       else

@@ -54,7 +54,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
         filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
         file_path = File.join(@full_text_path, filename)
         fetch_ftp_binary(uri, local_file_path: file_path)
-        file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+        file_set = attach_pdf_to_work_with_file_path!(record: record,
+                                                      file_path: file_path,
+                                                      depositor: config['depositor_onyen'])
         if file_set
           log_attachment_outcome(record,
                     category: category_for_successful_attachment(record),
@@ -137,7 +139,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
           File.binwrite(file_path, pdf_binary)
 
 
-          file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+          # file_set = attach_df_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+          file_set = attach_pdf_to_work_with_file_path!(record: record,
+                                                        file_path: file_path,
+                                                        depositor: @config['depositor_onyen'])
           if file_set
             log_attachment_outcome(record,
                       category: :successfully_attached,

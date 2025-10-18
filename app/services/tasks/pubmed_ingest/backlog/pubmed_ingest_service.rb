@@ -113,7 +113,10 @@ module Tasks
             model_class = work_hash[:work_type].constantize
             work = model_class.find(work_hash[:work_id])
             depositor =  User.find_by(uid: depositor_onyen)
-            file = attach_pdf_to_work(work, file_path, depositor, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+            file = attach_pdf_to_work(work: work,
+                                      file_path: file_path,
+                                      depositor: depositor,
+                                      visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
             admin_set = ::AdminSet.where(id: work_hash[:admin_set_id]).first
             file.update(permissions_attributes: group_permissions(admin_set))
             Rails.logger.info("[AttachPDFExisting] Successfully attached file for #{work_hash[:work_id]}")
@@ -175,7 +178,10 @@ module Tasks
             raise StandardError, error_msg
           end
 
-          pdf_file = attach_pdf_to_work(article, file_path, @depositor, article.visibility)
+          pdf_file = attach_pdf_to_work(work: article,
+                                       file_path: file_path,
+                                       depositor: @depositor,
+                                       visibility: article.visibility)
 
           if pdf_file.nil?
             ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
