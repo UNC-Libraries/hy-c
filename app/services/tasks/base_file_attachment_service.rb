@@ -6,12 +6,12 @@ class Tasks::BaseFileAttachmentService
   RETRY_LIMIT = 3
   SLEEP_BETWEEN_REQUESTS = 0.25
 
-  attr_reader :config, :tracker, :output_path, :admin_set, :write_buffer
+  attr_reader :config, :tracker, :log_file_path, :admin_set, :write_buffer
 
-  def initialize(config:, tracker:, output_path:)
+  def initialize(config:, tracker:, log_file_path:)
     @config = config
     @tracker = tracker
-    @output_path = output_path
+    @log_file_path = log_file_path
     @admin_set = AdminSet.where(title: config['admin_set_title']).first
     @write_buffer = []
     @flush_threshold = 100
@@ -106,7 +106,7 @@ class Tasks::BaseFileAttachmentService
       file_name: file_name
     }
     tracker.save
-    File.open(File.join(output_path, 'attachment_results.jsonl'), 'a') { |f| f.puts(entry.to_json) }
+    File.open(log_file_path, 'a') { |f| f.puts(entry.to_json) }
   end
 
     # Determine category for records that are skipped for file attachment
