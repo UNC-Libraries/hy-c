@@ -56,12 +56,12 @@ module Tasks
           Rails.logger.debug("Calling create_content for FileSet #{file_set.id} with file #{file.path}")
           actor.create_content(file)
 
-          file_set.permissions_attributes = group_permissions(work.admin_set)
-          file_set.save!
-
           display_filename = filename || File.basename(file_path)
           file_set.label = display_filename
           file_set.title = [display_filename]
+
+          file_set.permissions_attributes = group_permissions(work.admin_set)
+          file_set.save!
           Rails.logger.info("Attached FileSet #{file_set.id} to #{work.id} as #{display_filename}")
           file_set
         end

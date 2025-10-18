@@ -94,7 +94,7 @@ class Tasks::BaseFileAttachmentService
   def attach_and_log(record, file_path, message:)
     file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                   file_path: file_path,
-                                                  depositor: config['depositor_onyen'])
+                                                  depositor_onyen: config['depositor_onyen'])
     if file_set
       log_attachment_outcome(record, category: :successfully_attached, message: message, file_name: File.basename(file_path))
     end

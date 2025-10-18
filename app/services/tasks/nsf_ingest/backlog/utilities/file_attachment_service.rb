@@ -11,16 +11,16 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseF
   end
 
   def process_record(record)
-    record_id = record.dig('ids', 'article_id')
+    record_id = record.dig('ids', 'work_id')
     filenames = @doi_to_filenames[record.dig('ids', 'doi')]
     begin
       filenames.each do |filename|
-        generated_filename = generate_filename_for_work(record_id, record_id)
+        resolved_filename =  generate_normalized_filename(record) || filename
         file_path = File.join(@full_text_path, filename)
         file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                 file_path: file_path,
-                                                depositor: config['depositor_onyen'],
-                                                filename:  generated_filename)
+                                                depositor_onyen: config['depositor_onyen'],
+                                                filename:  resolved_filename)
         if file_set
           log_attachment_outcome(record,
                           category: category_for_successful_attachment(record),
@@ -47,5 +47,14 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseF
       res[raw_doi] << fname
     end
     res
+  end
+
+  def generate_normalized_filename(record)
+    return nil if record.dig('ids', 'doi').blank?
+    doi = record.dig('ids', 'doi')
+    normalized = doi.sub(%r{^https?://(dx\.)?doi\.org/}i, '')
+                .gsub('/', '_')
+                .gsub('.', '-')
+    generate_filename_for_work(record.dig('ids', 'work_id'), normalized)
   end
 end

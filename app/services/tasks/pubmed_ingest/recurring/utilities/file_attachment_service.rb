@@ -55,7 +55,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
         fetch_ftp_binary(uri, local_file_path: file_path)
         file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                       file_path: file_path,
-                                                      depositor: config['depositor_onyen'])
+                                                      depositor_onyen: config['depositor_onyen'])
         if file_set
           log_attachment_outcome(record,
                     category: category_for_successful_attachment(record),
