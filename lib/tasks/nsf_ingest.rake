@@ -37,7 +37,7 @@ def build_config(args)
     'resume' => ActiveModel::Type::Boolean.new.cast(args[:resume]),
     'admin_set_title' => args[:admin_set_title],
     'depositor_onyen' => args[:depositor_onyen],
-    'output_dir' => args[:output_dir],
+    'output_dir' => output_directory,
     'file_retrieval_directory' => file_retrieval_directory,
     'file_info_csv_path' => args[:file_info_csv_path]
   }

@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 class Tasks::BaseFileAttachmentService
   include Tasks::IngestHelper
-  include Tasks::IngestResultLogHelper
 
   RETRY_LIMIT = 3
   SLEEP_BETWEEN_REQUESTS = 0.25
 
   attr_reader :config, :tracker, :log_file_path, :admin_set, :write_buffer
 
-  def initialize(config:, tracker:, log_file_path:)
+  def initialize(config:, tracker:, log_file_path:, metadata_ingest_result_path:)
     @config = config
     @tracker = tracker
     @log_file_path = log_file_path
+    @metadata_ingest_result_path = metadata_ingest_result_path
     @admin_set = AdminSet.where(title: config['admin_set_title']).first
     @write_buffer = []
     @flush_threshold = 100
@@ -61,6 +61,8 @@ class Tasks::BaseFileAttachmentService
   end
 
   def fetch_attachment_candidates
+    return [] unless File.exist?(@metadata_ingest_result_path)
+
     records = []
     LogUtilsHelper.double_log('Loading records to attach files to.', :info, tag: 'File Attachment Service')
     File.foreach(@metadata_ingest_result_path) do |line|
@@ -73,8 +75,8 @@ class Tasks::BaseFileAttachmentService
   end
 
   def load_seen_attachment_ids
-    return Set.new unless File.exist?(@log_file)
-    Set.new(File.readlines(@log_file).map { |line| JSON.parse(line.strip).values_at('ids').flat_map(&:values).compact }.flatten)
+    return Set.new unless File.exist?(@log_file_path)
+    Set.new(File.readlines(@log_file_path).map { |line| JSON.parse(line.strip).values_at('ids').flat_map(&:values).compact }.flatten)
   end
 
   def has_fileset?(work_id)
@@ -83,6 +85,7 @@ class Tasks::BaseFileAttachmentService
   end
 
   def generate_filename_for_work(work_id, prefix)
+    puts " ==== Zebra Generating filename for work_id: #{work_id}, prefix: #{prefix} ===="
     work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
     suffix = work[:file_set_ids].present? ? format('%03d', work[:file_set_ids].size + 1) : '001'
     "#{prefix}_#{suffix}.pdf"

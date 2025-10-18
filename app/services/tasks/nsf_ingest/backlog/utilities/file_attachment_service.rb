@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseFileAttachmentService
   def initialize(config:, tracker:, log_file_path:, file_info_path:, metadata_ingest_result_path:)
-    super(config: config, tracker: tracker, log_file_path: log_file_path)
+    super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
     @file_info_path = file_info_path
     @metadata_ingest_result_path = metadata_ingest_result_path
     @existing_ids = load_seen_attachment_ids
@@ -31,7 +31,7 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseF
   rescue =>  e
     Rails.logger.error("Error processing record #{record_id}: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    record_result(category: :failed, message: "NSF File Attachment Error: #{e.message}", ids: record.slice('pmid', 'pmcid', 'doi'))
+    log_attachment_outcome(record, category: :failed, message: "NSF File Attachment Error: #{e.message}", file_name: 'NONE')
     end
   end
 
