@@ -50,10 +50,6 @@ end
 
 def resolve_output_directory(args, config)
   output_dir = args[:output_dir]
-  if !Dir.exist?(output_dir)
-    puts "❌ The specified output_dir '#{output_dir}' does not exist."
-    exit(1)
-  end
 
   if args[:resume].to_s.downcase == 'true'
      #  Use latest NSF output path if provided a wildcard — e.g., "nsf_output/*"
@@ -70,16 +66,22 @@ def resolve_output_directory(args, config)
       latest = expanded.max_by { |path| File.mtime(path) }
       LogUtilsHelper.double_log("Using latest NSF ingest directory: #{latest}", :info, tag: 'NSFIngestCoordinator')
       return File.expand_path(latest)
-    else
-      # Check that the output dir matches our format
-      # Retrieve the last part of the output dir path
+    end
+
+    unless Dir.exist?(output_dir)
+      puts "❌ The specified output_dir '#{output_dir}' does not exist."
+      exit(1)
+    end
+
+    # No wildcard — validate provided dir
     output_dir_basename = File.basename(output_dir)
     unless output_dir_basename.start_with?('nsf_backlog_ingest_')
       puts "❌ When resuming, the output_dir must match the format 'nsf_backlog_ingest_YYYYMMDD_HHMMSS'"
       exit(1)
     end
+
   else
-    # Create a new timestamped output directory if the resume flag is false
+    # Create a new timestamped directory when not resuming
     timestamp = config['time'].strftime('%Y%m%d_%H%M%S')
     output_dir = File.join(output_dir, "nsf_backlog_ingest_#{timestamp}")
       # Create the directory if it doesn't exist

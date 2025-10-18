@@ -15,7 +15,7 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseF
     filenames = @doi_to_filenames[record.dig('ids', 'doi')]
     begin
       filenames.each do |filename|
-        resolved_filename =  generate_normalized_filename(record) || filename
+        resolved_filename =  normalized_filename_from_title(record: record) || filename
         file_path = File.join(@full_text_path, filename)
         file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                 file_path: file_path,
@@ -49,12 +49,17 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseF
     res
   end
 
-  def generate_normalized_filename(record)
-    return nil if record.dig('ids', 'doi').blank?
-    doi = record.dig('ids', 'doi')
-    normalized = doi.sub(%r{^https?://(dx\.)?doi\.org/}i, '')
-                .gsub('/', '_')
-                .gsub('.', '-')
-    generate_filename_for_work(record.dig('ids', 'work_id'), normalized)
+  def normalized_filename_from_title(record:)
+    work_hash = WorkUtilsHelper.fetch_work_data_by_id(record.dig('ids', 'work_id'))
+    raw_title = work_hash[:title]
+    words = raw_title.downcase
+                  .gsub(/[^a-z0-9\s-]/, '')
+                  .split
+                  .reject { |w| %w[the and of a an to in].include?(w) }
+                  .first(4) # keep up to 4 words
+
+    base = words.join('_')
+    prefix = base.truncate(25, omission: '')
+    generate_filename_for_work(record.dig('ids', 'work_id'), prefix)
   end
 end
