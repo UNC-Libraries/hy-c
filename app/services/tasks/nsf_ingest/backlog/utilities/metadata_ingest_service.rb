@@ -53,7 +53,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   def new_article(metadata, source)
    # Create new work
     article = Article.new
-    article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+    article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
   # WIP: Attribute builder depending on source of metadata
     builder = if source == 'openalex'
                 Tasks::NsfIngest::Backlog::Utilities::OpenalexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
