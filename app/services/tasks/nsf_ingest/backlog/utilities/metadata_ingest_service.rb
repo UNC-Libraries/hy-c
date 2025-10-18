@@ -2,7 +2,6 @@
 class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   include Tasks::IngestHelper
   include Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
-  include Tasks::IngestResultLogHelper
 
   def initialize(config:, tracker:, md_ingest_results_path:)
     @config = config
