@@ -2,7 +2,7 @@
 module Tasks
   require 'tasks/ingest_helper'
   class DimensionsIngestService
-    include Tasks::IngestHelper
+    include Tasks::IngestHelperUtils::IngestHelper
     attr_reader :admin_set, :depositor
     UNC_GRID_ID = 'grid.410711.2'
 

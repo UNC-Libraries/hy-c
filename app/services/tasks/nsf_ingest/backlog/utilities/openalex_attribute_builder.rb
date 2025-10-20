@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Tasks::NsfIngest::Backlog::Utilities
-  class OpenalexAttributeBuilder < Tasks::BaseAttributeBuilder
+  class OpenalexAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
     private
 
     def generate_authors

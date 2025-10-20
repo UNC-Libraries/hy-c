@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::BaseFileAttachmentService
+class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   def initialize(config:, tracker:, log_file_path:, file_info_path:, metadata_ingest_result_path:)
     super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
     @file_info_path = file_info_path

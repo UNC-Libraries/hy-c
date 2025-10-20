@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
-  include Tasks::IngestHelper
+  include Tasks::IngestHelperUtils::IngestHelper
   include Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
 
   def initialize(config:, tracker:, md_ingest_results_path:)

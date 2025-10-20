@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Tasks
     # Abstract base for attribute builders for newly ingested articles
-  class BaseAttributeBuilder
+  class IngestHelperUtils::BaseAttributeBuilder
     attr_reader :metadata, :article, :admin_set, :depositor_onyen
 
     def initialize(metadata, article, admin_set, depositor_onyen)

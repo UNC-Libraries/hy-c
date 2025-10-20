@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Tasks
   require 'tasks/migration_helper'
-  module IngestHelper
+  module IngestHelperUtils::IngestHelper
     def attach_pdf_to_work(work:, file_path:, depositor:, visibility:, filename: nil)
       LogUtilsHelper.double_log("Attaching PDF to work #{work.id} from path #{file_path}", :info, tag: 'AttachPDF')
       attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility, filename: filename)
@@ -62,6 +62,8 @@ module Tasks
 
           file_set.permissions_attributes = group_permissions(work.admin_set)
           file_set.save!
+          file_set.update_index
+
           Rails.logger.info("Attached FileSet #{file_set.id} to #{work.id} as #{display_filename}")
           file_set
         end
@@ -137,6 +139,16 @@ module Tasks
     def reindex_work!(work)
       work.reload
       work.update_index
+    end
+
+    def delete_full_text_pdfs(config:)
+      full_text_dir = Pathname.new(config['full_text_dir'])
+      if full_text_dir.exist? && full_text_dir.directory?
+        FileUtils.rm_rf(full_text_dir.to_s)
+        LogUtilsHelper.double_log("Deleted full text PDFs directory: #{full_text_dir}", :info, tag: 'cleanup')
+      else
+        LogUtilsHelper.double_log("Full text PDFs directory not found: #{full_text_dir}", :warn, tag: 'cleanup')
+      end
     end
   end
 end

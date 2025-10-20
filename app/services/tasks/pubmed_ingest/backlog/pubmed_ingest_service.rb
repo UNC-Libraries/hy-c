@@ -6,7 +6,7 @@ module Tasks
 
       class PubmedIngestService
         attr_reader :attachment_results
-        include Tasks::IngestHelper
+        include Tasks::IngestHelperUtils::IngestHelper
 
         def initialize(config)
           raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results'] && config['file_retrieval_directory']

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Tasks::NsfIngest::Backlog::Utilities
-  class CrossrefAttributeBuilder < Tasks::BaseAttributeBuilder
+  class CrossrefAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
     private
 
     def generate_authors

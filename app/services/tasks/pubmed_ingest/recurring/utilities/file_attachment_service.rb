@@ -3,7 +3,7 @@ require 'net/ftp'
 require 'zlib'
 require 'rubygems/package'
 
-class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::BaseFileAttachmentService
+class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   def initialize(config:, tracker:, log_file_path:, full_text_path:, metadata_ingest_result_path:)
     super(config: config, tracker: tracker, log_file_path: log_file_path)
     @full_text_path = full_text_path

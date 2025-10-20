@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::BaseIngestTracker
+class Tasks::IngestHelperUtils::BaseIngestTracker
   TRACKER_FILENAME = 'ingest_tracker.json'
   attr_reader :path, :data
 

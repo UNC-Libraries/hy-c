@@ -3,7 +3,7 @@ module Tasks
   module PubmedIngest
     module SharedUtilities
       module AttributeBuilders
-        class PmcAttributeBuilder < Tasks::BaseAttributeBuilder
+        class PmcAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
 
           def find_skipped_row(new_pubmed_works)
             pmid = metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text

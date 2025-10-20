@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker < Tasks::BaseIngestTracker
+class Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker < Tasks::IngestHelperUtils::BaseIngestTracker
   def initialize_new!(config)
     super
     @data['progress'].merge!(

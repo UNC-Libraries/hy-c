@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-class Tasks::BaseFileAttachmentService
-  include Tasks::IngestHelper
+class Tasks::IngestHelperUtils::BaseFileAttachmentService
+  include Tasks::IngestHelperUtils::IngestHelper
 
   RETRY_LIMIT = 3
   SLEEP_BETWEEN_REQUESTS = 0.25

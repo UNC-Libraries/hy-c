@@ -2,9 +2,9 @@
 # spec/helpers/tasks/ingest_helper_spec.rb
 require 'rails_helper'
 
-RSpec.describe Tasks::IngestHelper do
+RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
   let(:helper) do
-    Class.new { include Tasks::IngestHelper }.new
+    Class.new { include Tasks::IngestHelperUtils::IngestHelper }.new
   end
 
   let(:user) { FactoryBot.create(:admin) }
