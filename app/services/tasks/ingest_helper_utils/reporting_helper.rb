@@ -42,11 +42,30 @@ module Tasks::IngestHelperUtils::ReportingHelper
     csv_paths
   end
 
-  def compress_result_csvs(csv_paths:, csv_output_dir:)
+  def compress_result_csvs(csv_paths:, zip_output_dir:)
     zip_path = File.join(csv_output_dir, 'ingest_results.zip')
     Zip::File.open(zip_path, Zip::File::CREATE) do |zip|
       csv_paths.each { |path| zip.add(File.basename(path), path) if File.exist?(path) }
     end
     zip_path
+  end
+
+  def generate_truncated_categories(report, max_rows: 100)
+    trunc_categories = []
+
+    report.each do |category, records|
+      if records.empty? || !records.is_a?(Array)
+        LogUtilsHelper.double_log(
+            "No records for #{category}, skipping CSV generation",
+            :info,
+            tag: 'generate_result_csvs'
+        )
+        next
+      end
+
+      trunc_categories << category.to_s if records.size > max_rows
+    end
+
+    trunc_categories
   end
 end
