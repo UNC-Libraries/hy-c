@@ -85,7 +85,6 @@ class Tasks::IngestHelperUtils::BaseFileAttachmentService
   end
 
   def generate_filename_for_work(work_id, prefix)
-    puts " ==== Zebra Generating filename for work_id: #{work_id}, prefix: #{prefix} ===="
     work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
     suffix = work[:file_set_ids].present? ? format('%03d', work[:file_set_ids].size + 1) : '001'
     "#{prefix}_#{suffix}.pdf"

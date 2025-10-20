@@ -15,12 +15,10 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
     filenames = @doi_to_filenames[record.dig('ids', 'doi')]
     begin
       filenames.each do |filename|
-        resolved_filename =  normalized_filename_from_title(record: record) || filename
         file_path = File.join(@full_text_path, filename)
         file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                 file_path: file_path,
-                                                depositor_onyen: config['depositor_onyen'],
-                                                filename:  resolved_filename)
+                                                depositor_onyen: config['depositor_onyen'])
         if file_set
           log_attachment_outcome(record,
                           category: category_for_successful_attachment(record),
@@ -47,19 +45,5 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
       res[raw_doi] << fname
     end
     res
-  end
-
-  def normalized_filename_from_title(record:)
-    work_hash = WorkUtilsHelper.fetch_work_data_by_id(record.dig('ids', 'work_id'))
-    raw_title = work_hash[:title]
-    words = raw_title.downcase
-                  .gsub(/[^a-z0-9\s-]/, '')
-                  .split
-                  .reject { |w| %w[the and of a an to in].include?(w) }
-                  .first(4) # keep up to 4 words
-
-    base = words.join('_')
-    prefix = base.truncate(25, omission: '')
-    generate_filename_for_work(record.dig('ids', 'work_id'), prefix)
   end
 end
