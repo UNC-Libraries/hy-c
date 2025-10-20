@@ -13,10 +13,9 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @tracker = tracker
     @id_list_output_directory = File.join(config['output_dir'], BUILD_ID_LISTS_OUTPUT_DIR)
     @metadata_ingest_output_directory = File.join(config['output_dir'], LOAD_METADATA_OUTPUT_DIR)
-    @attachment_output_directory = File.join(config['output_dir'], ATTACH_FILES_OUTPUT_DIR)
     @result_output_directory = File.join(config['output_dir'], RESULT_CSV_OUTPUT_DIR)
 
-    @file_attachment_results_path = File.join(@attachment_output_directory, 'attachment_results.jsonl')
+    @file_attachment_results_path = File.join(config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
     @metadata_ingest_results_path = File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl')
     @final_ingest_results_path = File.join(@config['output_dir'], 'final_ingest_results.json')
   end
@@ -28,10 +27,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       load_and_ingest_metadata
       attach_files
     end
-    Tasks::IngestCoordinatorServiceHelper.format_results_and_notify(
-      config: @config,
-      file_attachment_results_path: @file_attachment_results_path
-    )
+    format_results_and_notify
     Tasks::IngestCoordinatorServiceHelper.delete_full_text_pdfs(config: @config)
     LogUtilsHelper.double_log('PubMed ingest workflow completed successfully.', :info, tag: 'PubmedIngestCoordinator')
     rescue => e
@@ -51,7 +47,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       file_attachment_service = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService.new(
         config: @config,
         tracker: @tracker,
-        output_path: @attachment_output_directory,
+        log_file_path: @file_attachment_results_path,
         full_text_path: @config['full_text_dir'],
         metadata_ingest_result_path: @metadata_ingest_results_path
       )
@@ -243,7 +239,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
 
     if resume_flag
-      output_dir = Pathname.new(raw_output_dir)
+      output_dir = Pathname.new(resolve_output_dir(raw_output_dir, script_start, resume_flag))
       tracker_path = output_dir.join('ingest_tracker.json')
       unless tracker_path.exist?
         puts "❌ Tracker file not found: #{tracker_path}"
@@ -295,9 +291,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         exit(1)
       end
 
-      output_dir    = resolve_output_dir(raw_output_dir, script_start)
       full_text_dir = resolve_full_text_dir(args[:full_text_dir], output_dir, script_start)
-
       FileUtils.mkdir_p(output_dir)
       SUBDIRS.each { |dir| FileUtils.mkdir_p(output_dir.join(dir)) }
       FileUtils.mkdir_p(full_text_dir)
@@ -322,7 +316,23 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     [config, tracker]
   end
 
-  def self.resolve_output_dir(raw_output_dir, script_start_time)
+  def self.resolve_output_dir(raw_output_dir, script_start_time, resume_flag)
+    if raw_output_dir&.include?('*') && resume_flag
+     #  Use latest Pubmed output path within a directory if provided a wildcard — e.g., "pubmed_output/*"
+      expanded = Dir.glob(raw_output_dir)
+                    .select { |f| File.directory?(f) && File.basename(f).start_with?('pubmed_ingest_') }
+
+      if expanded.empty?
+        puts "❌ No matching PubMed ingest directories found for pattern '#{raw_output_dir}'"
+        exit(1)
+      end
+
+      # pick the newest by modification time
+      latest = expanded.max_by { |path| File.mtime(path) }
+      LogUtilsHelper.double_log("Using latest PubMed ingest directory: #{latest}", :info, tag: 'PubMedIngestCoordinator')
+      return File.expand_path(latest)
+    end
+
     if raw_output_dir.present?
       base_dir = Pathname.new(raw_output_dir)
       base_dir = Rails.root.join(base_dir) unless base_dir.absolute?

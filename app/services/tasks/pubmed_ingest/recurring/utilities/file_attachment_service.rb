@@ -5,7 +5,7 @@ require 'rubygems/package'
 
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   def initialize(config:, tracker:, log_file_path:, full_text_path:, metadata_ingest_result_path:)
-    super(config: config, tracker: tracker, log_file_path: log_file_path)
+    super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
     @full_text_path = full_text_path
     @metadata_ingest_result_path = metadata_ingest_result_path
     @existing_ids = load_seen_attachment_ids
