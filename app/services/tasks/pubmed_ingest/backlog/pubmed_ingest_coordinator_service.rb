@@ -165,7 +165,7 @@ module Tasks
                                     skipped: 'Skipped',
                                     failed: 'Failed'
                                   }
-            PubmedReportMailer.pubmed_report_email(report).deliver_now
+            PubmedReportMailer.pubmed_report_email(report: report, zip_path: nil).deliver_now
             double_log('Email sent successfully', :info)
           rescue StandardError => e
             double_log("Failed to send email: #{e.message}", :error)

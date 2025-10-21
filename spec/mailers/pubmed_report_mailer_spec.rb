@@ -131,7 +131,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
         }
       end
 
-      let(:mail) { described_class.pubmed_report_email(report_hash, zip_path) }
+      let(:mail) { described_class.pubmed_report_email(report: report_hash, zip_path: zip_path) }
 
       it 'includes key header info in the email body' do
         expect(mail.body.encoded).to include('<strong>Depositor: </strong>recurring_user')

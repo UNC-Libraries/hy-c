@@ -12,14 +12,6 @@
   <strong>Depositor: </strong><%= @report[:headers][:depositor] %>
 </p>
 
-<%# Date range if available %>
-<% if @report[:headers][:start_date].present? && @report[:headers][:end_date].present? %>
-  <p style="font-size: 16px; margin-bottom: 10px;">
-    <strong>Date Range: </strong>
-    <%= @report[:headers][:start_date] %> to <%= @report[:headers][:end_date] %>
-  </p>
-<% end %>
-
 <p style="font-size: 16px; margin-bottom: 10px;">
   <strong>Total Files: </strong>
   <%= @report[:headers][:total_files].presence  %>

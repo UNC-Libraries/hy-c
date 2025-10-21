@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::PubmedIngest::Recurring::Utilities::NotificationService < Tasks::BaseIngestNotificationService
+class Tasks::PubmedIngest::Recurring::Utilities::NotificationService < Tasks::IngestHelperUtils::BaseIngestNotificationService
   private
 
   def source_name

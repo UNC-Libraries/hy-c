@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::BaseIngestNotificationService
+class Tasks::IngestHelperUtils::BaseIngestNotificationService
   include Tasks::IngestHelperUtils::ReportingHelper
 
   def initialize(config:, tracker:, log_file_path:, file_attachment_results_path:, max_display_rows: 100)

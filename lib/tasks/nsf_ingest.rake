@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 desc 'Ingest new PDFs from the NSF backlog and attach them to Hyrax works if matched'
-task :nsf_backlog_ingest, [:resume, :file_info_csv_path, :file_retrieval_directory, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |task, args|
+task :nsf_backlog_ingest, [:resume, :file_info_csv_path, :full_text_dir, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |_task, args|
   now = Time.now
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
   validate_args!(args) unless resume
@@ -9,59 +9,51 @@ task :nsf_backlog_ingest, [:resume, :file_info_csv_path, :file_retrieval_directo
   tracker = resume ? retrieve_tracker_json(output_directory) : nil
   config = build_config(args, tracker, output_directory, now)
 
-  # config['output_dir'] = resolve_output_directory(args, config)
   coordinator = Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService.new(config)
-  res = coordinator.run
+  coordinator.run
 end
 
 def validate_args!(args)
-  required = %i[file_info_csv_path file_retrieval_directory output_dir admin_set_title depositor_onyen]
+  required = %i[file_info_csv_path full_text_dir output_dir admin_set_title depositor_onyen]
   missing = required.select { |key| args[key].nil? }
+  return if missing.empty?
 
-  unless missing.empty?
-    puts "❌ Missing required arguments: #{missing.join(', ')}"
-    exit(1)
-  end
+  puts "❌ Missing required arguments: #{missing.join(', ')}"
+  exit(1)
 end
 
 def build_config(args, tracker, output_dir, now)
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
+
   config = if resume
              {
                'start_time' => tracker['start_time'],
                'restart_time' => now,
+               'resume' => true,
                'admin_set_title' => tracker['admin_set_title'],
                'depositor_onyen' => tracker['depositor_onyen'],
                'output_dir' => tracker['output_dir'],
-               'file_retrieval_directory' => tracker['file_retrieval_directory'],
+               'full_text_dir' => tracker['full_text_dir'],
                'file_info_csv_path' => tracker['file_info_csv_path']
              }
-           else
-             {
-               'start_time' => now,
-               'resume' => false,
-               'admin_set_title' => args[:admin_set_title],
-               'depositor_onyen' => args[:depositor_onyen],
-               'output_dir' => output_dir,
-               'file_retrieval_directory' => normalize_path(args[:file_retrieval_directory]),
-               'file_info_csv_path' => normalize_path(args[:file_info_csv_path])
-             }
-           end
-  config = {
-    'time' => resume ? tracker['start_time'] : now,
-    'restart_time' => resume ? now : tracker['restart_time'],
-    'resume' => ActiveModel::Type::Boolean.new.cast(args[:resume]),
-    'admin_set_title' => resume ? tracker['admin_set_title'] : args[:admin_set_title],
-    'depositor_onyen' => resume ? tracker['depositor_onyen'] : args[:depositor_onyen],
-    'output_dir' => resume ? tracker['output_dir'] : output_dir,
-    'file_retrieval_directory' => resume ? tracker['file_retrieval_directory'] : file_retrieval_directory,
-    'file_info_csv_path' => resume ? tracker['file_info_csv_path'] : normalize_path(args[:file_info_csv_path])
-  }
+  else
+    {
+      'start_time' => now,
+      'restart_time' => nil,
+      'resume' => false,
+      'admin_set_title' => args[:admin_set_title],
+      'depositor_onyen' => args[:depositor_onyen],
+      'output_dir' => output_dir,
+      'full_text_dir' => normalize_path(args[:full_text_dir]),
+      'file_info_csv_path' => normalize_path(args[:file_info_csv_path])
+    }
+  end
+
   write_intro_banner(config: config)
   config
- rescue ArgumentError => e
-   puts "❌ Invalid date format: #{e.message}"
-   exit(1)
+rescue ArgumentError => e
+  puts "❌ Invalid argument: #{e.message}"
+  exit(1)
 end
 
 def retrieve_tracker_json(output_dir)
@@ -70,7 +62,7 @@ def retrieve_tracker_json(output_dir)
     puts "❌ Tracker file not found at #{tracker_path}"
     exit(1)
   end
-  JsonFileUtilsHelper.read_json_file(tracker_path)
+  JsonFileUtilsHelper.read_json(tracker_path)
 end
 
 def normalize_path(path)
@@ -83,9 +75,7 @@ def resolve_output_directory(args, time)
   if args[:resume].to_s.downcase == 'true'
      #  Use latest NSF output path if provided a wildcard — e.g., "nsf_output/*"
     if output_dir.include?('*')
-      expanded = Dir.glob(output_dir)
-                    .select { |f| File.directory?(f) && File.basename(f).start_with?('nsf_backlog_ingest_') }
-
+      expanded = Dir.glob(output_dir).select { |f| File.directory?(f) && File.basename(f).start_with?('nsf_backlog_ingest_') }
       if expanded.empty?
         puts "❌ No matching NSF ingest directories found for pattern '#{output_dir}'"
         exit(1)
@@ -102,23 +92,20 @@ def resolve_output_directory(args, time)
       exit(1)
     end
 
-    # No wildcard — validate provided dir
-    output_dir_basename = File.basename(output_dir)
-    unless output_dir_basename.start_with?('nsf_backlog_ingest_')
-      puts "❌ When resuming, the output_dir must match the format 'nsf_backlog_ingest_YYYYMMDD_HHMMSS'"
+    # No wildcard — validate the existing directory name format
+    basename = File.basename(output_dir)
+    unless basename.start_with?('nsf_backlog_ingest_')
+      puts "❌ When resuming, output_dir must match 'nsf_backlog_ingest_YYYYMMDD_HHMMSS'"
       exit(1)
     end
 
-  else
-    # Create a new timestamped directory when not resuming
-    timestamp = time.strftime('%Y%m%d_%H%M%S')
-    output_dir = File.join(output_dir, "nsf_backlog_ingest_#{timestamp}")
-      # Create the directory if it doesn't exist
-    Dir.mkdir(output_dir) unless Dir.exist?(output_dir)
-    output_dir = File.expand_path(output_dir)
+    return File.expand_path(output_dir)
   end
 
-  normalize_path(output_dir)
+  timestamp = time.strftime('%Y%m%d_%H%M%S')
+  new_dir = File.join(output_dir, "nsf_backlog_ingest_#{timestamp}")
+  FileUtils.mkdir_p(new_dir)
+  File.expand_path(new_dir)
 end
 
 def write_intro_banner(config:)
@@ -132,7 +119,7 @@ def write_intro_banner(config:)
     '-' * 80,
     "  #{time_label}: #{time_value.strftime('%Y-%m-%d %H:%M:%S')}",
     "  Output Dir: #{config['output_dir']}",
-    "  File Retrieval Dir: #{config['file_retrieval_directory']}",
+    "  File Retrieval Dir: #{config['full_text_dir']}",
     "  File Info CSV: #{config['file_info_csv_path']}",
     "  Depositor:  #{config['depositor_onyen']}",
     "  Admin Set:  #{config['admin_set_title']}",

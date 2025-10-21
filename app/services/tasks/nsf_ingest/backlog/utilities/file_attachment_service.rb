@@ -7,7 +7,7 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
     @existing_ids = load_seen_attachment_ids
     @records = fetch_attachment_candidates
     @doi_to_filenames = generate_doi_to_filenames
-    @full_text_path = config['file_retrieval_directory']
+    @full_text_path = config['full_text_dir']
   end
 
   def process_record(record)
