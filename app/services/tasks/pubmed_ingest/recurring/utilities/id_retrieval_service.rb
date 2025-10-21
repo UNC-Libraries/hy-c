@@ -62,7 +62,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         end
         total_count = parsed_response.at_xpath('//Count').text.to_i
         break if cursor >= total_count
-        break if cursor >= 50
+        break if cursor >= 25
 
         # Respect NCBI rate limits
         sleep(0.34)

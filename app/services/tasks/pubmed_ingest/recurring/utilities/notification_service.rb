@@ -16,6 +16,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::NotificationService < Tasks::In
   end
 
   def send_mail(report, zip_path)
-    PubmedReportMailer.pubmed_report_email(report, zip_path).deliver_now
+    PubmedReportMailer.pubmed_report_email(report: report, zip_path: zip_path).deliver_now
   end
 end

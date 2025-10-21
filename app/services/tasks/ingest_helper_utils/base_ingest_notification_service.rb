@@ -2,10 +2,10 @@
 class Tasks::IngestHelperUtils::BaseIngestNotificationService
   include Tasks::IngestHelperUtils::ReportingHelper
 
-  def initialize(config:, tracker:, log_file_path:, file_attachment_results_path:, max_display_rows: 100)
+  def initialize(config:, tracker:, output_dir:, file_attachment_results_path:, max_display_rows: 100)
     @config = config
     @tracker = tracker
-    @log_file_path = log_file_path
+    @output_dir = output_dir
     @file_attachment_results_path = file_attachment_results_path
     @max_display_rows = max_display_rows
   end
@@ -30,8 +30,8 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
     report[:truncated_categories] = generate_truncated_categories(report[:records], max_rows: @max_display_rows)
     report[:max_display_rows] = @max_display_rows
 
-    csv_paths = generate_result_csvs(results: report[:records], csv_output_dir: output_dir)
-    zip_path  = compress_result_csvs(csv_paths: csv_paths, zip_output_dir: output_dir)
+    csv_paths = generate_result_csvs(results: report[:records], csv_output_dir: @output_dir)
+    zip_path  = compress_result_csvs(csv_paths: csv_paths, zip_output_dir: @output_dir)
 
     send_mail(report, zip_path)
 
@@ -56,10 +56,6 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
   def mark_as_sent!
     @tracker['progress']['send_summary_email']['completed'] = true
     @tracker.save
-  end
-
-  def output_dir
-    File.dirname(@log_file_path)
   end
 
   def category_labels

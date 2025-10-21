@@ -18,7 +18,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
     @file_attachment_results_path = File.join(config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
     @metadata_ingest_results_path = File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl')
-    @final_ingest_results_path = File.join(@config['output_dir'], 'final_ingest_results.json')
     @generated_results_csv_dir = File.join(@config['output_dir'], RESULT_CSV_OUTPUT_DIR)
   end
 
@@ -137,12 +136,11 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     notification_service = Tasks::PubmedIngest::Recurring::Utilities::NotificationService.new(
       config: @config,
       tracker: @tracker,
-      log_file_path: @generated_results_csv_dir,
+      output_dir: @generated_results_csv_dir,
       file_attachment_results_path: @file_attachment_results_path,
       max_display_rows: MAX_ROWS
     )
     notification_service.run
-    JsonFileUtilsHelper.write_json(@results, @final_ingest_results_path , pretty: true)
   end
 
   def self.build_pubmed_ingest_config_and_tracker(args:)

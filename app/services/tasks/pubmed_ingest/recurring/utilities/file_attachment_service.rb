@@ -141,7 +141,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
           # file_set = attach_df_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
           file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                         file_path: file_path,
-                                                        depositor: @config['depositor_onyen'])
+                                                        depositor_onyen: @config['depositor_onyen'])
           if file_set
             log_attachment_outcome(record,
                       category: :successfully_attached,

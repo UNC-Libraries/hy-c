@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class PubmedReportMailer < IngestReportMailer
+class PubmedReportMailer < BaseIngestReportMailer
   def pubmed_report_email(report:, zip_path: nil)
     ingest_report_email(
       report: report,
