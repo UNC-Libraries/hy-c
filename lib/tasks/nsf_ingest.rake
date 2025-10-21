@@ -122,15 +122,15 @@ def resolve_output_directory(args, time)
 end
 
 def write_intro_banner(config:)
-  time_banner = config['time'] ?
-        "  Start Time: #{config['time'].strftime('%Y-%m-%d %H:%M:%S')}" :
-        "  Restart Time: #{config['restart_time'].strftime('%Y-%m-%d %H:%M:%S')}"
+  mode_label = config['resume'] ? 'RESUME RUN' : 'NEW RUN'
+  time_label = config['resume'] ? 'Restart Time' : 'Start Time'
+  time_value = config['resume'] ? config['restart_time'] : config['start_time']
 
   banner_lines = [
     '=' * 80,
-    '  NSF Ingest',
+    "  NSF Ingest (#{mode_label})",
     '-' * 80,
-     time_banner,
+    "  #{time_label}: #{time_value.strftime('%Y-%m-%d %H:%M:%S')}",
     "  Output Dir: #{config['output_dir']}",
     "  File Retrieval Dir: #{config['file_retrieval_directory']}",
     "  File Info CSV: #{config['file_info_csv_path']}",
