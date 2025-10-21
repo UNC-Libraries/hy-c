@@ -8,7 +8,7 @@ class Tasks::NSFIngest::Backlog::Utilities::NotificationService < Tasks::BaseIng
 
   def populate_headers!(report)
     report[:headers][:depositor] = @tracker['depositor_onyen']
-    report[:headers][:total_unique_records] = calculate_rows_in_csv(@config['file_info_csv_path'])
+    report[:headers][:total_files] = calculate_rows_in_csv(@config['file_info_csv_path'])
     report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
     report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
   end

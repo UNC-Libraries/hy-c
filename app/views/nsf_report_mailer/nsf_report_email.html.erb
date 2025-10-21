@@ -6,15 +6,11 @@
   <meta charset="UTF-8">
 </head>
 <body>
-<p style="font-size: 16px; margin-bottom: 10px;">Reporting publications from Pubmed Ingest on <strong><%= @report[:formatted_time] %></strong></p>
+<p style="font-size: 16px; margin-bottom: 10px;">Reporting publications from NSF Ingest on <strong><%= @report[:formatted_time] %></strong></p>
 
 <p style="font-size: 16px; margin-bottom: 10px;">
   <strong>Depositor: </strong><%= @report[:headers][:depositor] %>
 </p>
-
-<%# Change the subject line based on the report type %>
-<% total_files = @report[:headers][:total_files].presence %>
-<% total_unique = @report[:headers][:total_unique_records].presence %>
 
 <%# Date range if available %>
 <% if @report[:headers][:start_date].present? && @report[:headers][:end_date].present? %>
@@ -25,8 +21,8 @@
 <% end %>
 
 <p style="font-size: 16px; margin-bottom: 10px;">
-  <strong><%= total_files ? 'Total Files' : 'Total Unique Records' %>: </strong>
-  <%= total_files || total_unique %>
+  <strong>Total Files: </strong>
+  <%= @report[:headers][:total_files].presence  %>
 </p>
 
 <% if @report[:truncated_categories].any? %>
