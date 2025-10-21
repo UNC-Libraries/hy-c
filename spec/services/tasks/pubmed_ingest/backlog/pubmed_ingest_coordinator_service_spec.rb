@@ -78,7 +78,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
 
     # Mock mailer
     mock_mailer = double('mailer', deliver_now: nil)
-    allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report).and_return('test report')
+    allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report).and_return('test report')
     allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
 
     # Stub virus checking
@@ -348,7 +348,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
     end
 
     it 'generates report and sends email' do
-      expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+      expect(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report)
         .with(hash_including(
           admin_set: admin_set.title.first,

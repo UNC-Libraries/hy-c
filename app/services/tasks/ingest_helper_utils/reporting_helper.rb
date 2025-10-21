@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 module Tasks::IngestHelperUtils::ReportingHelper
   extend self
+  def load_results(path:)
+    unless File.exist?(path)
+      LogUtilsHelper.double_log("Results file not found at #{path}", :error, tag: 'load_and_format_results')
+      raise "Results file not found at #{path}"
+    end
+    raw_results_array = JsonFileUtilsHelper.read_jsonl(path, symbolize_names: true)
+    LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}.", :info, tag: 'load_and_format_results')
+    Tasks::IngestHelperUtils::ReportingHelper.format_results_for_reporting(
+        raw_results_array: raw_results_array,
+        tracker: @tracker
+    )
+  end
 
   def format_results_for_reporting(raw_results_array:, tracker:)
     results = initialize_category_hash(tracker)
@@ -43,7 +55,7 @@ module Tasks::IngestHelperUtils::ReportingHelper
   end
 
   def compress_result_csvs(csv_paths:, zip_output_dir:)
-    zip_path = File.join(csv_output_dir, 'ingest_results.zip')
+    zip_path = File.join(zip_output_dir, 'ingest_results.zip')
     Zip::File.open(zip_path, Zip::File::CREATE) do |zip|
       csv_paths.each { |path| zip.add(File.basename(path), path) if File.exist?(path) }
     end

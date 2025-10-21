@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::NotificationService
+  include Tasks::IngestHelperUtils::ReportingHelper
   def initialize(config:, tracker:, log_file_path:, file_attachment_results_path:, max_display_rows: 100)
     @config = config
     @tracker = tracker
@@ -24,9 +25,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::NotificationService
       report = Tasks::IngestHelperUtils::IngestReportingService.generate_report(ingest_output: attachment_results,
                                                                                 source_name: 'PubMed')
       report[:headers][:depositor] = @tracker['depositor_onyen']
-      report[:headers][:total_unique_records] =
-        @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
-        @tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']
+      report[:headers][:total_unique_records] = calculate_rows_in_csv(@config['file_info_csv_path'])
       report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
       report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
       report[:categories] = {
@@ -38,17 +37,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::NotificationService
                             failed: 'Failed',
                             skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
                           }
-      report[:truncated_categories] = Tasks::IngestHelperUtils::ReportingHelper.generate_truncated_categories(report[:records], max_rows: @max_display_rows)
+      report[:truncated_categories] = generate_truncated_categories(report[:records], max_rows: @max_display_rows)
       report[:max_display_rows] = @max_display_rows
-      csv_paths = Tasks::IngestHelperUtils::ReportingHelper.generate_result_csvs(
-        results: report[:records],
-        csv_output_dir: File.dirname(@log_file_path)
-    )
-      zip_path  = Tasks::IngestHelperUtils::ReportingHelper.compress_result_csvs(
-        csv_paths: csv_paths,
-        zip_output_dir: File.dirname(@log_file_path)
-    )
-      PubmedReportMailer.pubmed_report_email(report, zip_path).deliver_now
+      csv_paths = generate_result_csvs(results: report[:records], csv_output_dir: File.dirname(@log_file_path))
+      zip_path  = compress_result_csvs(csv_paths: csv_paths, zip_output_dir: File.dirname(@log_file_path))
+      NSFReportMailer.nsf_report_email(report, zip_path).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
       LogUtilsHelper.double_log('Email notification sent successfully.', :info, tag: 'send_summary_email')
@@ -58,18 +51,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::NotificationService
     end
   end
 
-  private
-
-  def load_results(path:)
-    unless File.exist?(path)
-      LogUtilsHelper.double_log("Results file not found at #{path}", :error, tag: 'load_and_format_results')
-      raise "Results file not found at #{path}"
-    end
-    raw_results_array = JsonFileUtilsHelper.read_jsonl(path, symbolize_names: true)
-    LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}.", :info, tag: 'load_and_format_results')
-    Tasks::IngestHelperUtils::ReportingHelper.format_results_for_reporting(
-        raw_results_array: raw_results_array,
-        tracker: @tracker
-    )
+  def calculate_rows_in_csv(path)
+    return 0 unless File.exist?(path)
+    CSV.read(path, headers: true).length
   end
 end

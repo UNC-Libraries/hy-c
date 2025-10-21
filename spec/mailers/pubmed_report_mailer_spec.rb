@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe PubmedReportMailer, type: :mailer do
-  describe 'truncated_pubmed_report_email for recurring pubmed ingests' do
+  describe 'pubmed_report_email for recurring pubmed ingests' do
     let(:fixture_path) do
       Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
     end
@@ -75,7 +75,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
       allow(File).to receive(:read).with(zip_path).and_return('fake zip content')
 
       # Capture the arguments passed to the mailer
-      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email) do |report, zip|
+      allow(PubmedReportMailer).to receive(:pubmed_report_email) do |report, zip|
         @captured_report = report
         @captured_zip_path = zip
         double('mailer', deliver_now: true)
@@ -95,7 +95,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
     end
 
     it 'calls the mailer with the report and zip path' do
-      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email).with(
+      expect(PubmedReportMailer).to have_received(:pubmed_report_email).with(
         hash_including(headers: hash_including(total_unique_records: 5)),
         zip_path
       )
@@ -131,7 +131,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
         }
       end
 
-      let(:mail) { described_class.truncated_pubmed_report_email(report_hash, zip_path) }
+      let(:mail) { described_class.pubmed_report_email(report_hash, zip_path) }
 
       it 'includes key header info in the email body' do
         expect(mail.body.encoded).to include('<strong>Depositor: </strong>recurring_user')

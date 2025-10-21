@@ -2,7 +2,7 @@
 require 'rails_helper'
 require 'json'
 
-RSpec.describe Tasks::PubmedIngest::SharedUtilities::PubmedReportingService do
+RSpec.describe Tasks::IngestHelperUtils::IngestReportingService do
   describe '#generate_report' do
     let(:fixture_path) do
       Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
@@ -13,7 +13,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::PubmedReportingService do
     end
 
     it 'returns a report hash with expected structure and values' do
-      report = described_class.generate_report(ingest_output.symbolize_keys)
+      report = described_class.generate_report(ingest_output: ingest_output.symbolize_keys, source_name: 'PubMed')
       expect(report[:headers][:depositor]).to eq(ingest_output[:depositor])
       expect(report[:formatted_time]).to eq(Time.parse(ingest_output[:time]).strftime('%B %d, %Y at %I:%M %p %Z'))
       expect(report[:file_retrieval_directory]).to eq(ingest_output[:file_retrieval_directory])

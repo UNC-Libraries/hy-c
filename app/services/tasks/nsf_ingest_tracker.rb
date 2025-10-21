@@ -9,5 +9,6 @@ class Tasks::NsfIngestTracker < Tasks::BaseIngestTracker
       'attach_files_to_works' => { 'completed' => false },
       'send_summary_email' => { 'completed' => false }
     )
+    @data['file_info_csv_path'] = config['file_info_csv_path']
   end
 end

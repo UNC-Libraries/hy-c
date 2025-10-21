@@ -75,7 +75,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
     allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
     allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id)
-    allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report)
+    allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report)
     allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
 
     # Mock service instantiation
@@ -86,7 +86,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     allow(Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService)
       .to receive(:new).and_return(mock_file_attachment_service)
 
-    allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+    allow(Tasks::IngestHelperUtils::IngestReportingService)
     .to receive(:generate_report)
     .and_return(
     {
@@ -164,7 +164,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         .with(/attachment_results\.jsonl/, symbolize_names: true)
         .and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
-      allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report).and_return({
+      allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report).and_return({
         headers: { total_unique_records: 0 },
         summary: 'Test report'
       })
@@ -685,22 +685,22 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       # Add this directory to the setup
       FileUtils.mkdir_p(File.join(config['output_dir'], '04_generate_result_csvs'))
 
-      allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+      allow(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report).and_return(mock_report)
       allow(service).to receive(:generate_result_csvs).and_return(mock_csv_paths)
       allow(service).to receive(:compress_result_csvs).and_return(mock_zip_path)
-      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_return(mock_mailer)
+      allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
     end
 
     it 'generates report and sends email' do
       results = { records: {}, headers: {} }
       service.send(:send_report_and_notify, results)
 
-      expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+      expect(Tasks::IngestHelperUtils::IngestReportingService)
         .to have_received(:generate_report).with(results)
       expect(service).to have_received(:generate_result_csvs)
       expect(service).to have_received(:compress_result_csvs).with(mock_csv_paths)
-      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email).with(
+      expect(PubmedReportMailer).to have_received(:pubmed_report_email).with(
         hash_including(headers: hash_including(total_unique_records: 16)),
         mock_zip_path
       )
@@ -716,7 +716,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       it 'skips email sending' do
         service.send(:send_report_and_notify, {})
 
-        expect(PubmedReportMailer).not_to have_received(:truncated_pubmed_report_email)
+        expect(PubmedReportMailer).not_to have_received(:pubmed_report_email)
         expect(LogUtilsHelper).to have_received(:double_log).with(
           'Skipping email notification as it has already been sent.',
           :info,
@@ -746,7 +746,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
   describe 'workflow integration' do
     it 'maintains proper tracker state throughout workflow' do
-      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email)
+      allow(PubmedReportMailer).to receive(:pubmed_report_email)
         .and_return(double(deliver_now: true))
 
       # Mock CSV and zip generation

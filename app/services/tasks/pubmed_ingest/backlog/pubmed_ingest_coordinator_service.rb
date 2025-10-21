@@ -154,7 +154,10 @@ module Tasks
           # Generate report, log, send email
           double_log('Sending email with results', :info)
           begin
-            report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(@pubmed_ingest_service.attachment_results)
+            report = Tasks::IngestHelperUtils::IngestReportingService.generate_report(
+              ingest_output: @pubmed_ingest_service.attachment_results,
+              source_name: 'PubMed'
+            )
             report[:headers][:total_files] = @pubmed_ingest_service.attachment_results[:counts][:total_files]
             report[:categories] = {
                                     successfully_attached: 'Successfully Ingested and Attached',

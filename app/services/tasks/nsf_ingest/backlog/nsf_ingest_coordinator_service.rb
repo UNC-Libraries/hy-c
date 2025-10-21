@@ -3,6 +3,8 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
   LOAD_METADATA_OUTPUT_DIR  = '01_load_and_ingest_metadata'
   ATTACH_FILES_OUTPUT_DIR   = '02_attach_files_to_works'
   RESULT_CSV_OUTPUT_DIR     = '03_generate_result_csvs'
+  MAX_ROWS = 100
+
   def initialize(config)
     # Initialize ingest tracker
     @config = config
@@ -11,6 +13,7 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
         resume: config['resume'])
     @md_ingest_results_path = File.join(@config['output_dir'], LOAD_METADATA_OUTPUT_DIR, 'metadata_ingest_results.jsonl')
     @file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
+    @final_ingest_results_path = File.join(@config['output_dir'], 'final_ingest_results.json')
     # Create output directories if they don't exist
     generate_output_subdirectories
   end
