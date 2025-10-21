@@ -23,6 +23,7 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
       load_and_ingest_metadata
       attach_files
     end
+
     LogUtilsHelper.double_log('NSF ingest workflow completed successfully.', :info, tag: 'NSFIngestCoordinator')
     rescue => e
       LogUtilsHelper.double_log("NSF ingest workflow failed: #{e.message}", :error, tag: 'NSFIngestCoordinator')
@@ -60,6 +61,18 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
     # WIP: Disabled for testing
     # @tracker['progress']['attach_files_to_works']['completed'] = true
     # @tracker.save
+  end
+
+  def format_results_and_notify
+    notification_service = Tasks::NSFIngest::Backlog::Utilities::IngestNotificationService.new(
+      config: @config,
+      tracker: @tracker,
+      log_file_path: @final_ingest_results_path,
+      file_attachment_results_path: @file_attachment_results_path,
+      max_display_rows: MAX_ROWS
+    )
+    notification_service.run
+    JsonFileUtilsHelper.write_json(@results, @final_ingest_results_path, pretty: true)
   end
 
   def generate_output_subdirectories
