@@ -25,7 +25,10 @@ class Tasks::IngestHelperUtils::BaseFileAttachmentService
       work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
     end
 
-    work_ids.uniq.each { |id| sync_permissions_and_state!(id, config['depositor_onyen']) }
+    work_ids.uniq.each do |id| 
+      sync_permissions_and_state!(id, config['depositor_onyen']) 
+      sleep(SLEEP_BETWEEN_REQUESTS)
+    end
   end
 
   # overridable by subclasses
