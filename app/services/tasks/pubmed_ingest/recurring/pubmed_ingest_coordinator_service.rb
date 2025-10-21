@@ -160,7 +160,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
     if resume_flag
       output_dir = Pathname.new(resolve_output_dir(raw_output_dir, script_start, resume_flag))
-      tracker_path = output_dir.join('ingest_tracker.json')
+      tracker_path = output_dir.join(Tasks::IngestHelperUtils::BaseIngestTracker::TRACKER_FILENAME)
       unless tracker_path.exist?
         puts "❌ Tracker file not found: #{tracker_path}"
         exit(1)

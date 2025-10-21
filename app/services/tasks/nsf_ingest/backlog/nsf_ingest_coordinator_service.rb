@@ -65,7 +65,7 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
   end
 
   def format_results_and_notify
-    notification_service = Tasks::NSFIngest::Backlog::Utilities::IngestNotificationService.new(
+    notification_service = Tasks::NSFIngest::Backlog::Utilities::NotificationService.new(
       config: @config,
       tracker: @tracker,
       log_file_path: @final_ingest_results_path,

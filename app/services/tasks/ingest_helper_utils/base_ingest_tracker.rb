@@ -5,7 +5,7 @@ class Tasks::IngestHelperUtils::BaseIngestTracker
 
   def self.build(config:, resume: false)
     output_dir = config['output_dir']
-    path = File.join(output_dir, 'ingest_tracker.json')
+    path = File.join(output_dir, TRACKER_FILENAME)
 
     instance = new(output_dir, config)
 

@@ -1,45 +1,61 @@
 # frozen_string_literal: true
 desc 'Ingest new PDFs from the NSF backlog and attach them to Hyrax works if matched'
 task :nsf_backlog_ingest, [:resume, :file_info_csv_path, :file_retrieval_directory, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |task, args|
-  return unless valid_args([args[:resume], args[:file_info_csv_path], args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title], args[:depositor_onyen]])
-  config = build_config(args)
-  config['output_dir'] = resolve_output_directory(args, config)
+  now = Time.now
+  resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
+  validate_args!(args) unless resume
+
+  output_directory = resolve_output_directory(args, now)
+  tracker = resume ? retrieve_tracker_json(output_directory) : nil
+  config = build_config(args, tracker, output_directory, now)
+
+  # config['output_dir'] = resolve_output_directory(args, config)
   coordinator = Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService.new(config)
   res = coordinator.run
 end
 
-def valid_args(args)
-  missing_args = []
-  missing_args << 'resume' if args[0].nil?
-  missing_args << 'file_info_csv_path' if args[1].nil?
-  missing_args << 'file_retrieval_directory' if args[2].nil?
-  missing_args << 'output_dir' if args[3].nil?
-  missing_args << 'admin_set_title' if args[4].nil?
-  missing_args << 'depositor_onyen' if args[5].nil?
-  unless missing_args.empty?
-    puts "❌ Missing required arguments: #{missing_args.join(', ')}"
+def validate_args!(args)
+  required = %i[file_info_csv_path file_retrieval_directory output_dir admin_set_title depositor_onyen]
+  missing = required.select { |key| args[key].nil? }
+
+  unless missing.empty?
+    puts "❌ Missing required arguments: #{missing.join(', ')}"
     exit(1)
   end
-  true
 end
 
-def build_config(args)
+def build_config(args, tracker, output_dir, now)
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
-  file_retrieval_directory = Pathname.new(args[:file_retrieval_directory]).absolute? ?
-                               args[:file_retrieval_directory] :
-                               Rails.root.join(args[:file_retrieval_directory])
-  output_directory = Pathname.new(args[:output_dir]).absolute? ?
-                               args[:output_dir] :
-                                  Rails.root.join(args[:output_dir])
+  config = if resume
+             {
+               'start_time' => tracker['start_time'],
+               'restart_time' => now,
+               'admin_set_title' => tracker['admin_set_title'],
+               'depositor_onyen' => tracker['depositor_onyen'],
+               'output_dir' => tracker['output_dir'],
+               'file_retrieval_directory' => tracker['file_retrieval_directory'],
+               'file_info_csv_path' => tracker['file_info_csv_path']
+             }
+           else
+             {
+               'start_time' => now,
+               'resume' => false,
+               'admin_set_title' => args[:admin_set_title],
+               'depositor_onyen' => args[:depositor_onyen],
+               'output_dir' => output_dir,
+               'file_retrieval_directory' => normalize_path(args[:file_retrieval_directory]),
+               'file_info_csv_path' => normalize_path(args[:file_info_csv_path])
+             }
+           end
   config = {
-    'time' => resume ? nil : Time.now,
-    'restart_time' => resume ? Time.now : nil,
+    'time' => resume ? tracker['start_time'] : now,
+    'restart_time' => resume ? now : tracker['restart_time'],
     'resume' => ActiveModel::Type::Boolean.new.cast(args[:resume]),
-    'admin_set_title' => args[:admin_set_title],
-    'depositor_onyen' => args[:depositor_onyen],
-    'output_dir' => output_directory,
-    'file_retrieval_directory' => file_retrieval_directory,
-    'file_info_csv_path' => args[:file_info_csv_path]
+    'admin_set_title' => resume ? tracker['admin_set_title'] : args[:admin_set_title],
+    'depositor_onyen' => resume ? tracker['depositor_onyen'] : args[:depositor_onyen],
+    'output_dir' => resume ? tracker['output_dir'] : output_dir,
+    'file_retrieval_directory' => resume ? tracker['file_retrieval_directory'] : file_retrieval_directory,
+    'file_info_csv_path' => resume ? tracker['file_info_csv_path'] : normalize_path(args[:file_info_csv_path])
   }
   write_intro_banner(config: config)
   config
@@ -48,7 +64,20 @@ def build_config(args)
    exit(1)
 end
 
-def resolve_output_directory(args, config)
+def retrieve_tracker_json(output_dir)
+  tracker_path = File.join(output_dir, Tasks::IngestHelperUtils::BaseIngestTracker::TRACKER_FILENAME)
+  unless File.exist?(tracker_path)
+    puts "❌ Tracker file not found at #{tracker_path}"
+    exit(1)
+  end
+  JsonFileUtilsHelper.read_json_file(tracker_path)
+end
+
+def normalize_path(path)
+  Pathname.new(path).absolute? ? path : Rails.root.join(path)
+end
+
+def resolve_output_directory(args, time)
   output_dir = args[:output_dir]
 
   if args[:resume].to_s.downcase == 'true'
@@ -82,14 +111,14 @@ def resolve_output_directory(args, config)
 
   else
     # Create a new timestamped directory when not resuming
-    timestamp = config['time'].strftime('%Y%m%d_%H%M%S')
+    timestamp = time.strftime('%Y%m%d_%H%M%S')
     output_dir = File.join(output_dir, "nsf_backlog_ingest_#{timestamp}")
       # Create the directory if it doesn't exist
     Dir.mkdir(output_dir) unless Dir.exist?(output_dir)
     output_dir = File.expand_path(output_dir)
   end
 
-  output_dir
+  normalize_path(output_dir)
 end
 
 def write_intro_banner(config:)
