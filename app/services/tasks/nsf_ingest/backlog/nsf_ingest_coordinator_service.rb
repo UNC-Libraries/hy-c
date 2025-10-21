@@ -23,6 +23,7 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
       load_and_ingest_metadata
       attach_files
     end
+    format_results_and_notify
 
     LogUtilsHelper.double_log('NSF ingest workflow completed successfully.', :info, tag: 'NSFIngestCoordinator')
     rescue => e
