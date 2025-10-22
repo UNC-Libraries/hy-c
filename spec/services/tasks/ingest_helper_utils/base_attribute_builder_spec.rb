@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttributeBuilder, type: :model do
+RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
   let(:admin_set) { FactoryBot.create(:admin_set) }
   let(:depositor_onyen) { 'admin' }
   let(:article) { Article.new }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Tasks
-  require 'tasks/ingest_helper'
+ require 'tasks/ingest_helper_utils/ingest_helper'
   class SageBaseArticleIngester
     include Tasks::IngestHelperUtils::IngestHelper
     attr_accessor :jats_ingest_work, :package_name, :package_file_names, :depositor, :unzipped_package_dir, :deposit_record

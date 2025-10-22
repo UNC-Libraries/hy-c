@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Tasks
-  require 'tasks/ingest_helper'
+  require 'tasks/ingest_helper_utils/ingest_helper'
   class DimensionsIngestService
     include Tasks::IngestHelperUtils::IngestHelper
     attr_reader :admin_set, :depositor
