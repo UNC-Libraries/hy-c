@@ -350,15 +350,17 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
     it 'generates report and sends email' do
       expect(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report)
-        .with(hash_including(
-          admin_set: admin_set.title.first,
-          counts: hash_including(total_files: 2)
-        ))
+        .with(
+        ingest_output: hash_including(
+        admin_set: admin_set.title.first,
+        counts: hash_including(total_files: 2)
+        ),
+        source_name: 'PubMed')
         .and_return(report_hash)
 
       expect(PubmedReportMailer)
         .to receive(:pubmed_report_email)
-        .with(satisfy { |r| r[:headers][:total_files] == 2 })
+        .with(report: satisfy { |r| r[:headers][:total_files] == 2 }, zip_path: nil)
 
       service.send(:finalize_report_and_notify)
     end
