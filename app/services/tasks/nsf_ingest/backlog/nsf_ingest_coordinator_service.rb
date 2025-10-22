@@ -60,8 +60,8 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
     )
     file_attachment_service.run
     # WIP: Disabled for testing
-    # @tracker['progress']['attach_files_to_works']['completed'] = true
-    # @tracker.save
+    @tracker['progress']['attach_files_to_works']['completed'] = true
+    @tracker.save
   end
 
   def format_results_and_notify
