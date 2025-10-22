@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Tasks
   require 'tasks/migration_helper'
- require 'tasks/ingest_helper_utils/ingest_helper'
+  require 'tasks/ingest_helper_utils/ingest_helper'
 
   class SageNewArticleIngester < SageBaseArticleIngester
     attr_accessor :admin_set, :depositor

@@ -99,10 +99,11 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
 
       # verify it attached the file we passed in and used admin depositor visibility
       expect(helper).to have_received(:attach_pdf_to_work).with(
-        an_instance_of(Article),
-        dest_path,
-        admin_user,
-        work.visibility
+        work: an_instance_of(Article),
+        file_path: dest_path,
+        depositor: admin_user,
+        visibility: work.visibility,
+        filename: nil
       )
     end
 
