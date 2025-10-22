@@ -13,11 +13,11 @@ RSpec.describe BaseIngestReportMailer, type: :mailer do
 
   it 'attaches the ZIP and logs it' do
     mailer = described_class.new
-    
+
     # Mock the mail method to return a double with attachments
     mail_double = double('mail', attachments: [double(filename: 'test.zip')])
     allow(mailer).to receive(:mail).and_return(mail_double)
-    
+
     mail = mailer.ingest_report_email(
       report: report,
       zip_path: zip_path,
@@ -31,18 +31,18 @@ RSpec.describe BaseIngestReportMailer, type: :mailer do
 
   it 'sends mail with correct subject and recipient' do
     mailer = described_class.new
-    
+
     # Mock the mail method to capture the parameters
     allow(mailer).to receive(:mail) do |params|
       double('mail', subject: params[:subject], to: [params[:to]])
     end
-    
+
     mail = mailer.ingest_report_email(
       report: report,
       zip_path: zip_path,
       template_name: 'template_name'
     )
-    
+
     expect(mail.subject).to eq('Test Report')
     expect(mail.to).to eq(['user@example.com'])
   end

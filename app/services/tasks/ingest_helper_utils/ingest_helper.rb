@@ -33,7 +33,7 @@ module Tasks
         file_set
       end
 
-      def attach_file_set_to_work(work:, file_path:, user:, visibility:, filename:)
+      def attach_file_set_to_work(work:, file_path:, user:, visibility:, filename: nil)
         file_set_params = { visibility: visibility }
 
         begin
