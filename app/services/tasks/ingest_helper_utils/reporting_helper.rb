@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Tasks::IngestHelperUtils::ReportingHelper
   extend self
-  def load_results(path:)
+  def load_results(path:, tracker:)
     unless File.exist?(path)
       LogUtilsHelper.double_log("Results file not found at #{path}", :error, tag: 'load_and_format_results')
       raise "Results file not found at #{path}"
@@ -10,7 +10,7 @@ module Tasks::IngestHelperUtils::ReportingHelper
     LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}.", :info, tag: 'load_and_format_results')
     Tasks::IngestHelperUtils::ReportingHelper.format_results_for_reporting(
         raw_results_array: raw_results_array,
-        tracker: @tracker
+        tracker: tracker
     )
   end
 

@@ -11,7 +11,7 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
   end
 
   def run
-    formatted_results = load_results(path: @file_attachment_results_path)
+    formatted_results = load_results(path: @file_attachment_results_path, tracker: @tracker)
     send_summary_email(formatted_results)
   end
 

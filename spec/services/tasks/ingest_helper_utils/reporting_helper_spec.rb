@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 RSpec.describe Tasks::IngestHelperUtils::ReportingHelper, type: :module do
-describe '#format_results_for_reporting' do
+  describe '#format_results_for_reporting' do
     let(:raw_results) do
       [
         {
@@ -65,12 +65,14 @@ describe '#format_results_for_reporting' do
     let(:tracker) { {
         'restart_time' => '2024-01-02T00:00:00Z',
         'start_time' => '2024-01-01T00:00:00Z'
-    } }
+    }
+    }
 
     before do
-        %w[work_123 work_456 work_789 work_101].each do |work_id|
-            allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with(work_id).and_return("http://example.com/#{work_id}")
-        end
+      allow(LogUtilsHelper).to receive(:double_log)
+      %w[work_123 work_456 work_789 work_101].each do |work_id|
+        allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with(work_id).and_return("http://example.com/#{work_id}")
+      end
     end
 
     it 'formats valid categories correctly' do
@@ -109,6 +111,61 @@ describe '#format_results_for_reporting' do
       expect(skipped_entry[:pmid]).to eq('456789')
       expect(skipped_entry[:work_id]).to be_nil
       expect(skipped_entry).not_to have_key('cdr_url')
+    end
+  end
+
+  describe '#load_results' do
+    let(:md_ingest_results_path) { '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl' }
+    let(:tracker) { {
+        'restart_time' => '2024-01-02T00:00:00Z',
+        'start_time' => '2024-01-01T00:00:00Z'
+    }
+    }
+    let(:sample_results) do
+      [
+        {
+          category: :successfully_attached,
+          work_id: 'work_123',
+          message: 'File attached successfully',
+          ids: { pmid: '123456', pmcid: 'PMC789012' },
+          file_name: 'PMC789012_001.pdf'
+        },
+        {
+          category: :failed,
+          work_id: nil,
+          message: 'File attachment failed',
+          ids: { pmid: '234567', pmcid: 'PMC890123' },
+          file_name: 'NONE'
+        },
+        {
+          category: :skipped,
+          work_id: 'work_789',
+          message: 'Already has files',
+          ids: { pmid: '345678', pmcid: 'PMC901234' },
+          file_name: 'NONE'
+        }
+      ]
+    end
+
+    before do
+      allow(LogUtilsHelper).to receive(:double_log)
+      allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
+      allow(JsonFileUtilsHelper)
+        .to receive(:read_jsonl)
+        .and_return(sample_results)
+      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
+      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_789').and_return('http://example.com/work_789')
+    end
+
+    it 'logs results loading completion' do
+      Tasks::IngestHelperUtils::ReportingHelper.send(:load_results, path: md_ingest_results_path, tracker: tracker)
+    #   expected_dir = service.instance_variable_get(:@attachment_output_directory)
+
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        a_string_including('Successfully loaded and formatted results from'),
+        :info,
+        tag: 'load_and_format_results'
+      )
     end
   end
 end

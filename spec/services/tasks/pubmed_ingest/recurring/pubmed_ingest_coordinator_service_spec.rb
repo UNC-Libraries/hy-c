@@ -176,7 +176,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(service).to receive(:load_and_ingest_metadata).ordered
       expect(service).to receive(:attach_files).ordered
       expect(service).to receive(:load_results).ordered
-      expect(service).to receive(:send_report_and_notify).ordered
+      expect(service).to receive(:format_results_and_notify).ordered
       service.run
     end
 
@@ -490,56 +490,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
   end
 
-  describe '#load_results' do
-    let(:md_ingest_results_path) { '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl' }
-    let(:sample_results) do
-      [
-        {
-          category: :successfully_attached,
-          work_id: 'work_123',
-          message: 'File attached successfully',
-          ids: { pmid: '123456', pmcid: 'PMC789012' },
-          file_name: 'PMC789012_001.pdf'
-        },
-        {
-          category: :failed,
-          work_id: nil,
-          message: 'File attachment failed',
-          ids: { pmid: '234567', pmcid: 'PMC890123' },
-          file_name: 'NONE'
-        },
-        {
-          category: :skipped,
-          work_id: 'work_789',
-          message: 'Already has files',
-          ids: { pmid: '345678', pmcid: 'PMC901234' },
-          file_name: 'NONE'
-        }
-      ]
-    end
-
-    before do
-      allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
-      allow(JsonFileUtilsHelper)
-        .to receive(:read_jsonl)
-        .and_return(sample_results)
-      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
-      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_789').and_return('http://example.com/work_789')
-    end
-
-    it 'logs results loading completion' do
-      service.send(:load_results)
-      expected_dir = service.instance_variable_get(:@attachment_output_directory)
-
-      expect(LogUtilsHelper).to have_received(:double_log).with(
-        a_string_including("Successfully loaded and formatted results from #{expected_dir}/attachment_results.jsonl"),
-        :info,
-        tag: 'load_and_format_results'
-      )
-    end
-  end
-
-  describe '#send_report_and_notify' do
+  describe '#format_results_and_notify' do
     let(:mock_report) do
       {
         headers: {},
@@ -590,7 +541,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'generates report and sends email' do
       results = { records: {}, headers: {} }
-      service.send(:send_report_and_notify, results)
+      service.send(:format_results_and_notify, results)
 
       expect(Tasks::IngestHelperUtils::IngestReportingService)
         .to have_received(:generate_report).with(results)
@@ -610,7 +561,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       end
 
       it 'skips email sending' do
-        service.send(:send_report_and_notify, {})
+        service.send(:format_results_and_notify, {})
 
         expect(PubmedReportMailer).not_to have_received(:pubmed_report_email)
         expect(LogUtilsHelper).to have_received(:double_log).with(
@@ -628,7 +579,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       it 'logs error and continues' do
         expect {
-          service.send(:send_report_and_notify, {})
+          service.send(:format_results_and_notify, {})
         }.not_to raise_error
 
         expect(LogUtilsHelper).to have_received(:double_log).with(
