@@ -7,7 +7,7 @@ class Tasks::IngestHelperUtils::BaseIngestTracker
     output_dir = config['output_dir']
     path = File.join(output_dir, TRACKER_FILENAME)
 
-    instance = new(output_dir, config)
+    instance = new(config)
 
     if resume && File.exist?(path)
       instance.resume!(config)

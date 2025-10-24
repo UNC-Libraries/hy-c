@@ -30,7 +30,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       article.abstract = [metadata['openalex_abstract'] || 'N/A']
       # ('%Y-%m-%dT00:00:00Z')
       article.date_issued = DateTime.parse(metadata['publication_date']).strftime('%Y-%m-%dT00:00:00Z')
-      article.publisher = [metadata.dig('primary_location', 'source', 'host_organization_name')]
+      article.publisher = [metadata.dig('primary_location', 'source', 'host_organization_name')].compact.presence
       article.keyword = metadata['openalex_keywords'] || []
       article.funder = retrieve_funder_names
       puts "WIP Additional attributes: #{article.title.inspect}, date_issued: #{article.date_issued.inspect}, publisher: #{article.publisher.inspect}, keywords: #{article.keyword.inspect}, funders: #{article.funder.inspect}"

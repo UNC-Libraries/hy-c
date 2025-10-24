@@ -58,7 +58,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     builder = if source == 'openalex'
                 Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     else
-      Tasks::NsfIngest::Backlog::Utilities::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+      Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     end
     builder.populate_article_metadata
     article.save!
