@@ -18,8 +18,8 @@ class Tasks::IngestHelperUtils::BaseIngestTracker
     instance
   end
 
-  def initialize(output_dir, config)
-    @path = File.join(output_dir, TRACKER_FILENAME)
+  def initialize(config)
+    @path = File.join(config['output_dir'], TRACKER_FILENAME)
     @data = {}
   end
 
