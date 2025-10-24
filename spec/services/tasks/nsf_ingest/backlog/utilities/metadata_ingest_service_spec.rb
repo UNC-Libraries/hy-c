@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService, type: :service do
+RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
   let(:config) do
     {
       'depositor_onyen' => 'test-user',
@@ -148,17 +148,17 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService, type
   describe '#merge_additional_metadata' do
     it 'merges abstract and keywords from openalex/datacite' do
       resolved = {}
-      openalex = { 'abstract_inverted_index' => { 'AI' => [0], 'rocks' => [1] }, 'concepts' => [{ 'display_name' => 'AI' }] }
+      openalex = { 'abstract_inverted_index' => { 'Hyrax' => [0], 'rocks' => [1] }, 'concepts' => [{ 'display_name' => 'Hyrax' }] }
       datacite = { 'attributes' => { 'description' => 'A Datacite desc' } }
 
-      allow(service).to receive(:generate_openalex_abstract).and_return('AI rocks.')
-      allow(service).to receive(:extract_keywords_from_openalex).and_return(['AI'])
+      allow(service).to receive(:generate_openalex_abstract).and_return('Hyrax rocks.')
+      allow(service).to receive(:extract_keywords_from_openalex).and_return(['Hyrax'])
 
       service.send(:merge_additional_metadata, resolved, openalex, datacite)
 
-      expect(resolved['openalex_abstract']).to eq('AI rocks.')
+      expect(resolved['openalex_abstract']).to eq('Hyrax rocks.')
       expect(resolved['datacite_abstract']).to eq('A Datacite desc')
-      expect(resolved['openalex_keywords']).to eq(['AI'])
+      expect(resolved['openalex_keywords']).to eq(['Hyrax'])
     end
   end
 

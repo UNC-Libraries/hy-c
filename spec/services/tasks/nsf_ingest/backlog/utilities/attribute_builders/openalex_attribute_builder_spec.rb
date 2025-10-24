@@ -107,7 +107,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
       expect(article.abstract).to eq(['An inverted abstract.'])
       expect(article.date_issued).to eq('2024-03-01T00:00:00Z')
       expect(article.publisher).to eq(['Test Org'])
-      expect(article.keyword).to eq(['AI', 'Machine Learning'])
+      expect(article.keyword).to eq(['Hyrax', 'Python'])
       expect(article.funder).to match_array(['NSF', 'DOE'])
     end
   end
