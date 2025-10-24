@@ -59,7 +59,6 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
       metadata_ingest_result_path: @md_ingest_results_path
     )
     file_attachment_service.run
-    # WIP: Disabled for testing
     @tracker['progress']['attach_files_to_works']['completed'] = true
     @tracker.save
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::IngestHelperUtils::NotificationHelper do
+RSpec.describe Tasks::IngestHelperUtils::NotificationHelper, type: :helper do
   let(:results) { [{ id: 1, status: 'ok' }, { id: 2, status: 'fail' }] }
   let(:csv_output_dir) { '/tmp/csv_output' }
 
@@ -35,7 +35,7 @@ RSpec.describe Tasks::IngestHelperUtils::NotificationHelper do
   before do
     allow(LogUtilsHelper).to receive(:double_log)
 
-    # Stub the correct service class methods (not ReportingHelper)
+    # Stub the ReportingHelper module methods (not IngestReportingService)
     allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs)
       .and_return(['/tmp/file1.csv', '/tmp/file2.csv'])
     allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs)
