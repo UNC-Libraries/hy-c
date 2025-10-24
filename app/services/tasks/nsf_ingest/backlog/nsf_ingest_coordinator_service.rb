@@ -8,7 +8,7 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
   def initialize(config)
     # Initialize ingest tracker
     @config = config
-    @tracker = Tasks::NsfIngestTracker.build(
+    @tracker = Tasks::NSFIngest::Backlog::Utilities::NsfIngestTracker.build(
         config: config,
         resume: config['resume'])
     @md_ingest_results_path = File.join(@config['output_dir'], LOAD_METADATA_OUTPUT_DIR, 'metadata_ingest_results.jsonl')

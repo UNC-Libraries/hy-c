@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::NsfIngestTracker < Tasks::IngestHelperUtils::BaseIngestTracker
+class Tasks::NSFIngest::Backlog::Utilities::NsfIngestTracker < Tasks::IngestHelperUtils::BaseIngestTracker
   def initialize_new!(config)
     super
     @data['progress'].merge!(
