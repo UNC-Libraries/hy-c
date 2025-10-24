@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder do
+RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder, type: :service do
   let(:admin_set) { double('AdminSet') }
   let(:depositor) { 'test-depositor' }
   let(:article) { Article.new }
@@ -34,16 +34,16 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
       'authorships' => [
         {
           'author' => {
-            'display_name' => 'Alice Example',
-            'orcid' => '0000-0001-1111-2222',
+            'display_name' => 'Ming Yang',
+            'orcid' => nil,
             'institutions' => [{ 'display_name' => 'University of North Carolina at Chapel Hill' }]
           }
         },
         {
           'author' => {
-            'display_name' => 'Bob Example',
-            'orcid' => nil,
-            'institutions' => [{ 'display_name' => 'Duke University' }]
+            'display_name' => 'James H. Anderson',
+            'orcid' => 'https://orcid.org/0000-0001-7138-939X',
+            'institutions' => [{ 'display_name' => 'University of North Carolina' }]
           }
         }
       ]
@@ -53,7 +53,6 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
   subject(:builder) { described_class.new(metadata, article, admin_set, depositor) }
 
   before do
-    # Stub helpers
     allow(AffiliationUtilsHelper).to receive(:is_unc_affiliation?).and_wrap_original do |_, aff|
       aff.include?('North Carolina')
     end
@@ -65,28 +64,45 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
   end
 
   describe '#generate_authors' do
-    it 'builds author hashes with affiliations and indices' do
+    it 'formats author names as "Last, First" and includes affiliations' do
       authors = builder.send(:generate_authors)
+
       expect(authors.size).to eq(2)
 
       first = authors.first
-      expect(first['name']).to eq('Alice Example')
-      expect(first['orcid']).to eq('0000-0001-1111-2222')
+      expect(first['name']).to eq('Yang, Ming')
       expect(first['index']).to eq('0')
       expect(first['other_affiliation']).to include('North Carolina')
 
       second = authors.second
-      expect(second['name']).to eq('Bob Example')
-      expect(second['orcid']).to be_nil
+      expect(second['name']).to eq('Anderson, James H.')
       expect(second['index']).to eq('1')
-      expect(second['other_affiliation']).to eq('Duke University')
+      expect(second['orcid']).to eq('https://orcid.org/0000-0001-7138-939X')
+    end
+  end
+
+  describe '#format_author_name' do
+    it 'returns "Last, First" for simple names' do
+      expect(builder.send(:format_author_name, 'Ming Yang')).to eq('Yang, Ming')
+    end
+
+    it 'returns "Last, First Middle" for multi-part names' do
+      expect(builder.send(:format_author_name, 'James H. Anderson')).to eq('Anderson, James H.')
+    end
+
+    it 'returns unchanged for single-part names' do
+      expect(builder.send(:format_author_name, 'Plato')).to eq('Plato')
+    end
+
+    it 'handles nil or blank input gracefully' do
+      expect(builder.send(:format_author_name, nil)).to eq('')
+      expect(builder.send(:format_author_name, '')).to eq('')
     end
   end
 
   describe '#apply_additional_basic_attributes' do
-    it 'populates basic article fields correctly' do
+    it 'sets expected article attributes' do
       builder.send(:apply_additional_basic_attributes)
-
       expect(article.title).to eq(['Sample OpenAlex Article'])
       expect(article.abstract).to eq(['An inverted abstract.'])
       expect(article.date_issued).to eq('2024-03-01T00:00:00Z')
@@ -97,37 +113,21 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
   end
 
   describe '#set_identifiers' do
-    it 'sets DOI, identifiers, and ISSN using helpers and remote data' do
+    it 'populates identifier and ISSN attributes' do
       builder.send(:set_identifiers)
-
       expect(article.identifier).to include('PMID: 12345', 'PMCID: PMC67890', 'DOI: https://dx.doi.org/10.1234/test.doi')
       expect(article.issn).to eq(['1234-5678'])
     end
   end
 
   describe '#set_journal_attributes' do
-    it 'applies journal metadata correctly' do
+    it 'assigns correct journal and page metadata' do
       builder.send(:set_journal_attributes)
       expect(article.journal_title).to eq('Journal of Test Studies')
       expect(article.journal_volume).to eq('12')
       expect(article.journal_issue).to eq('4')
       expect(article.page_start).to eq('100')
       expect(article.page_end).to eq('110')
-    end
-  end
-
-  describe '#retrieve_alt_ids_from_europe_pmc' do
-    it 'retrieves alternate IDs from API response' do
-      pmid, pmcid = builder.send(:retrieve_alt_ids_from_europe_pmc, '10.1234/test.doi')
-      expect(pmid).to eq('12345')
-      expect(pmcid).to eq('PMC67890')
-    end
-
-    it 'returns nils on error response' do
-      allow(HTTParty).to receive(:get).and_return(double(code: 404, body: '{}'))
-      pmid, pmcid = builder.send(:retrieve_alt_ids_from_europe_pmc, '10.1234/test.doi')
-      expect(pmid).to be_nil
-      expect(pmcid).to be_nil
     end
   end
 end

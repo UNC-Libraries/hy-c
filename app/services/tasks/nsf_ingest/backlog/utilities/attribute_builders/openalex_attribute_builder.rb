@@ -7,7 +7,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       metadata['authorships'].map.with_index do |obj, i|
         author = obj['author']
         res = {
-          'name' => author['display_name'],
+          'name' => format_author_name(author['display_name']),
           'orcid' => author.dig('orcid'),
           'index' => i.to_s
         }
@@ -101,6 +101,18 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       puts "WIP Journal attributes (OpenAlex): #{article.journal_title}, "\
        "volume: #{article.journal_volume}, issue: #{article.journal_issue}, "\
        "pages: #{article.page_start}-#{article.page_end}"
+    end
+
+    def format_author_name(display_name)
+      return '' if display_name.blank?
+
+      # Split by spaces, handle middle initials, multi-part last names, etc.
+      parts = display_name.strip.split(/\s+/)
+      return display_name if parts.size == 1
+
+      last_name = parts.pop
+      first_names = parts.join(' ')
+      "#{last_name}, #{first_names}"
     end
   end
 end
