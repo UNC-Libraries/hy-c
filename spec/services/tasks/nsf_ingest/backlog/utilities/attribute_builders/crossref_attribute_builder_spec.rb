@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder do
   let(:admin_set) { double('AdminSet') }
-  let(:depositor) { 'dcam' }
+  let(:depositor) { 'test-user' }
   let(:article) { Article.new }
   let(:config) { { 'depositor_onyen' => depositor } }
 
@@ -80,10 +80,10 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
       builder.send(:apply_additional_basic_attributes)
 
       expect(article.title).to eq(['Test Article from CrossRef'])
-      expect(article.abstract).to eq(['AI eats the world.'])
+      expect(article.abstract).to eq(['UNC eats the world.'])
       expect(article.date_issued).to eq('2025-03-10T00:00:00Z')
       expect(article.publisher).to eq(['IEEE Press'])
-      expect(article.keyword).to eq(['AI', 'Neural Networks'])
+      expect(article.keyword).to eq(['UNC', 'Hyrax'])
       expect(article.funder).to match_array(['NSF', 'NASA'])
     end
 
