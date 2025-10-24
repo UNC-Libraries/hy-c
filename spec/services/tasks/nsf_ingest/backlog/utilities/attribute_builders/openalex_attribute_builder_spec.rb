@@ -12,7 +12,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
       'title' => 'Sample OpenAlex Article',
       'publication_date' => '2024-03-01',
       'openalex_abstract' => 'An inverted abstract.',
-      'openalex_keywords' => ['AI', 'Machine Learning'],
+      'openalex_keywords' => ['OpenAlex', 'Keyword'],
       'doi' => '10.1234/test.doi',
       'primary_location' => {
         'source' => {

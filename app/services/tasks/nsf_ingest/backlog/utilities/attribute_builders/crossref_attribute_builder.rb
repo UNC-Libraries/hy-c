@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::NsfIngest::Backlog::Utilities
+module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
   class CrossrefAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
     private
 
