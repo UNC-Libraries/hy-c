@@ -8,8 +8,8 @@ module Tasks::IngestHelperUtils::NotificationHelper
     LogUtilsHelper.double_log('Finalizing report and sending notification email...', :info, tag: 'send_summary_email')
 
     begin
-      csv_paths = Tasks::Shared::ReportingService.generate_result_csvs(results: results, csv_output_dir: csv_output_dir)
-      zip_path  = Tasks::Shared::ReportingService.compress_result_csvs(csv_paths: csv_paths, csv_output_dir: csv_output_dir)
+      csv_paths = Tasks::IngestHelperUtils::ReportingHelper.generate_result_csvs(results: results, csv_output_dir: csv_output_dir)
+      zip_path  = Tasks::IngestHelperUtils::ReportingHelper.compress_result_csvs(csv_paths: csv_paths, zip_output_dir: csv_output_dir)
 
       report = build_report(results: results, tracker: tracker)
       mailer.pubmed_report_email(report: report, zip_path: zip_path).deliver_now

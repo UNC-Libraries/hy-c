@@ -16,7 +16,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestNotificationService, type: :s
     double(
       'Tracker',
       '[]' => progress_hash['progress'],
-      save: true
+      :save => true
     ).tap do |t|
       # Allow nested hash access
       allow(t).to receive(:[]).with('progress').and_return(progress_hash['progress'])
@@ -42,13 +42,13 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestNotificationService, type: :s
     allow(Tasks::IngestHelperUtils::IngestReportingService)
       .to receive(:generate_report)
       .and_return({ ingest_output: { counts: { total_files: 2 } }, records: [], headers: {} })
-    
+
     # Stub methods from ReportingHelper module
     allow(service).to receive(:load_results).and_return({ some: 'results' })
     allow(service).to receive(:generate_truncated_categories).and_return({})
     allow(service).to receive(:generate_result_csvs).and_return(['/tmp/file1.csv'])
     allow(service).to receive(:compress_result_csvs).and_return('/tmp/results.zip')
-    
+
     # Stub abstract methods
     allow(service).to receive(:populate_headers!)
     allow(service).to receive(:source_name).and_return('TestSource')
@@ -98,7 +98,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestNotificationService, type: :s
     it 'handles exceptions gracefully' do
       allow(service).to receive(:send_mail).and_raise(StandardError, 'Boom!')
       allow(Rails.logger).to receive(:error)
-      
+
       expect(LogUtilsHelper).to receive(:double_log).with(
         a_string_including('Failed to send email notification: Boom!'),
         :error,
