@@ -129,7 +129,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   def merge_additional_metadata(resolved_md, openalex_md, datacite_md)
     resolved_md['openalex_abstract'] = generate_openalex_abstract(openalex_md)
     resolved_md['datacite_abstract'] = datacite_md.dig('attributes', 'description') if datacite_md&.dig('attributes', 'description').present?
-    resolved_md['openalex_keywords'] = extract_keywords_from_openalex(openalex_keywords)
+    resolved_md['openalex_keywords'] = extract_keywords_from_openalex(openalex_md)
   end
 
   def parse_response(res, source, doi)
