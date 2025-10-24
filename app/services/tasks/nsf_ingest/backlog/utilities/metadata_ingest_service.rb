@@ -56,7 +56,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
   # WIP: Attribute builder depending on source of metadata
     builder = if source == 'openalex'
-                Tasks::NsfIngest::Backlog::Utilities::OpenalexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+                Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     else
       Tasks::NsfIngest::Backlog::Utilities::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
     end
@@ -129,7 +129,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   def merge_additional_metadata(resolved_md, openalex_md, datacite_md)
     resolved_md['openalex_abstract'] = generate_openalex_abstract(openalex_md)
     resolved_md['datacite_abstract'] = datacite_md.dig('attributes', 'description') if datacite_md&.dig('attributes', 'description').present?
-    resolved_md['openalex_keywords'] = extract_keywords_from_openalex(resolved_md)
+    resolved_md['openalex_keywords'] = extract_keywords_from_openalex(openalex_keywords)
   end
 
   def parse_response(res, source, doi)

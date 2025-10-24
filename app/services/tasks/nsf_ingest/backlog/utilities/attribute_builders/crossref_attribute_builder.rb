@@ -35,7 +35,6 @@ module Tasks::NsfIngest::Backlog::Utilities
     end
 
     def set_identifiers
-      article.doi = metadata['DOI'].presence
       article.identifier = format_publication_identifiers
       article.issn = retrieve_issn
       puts "WIP Alternate IDs: #{article.identifier.inspect}"

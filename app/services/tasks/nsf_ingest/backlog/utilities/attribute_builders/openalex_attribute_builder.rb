@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::NsfIngest::Backlog::Utilities
+module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
   class OpenalexAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
     private
 
@@ -30,14 +30,13 @@ module Tasks::NsfIngest::Backlog::Utilities
       article.abstract = [metadata['openalex_abstract'] || 'N/A']
       # ('%Y-%m-%dT00:00:00Z')
       article.date_issued = DateTime.parse(metadata['publication_date']).strftime('%Y-%m-%dT00:00:00Z')
-      article.publisher = metadata.dig('primary_location', 'source', 'host_organization_name')
+      article.publisher = [metadata.dig('primary_location', 'source', 'host_organization_name')]
       article.keyword = metadata['openalex_keywords'] || []
       article.funder = retrieve_funder_names
       puts "WIP Additional attributes: #{article.title.inspect}, date_issued: #{article.date_issued.inspect}, publisher: #{article.publisher.inspect}, keywords: #{article.keyword.inspect}, funders: #{article.funder.inspect}"
     end
 
     def set_identifiers
-      article.doi = metadata['doi'].present? ? WorkUtilsHelper.normalize_doi(metadata['doi']) : nil
       article.identifier = format_publication_identifiers
       article.issn = retrieve_issn
       puts "WIP Alternate IDs: #{article.identifier.inspect}"
