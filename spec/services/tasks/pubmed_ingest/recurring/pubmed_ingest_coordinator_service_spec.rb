@@ -180,16 +180,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       service.run
     end
 
-    it 'writes final results to JSON file' do
-      service.run
-
-      expect(JsonFileUtilsHelper).to have_received(:write_json).with(
-        service.instance_variable_get(:@results),
-        '/tmp/test_output/final_ingest_results.json',
-        pretty: true
-      )
-    end
-
     it 'logs workflow completion' do
       service.run
 
@@ -430,7 +420,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         .to have_received(:new).with(
           config: config,
           tracker: tracker,
-          output_path: '/tmp/test_output/03_attach_files_to_works',
+          log_file_path: '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl',
           full_text_path: '/tmp/test_fulltext',
           metadata_ingest_result_path: '/tmp/test_output/02_load_and_ingest_metadata/metadata_ingest_results.jsonl'
         )
@@ -534,14 +524,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       allow(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report).and_return(mock_report)
-      allow(service).to receive(:generate_result_csvs).and_return(mock_csv_paths)
-      allow(service).to receive(:compress_result_csvs).and_return(mock_zip_path)
+      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return(mock_csv_paths)
+      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs).and_return(mock_zip_path)
       allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
     end
 
     it 'generates report and sends email' do
       results = { records: {}, headers: {} }
-      service.send(:format_results_and_notify, results)
+      service.send(:format_results_and_notify)
 
       expect(Tasks::IngestHelperUtils::IngestReportingService)
         .to have_received(:generate_report).with(results)
@@ -561,7 +551,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       end
 
       it 'skips email sending' do
-        service.send(:format_results_and_notify, {})
+        service.send(:format_results_and_notify)
 
         expect(PubmedReportMailer).not_to have_received(:pubmed_report_email)
         expect(LogUtilsHelper).to have_received(:double_log).with(
@@ -574,12 +564,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     context 'when email sending fails' do
       before do
-        allow(service).to receive(:generate_result_csvs).and_raise(StandardError.new('Email failed'))
+        allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_raise(StandardError.new('Email failed'))
       end
 
       it 'logs error and continues' do
         expect {
-          service.send(:format_results_and_notify, {})
+          service.send(:format_results_and_notify)
         }.not_to raise_error
 
         expect(LogUtilsHelper).to have_received(:double_log).with(
@@ -597,8 +587,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         .and_return(double(deliver_now: true))
 
       # Mock CSV and zip generation
-      allow(service).to receive(:generate_result_csvs).and_return(['/tmp/test.csv'])
-      allow(service).to receive(:compress_result_csvs).and_return('/tmp/test.zip')
+      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return(['/tmp/test.csv'])
+      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs).and_return('/tmp/test.zip')
 
       # Start with all steps incomplete
       expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed']).to be false
@@ -785,7 +775,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           .to receive(:build)
           .with(
             config: hash_including(
-              'output_dir' => match(%r{^/var/out/pubmed_ingest_2024$}),
+              'output_dir' => a_string_matching(/^\/var\/out\/existing\/pubmed_ingest_/),
               'restart_time' => now
             ),
             resume: true
@@ -794,7 +784,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
           config, tracker = described_class.build_pubmed_ingest_config_and_tracker(args: args)
 
-          expect(config['output_dir']).to match(%r{^/var/out/existing/pubmed_ingest_2024$})
+          expect(config['output_dir']).to a_string_matching(/^\/var\/out\/existing\/pubmed_ingest_/)
           expect(config['full_text_dir']).to eq('/persisted/full_text')
           expect(tracker).to eq(tracker_double)
         end
@@ -882,7 +872,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(mock_pathname).to receive(:exist?).and_return(false)
       allow(mock_pathname).to receive(:directory?).and_return(false)
 
-      service.send(:delete_full_text_pdfs)
+      service.send(:delete_full_text_pdfs, config: config)
 
       expect(FileUtils).not_to have_received(:rm_rf)
       expect(LogUtilsHelper).to have_received(:double_log).with(
