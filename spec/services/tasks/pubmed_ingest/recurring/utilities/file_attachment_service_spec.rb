@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService do
   let(:config) { { 'depositor_onyen' => 'admin' } }
   let(:tracker) { double('tracker', save: true) }
-  let(:output_path) { '/tmp/test_output' }
+  let(:log_file_path) { '/tmp/test_output' }
   let(:full_text_path) { '/tmp/test_fulltext' }
   let(:metadata_ingest_result_path) { '/tmp/test_metadata.jsonl' }
 
@@ -12,7 +12,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     described_class.new(
       config: config,
       tracker: tracker,
-      output_path: output_path,
+      log_file_path: log_file_path,
       full_text_path: full_text_path,
       metadata_ingest_result_path: metadata_ingest_result_path
     )
@@ -56,7 +56,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     it 'sets up instance variables correctly' do
       expect(service.instance_variable_get(:@config)).to eq(config)
       expect(service.instance_variable_get(:@tracker)).to eq(tracker)
-      expect(service.instance_variable_get(:@output_path)).to eq(output_path)
+      expect(service.instance_variable_get(:@log_file_path)).to eq(log_file_path)
       expect(service.instance_variable_get(:@full_text_path)).to eq(full_text_path)
       expect(service.instance_variable_get(:@metadata_ingest_result_path)).to eq(metadata_ingest_result_path)
     end

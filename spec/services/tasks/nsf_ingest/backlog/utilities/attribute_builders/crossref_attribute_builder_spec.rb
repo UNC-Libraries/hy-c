@@ -80,7 +80,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
       builder.send(:apply_additional_basic_attributes)
 
       expect(article.title).to eq(['Test Article from CrossRef'])
-      expect(article.abstract).to eq(['UNC eats the world.'])
+      expect(article.abstract).to eq(['Open abstract text here.'])
       expect(article.date_issued).to eq('2025-03-10T00:00:00Z')
       expect(article.publisher).to eq(['IEEE Press'])
       expect(article.keyword).to eq(['UNC', 'Hyrax'])

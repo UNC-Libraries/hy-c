@@ -55,7 +55,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestTracker, type: :service do
 
   describe '#initialize' do
     it 'sets @path and empty @data' do
-      tracker = described_class.new(output_dir, config)
+      tracker = described_class.new(config)
       expect(tracker.path).to eq(tracker_path)
       expect(tracker.data).to eq({})
     end
@@ -63,14 +63,14 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestTracker, type: :service do
 
   describe '#[] and #[]=' do
     it 'stores and retrieves values from @data' do
-      tracker = described_class.new(output_dir, config)
+      tracker = described_class.new(config)
       tracker['foo'] = 'bar'
       expect(tracker['foo']).to eq('bar')
     end
   end
 
   describe '#save' do
-    let(:tracker) { described_class.new(output_dir, config) }
+    let(:tracker) { described_class.new(config) }
 
     it 'writes JSON to the tracker file' do
       tracker['x'] = 'y'
@@ -92,7 +92,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestTracker, type: :service do
   end
 
   describe '#resume!' do
-    let(:tracker) { described_class.new(output_dir, config) }
+    let(:tracker) { described_class.new(config) }
 
     it 'loads tracker data and sets restart_time' do
       allow(tracker).to receive(:load_tracker_file).and_return({ 'progress' => {} })
@@ -106,7 +106,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestTracker, type: :service do
   end
 
   describe '#initialize_new!' do
-    let(:tracker) { described_class.new(output_dir, config) }
+    let(:tracker) { described_class.new(config) }
 
     it 'sets @data with expected base fields' do
       tracker.initialize_new!(config)
@@ -116,7 +116,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestTracker, type: :service do
   end
 
   describe '#load_tracker_file' do
-    let(:tracker) { described_class.new(output_dir, config) }
+    let(:tracker) { described_class.new(config) }
 
     it 'returns parsed data when file exists' do
       json_data = { 'key' => 'value' }.to_json
@@ -138,7 +138,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestTracker, type: :service do
   end
 
   describe '#build_base_tracker' do
-    let(:tracker) { described_class.new(output_dir, config) }
+    let(:tracker) { described_class.new(config) }
 
     it 'returns a properly structured hash' do
       base = tracker.send(:build_base_tracker, config)
