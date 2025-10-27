@@ -130,11 +130,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'sets up output directories correctly' do
       id_list_dir = service.instance_variable_get(:@id_list_output_directory)
       metadata_dir = service.instance_variable_get(:@metadata_ingest_output_directory)
-      attachment_dir = service.instance_variable_get(:@attachment_output_directory)
+      attachment_output_path = service.instance_variable_get(:@file_attachment_results_path)
 
       expect(id_list_dir).to eq('/tmp/test_output/01_build_id_lists')
       expect(metadata_dir).to eq('/tmp/test_output/02_load_and_ingest_metadata')
-      expect(attachment_dir).to eq('/tmp/test_output/03_attach_files_to_works')
+      expect(attachment_output_path).to eq('/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl')
     end
 
     it 'creates output directories if they do not exist' do
@@ -171,11 +171,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'executes all workflow steps in correct order' do
-      allow(service).to receive(:load_results).and_return(sample_results)
+      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:load_results).and_return(sample_results)
       expect(service).to receive(:build_id_lists).ordered
       expect(service).to receive(:load_and_ingest_metadata).ordered
       expect(service).to receive(:attach_files).ordered
-      expect(service).to receive(:load_results).ordered
+      expect(Tasks::IngestHelperUtils::ReportingHelper).to receive(:load_results).ordered
       expect(service).to receive(:format_results_and_notify).ordered
       service.run
     end
@@ -783,12 +783,18 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
           allow(Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker)
           .to receive(:build)
-          .with(config: hash_including('output_dir' => '/var/out/existing', 'restart_time' => now), resume: true)
+          .with(
+            config: hash_including(
+              'output_dir' => match(%r{^/var/out/pubmed_ingest_2024$}),
+              'restart_time' => now
+            ),
+            resume: true
+          )
           .and_return(tracker_double)
 
           config, tracker = described_class.build_pubmed_ingest_config_and_tracker(args: args)
 
-          expect(config['output_dir']).to eq('/var/out/existing')
+          expect(config['output_dir']).to match(%r{^/var/out/existing/pubmed_ingest_2024$})
           expect(config['full_text_dir']).to eq('/persisted/full_text')
           expect(tracker).to eq(tracker_double)
         end
