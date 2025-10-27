@@ -139,11 +139,23 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
       end
     end
 
-    let(:work) { FactoryBot.create(:article, admin_set: admin_set, depositor: admin_user.uid) }
+    let(:work) do
+      double('Article',
+        id: 'test-work-123',
+        to_global_id: double('GlobalID', to_s: 'gid://app/Article/test-work-123'),
+        admin_set: admin_set,
+        admin_set_id: admin_set.id,
+        'permissions_attributes=': nil,
+        save!: true,
+        reload: nil,
+        update_index: nil
+      )
+    end
 
     before do
       workflow # ensure workflow + state exist
       helper.instance_variable_set(:@config, { 'depositor_onyen' => 'admin' })
+      allow(Article).to receive(:find).with(work.id).and_return(work)
     end
 
     context 'when work has no Sipity entity' do
