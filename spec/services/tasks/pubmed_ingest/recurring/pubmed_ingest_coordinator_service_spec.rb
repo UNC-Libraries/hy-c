@@ -636,17 +636,17 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     describe '.resolve_output_dir' do
       it 'builds a timestamped path under an absolute base' do
-        dir = described_class.send(:resolve_output_dir, '/var/out', now)
+        dir = described_class.send(:resolve_output_dir, '/var/out', now, false)
         expect(dir.to_s).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
       end
 
       it 'builds under Rails.root for a relative base' do
-        dir = described_class.send(:resolve_output_dir, 'relative/out', now)
+        dir = described_class.send(:resolve_output_dir, 'relative/out', now, false)
         expect(dir.to_s).to match(%r{^/app/relative/out/pubmed_ingest_2024-01-02_03-04-05$})
       end
 
       it 'falls back to tmp when blank' do
-        dir = described_class.send(:resolve_output_dir, nil, now)
+        dir = described_class.send(:resolve_output_dir, nil, now, false)
         expect(dir.to_s).to eq('/app/tmp/pubmed_ingest_2024-01-02_03-04-05')
         expect(LogUtilsHelper).to have_received(:double_log).with(
             'No output directory specified. Using default tmp directory.', :info, tag: 'PubMed Ingest'
@@ -694,7 +694,20 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       let(:tracker_double) do
       # minimal tracker responding to [] for resume case
         obj = Object.new
-        data = { 'full_text_dir' => '/persisted/full_text' }
+        data = {
+          'full_text_dir' => '/full_text_pdfs_2024-01-02_03-04-05',
+          'output_dir'    => '/var/out/pubmed_ingest_2024-01-02_03-04-05',
+          'depositor_onyen' => 'someone',
+          'date_range' => { 'start' => '2024-01-01', 'end' => '2024-01-31' },
+          'progress' => {
+            'retrieve_ids_within_date_range' => {},
+            'stream_and_write_alternate_ids' => {},
+            'adjust_id_lists' => {},
+            'metadata_ingest' => {},
+            'attach_files_to_works' => {},
+            'send_summary_email' => {}
+          }
+        }
         obj.define_singleton_method(:[]) { |k| data[k] }
         obj
       end
@@ -846,7 +859,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(mock_pathname).to receive(:directory?).and_return(true)
       allow(mock_pathname).to receive(:to_s).and_return(full_text_dir_path)
 
-      service.send(:delete_full_text_pdfs)
+      service.send(:delete_full_text_pdfs, config: config)
 
       expect(FileUtils).to have_received(:rm_rf).with(full_text_dir_path)
       expect(LogUtilsHelper).to have_received(:double_log).with(
