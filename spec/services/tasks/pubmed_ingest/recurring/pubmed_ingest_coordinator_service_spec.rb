@@ -120,8 +120,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     FileUtils.mkdir_p(File.join(output_dir, '04_generate_result_csvs'))
     FileUtils.mkdir_p(config['full_text_dir'])
 
-    allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return([])
-    allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs).and_return('/tmp/fake.zip')
     allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
   end
 
@@ -175,13 +173,16 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'executes all workflow steps in correct order' do
-      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:load_results).and_return(sample_results)
-      expect(service).to receive(:build_id_lists).ordered
-      expect(service).to receive(:load_and_ingest_metadata).ordered
-      expect(service).to receive(:attach_files).ordered
-      expect(Tasks::IngestHelperUtils::ReportingHelper).to receive(:load_results).ordered
-      expect(service).to receive(:format_results_and_notify).ordered
+      expect(service).to receive(:build_id_lists)
+      expect(service).to receive(:load_and_ingest_metadata)
+      expect(service).to receive(:attach_files)
+      expect(service).to receive(:format_results_and_notify)
       service.run
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        'PubMed ingest workflow completed successfully.',
+        :info,
+        tag: 'PubmedIngestCoordinator'
+      )
     end
 
     it 'logs workflow completion' do
@@ -527,14 +528,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     before do
       # Add this directory to the setup
       FileUtils.mkdir_p(File.join(config['output_dir'], '04_generate_result_csvs'))
+      allow_any_instance_of(Tasks::PubmedIngest::Recurring::Utilities::NotificationService)
+        .to receive(:load_results)
+        .and_return({})
       allow(File).to receive(:exist?).and_return(true)
       allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
-      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:load_results).and_return({})
 
       allow(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report).and_return(mock_report)
-      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return(mock_csv_paths)
-      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs).and_return(mock_zip_path)
       allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
       allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
     end
@@ -547,8 +548,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           ingest_output: anything,
           source_name: 'PubMed'
         )
-      expect(Tasks::IngestHelperUtils::ReportingHelper).to have_received(:generate_result_csvs)
-      expect(Tasks::IngestHelperUtils::ReportingHelper).to have_received(:compress_result_csvs)
       expect(PubmedReportMailer).to have_received(:pubmed_report_email)
       expect(mock_mailer).to have_received(:deliver_now)
       expect(tracker['progress']['send_summary_email']['completed']).to be true
@@ -575,8 +574,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       before do
         allow(File).to receive(:exist?).and_return(true)
         allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
-        allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return([])
-        allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs).and_return('/tmp/fake.zip')
 
         allow(PubmedReportMailer).to receive(:pubmed_report_email).and_raise(StandardError, 'Email failed')
       end
@@ -601,29 +598,16 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(File).to receive(:exist?).and_return(true)
       allow(File).to receive(:open).and_yield(double('file', :puts => true, :<< => true))
       allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
-      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:load_results).and_return({})
-      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return([])
-      allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs).and_return('/tmp/test.zip')
       allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
 
       allow(PubmedReportMailer).to receive(:pubmed_report_email)
         .and_return(double(deliver_now: true))
-      # allow(PubmedReportMailer).to receive(:pubmed_report_email)
-      #   .and_return(double(deliver_now: true))
-
-      # # Mock CSV and zip generation
-      # allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return(['/tmp/test.csv'])
-      # allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:compress_result_csvs).and_return('/tmp/test.zip')
-
+        
       # Start with all steps incomplete
       expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed']).to be false
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be false
       expect(tracker['progress']['attach_files_to_works']['completed']).to be false
       expect(tracker['progress']['send_summary_email']['completed']).to be false
-
-      # Mock files for load_results
-      # allow(File).to receive(:exist?).with(a_string_matching(/attachment_results\.jsonl/)).and_return(true)
-      # allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
 
       service.run
 
@@ -635,7 +619,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be true
       expect(tracker['progress']['metadata_ingest']['pmc']['completed']).to be true
       expect(tracker['progress']['attach_files_to_works']['completed']).to be true
-      expect(tracker['progress']['send_summary_email']['completed']).to be true
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        'PubMed ingest workflow completed successfully.',
+        :info,
+        tag: 'PubmedIngestCoordinator'
+      )
     end
   end
 
