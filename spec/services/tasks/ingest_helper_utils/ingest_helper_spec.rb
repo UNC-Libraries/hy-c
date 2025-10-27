@@ -92,7 +92,7 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
                                                            file_path: dest_path,
                                                            depositor_onyen: 'admin')
 
-      expect(File.ekxist?(dest_path)).to be true
+      expect(File.exist?(dest_path)).to be true
       expect(file_set).to be_a(FileSet)
       expect(file_set.read_groups).to include('public')
 

@@ -55,6 +55,7 @@ module Tasks
           Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
 
           @retrieved_metadata.each_with_index do |metadata, index|
+            skipped_row = nil
             Rails.logger.info("[Ingest] Processing record ##{index + 1}")
             begin
               article = new_article(metadata)
@@ -63,7 +64,6 @@ module Tasks
 
               Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
               article.save!
-              article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
               Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
 
               attach_pdf(article, skipped_row)
@@ -87,12 +87,13 @@ module Tasks
               doi = skipped_row&.[]('doi') || 'N/A'
               pmid = skipped_row&.[]('pmid') || 'N/A'
               pmcid = skipped_row&.[]('pmcid') || 'N/A'
+              file_name = skipped_row&.[]('file_name') || 'N/A'
               Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
               Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
               article.destroy if article&.persisted?
               record_result(
                 category: :failed,
-                file_name: skipped_row['file_name'],
+                file_name: file_name,
                 message: "Failed: #{e.message}",
                 ids: {
                   pmid: skipped_row['pmid'],
