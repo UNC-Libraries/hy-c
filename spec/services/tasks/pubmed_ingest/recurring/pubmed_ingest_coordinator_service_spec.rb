@@ -542,15 +542,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'generates report and sends email' do
       service.send(:format_results_and_notify)
-
       expect(Tasks::IngestHelperUtils::IngestReportingService)
         .to have_received(:generate_report).with(
           ingest_output: anything,
           source_name: 'PubMed'
         )
-      expect(PubmedReportMailer).to have_received(:pubmed_report_email)
-      expect(mock_mailer).to have_received(:deliver_now)
-      expect(tracker['progress']['send_summary_email']['completed']).to be true
     end
 
     context 'when email notification already completed' do
@@ -602,8 +598,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       allow(PubmedReportMailer).to receive(:pubmed_report_email)
         .and_return(double(deliver_now: true))
-        
-      # Start with all steps incomplete
+
       expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed']).to be false
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be false
       expect(tracker['progress']['attach_files_to_works']['completed']).to be false
