@@ -148,7 +148,7 @@ module Tasks
           FileUtils.rm_rf(full_text_dir.to_s)
           LogUtilsHelper.double_log("Deleted full text PDFs directory: #{full_text_dir}", :info, tag: 'cleanup')
         else
-          LogUtilsHelper.double_log("Full text PDFs directory not found: #{full_text_dir}", :warn, tag: 'cleanup')
+          LogUtilsHelper.double_log("Full text PDFs directory not found or is not a directory: #{full_text_dir}", :warn, tag: 'cleanup')
         end
       end
     end

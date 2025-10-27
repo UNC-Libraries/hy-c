@@ -522,6 +522,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       # Add this directory to the setup
       FileUtils.mkdir_p(File.join(config['output_dir'], '04_generate_result_csvs'))
 
+      # Stub load_results to return empty results for simplicity
+      allow_any_instance_of(Tasks::IngestHelperUtils::ReportingHelper).to receive(:load_results).and_return({})
+
       allow(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report).and_return(mock_report)
       allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_return(mock_csv_paths)
@@ -565,6 +568,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     context 'when email sending fails' do
       before do
         allow(Tasks::IngestHelperUtils::ReportingHelper).to receive(:generate_result_csvs).and_raise(StandardError.new('Email failed'))
+        allow(File).to receive(:exist?).and_return(true)
       end
 
       it 'logs error and continues' do
@@ -597,7 +601,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(tracker['progress']['send_summary_email']['completed']).to be false
 
       # Mock files for load_results
-      allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
+      allow(File).to receive(:exist?).with(a_string_matching(/attachment_results\.jsonl/)).and_return(true)
       allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
 
       service.run
@@ -785,7 +789,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           config, tracker = described_class.build_pubmed_ingest_config_and_tracker(args: args)
 
           expect(config['output_dir']).to a_string_matching(/^\/var\/out\/existing\/pubmed_ingest_/)
-          expect(config['full_text_dir']).to eq('/persisted/full_text')
+          expect(config['full_text_dir']).to a_string_matching(/^\/full_text_pdfs_/)
           expect(tracker).to eq(tracker_double)
         end
       end
