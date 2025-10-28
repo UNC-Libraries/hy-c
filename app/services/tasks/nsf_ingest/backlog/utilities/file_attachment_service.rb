@@ -32,7 +32,7 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
   rescue =>  e
     Rails.logger.error("Error processing record #{record_id}: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    log_attachment_outcome(record, category: :failed, message: "NSF File Attachment Error: #{e.message}", file_name: 'NONE')
+    log_attachment_outcome(record, category: :failed, message: "NSF File Attachment Error: #{e.message}", file_name: record['filename'])
     end
   end
 

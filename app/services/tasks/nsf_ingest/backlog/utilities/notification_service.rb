@@ -8,7 +8,9 @@ class Tasks::NSFIngest::Backlog::Utilities::NotificationService < Tasks::IngestH
 
   def populate_headers!(report)
     report[:headers][:depositor] = @tracker['depositor_onyen']
-    report[:headers][:total_files] = calculate_rows_in_csv(@config['file_info_csv_path'])
+    report[:headers][:total_files] = report[:headers][:total_files]
+    all_dois = report[:records].values.flatten.map { |r| r[:doi] || r['doi'] }.compact.uniq
+    report[:headers][:total_files] = all_dois.size
   end
 
   def send_mail(report, zip_path)

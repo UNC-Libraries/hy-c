@@ -70,7 +70,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
     end
 
     it 'creates new articles and logs success' do
-      article_double = double('Article', id: 'A123', save!: true, visibility: nil, 'visibility=': nil)
+      article_double = double('Article', id: 'A123', save!: true, visibility: nil, 'visibility=': nil, pmid: '111', pmcid: 'PMC1', doi: '10.1000/abc')
       allow(Article).to receive(:new).and_return(article_double)
 
       service.process_backlog
@@ -107,7 +107,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
   end
 
   describe '#record_result' do
-    let(:article) { double('Article', id: 'A123') }
+    let(:article) { double('Article', id: 'A123', pmid: '111', pmcid: 'PMC1', doi: '10.1000/foo') }
     let(:ids) { { 'doi' => '10.1000/foo' } }
 
     it 'appends record and flushes when threshold reached' do
