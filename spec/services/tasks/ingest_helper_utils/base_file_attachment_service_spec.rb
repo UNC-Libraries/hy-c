@@ -127,16 +127,41 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
   describe '#generate_filename_for_work' do
     it 'returns incremented filename when filesets exist' do
       allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
-        .and_return({ file_set_ids: ['f1', 'f2'] })
+        .and_return({ file_set_ids: ['f1', 'f2'], work_id: 'work1' })
       result = service.generate_filename_for_work('work1', 'PMC123')
       expect(result).to eq('PMC123_003.pdf')
     end
 
     it 'returns first filename when no filesets' do
       allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
-        .and_return({ file_set_ids: [] })
+        .and_return({ file_set_ids: [], work_id: 'work1' })
       result = service.generate_filename_for_work('work1', 'PMC123')
       expect(result).to eq('PMC123_001.pdf')
+    end
+
+    context 'when work exists but has no file sets' do
+      before do
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
+          file_set_ids: [],
+          work_id: 'work_123'
+        })
+      end
+
+      it 'generates filename with 001 suffix' do
+        filename = service.generate_filename_for_work('work_123', 'PMC123456')
+        expect(filename).to eq('PMC123456_001.pdf')
+      end
+    end
+
+    context 'when work does not exist' do
+      before do
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return(nil)
+      end
+
+      it 'returns nil' do
+        filename = service.generate_filename_for_work('work_123', 'PMC123456')
+        expect(filename).to be_nil
+      end
     end
   end
 

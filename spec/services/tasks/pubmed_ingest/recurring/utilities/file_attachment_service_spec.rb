@@ -525,43 +525,4 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
     end
   end
-
-  describe '#generate_filename_for_work' do
-    context 'when work exists and has file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: ['file1', 'file2']
-        })
-      end
-
-      it 'generates filename with incremented suffix' do
-        filename = service.generate_filename_for_work('work_123', 'PMC123456')
-        expect(filename).to eq('PMC123456_003.pdf')
-      end
-    end
-
-    context 'when work exists but has no file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: []
-        })
-      end
-
-      it 'generates filename with 001 suffix' do
-        filename = service.generate_filename_for_work('work_123', 'PMC123456')
-        expect(filename).to eq('PMC123456_001.pdf')
-      end
-    end
-
-    context 'when work does not exist' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return(nil)
-      end
-
-      it 'returns nil' do
-        filename = service.generate_filename_for_work('work_123', 'PMC123456')
-        expect(filename).to be_nil
-      end
-    end
-  end
 end
