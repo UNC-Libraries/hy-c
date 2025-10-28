@@ -11,7 +11,6 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
           'index' => i.to_s
         }
         retrieve_author_affiliations(res, author)
-        puts "WIP Inspect author: #{author.inspect}"
         res
       end
     end
@@ -31,27 +30,16 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       article.publisher = [metadata['publisher']].compact.presence
       article.keyword = metadata['openalex_keywords'] || []
       article.funder = retrieve_funder_names
-      puts "WIP Additional attributes: #{article.title.inspect}, date_issued: #{article.date_issued.inspect}, publisher: #{article.publisher.inspect}, keywords: #{article.keyword.inspect}, funders: #{article.funder.inspect}"
     end
 
     def set_identifiers
       article.identifier = format_publication_identifiers
       article.issn = retrieve_issn
-      puts "WIP Alternate IDs: #{article.identifier.inspect}"
-      puts "WIP ISSNs: #{article.issn.inspect}"
-      puts "WIP DOI: #{article.doi}"
     end
 
     def format_publication_identifiers
       doi = metadata['DOI'].presence
       pmid, pmcid = retrieve_alt_ids_from_europe_pmc(doi)
-
-      puts "WIP Retrieved alternate IDs from Europe PMC for DOI #{doi}: PMID=#{pmid}, PMCID=#{pmcid}"
-      [
-        pmid ? "PMID: #{pmid}" : nil,
-        pmcid ? "PMCID: #{pmcid}" : nil,
-        doi   ? "DOI: https://dx.doi.org/#{doi}" : nil
-      ].compact
     end
 
     def retrieve_funder_names
@@ -99,7 +87,6 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       article.journal_volume = metadata['volume']&.presence
       article.journal_issue = metadata['journal-issue']&.dig('issue')&.presence
       article.page_start, article.page_end = extract_page_range(metadata)
-      puts "WIP Journal attributes: #{article.journal_title}, volume: #{article.journal_volume}, issue: #{article.journal_issue}, pages: #{article.page_start}-#{article.page_end}"
     end
 
     def extract_page_range(msg)

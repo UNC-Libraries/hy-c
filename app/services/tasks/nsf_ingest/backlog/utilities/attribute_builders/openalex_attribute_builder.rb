@@ -12,7 +12,6 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
           'index' => i.to_s
         }
         retrieve_author_affiliations(res, author)
-        puts "WIP Inspect author: #{author.inspect}"
         res
       end
     end
@@ -33,27 +32,16 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       article.publisher = [metadata.dig('primary_location', 'source', 'host_organization_name')].compact.presence
       article.keyword = metadata['openalex_keywords'] || []
       article.funder = retrieve_funder_names
-      puts "WIP Additional attributes: #{article.title.inspect}, date_issued: #{article.date_issued.inspect}, publisher: #{article.publisher.inspect}, keywords: #{article.keyword.inspect}, funders: #{article.funder.inspect}"
     end
 
     def set_identifiers
       article.identifier = format_publication_identifiers
       article.issn = retrieve_issn
-      puts "WIP Alternate IDs: #{article.identifier.inspect}"
-      puts "WIP ISSNs: #{article.issn.inspect}"
-      puts "WIP DOI: #{article.doi}"
     end
 
     def format_publication_identifiers
       doi =  metadata['doi'].present? ? WorkUtilsHelper.normalize_doi(metadata['doi']) : nil
       pmid, pmcid = retrieve_alt_ids_from_europe_pmc(doi)
-
-      puts "WIP Retrieved alternate IDs from Europe PMC for DOI #{doi}: PMID=#{pmid}, PMCID=#{pmcid}"
-      [
-        pmid ? "PMID: #{pmid}" : nil,
-        pmcid ? "PMCID: #{pmcid}" : nil,
-        doi   ? "DOI: https://dx.doi.org/#{doi}" : nil
-      ].compact
     end
 
     def retrieve_funder_names
@@ -97,10 +85,6 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       article.journal_issue = biblio['issue'].presence
       article.page_start = biblio['first_page'].presence
       article.page_end = biblio['last_page'].presence
-
-      puts "WIP Journal attributes (OpenAlex): #{article.journal_title}, "\
-       "volume: #{article.journal_volume}, issue: #{article.journal_issue}, "\
-       "pages: #{article.page_start}-#{article.page_end}"
     end
 
     def format_author_name(display_name)
