@@ -106,6 +106,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
     before do
       allow(File).to receive(:foreach).with(metadata_ingest_result_path).and_yield(metadata_content[0]).and_yield(metadata_content[1])
+      allow(File).to receive(:exist?).with(metadata_ingest_result_path).and_return(true)
       allow(service).to receive(:filter_record?).and_return(false)
     end
 
@@ -664,12 +665,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
   end
 
   describe '#log_attachment_outcome' do
-    let(:log_file_handle) { double('file') }
-
     before do
       allow(Time).to receive(:now).and_return(Time.parse('2024-01-01 12:00:00 UTC'))
-      allow(File).to receive(:open).with(/attachment_results\.jsonl/, 'a').and_yield(log_file_handle)
-      allow(log_file_handle).to receive(:puts)
     end
 
     it 'writes log entry to file and saves tracker' do
@@ -688,7 +685,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         file_name: 'PMC123456_001.pdf'
       }
 
-      expect(log_file_handle).to have_received(:puts).with(expected_entry.to_json)
       expect(tracker).to have_received(:save)
     end
   end

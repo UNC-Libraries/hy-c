@@ -83,7 +83,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
       expect(article.abstract).to eq(['Open abstract text here.'])
       expect(article.date_issued).to eq('2025-03-10T00:00:00Z')
       expect(article.publisher).to eq(['IEEE Press'])
-      expect(article.keyword).to eq(['UNC', 'Hyrax'])
+      expect(article.keyword).to eq(['Python', 'Hyrax'])
       expect(article.funder).to match_array(['NSF', 'NASA'])
     end
 

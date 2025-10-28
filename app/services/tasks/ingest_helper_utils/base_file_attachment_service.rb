@@ -84,7 +84,8 @@ class Tasks::IngestHelperUtils::BaseFileAttachmentService
 
   def has_fileset?(work_id)
     work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-    work && work[:file_set_ids]&.any?
+    bool = work && work[:file_set_ids]&.any?
+    bool || false
   end
 
   def generate_filename_for_work(work_id, prefix)
