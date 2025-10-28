@@ -6,7 +6,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
 
     def generate_authors
       if metadata['author'].size > TRUNCATED_AUTHORS_LIMIT
-        Rails.logger.warn("[CrossrefAttributeBuilder] Author list exceeds 100 authors for article with DOI " \
+        Rails.logger.warn("[CrossrefAttributeBuilder] Author list exceeds #{TRUNCATED_AUTHORS_LIMIT} for article with DOI " \
                           "\"#{metadata['DOI']}\". Truncating author list to first #{TRUNCATED_AUTHORS_LIMIT} authors.")
         metadata['author'] = metadata['author'].first(TRUNCATED_AUTHORS_LIMIT)
       end

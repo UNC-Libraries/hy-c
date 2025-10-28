@@ -115,7 +115,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
   def select_source(crossref_md, openalex_md, doi)
     if crossref_md.nil? && openalex_md.nil?
-      raise "No metadata found from Crossref or OpenAlex."
+      raise 'No metadata found from Crossref or OpenAlex.'
     end
     if crossref_md.nil?
       LogUtilsHelper.double_log("No metadata found from Crossref for DOI #{doi}. Falling back to OpenAlex metadata.", :warn, tag: 'MetadataIngestService')
