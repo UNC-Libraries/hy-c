@@ -4,12 +4,18 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
     private
 
     def generate_authors
+      fallback_author_list = OpenalexAttributeBuilder.new(metadata, article, admin_set, depositor_onyen).send(:generate_authors)
+      # Fallback to OpenAlex author list if too many authors in Crossref metadata
+      return fallback_author_list if metadata['author'].size > 100
+
       metadata['author'].map.with_index do |author, i|
+        # puts "WIP Processing author #{i + 1} for Article #{article.id}"
         res = {
           'name' => [author['family'], author['given']].compact.join(', '),
           'orcid' => author.dig('ORCID'),
           'index' => i.to_s
         }
+        # puts "WIP Retrieving affiliations for author #{i + 1} for Article #{article.id}"
         retrieve_author_affiliations(res, author)
         res
       end
