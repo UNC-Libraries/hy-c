@@ -67,7 +67,7 @@ RSpec.describe NSFReportMailer, type: :mailer do
       it 'includes rows for each record' do
         results.each_value do |records|
           records.each do |r|
-            expect(mail.body.encoded).to include(r[:file_name])
+            expect(mail.body.encoded).to include(r[:filename])
             expect(mail.body.encoded).to include(r[:doi])
             expect(mail.body.encoded).to include(r[:message])
           end
