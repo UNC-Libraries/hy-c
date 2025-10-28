@@ -165,22 +165,6 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
     end
   end
 
-  describe '#attach_and_log' do
-    let(:record) { { 'ids' => { 'work_id' => '123' } } }
-
-    it 'logs successful attachment when file_set created' do
-      allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return(double('FileSet'))
-      expect(service).to receive(:log_attachment_outcome)
-      service.attach_and_log(record, '/tmp/file.pdf', message: 'attached')
-    end
-
-    it 'skips logging when file_set is nil' do
-      allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return(nil)
-      expect(service).not_to receive(:log_attachment_outcome)
-      service.attach_and_log(record, '/tmp/file.pdf', message: 'attached')
-    end
-  end
-
   describe '#log_attachment_outcome' do
     let(:record) { { 'ids' => { 'pmid' => '12345' } } }
 

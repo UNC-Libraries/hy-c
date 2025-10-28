@@ -57,7 +57,7 @@
     <tbody>
       <% @report[:records][key].first(@report[:max_display_rows]).each_with_index do |record, index| %>
         <tr>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:file_name] %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:filename] %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
             <% if record[:cdr_url].present? %>
                <a href="<%= record[:cdr_url] %>" style="word-break:break-word;">View in CDR</a>
