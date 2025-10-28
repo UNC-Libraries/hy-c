@@ -20,7 +20,8 @@ class Tasks::IngestHelperUtils::BaseFileAttachmentService
   def run
     work_ids = []
     fetch_attachment_candidates.each_with_index do |record, index|
-      LogUtilsHelper.double_log("Processing record #{index + 1}", :info, tag: self.class.name)
+      candidates_count = fetch_attachment_candidates.size
+      Rails.logger.info "Processing record #{index + 1} of #{candidates_count}"
       process_record(record)
       work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
     end

@@ -195,4 +195,47 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
       expect(service.category_for_successful_attachment(record)).to eq(:successfully_ingested_and_attached)
     end
   end
+
+
+  describe '#run' do
+    let(:sample_record) do
+      {
+        'ids' => {
+          'pmcid' => 'PMC123456',
+          'pmid' => '987654',
+          'work_id' => 'work_123'
+        },
+        'title' => 'Sample Article'
+      }
+    end
+
+    let(:sample_record_without_pmcid) do
+      {
+        'ids' => {
+          'pmid' => '987654',
+          'work_id' => 'work_123'
+        },
+        'title' => 'Sample Article Without PMCID'
+      }
+    end
+    let(:records) { [sample_record, sample_record_without_pmcid] }
+
+    before do
+      service.instance_variable_set(:@records, records)
+      allow(service).to receive(:process_record)
+      allow(service).to receive(:sync_permissions_and_state!)
+      allow(service).to receive(:fetch_attachment_candidates).and_return(records)
+      allow(Rails.logger).to receive(:info)
+    end
+
+    it 'processes all records' do
+      service.run
+
+      expect(service).to have_received(:process_record).with(sample_record)
+      expect(service).to have_received(:process_record).with(sample_record_without_pmcid)
+      expect(service).to have_received(:sync_permissions_and_state!).with('work_123', 'admin')
+      expect(Rails.logger).to have_received(:info).with('Processing record 1 of 2')
+      expect(Rails.logger).to have_received(:info).with('Processing record 2 of 2')
+    end
+  end
 end
