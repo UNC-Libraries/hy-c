@@ -158,6 +158,20 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestService do
       expect(result).to have_key(:counts)
     end
 
+    it 'logs and records failure if article creation fails' do
+      service = described_class.new(pubmed_config)
+      allow(service).to receive(:batch_retrieve_metadata)
+      metadata = double(name: 'PubmedArticle')
+      service.instance_variable_set(:@retrieved_metadata, [metadata])
+      allow(service).to receive(:new_article).and_raise(StandardError, 'boom')
+
+      expect(Rails.logger).to receive(:error).with(/Error processing record/)
+      service.ingest_publications
+
+      expect(pubmed_config['attachment_results'][:failed].size).to be >= 1
+    end
+
+
   end
 
   describe '#attach_pdf' do
@@ -198,6 +212,71 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestService do
       }.to raise_error(StandardError, /File not found at path/)
     end
   end
+
+  describe '#record_result' do
+    it 'records a successful result with generated CDR URL' do
+      attachment_results = { counts: { successfully_ingested: 0 }, successfully_ingested: [] }
+      config['attachment_results'] = attachment_results
+      service = described_class.new(config)
+
+      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id)
+        .with('123').and_return('http://example.com/123')
+
+      service.record_result(
+        category: :successfully_ingested,
+        file_name: 'test.pdf',
+        message: 'ok',
+        ids: { work_id: '123', pmid: '1', pmcid: 'PMC1', doi: '10.x' }
+      )
+
+      expect(attachment_results[:successfully_ingested].first['cdr_url'])
+        .to eq('http://example.com/123')
+    end
+  end
+
+  describe '#batch_retrieve_metadata' do
+    it 'populates @retrieved_metadata from HTTP XML' do
+      xml = <<~XML
+        <PubmedArticleSet><PubmedArticle><PMID>123</PMID></PubmedArticle></PubmedArticleSet>
+      XML
+      stub_request(:get, /efetch/).to_return(status: 200, body: xml)
+      service.instance_variable_set(:@new_pubmed_works, [{ 'pmid' => '123', 'file_name' => 'x.pdf' }])
+      service.send(:batch_retrieve_metadata)
+      expect(service.instance_variable_get(:@retrieved_metadata).first.name).to eq('PubmedArticle')
+    end
+  end
+
+  describe '#attach_pdf_for_existing_work' do
+    let(:work) { FactoryBot.create(:article, depositor: admin.uid, admin_set: admin_set) }
+
+    it 'attaches a PDF to an existing work' do
+      allow(AdminSet).to receive(:where).with(id: admin_set.id).and_return([admin_set])
+      allow_any_instance_of(Tasks::PubmedIngest::Backlog::PubmedIngestService)
+        .to receive(:attach_pdf_to_work)
+        .and_return(double(update: true))
+
+      result = service.attach_pdf_for_existing_work(
+        { work_type: 'Article', work_id: work.id, admin_set_id: admin_set.id },
+        Rails.root.join('spec/fixtures/files/sample_pdf.pdf'),
+        admin.uid
+      )
+      expect(result).to respond_to(:update)
+    end
+
+    it 'raises and logs when attachment fails' do
+      expect(Rails.logger).to receive(:error).with(/Error finding article/)
+      expect {
+        service.attach_pdf_for_existing_work(
+          { work_type: 'Article', work_id: 'badid', admin_set_id: admin_set.id },
+          '/nope.pdf',
+          admin.uid
+        )
+      }.to raise_error(StandardError)
+    end
+  end
+
+
+
 
   def active_relation_to_string(active_relation)
     active_relation.to_a.map(&:to_s).join('; ')

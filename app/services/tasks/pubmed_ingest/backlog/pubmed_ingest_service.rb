@@ -96,9 +96,9 @@ module Tasks
                 file_name: file_name,
                 message: "Failed: #{e.message}",
                 ids: {
-                  pmid: skipped_row['pmid'],
-                  pmcid: skipped_row['pmcid'],
-                  doi: skipped_row['doi']
+                  pmid: pmid,
+                  pmcid: pmcid,
+                  doi: doi
                 }
               )
             end

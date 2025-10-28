@@ -22,7 +22,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       next if @seen_doi_list.include?(record['doi']) && record['doi'].present?
       match = WorkUtilsHelper.find_best_work_match_by_alternate_id(**record.slice('pmid', 'pmcid', 'doi').symbolize_keys)
       if match.present? && match[:work_id].present?
-        skip_existing_work(record, match)
+        skip_existing_work(record, match, filename: record['filename'])
         next
       end
 
@@ -35,11 +35,11 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       merge_additional_metadata(resolved_md, openalex_md, datacite_md)
 
       article = new_article(resolved_md, source)
-      record_result(category: :successfully_ingested_metadata_only, ids: record.slice('pmid', 'pmcid', 'doi'), article: article)
+      record_result(category: :successfully_ingested_metadata_only, ids: record.slice('pmid', 'pmcid', 'doi'), article: article, filename: record['filename'])
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
     rescue => e
-      handle_record_error(record, e)
+      handle_record_error(record, e, filename: record['filename'])
     ensure
       flush_buffer_if_needed
     end
@@ -67,7 +67,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     article
   end
 
-  def record_result(category:, message: '', ids: {}, article: nil)
+  def record_result(category:, message: '', ids: {}, article: nil, filename: nil)
     doi = ids['doi']
     return if @seen_doi_list.include?(doi) && doi.present?
     @seen_doi_list << doi if doi.present?
@@ -75,7 +75,8 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     log_entry = {
         ids: ids.merge('work_id' => article&.id),
         timestamp: Time.now.utc.iso8601,
-        category: category
+        category: category,
+        filename: filename
     }
     log_entry[:message] = message if message.present?
     @write_buffer << log_entry
@@ -140,15 +141,15 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     end
   end
 
-  def skip_existing_work(record, match)
+  def skip_existing_work(record, match, filename: nil)
     Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
     article = WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
-    record_result(category: :skipped, message: 'Pre-filtered: work exists', ids: record.slice('pmid', 'pmcid', 'doi'), article: article)
+    record_result(category: :skipped, message: 'Pre-filtered: work exists', ids: record.slice('pmid', 'pmcid', 'doi'), article: article, filename: nil)
   end
 
-  def handle_record_error(record, error)
+  def handle_record_error(record, error, filename: nil)
     Rails.logger.error("[MetadataIngestService] Error processing record for DOI #{record['doi']}: #{error.message}")
     Rails.logger.error(error.backtrace.join("\n"))
-    record_result(category: :failed, message: error.message, ids: record.slice('pmid', 'pmcid', 'doi'))
+    record_result(category: :failed, message: error.message, ids: record.slice('pmid', 'pmcid', 'doi'), article: nil, filename: filename)
   end
 end
