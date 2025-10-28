@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
+  SLEEP_INTERVAL = 1
   def initialize(config:, tracker:, log_file_path:, file_info_path:, metadata_ingest_result_path:)
     super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
     @file_info_path = file_info_path
@@ -25,6 +26,8 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
                           message: 'PDF successfully attached.',
                           file_name: filename)
         end
+        # Sleep briefly to avoid overwhelming fedora with rapid requests
+        sleep(SLEEP_INTERVAL)
       end
   rescue =>  e
     Rails.logger.error("Error processing record #{record_id}: #{e.message}")
