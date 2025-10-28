@@ -66,66 +66,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
   end
 
-  describe '#load_seen_attachment_ids' do
-    context 'when log file does not exist' do
-      it 'returns empty set' do
-        allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(false)
-        ids = service.load_seen_attachment_ids
-        expect(ids).to be_a(Set)
-        expect(ids).to be_empty
-      end
-    end
-
-    context 'when log file exists' do
-      let(:log_content) do
-        [
-          { ids: { pmcid: 'PMC123', pmid: '456' } }.to_json,
-          { ids: { pmcid: 'PMC789', pmid: '012' } }.to_json
-        ]
-      end
-
-      before do
-        allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-        allow(File).to receive(:readlines).and_return(log_content)
-      end
-
-      it 'returns set of existing IDs' do
-        ids = service.load_seen_attachment_ids
-        expect(ids).to include('PMC123', '456', 'PMC789', '012')
-      end
-    end
-  end
-
-  describe '#fetch_attachment_candidates' do
-    let(:metadata_content) do
-      [
-        sample_record.to_json,
-        sample_record_without_pmcid.to_json
-      ]
-    end
-
-    before do
-      allow(File).to receive(:foreach).with(metadata_ingest_result_path).and_yield(metadata_content[0]).and_yield(metadata_content[1])
-      allow(File).to receive(:exist?).with(metadata_ingest_result_path).and_return(true)
-      allow(service).to receive(:filter_record?).and_return(false)
-    end
-
-    it 'loads and parses records from metadata file' do
-      records = service.fetch_attachment_candidates
-      expect(records).to be_an(Array)
-      expect(records.size).to eq(2)
-    end
-
-    it 'filters records based on filter_record? method' do
-      allow(service).to receive(:filter_record?).with(sample_record).and_return(true)
-      allow(service).to receive(:filter_record?).with(sample_record_without_pmcid).and_return(false)
-
-      records = service.fetch_attachment_candidates
-      expect(records.size).to eq(1)
-      expect(records.first).to eq(sample_record_without_pmcid)
-    end
-  end
-
   describe '#filter_record?' do
     context 'when record has already been processed' do
       before do
@@ -210,45 +150,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
       it 'returns false' do
         result = service.filter_record?(sample_record)
-        expect(result).to be false
-      end
-    end
-  end
-
-  describe '#has_fileset?' do
-    context 'when work has file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: ['file1', 'file2']
-        })
-      end
-
-      it 'returns true' do
-        result = service.has_fileset?('work_123')
-        expect(result).to be true
-      end
-    end
-
-    context 'when work has no file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: []
-        })
-      end
-
-      it 'returns false' do
-        result = service.has_fileset?('work_123')
-        expect(result).to be false
-      end
-    end
-
-    context 'when work does not exist' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return(nil)
-      end
-
-      it 'returns false' do
-        result = service.has_fileset?('work_123')
         expect(result).to be false
       end
     end

@@ -103,12 +103,12 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
     end
 
     it 'loads IDs from JSON lines when file exists' do
-      json_line = { 'ids' => { 'pmid' => '12345' } }.to_json
+      json_line = { 'ids' => { 'pmid' => '12345', 'pmcid' => '54321' } }.to_json
       allow(File).to receive(:exist?).with(log_file_path).and_return(true)
       allow(File).to receive(:readlines).with(log_file_path).and_return([json_line])
 
       ids = service.load_seen_attachment_ids
-      expect(ids).to include('12345')
+      expect(ids).to include('12345', '54321')
     end
   end
 
