@@ -71,9 +71,10 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     doi = ids['doi']
     return if @seen_doi_list.include?(doi) && doi.present?
     @seen_doi_list << doi if doi.present?
+    merged_ids = ids.merge(extract_ids_from_article(article))
 
     log_entry = {
-        ids: ids.merge('work_id' => article&.id),
+        ids: merged_ids,
         timestamp: Time.now.utc.iso8601,
         category: category,
         filename: filename
@@ -81,6 +82,14 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     log_entry[:message] = message if message.present?
     @write_buffer << log_entry
     flush_buffer_if_needed
+  end
+
+  def extract_ids_from_article(article)
+    {
+      'pmid' => article&.pmid,
+      'pmcid' => article&.pmcid,
+      'work_id' => article&.id,
+  }.compact
   end
 
   def flush_buffer_if_needed
