@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 desc 'Ingest new PDFs from the NSF backlog and attach them to Hyrax works if matched'
-task :nsf_backlog_ingest, [:resume, :file_info_csv_path, :full_text_dir, :output_dir, :admin_set_title, :depositor_onyen] => :environment do |_task, args|
+task :nsf_backlog_ingest, [:resume,  :output_dir, :file_info_csv_path, :full_text_dir, :admin_set_title, :depositor_onyen] => :environment do |_task, args|
   now = Time.now
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
   validate_args!(args) unless resume
