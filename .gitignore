@@ -13,8 +13,6 @@ tmp/
 !/log/.keep
 !/tmp/.keep
 tmp
-nsf_test
-nsf_output
 
 # Ignore Byebug command history file.
 .byebug_history

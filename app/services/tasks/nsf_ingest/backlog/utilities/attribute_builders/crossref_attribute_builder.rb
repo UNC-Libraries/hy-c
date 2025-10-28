@@ -40,6 +40,12 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
     def format_publication_identifiers
       doi = metadata['DOI'].presence
       pmid, pmcid = retrieve_alt_ids_from_europe_pmc(doi)
+
+      identifiers = []
+      identifiers << "PMID: #{pmid}" if pmid.present?
+      identifiers << "PMCID: #{pmcid}" if pmcid.present?
+      identifiers << "DOI: https://dx.doi.org/#{doi}" if doi.present?
+      identifiers
     end
 
     def retrieve_funder_names
