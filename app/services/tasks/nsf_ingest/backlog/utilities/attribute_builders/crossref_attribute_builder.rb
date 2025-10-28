@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
   class CrossrefAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
+    TRUNCATED_AUTHORS_LIMIT = 100
     private
 
     def generate_authors
-      fallback_author_list = OpenalexAttributeBuilder.new(metadata, article, admin_set, depositor_onyen).send(:generate_authors)
-      # Fallback to OpenAlex author list if too many authors in Crossref metadata
-      return fallback_author_list if metadata['author'].size > 100
-
+      if metadata['author'].size > TRUNCATED_AUTHORS_LIMIT
+        Rails.logger.warn("[CrossrefAttributeBuilder] Author list exceeds 100 authors for article with DOI " \
+                          "\"#{metadata['DOI']}\". Truncating author list to first #{TRUNCATED_AUTHORS_LIMIT} authors.")
+        metadata['author'] = metadata['author'].first(TRUNCATED_AUTHORS_LIMIT)
+      end
       metadata['author'].map.with_index do |author, i|
-        # puts "WIP Processing author #{i + 1} for Article #{article.id}"
         res = {
           'name' => [author['family'], author['given']].compact.join(', '),
           'orcid' => author.dig('ORCID'),
           'index' => i.to_s
         }
-        # puts "WIP Retrieving affiliations for author #{i + 1} for Article #{article.id}"
         retrieve_author_affiliations(res, author)
         res
       end

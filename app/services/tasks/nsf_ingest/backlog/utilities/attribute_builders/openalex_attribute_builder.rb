@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
   class OpenalexAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
+    TRUNCATED_AUTHORS_LIMIT = 100
     private
 
     def generate_authors
+      if metadata['authorships'].size > TRUNCATED_AUTHORS_LIMIT
+        Rails.logger.warn("[OpenalexAttributeBuilder] Author list exceeds 100 authors for article with
+                          \"#{metadata['doi']}\". Truncating author list to first #{TRUNCATED_AUTHORS_LIMIT} authors.")
+        metadata['authorships'] = metadata['authorships'].first(TRUNCATED_AUTHORS_LIMIT)
+      end
       metadata['authorships'].map.with_index do |obj, i|
         author = obj['author']
         res = {
