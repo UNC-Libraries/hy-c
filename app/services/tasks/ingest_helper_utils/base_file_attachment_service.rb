@@ -52,7 +52,7 @@ class Tasks::IngestHelperUtils::BaseFileAttachmentService
       log_attachment_outcome(record, category: :skipped_non_unc_affiliation, message: 'N/A', file_name: 'NONE')
       return true
     when 'failed'
-      log_attachment_outcome(record, category: :failed, message: record['pdf_attached'] || 'No message provided',
+      log_attachment_outcome(record, category: :failed, message: record['message'] || 'No message provided',
                             file_name: 'NONE')
       return true
     end

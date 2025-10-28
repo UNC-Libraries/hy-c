@@ -12,14 +12,12 @@ module Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
                when 'datacite' then 'https://api.datacite.org/dois/'
                end
 
-    puts "Retrieving #{source.capitalize} metadata for DOI: #{doi}"
     url = URI.join(base_url, CGI.escape(doi))
     res = HTTParty.get(url)
 
     return parse_response(res, source, doi) if res.code == 200
 
-    Rails.logger.error("[MetadataRetrievalHelper] Failed to retrieve metadata from #{source.capitalize} "\
-                       "for DOI #{doi}: HTTP #{res.code}")
+    Rails.logger.error("[MetadataRetrievalHelper] Failed to retrieve metadata from #{source.capitalize}. HTTP #{res.code}")
     nil
   rescue => e
     Rails.logger.error("[MetadataRetrievalHelper] Error retrieving #{source.capitalize} metadata for DOI #{doi}: #{e.message}")
