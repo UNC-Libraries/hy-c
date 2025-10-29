@@ -33,9 +33,10 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
 
   def load_and_ingest_metadata
     if @tracker['progress']['metadata_ingest']['completed']
-      LogUtilsHelper.double_log('[NsfIngestCoordinatorService] Metadata ingest already completed according to tracker. Skipping this step.', :info, tag: 'NsfIngestCoordinatorService')
+      LogUtilsHelper.double_log('Metadata ingest already completed according to tracker. Skipping this step.', :info, tag: 'NsfIngestCoordinatorService')
       return
     end
+    LogUtilsHelper.double_log('Starting metadata ingest step.', :info, tag: 'NsfIngestCoordinatorService')
     md_ingest_service = Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService.new(
       config: @config,
       tracker: @tracker,
@@ -48,9 +49,10 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
 
   def attach_files
     if @tracker['progress']['attach_files_to_works']['completed']
-      LogUtilsHelper.double_log('[NsfIngestCoordinatorService] File attachment already completed according to tracker. Skipping this step.', :info, tag: 'NsfIngestCoordinatorService')
+      LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'NsfIngestCoordinatorService')
       return
     end
+    LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'NsfIngestCoordinatorService')
     file_attachment_service = Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService.new(
       config: @config,
       tracker: @tracker,
@@ -64,6 +66,7 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
   end
 
   def format_results_and_notify
+    LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'NsfIngestCoordinatorService')
     notification_service = Tasks::NSFIngest::Backlog::Utilities::NotificationService.new(
       config: @config,
       tracker: @tracker,

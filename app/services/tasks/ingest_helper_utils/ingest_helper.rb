@@ -37,42 +37,70 @@ module Tasks
         file_set_params = { visibility: visibility }
 
         begin
-          # LogUtilsHelper.double_log("Ensuring work #{work.id} is persisted", :info, tag: 'FileSetAttach')
+          # Verify file exists and is readable BEFORE opening
+          unless File.exist?(file_path)
+            raise "File does not exist: #{file_path}"
+          end
+
+          unless File.readable?(file_path)
+            raise "File is not readable: #{file_path}"
+          end
+
+          file_size = File.size(file_path)
+          if file_size == 0
+            raise "File is empty (0 bytes): #{file_path}"
+          end
+
+          Rails.logger.info("Attaching file: #{file_path} (#{file_size} bytes)")
+
           Rails.logger.debug("Ensuring work #{work.id} is persisted")
           work.save! unless work.persisted?
 
-          File.open(file_path) do |file|
-            # LogUtilsHelper.double_log("Creating FileSet and Actor for user #{user.uid}", :info, tag: 'FileSetAttach')
+          File.open(file_path, 'rb') do |file|  # Use 'rb' for binary read mode
             Rails.logger.debug("Creating FileSet and Actor for user #{user.uid}")
             file_set = FileSet.create
             actor = Hyrax::Actors::FileSetActor.new(file_set, user)
 
-            # LogUtilsHelper.double_log("Calling create_metadata for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
             Rails.logger.debug("Calling create_metadata for FileSet #{file_set.id}")
             actor.create_metadata(file_set_params)
 
             Rails.logger.debug("Attaching FileSet #{file_set.id} to work #{work.id}")
             actor.attach_to_work(work, file_set_params)
 
-            Rails.logger.debug("Calling create_content for FileSet #{file_set.id} with file #{file.path}")
-            actor.create_content(file)
-
+            # Set label/title BEFORE create_content
             display_filename = filename || File.basename(file_path)
             file_set.label = display_filename
             file_set.title = [display_filename]
+            file_set.save!
 
+            Rails.logger.debug("Calling create_content for FileSet #{file_set.id} with file #{file.path}")
+            # create_content returns a job - we need to verify it succeeded
+            job = actor.create_content(file)
+
+            Rails.logger.info("Content upload job queued for FileSet #{file_set.id}")
+
+            # Set permissions after content is uploaded
             file_set.permissions_attributes = group_permissions(work.admin_set)
             file_set.save!
+            file_set.reload
             file_set.update_index
 
-            Rails.logger.info("Attached FileSet #{file_set.id} to #{work.id} as #{display_filename}")
+            # Verify the file was actually ingested
+            if file_set.original_file.nil?
+              raise "FileSet #{file_set.id} was created but original_file is nil - content may not have uploaded"
+            end
+
+            Rails.logger.info("Successfully attached FileSet #{file_set.id} to #{work.id} as #{display_filename}")
+            Rails.logger.info("FileSet original_file size: #{file_set.original_file.size rescue 'unknown'}")
+
             file_set
           end
         rescue StandardError => e
           LogUtilsHelper.double_log("Error attaching FileSet to work #{work.id}: #{e.message}", :error, tag: 'FileSetAttach')
-          Rails.logger.error("Error attaching file_set for new work with #{work.identifier.first} and file_path: #{file_path}")
+          Rails.logger.error("Error attaching file_set for work #{work.id} with file_path: #{file_path}")
+          Rails.logger.error("File exists: #{File.exist?(file_path)}, readable: #{File.readable?(file_path) rescue false}")
           Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
-          nil
+          raise  # Re-raise so the caller knows it failed
         end
       end
 

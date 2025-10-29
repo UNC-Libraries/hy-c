@@ -69,7 +69,6 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
   def record_result(category:, message: '', ids: {}, article: nil, filename: nil)
     doi = ids['doi']
-    return if @seen_doi_list.include?(doi) && doi.present?
     @seen_doi_list << doi if doi.present?
     merged_ids = ids.merge(extract_ids_from_article(article))
 

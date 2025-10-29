@@ -36,6 +36,23 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
     end
   end
 
+  def log_attachment_outcome(record, category:, message:, file_name:)
+    # Use DOI to track seen records, all NSF records should have a DOI
+    doi = record.dig('ids', 'doi')
+    return if @existing_ids.include?(doi) && doi.present?
+    @existing_ids << doi if doi.present?
+
+    entry = {
+    ids: record['ids'],
+    timestamp: Time.now.utc.iso8601,
+    category: category,
+    message: message,
+    file_name: file_name
+  }
+    tracker.save
+    File.open(log_file_path, 'a') { |f| f.puts(entry.to_json) }
+  end
+
   def generate_doi_to_filenames
     file_info_path = config['file_info_csv_path']
     res = {}
