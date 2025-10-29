@@ -6,10 +6,10 @@ RSpec.describe NSFReportMailer, type: :mailer do
     let(:results) do
       {
         successfully_ingested_metadata_only: [
-          { file_name: 'paper1.pdf', doi: '10.1234/test1', message: 'Ingest OK' }
+          { filename: 'paper1.pdf', doi: '10.1234/test1', message: 'Ingest OK' }
         ],
         failed: [
-          { file_name: 'paper2.pdf', doi: '10.5678/test2', message: 'Ingest failed' }
+          { filename: 'paper2.pdf', doi: '10.5678/test2', message: 'Ingest failed' }
         ]
       }
     end
@@ -53,7 +53,8 @@ RSpec.describe NSFReportMailer, type: :mailer do
             failed: 'Failed'
           },
           truncated_categories: [],
-          max_display_rows: 50
+          max_display_rows: 50,
+          formatted_time: Time.now.strftime('%Y-%m-%d %H:%M:%S')
         }
       end
 
