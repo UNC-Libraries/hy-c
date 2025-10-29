@@ -63,7 +63,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     article.save!
 
     # Sync permissions and state
-    sync_permissions_and_state!(article.id, @config['depositor_onyen'])
+    sync_permissions_and_state!(work_id: article.id, depositor_uid: @config['depositor_onyen'])
     article
   end
 
