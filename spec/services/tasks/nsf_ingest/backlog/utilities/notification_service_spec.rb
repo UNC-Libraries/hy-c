@@ -18,7 +18,22 @@ RSpec.describe Tasks::NSFIngest::Backlog::Utilities::NotificationService, type: 
   end
 
   describe '#populate_headers!' do
-    let(:report) { { headers: {} } }
+    let(:report) do
+      {
+        headers: {},
+        records: {
+          successfully_ingested_metadata_only: [
+            { doi: '10.1234/test1' },
+            { doi: '10.5678/test2' },
+            { doi: '10.1234/test3' },
+            { doi: '10.5678/test4' }
+          ],
+          failed: [
+            { doi: '10.9999/test5' }
+          ]
+        }
+      }
+    end
 
     before do
       allow(service).to receive(:calculate_rows_in_csv).and_return(5)

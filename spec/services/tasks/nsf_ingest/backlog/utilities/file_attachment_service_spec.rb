@@ -101,7 +101,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService, type
         record,
         category: :failed,
         message: a_string_including('NSF File Attachment Error: file not found'),
-        file_name: 'NONE'
+        file_name: nil
       )
     end
   end
