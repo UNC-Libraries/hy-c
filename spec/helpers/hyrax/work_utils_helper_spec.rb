@@ -47,7 +47,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
-     file_set_ids: nil
+     file_set_ids: nil,
+     doi: nil,
+     pmcid: nil,
+     pmid: nil
   },
   {
      work_id: '1z40m031g',
@@ -55,7 +58,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
-     file_set_ids:  ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3']
+     file_set_ids:  ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3'],
+     doi: nil,
+     pmcid: nil,
+     pmid: nil
   }
   ]
   }
