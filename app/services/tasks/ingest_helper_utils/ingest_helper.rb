@@ -27,34 +27,31 @@ module Tasks::IngestHelperUtils::IngestHelper
       file_set_params = { visibility: visibility }
 
       begin
-        # LogUtilsHelper.double_log("Ensuring work #{work.id} is persisted", :info, tag: 'FileSetAttach')
         Rails.logger.debug("Ensuring work #{work.id} is persisted")
         work.save! unless work.persisted?
 
-        File.open(file_path) do |file|
-          # LogUtilsHelper.double_log("Creating FileSet and Actor for user #{user.uid}", :info, tag: 'FileSetAttach')
-          Rails.logger.debug("Creating FileSet and Actor for user #{user.uid}")
-          file_set = FileSet.create
-          actor = Hyrax::Actors::FileSetActor.new(file_set, user)
+        Rails.logger.debug("Creating FileSet and Actor for user #{user.uid}")
+        file_set = FileSet.create
+        actor = Hyrax::Actors::FileSetActor.new(file_set, user)
 
-          # LogUtilsHelper.double_log("Calling create_metadata for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
-          Rails.logger.debug("Calling create_metadata for FileSet #{file_set.id}")
-          actor.create_metadata(file_set_params)
+        Rails.logger.debug("Calling create_metadata for FileSet #{file_set.id}")
+        actor.create_metadata(file_set_params)
 
-          Rails.logger.debug("Attaching FileSet #{file_set.id} to work #{work.id}")
-          actor.attach_to_work(work, file_set_params)
+        Rails.logger.debug("Attaching FileSet #{file_set.id} to work #{work.id}")
+        actor.attach_to_work(work, file_set_params)
 
-          Rails.logger.debug("Calling create_content for FileSet #{file_set.id} with file #{file.path}")
-          actor.create_content(file)
+        Rails.logger.debug("Calling create_content for FileSet #{file_set.id} with file path #{file_path}")
+        
+        uploaded_file = Hyrax::UploadedFile.create(file: File.open(file_path))
+        actor.create_content(uploaded_file)
 
-          file_set.permissions_attributes = group_permissions(work.admin_set)
-          file_set.save!
+        file_set.permissions_attributes = group_permissions(work.admin_set)
+        file_set.label = File.basename(file_path)
+        file_set.title = [File.basename(file_path)]
+        file_set.save!
 
-          Rails.logger.info("Successfully attached FileSet #{file_set.id} to work #{work.id}")
-          file_set.label = File.basename(file_path)
-          file_set.title = [File.basename(file_path)]
-          file_set
-        end
+        Rails.logger.info("Successfully attached FileSet #{file_set.id} to work #{work.id}")
+        file_set
       rescue StandardError => e
         LogUtilsHelper.double_log("Error attaching FileSet to work #{work.id}: #{e.message}", :error, tag: 'FileSetAttach')
         Rails.logger.error("Error attaching file_set for new work with #{work.identifier.first} and file_path: #{file_path}")
