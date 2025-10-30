@@ -242,7 +242,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
       expect(service).to have_received(:process_record).with(sample_record)
       expect(service).to have_received(:process_record).with(sample_record_without_pmcid)
-      expect(service).to have_received(:sync_permissions_and_state!).with('work_123', 'admin')
+      expect(service).to have_received(:sync_permissions_and_state!).with(work_id: 'work_123', depositor_uid: 'admin')
       expect(Rails.logger).to have_received(:info).with('Processing record 1 of 2')
       expect(Rails.logger).to have_received(:info).with('Processing record 2 of 2')
     end
