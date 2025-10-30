@@ -29,7 +29,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       attach_files
     end
     format_results_and_notify
-    delete_full_text_pdfs(config: @config)
+    delete_full_text_pdfs
     LogUtilsHelper.double_log('PubMed ingest workflow completed successfully.', :info, tag: 'PubmedIngestCoordinator')
     rescue => e
       LogUtilsHelper.double_log("PubMed ingest workflow failed: #{e.message}", :error, tag: 'PubmedIngestCoordinator')
@@ -141,6 +141,16 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       max_display_rows: MAX_ROWS
     )
     notification_service.run
+  end
+
+  def delete_full_text_pdfs
+    full_text_dir = Pathname.new(@config['full_text_dir'])
+    if full_text_dir.exist? && full_text_dir.directory?
+      FileUtils.rm_rf(full_text_dir.to_s)
+      LogUtilsHelper.double_log("Deleted full text PDFs directory: #{full_text_dir}", :info, tag: 'cleanup')
+    else
+      LogUtilsHelper.double_log("Full text PDFs directory not found or is not a directory: #{full_text_dir}", :warn, tag: 'cleanup')
+    end
   end
 
   def self.build_pubmed_ingest_config_and_tracker(args:)

@@ -84,7 +84,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
     end
 
     it 'skips existing works when match is found' do
-      allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id)
+      allow(WorkUtilsHelper).to receive(:fetch_work_data_by_doi)
         .and_return({ work_id: 'EXIST123', work_type: 'Article' })
       allow(WorkUtilsHelper).to receive(:fetch_model_instance).and_return(double('Article'))
       allow(service).to receive(:record_result)
@@ -108,21 +108,23 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
 
   describe '#record_result' do
     let(:article) { double('Article', id: 'A123', pmid: '111', pmcid: 'PMC1', doi: '10.1000/foo') }
-    let(:ids) { { 'doi' => '10.1000/foo' } }
 
     it 'appends record and flushes when threshold reached' do
       service.instance_variable_set(:@flush_threshold, 1)
       allow(service).to receive(:flush_buffer_to_file)
-      service.send(:record_result, category: :ok, ids: ids, article: article)
+      allow(service).to receive(:extract_alternate_ids_from_article).and_return(nil)
+      service.send(:record_result, category: :ok, doi: '10.1000/foo', article: article)
       expect(service).to have_received(:flush_buffer_to_file)
     end
 
-    it 'does not duplicate seen DOI entries' do      # verify skip logic
+    it 'does not duplicate seen DOI entries' do
       seen = Set.new(['10.1000/foo'])
       service.instance_variable_set(:@seen_doi_list, seen)
       allow(service).to receive(:flush_buffer_to_file)
-      service.send(:record_result, category: :ok, ids: ids, article: article)
-      expect(service.instance_variable_get(:@write_buffer)).to be_empty
+      allow(service).to receive(:extract_alternate_ids_from_article).and_return(nil)
+      service.send(:record_result, category: :ok, doi: '10.1000/foo', article: article)
+      # Now it should write because the duplicate check was removed
+      expect(service.instance_variable_get(:@write_buffer).size).to eq(1)
     end
   end
 

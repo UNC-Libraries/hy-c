@@ -67,10 +67,10 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     article
   end
 
-  def record_result(category:, message: '', doi:, article: nil, filename: nil)
+  def record_result(category:, message: '', doi: nil, article: nil, filename: nil)
     @seen_doi_list << doi if doi.present?
     ids = { 'doi' => doi }
-    ids.merge!(extract_alternate_ids_from_article(article, category)) if article.present?
+    ids.merge!(extract_alternate_ids_from_article(article, category) || {}) if article.present?
 
     log_entry = {
         ids: ids,
@@ -84,9 +84,10 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   def extract_alternate_ids_from_article(article, category)
-    negative_categorys = [:skipped, :skipped_non_unc_affiliation, :failed]
-    return if article.nil? || negative_categorys.include?(category)
+    negative_categories = [:skipped, :skipped_non_unc_affiliation, :failed]
+    return if article.nil? || negative_categories.include?(category)
     work_hash = WorkUtilsHelper.fetch_work_data_by_id(article.id)
+    return if work_hash.blank?
     {
       'pmid' => work_hash[:pmid],
       'pmcid' => work_hash[:pmcid],

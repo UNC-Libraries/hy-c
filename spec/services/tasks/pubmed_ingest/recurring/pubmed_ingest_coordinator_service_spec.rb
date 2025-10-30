@@ -863,7 +863,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(mock_pathname).to receive(:directory?).and_return(true)
       allow(mock_pathname).to receive(:to_s).and_return(full_text_dir_path)
 
-      service.send(:delete_full_text_pdfs, config: config)
+      service.send(:delete_full_text_pdfs)
 
       expect(FileUtils).to have_received(:rm_rf).with(full_text_dir_path)
       expect(LogUtilsHelper).to have_received(:double_log).with(
@@ -880,7 +880,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(mock_pathname).to receive(:exist?).and_return(false)
       allow(mock_pathname).to receive(:directory?).and_return(false)
 
-      service.send(:delete_full_text_pdfs, config: config)
+      service.send(:delete_full_text_pdfs)
 
       expect(FileUtils).not_to have_received(:rm_rf)
       expect(LogUtilsHelper).to have_received(:double_log).with(
