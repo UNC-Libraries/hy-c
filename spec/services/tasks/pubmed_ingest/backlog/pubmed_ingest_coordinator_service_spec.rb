@@ -184,7 +184,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
           'file_set_ids_ssim' => ['fileset1']
         }
       end
-      let(:admin_set_data) { { 'id' => admin_set.id } }
+      let(:admin_set_data) { { 'id' => admin_set.id, 'title_tesim' => [admin_set.title.first] } }
 
       before do
         allow(ActiveFedora::SolrService).to receive(:get)
@@ -215,7 +215,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
           'file_set_ids_ssim' => []
         }
       end
-      let(:admin_set_data) { { 'id' => admin_set.id } }
+      let(:admin_set_data) { { 'id' => admin_set.id , 'title_tesim' => [admin_set.title.first] } }
       let(:article) { { id: work_id, title: 'Sample Work Title', admin_set_id: admin_set.id } }
 
 
@@ -390,7 +390,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
         'file_set_ids_ssim' => ['fileset1']
       }
     end
-    let(:admin_set_data) { { 'id' => admin_set.id } }
+    let(:admin_set_data) { { 'id' => admin_set.id , 'title_tesim' => [admin_set.title.first] } }
 
     before do
       allow(ActiveFedora::SolrService).to receive(:get)
