@@ -101,8 +101,7 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
         work: an_instance_of(Article),
         file_path: dest_path,
         depositor: admin_user,
-        visibility: work.visibility,
-        filename: nil
+        visibility: work.visibility
       )
     end
 
@@ -160,7 +159,7 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
 
     context 'when work has no Sipity entity' do
       it 'creates the entity and sets it to deposited' do
-        helper.sync_permissions_and_state!(work.id, 'admin')
+        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin')
 
         entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
         expect(entity).not_to be_nil
@@ -179,7 +178,7 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
       end
 
       it 'updates the state to deposited' do
-        helper.sync_permissions_and_state!(work.id, 'admin')
+        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin')
 
         expect(existing_entity.reload.workflow_state.name).to eq('deposited')
       end
