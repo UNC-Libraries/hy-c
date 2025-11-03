@@ -486,7 +486,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       result = service.send(:attribute_builder, pubmed_doc, mock_article)
 
       expect(Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder)
-        .to have_received(:new).with(pubmed_doc, mock_article, mock_admin_set, 'test_user')
+        .to have_received(:new).with(pubmed_doc, mock_admin_set, 'test_user')
       expect(result).to eq(mock_pubmed_builder)
     end
 
@@ -494,7 +494,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       result = service.send(:attribute_builder, pmc_doc, mock_article)
 
       expect(Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder)
-        .to have_received(:new).with(pmc_doc, mock_article, mock_admin_set, 'test_user')
+        .to have_received(:new).with(pmc_doc, mock_admin_set, 'test_user')
       expect(result).to eq(mock_pmc_builder)
     end
   end
