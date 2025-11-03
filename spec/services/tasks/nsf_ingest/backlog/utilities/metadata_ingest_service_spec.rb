@@ -128,35 +128,42 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
     end
   end
 
-  describe '#select_source' do
-    it 'returns crossref when both sources exist' do
-      res = service.send(:select_source, { foo: 1 }, { bar: 2 }, '10.1/x')
-      expect(res).to eq('crossref')
+  describe '#verify_source_md_available' do
+    it 'returns openalex when crossref is nil' do
+      res = service.send(:verify_source_md_available, nil, { bar: 2 }, '10.1/x')
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        /Using OpenAlex metadata/,
+        :warn,
+        tag: 'MetadataIngestService'
+      )
     end
 
-    it 'returns openalex when crossref is nil' do
-      res = service.send(:select_source, nil, { bar: 2 }, '10.1/x')
-      expect(res).to eq('openalex')
-      expect(LogUtilsHelper).to have_received(:double_log)
+    it 'returns crossref when openalex is nil' do
+      res = service.send(:verify_source_md_available, { foo: 1 }, nil, '10.1/x')
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        /Using Crossref metadata/,
+        :warn,
+        tag: 'MetadataIngestService'
+      )
     end
 
     it 'raises when both are nil' do
       expect {
-        service.send(:select_source, nil, nil, '10.1/x')
+        service.send(:verify_source_md_available, nil, nil, '10.1/x')
       }.to raise_error(/No metadata found/)
     end
   end
 
-  describe '#merge_additional_metadata' do
+  describe '#merge_metadata_sources' do
     it 'merges abstract and keywords from openalex/datacite' do
-      resolved = {}
+      crossref = {}
       openalex = { 'abstract_inverted_index' => { 'Hyrax' => [0], 'rocks' => [1] }, 'concepts' => [{ 'display_name' => 'Hyrax' }] }
       datacite = { 'attributes' => { 'description' => 'A Datacite desc' } }
 
       allow(service).to receive(:generate_openalex_abstract).and_return('Hyrax rocks.')
       allow(service).to receive(:extract_keywords_from_openalex).and_return(['Hyrax'])
 
-      service.send(:merge_additional_metadata, resolved, openalex, datacite)
+      resolved = service.send(:merge_metadata_sources, crossref, openalex, datacite)
 
       expect(resolved['openalex_abstract']).to eq('Hyrax rocks.')
       expect(resolved['datacite_abstract']).to eq('A Datacite desc')

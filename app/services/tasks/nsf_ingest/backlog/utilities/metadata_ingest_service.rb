@@ -31,7 +31,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
 
       source = verify_source_md_available(crossref_md, openalex_md, record['doi'])
-      resolved_md = merge_metadata_sources(resolved_md, openalex_md, datacite_md)
+      resolved_md = merge_metadata_sources(crossref_md, openalex_md, datacite_md)
       attr_builder = construct_attribute_builder(resolved_md)
 
       article = new_article(resolved_md, attr_builder)
@@ -122,13 +122,21 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   def verify_source_md_available(crossref_md, openalex_md, doi)
+    return if crossref_md && openalex_md
+
     if crossref_md.nil? && openalex_md.nil?
-      raise 'No metadata found from Crossref or OpenAlex.'
+      raise "No metadata found from Crossref or OpenAlex for DOI #{doi}."
     end
-    if crossref_md.nil?
-      LogUtilsHelper.double_log("No metadata found from Crossref for DOI #{doi}. Falling back to OpenAlex metadata.", :warn, tag: 'MetadataIngestService')
-    end
+
+    missing_source = crossref_md.nil? ? 'Crossref' : 'OpenAlex'
+    chosen_source  = crossref_md.nil? ? 'OpenAlex' : 'Crossref'
+    LogUtilsHelper.double_log(
+      "No metadata found from #{missing_source} for DOI #{doi}. Using #{chosen_source} metadata.",
+      :warn,
+      tag: 'MetadataIngestService'
+    )
   end
+
 
   def merge_metadata_sources(crossref_md, openalex_md, datacite_md)
     # Default to OpenAlex metadata if available else Crossref
