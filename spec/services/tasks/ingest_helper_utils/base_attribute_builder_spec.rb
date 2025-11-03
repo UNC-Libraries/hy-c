@@ -70,8 +70,13 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
   end
 
   describe '#retrieve_alt_ids_from_europe_pmc' do
+    before do
+      allow(Rails.logger).to receive(:error)
+    end
+
     it 'returns pmid and pmcid from successful API response' do
       response_body = {
+        'hitCount' => 1,
         'resultList' => {
           'result' => [{ 'pmid' => '54321', 'pmcid' => 'PMC98765' }]
         }
