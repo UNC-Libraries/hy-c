@@ -3,9 +3,9 @@ module Tasks
   module PubmedIngest
     module SharedUtilities
       module AttributeBuilders
-        class PmcAttributeBuilder < BaseAttributeBuilder
+        class PmcAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
 
-          def find_skipped_row(new_pubmed_works)
+          def find_skipped_row(new_pubmed_works, article)
             pmid = metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text
             pmcid = metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
             new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
@@ -55,7 +55,7 @@ module Tasks
             hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
           end
 
-          def apply_additional_basic_attributes
+          def apply_additional_basic_attributes(article)
             article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
             article.abstract = [metadata.xpath('front/article-meta/abstract').text.presence || 'N/A']
             article.date_issued = get_date_issued.strftime('%Y-%m-%d')
@@ -64,7 +64,7 @@ module Tasks
             article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
           end
 
-          def set_identifiers
+          def set_identifiers(article)
             article.identifier = format_publication_identifiers
             epub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="epub"]')&.text.presence
             ppub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="ppub"]')&.text.presence
@@ -98,7 +98,7 @@ module Tasks
           end
 
 
-          def set_journal_attributes
+          def set_journal_attributes(article)
             article.journal_title = metadata.at_xpath('front/journal-meta/journal-title-group/journal-title')&.text.presence
             article.journal_volume = metadata.at_xpath('front/article-meta/volume')&.text.presence
             article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence

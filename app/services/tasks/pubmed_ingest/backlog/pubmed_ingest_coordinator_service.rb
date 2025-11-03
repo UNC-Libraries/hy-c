@@ -154,7 +154,10 @@ module Tasks
           # Generate report, log, send email
           double_log('Sending email with results', :info)
           begin
-            report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(@pubmed_ingest_service.attachment_results)
+            report = Tasks::IngestHelperUtils::IngestReportingService.generate_report(
+              ingest_output: @pubmed_ingest_service.attachment_results,
+              source_name: 'PubMed'
+            )
             report[:headers][:total_files] = @pubmed_ingest_service.attachment_results[:counts][:total_files]
             report[:categories] = {
                                     successfully_attached: 'Successfully Ingested and Attached',
@@ -162,7 +165,7 @@ module Tasks
                                     skipped: 'Skipped',
                                     failed: 'Failed'
                                   }
-            PubmedReportMailer.pubmed_report_email(report).deliver_now
+            PubmedReportMailer.pubmed_report_email(report: report, zip_path: nil).deliver_now
             double_log('Email sent successfully', :info)
           rescue StandardError => e
             double_log("Failed to send email: #{e.message}", :error)

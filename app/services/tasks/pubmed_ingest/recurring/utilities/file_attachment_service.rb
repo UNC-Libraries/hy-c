@@ -1,89 +1,30 @@
 # frozen_string_literal: true
 require 'net/ftp'
-require 'tempfile'
 require 'zlib'
 require 'rubygems/package'
 
-class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
-  include Tasks::IngestHelper
-
-  RETRY_LIMIT = 3
-  SLEEP_BETWEEN_REQUESTS = 0.25
-
-  def initialize(config:, tracker:, output_path:, full_text_path:, metadata_ingest_result_path:)
-    @log_file = File.join(output_path, 'attachment_results.jsonl')
-    @config = config
-    @tracker = tracker
-    @output_path = output_path
+class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
+  def initialize(config:, tracker:, log_file_path:, full_text_path:, metadata_ingest_result_path:)
+    super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
     @full_text_path = full_text_path
     @metadata_ingest_result_path = metadata_ingest_result_path
-    @existing_ids = load_existing_attachment_ids
-    @records = load_records_to_attach
-  end
-
-  def run
-    work_ids = []
-    @records.each_with_index do |record, index|
-      LogUtilsHelper.double_log("Processing record #{index + 1} of #{@records.size}", :info, tag: 'Attachment')
-      process_record(record)
-      work_ids << record.dig('ids', 'work_id') if record.dig('ids', 'work_id').present?
-    end
-
-    work_ids.uniq.each { |work_id| sync_permissions_and_state!(work_id, @config['depositor_onyen'])  }
-  end
-
-  def load_records_to_attach
-    records = []
-    LogUtilsHelper.double_log('Loading records to attach files to.', :info, tag: 'File Attachment Service')
-    File.foreach(@metadata_ingest_result_path) do |line|
-      record = JSON.parse(line)
-      next if filter_record?(record)
-      records << record
-    end
-    LogUtilsHelper.double_log("Loaded #{records.size} records to attach files to.", :info, tag: 'File Attachment Service')
-    records
-  end
-
-  def load_existing_attachment_ids
-    return Set.new unless File.exist?(@log_file)
-    Set.new(File.readlines(@log_file).map { |line| JSON.parse(line.strip).values_at('ids').flat_map(&:values).compact }.flatten)
+    @existing_ids = load_seen_attachment_ids
+    @records = fetch_attachment_candidates
   end
 
   def filter_record?(record)
+    return true if super
     pmcid = record.dig('ids', 'pmcid')
-    work_id = record.dig('ids', 'work_id')
-    category = record['category']
     # Skip records that have already been processed if resuming
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
-    # Skip records that were skipped due to no UNC affiliation
-    if category == 'skipped_non_unc_affiliation'
-      log_attachment_outcome(record, category: :skipped_non_unc_affiliation, message: 'N/A', file_name: 'NONE')
-      return true
-    end
 
     if pmcid.blank?
         # Can only retrieve files using PMCID
       log_attachment_outcome(record, category: category_for_skipped_file_attachment(record), message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
       return true
     end
-    # Skip if work already has files attached
-    if work_id.present? && has_fileset?(work_id)
-      log_attachment_outcome(record, category: :skipped, message: 'Already exists and has files attached', file_name: 'NONE')
-      return true
-    end
-
-    if category == 'failed'
-      log_attachment_outcome(record, category: :failed, message: record['pdf_attached'] || 'No message provided', file_name: 'NONE')
-      return true
-    end
 
     return false
-  end
-
-  def has_fileset?(work_id)
-    work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-    return false if work.nil?
-    work[:file_set_ids]&.any?
   end
 
   def process_record(record)
@@ -112,7 +53,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
         file_path = File.join(@full_text_path, filename)
         fetch_ftp_binary(uri, local_file_path: file_path)
-        file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+        file_set = attach_pdf_to_work_with_file_path!(record: record,
+                                                      file_path: file_path,
+                                                      depositor_onyen: config['depositor_onyen'])
         if file_set
           log_attachment_outcome(record,
                     category: category_for_successful_attachment(record),
@@ -167,7 +110,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     Zlib::GzipReader.new(str_io)
   end
 
-
   def process_and_attach_tgz_file(record, tgz_path)
     pmcid = record.dig('ids', 'pmcid')
     work_id = record.dig('ids', 'work_id')
@@ -196,7 +138,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
           File.binwrite(file_path, pdf_binary)
 
 
-          file_set = attach_pdf_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+          # file_set = attach_df_to_work_with_file_path!(record, file_path, @config['depositor_onyen'])
+          file_set = attach_pdf_to_work_with_file_path!(record: record,
+                                                        file_path: file_path,
+                                                        depositor_onyen: @config['depositor_onyen'])
           if file_set
             log_attachment_outcome(record,
                       category: :successfully_attached,
@@ -218,42 +163,5 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       Rails.logger.error "TGZ PDF processing failed for #{pmcid}: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
     end
-  end
-
-  def group_permissions(admin_set)
-    @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
-  end
-
-  def generate_filename_for_work(work_id, pmcid)
-    work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-    return nil unless work
-    suffix = work[:file_set_ids].present? ? format('%03d', work[:file_set_ids].size + 1) : '001'
-    "#{pmcid}_#{suffix}.pdf"
-  end
-
-  def log_attachment_outcome(record, category:, message:, file_name: nil)
-    entry = {
-      ids: record['ids'],
-      timestamp: Time.now.utc.iso8601,
-      category: category,
-      message: message,
-      file_name: file_name
-    }
-    @tracker.save
-    File.open(@log_file, 'a') { |f| f.puts(entry.to_json) }
-  end
-
-  # Determine category for records that are skipped for file attachment
-  # - If the record existed before the current run, categorize as :skipped_file_attachment
-  # - Otherwise, categorize as :successfully_ingested_metadata_only
-  def category_for_skipped_file_attachment(record)
-    record['category'] == 'skipped' ? :skipped_file_attachment : :successfully_ingested_metadata_only
-  end
-
-  # Determine category for file attachment success
-  # - If the record existed before the current run, categorize as :successfully_attached
-  # - Otherwise, categorize as :successfully_ingested_and_attached
-  def category_for_successful_attachment(record)
-    record['category'] == 'skipped' ? :successfully_attached : :successfully_ingested_and_attached
   end
 end

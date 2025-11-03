@@ -7,14 +7,7 @@ module WorkUtilsHelper
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, identifier)) if admin_set_data.blank?
-    result = {
-      work_id: work_data['id'],
-      work_type: work_data.dig('has_model_ssim', 0),
-      title: work_data['title_tesim']&.first,
-      admin_set_id: admin_set_data['id'],
-      admin_set_name: admin_set_name,
-      file_set_ids: work_data['file_set_ids_ssim']
-    }
+    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
     result.compact.empty? ? nil : result
   end
   def self.fetch_work_data_by_fileset_id(fileset_id)
@@ -24,14 +17,7 @@ module WorkUtilsHelper
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id, :fileset)) if admin_set_data.blank?
-    result = {
-      work_id: work_data['id'],
-      work_type: work_data.dig('has_model_ssim', 0),
-      title: work_data['title_tesim']&.first,
-      admin_set_id: admin_set_data['id'],
-      admin_set_name: admin_set_name,
-      file_set_ids: work_data['file_set_ids_ssim']
-    }
+    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
     result.compact.empty? ? nil : result
   end
   def self.fetch_work_data_by_id(work_id)
@@ -40,14 +26,7 @@ module WorkUtilsHelper
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, work_id)) if admin_set_data.blank?
-    result = {
-      work_id: work_data['id'],
-      work_type: work_data.dig('has_model_ssim', 0),
-      title: work_data['title_tesim']&.first,
-      admin_set_id: admin_set_data['id'],
-      admin_set_name: admin_set_name,
-      file_set_ids: work_data['file_set_ids_ssim']
-    }
+    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
     result.compact.empty? ? nil : result
   end
 
@@ -58,7 +37,7 @@ module WorkUtilsHelper
 
     # Step 2: If that fails, normalize DOI and search identifier_tesim with wildcard
     if work_data.blank?
-      normalized_doi = normalize_if_doi(doi)
+      normalized_doi = normalize_doi(doi)
       if normalized_doi
         fallback_value = "DOI: https://dx.doi.org/#{normalized_doi}"
         fallback_query = "identifier_tesim:\"#{fallback_value}\" NOT has_model_ssim:(\"FileSet\")"
@@ -82,16 +61,28 @@ module WorkUtilsHelper
 
     Rails.logger.warn(self.generate_warning_message(admin_set_name, doi, :doi)) if admin_set_data.blank?
 
-    result = {
+    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
+    result.compact.empty? ? nil : result
+  end
+
+  def self.generate_result_hash(work_data, admin_set_data, admin_set_name)
+    identifiers = work_data['identifier_tesim'] || []
+
+    pmid  = identifiers.find { |id| id.match?(/\APMID:\s*\d+/i) }&.split(':')&.last&.strip
+    pmcid = identifiers.find { |id| id.match?(/\APMCID:\s*\S+/i) }&.split(':')&.last&.strip
+    doi   = identifiers.find { |id| id.match?(/\ADOI:\s*\S+/i) }&.split(':', 2)&.last&.strip
+
+    {
       work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
       admin_set_id: admin_set_data['id'],
-      admin_set_name: admin_set_name,
-      file_set_ids: work_data['file_set_ids_ssim']
+      admin_set_name: admin_set_data['title_tesim']&.first,
+      file_set_ids: work_data['file_set_ids_ssim'],
+      pmid: pmid,
+      pmcid: pmcid,
+      doi: doi
     }
-
-    result.compact.empty? ? nil : result
   end
 
   def self.get_permissions_attributes(admin_set_id)
@@ -187,7 +178,7 @@ module WorkUtilsHelper
     end
   end
 
-  def self.normalize_if_doi(identifier)
+  def self.normalize_doi(identifier)
     return identifier unless identifier.is_a?(String)
     # Strip prefix if it's a full DOI URL
     if identifier.match?(%r{\Ahttps?://(dx\.)?doi\.org/}i)
@@ -197,6 +188,28 @@ module WorkUtilsHelper
     else
       return nil
     end
+  end
+
+  # Wrapper to find best work match by trying each alternate identifier in order
+  def self.find_best_work_match_by_alternate_id(doi: nil, pmcid: nil, pmid: nil)
+    alt_ids = { doi: doi, pmcid: pmcid, pmid: pmid }.compact
+    return nil if alt_ids.empty?
+
+    alt_ids.each do |key, id|
+      next if id.blank?
+
+      work_data =
+        case key.to_s
+        when 'doi'
+          WorkUtilsHelper.fetch_work_data_by_doi(id)
+        else
+          WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
+        end
+
+      return work_data if work_data.present?
+    end
+
+    nil
   end
 
   private_class_method :build_cdr_url, :log_and_nil, :generate_warning_message

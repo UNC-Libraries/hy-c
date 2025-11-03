@@ -1,11 +1,10 @@
 # frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService do
   let(:config) { { 'depositor_onyen' => 'admin' } }
   let(:tracker) { double('tracker', save: true) }
-  let(:output_path) { '/tmp/test_output' }
+  let(:log_file_path) { '/tmp/test_output' }
   let(:full_text_path) { '/tmp/test_fulltext' }
   let(:metadata_ingest_result_path) { '/tmp/test_metadata.jsonl' }
 
@@ -13,7 +12,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     described_class.new(
       config: config,
       tracker: tracker,
-      output_path: output_path,
+      log_file_path: log_file_path,
       full_text_path: full_text_path,
       metadata_ingest_result_path: metadata_ingest_result_path
     )
@@ -57,72 +56,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     it 'sets up instance variables correctly' do
       expect(service.instance_variable_get(:@config)).to eq(config)
       expect(service.instance_variable_get(:@tracker)).to eq(tracker)
-      expect(service.instance_variable_get(:@output_path)).to eq(output_path)
+      expect(service.instance_variable_get(:@log_file_path)).to eq(log_file_path)
       expect(service.instance_variable_get(:@full_text_path)).to eq(full_text_path)
       expect(service.instance_variable_get(:@metadata_ingest_result_path)).to eq(metadata_ingest_result_path)
     end
 
     it 'loads existing attachment IDs' do
       expect(service.instance_variable_get(:@existing_ids)).to be_a(Set)
-    end
-  end
-
-  describe '#load_existing_attachment_ids' do
-    context 'when log file does not exist' do
-      it 'returns empty set' do
-        allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(false)
-        ids = service.load_existing_attachment_ids
-        expect(ids).to be_a(Set)
-        expect(ids).to be_empty
-      end
-    end
-
-    context 'when log file exists' do
-      let(:log_content) do
-        [
-          { ids: { pmcid: 'PMC123', pmid: '456' } }.to_json,
-          { ids: { pmcid: 'PMC789', pmid: '012' } }.to_json
-        ]
-      end
-
-      before do
-        allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-        allow(File).to receive(:readlines).and_return(log_content)
-      end
-
-      it 'returns set of existing IDs' do
-        ids = service.load_existing_attachment_ids
-        expect(ids).to include('PMC123', '456', 'PMC789', '012')
-      end
-    end
-  end
-
-  describe '#load_records_to_attach' do
-    let(:metadata_content) do
-      [
-        sample_record.to_json,
-        sample_record_without_pmcid.to_json
-      ]
-    end
-
-    before do
-      allow(File).to receive(:foreach).with(metadata_ingest_result_path).and_yield(metadata_content[0]).and_yield(metadata_content[1])
-      allow(service).to receive(:filter_record?).and_return(false)
-    end
-
-    it 'loads and parses records from metadata file' do
-      records = service.load_records_to_attach
-      expect(records).to be_an(Array)
-      expect(records.size).to eq(2)
-    end
-
-    it 'filters records based on filter_record? method' do
-      allow(service).to receive(:filter_record?).with(sample_record).and_return(true)
-      allow(service).to receive(:filter_record?).with(sample_record_without_pmcid).and_return(false)
-
-      records = service.load_records_to_attach
-      expect(records.size).to eq(1)
-      expect(records.first).to eq(sample_record_without_pmcid)
     end
   end
 
@@ -210,45 +150,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
       it 'returns false' do
         result = service.filter_record?(sample_record)
-        expect(result).to be false
-      end
-    end
-  end
-
-  describe '#has_fileset?' do
-    context 'when work has file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: ['file1', 'file2']
-        })
-      end
-
-      it 'returns true' do
-        result = service.has_fileset?('work_123')
-        expect(result).to be true
-      end
-    end
-
-    context 'when work has no file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: []
-        })
-      end
-
-      it 'returns false' do
-        result = service.has_fileset?('work_123')
-        expect(result).to be false
-      end
-    end
-
-    context 'when work does not exist' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return(nil)
-      end
-
-      it 'returns false' do
-        result = service.has_fileset?('work_123')
         expect(result).to be false
       end
     end
@@ -622,99 +523,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
 
         service.process_and_attach_tgz_file(sample_record, tgz_path)
       end
-    end
-  end
-
-  describe '#generate_filename_for_work' do
-    context 'when work exists and has file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: ['file1', 'file2']
-        })
-      end
-
-      it 'generates filename with incremented suffix' do
-        filename = service.generate_filename_for_work('work_123', 'PMC123456')
-        expect(filename).to eq('PMC123456_003.pdf')
-      end
-    end
-
-    context 'when work exists but has no file sets' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
-          file_set_ids: []
-        })
-      end
-
-      it 'generates filename with 001 suffix' do
-        filename = service.generate_filename_for_work('work_123', 'PMC123456')
-        expect(filename).to eq('PMC123456_001.pdf')
-      end
-    end
-
-    context 'when work does not exist' do
-      before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return(nil)
-      end
-
-      it 'returns nil' do
-        filename = service.generate_filename_for_work('work_123', 'PMC123456')
-        expect(filename).to be_nil
-      end
-    end
-  end
-
-  describe '#log_attachment_outcome' do
-    let(:log_file_handle) { double('file') }
-
-    before do
-      allow(Time).to receive(:now).and_return(Time.parse('2024-01-01 12:00:00 UTC'))
-      allow(File).to receive(:open).with(/attachment_results\.jsonl/, 'a').and_yield(log_file_handle)
-      allow(log_file_handle).to receive(:puts)
-    end
-
-    it 'writes log entry to file and saves tracker' do
-      service.log_attachment_outcome(
-        sample_record,
-        category: :successfully_attached,
-        message: 'File attached successfully',
-        file_name: 'PMC123456_001.pdf'
-      )
-
-      expected_entry = {
-        ids: sample_record['ids'],
-        timestamp: '2024-01-01T12:00:00Z',
-        category: :successfully_attached,
-        message: 'File attached successfully',
-        file_name: 'PMC123456_001.pdf'
-      }
-
-      expect(log_file_handle).to have_received(:puts).with(expected_entry.to_json)
-      expect(tracker).to have_received(:save)
-    end
-  end
-
-  describe '#run' do
-    let(:records) { [sample_record, sample_record_without_pmcid] }
-
-    before do
-      service.instance_variable_set(:@records, records)
-      allow(service).to receive(:process_record)
-      allow(service).to receive(:sync_permissions_and_state!)
-    end
-
-    it 'processes all records' do
-      service.run
-
-      expect(service).to have_received(:process_record).with(sample_record)
-      expect(service).to have_received(:process_record).with(sample_record_without_pmcid)
-      expect(service).to have_received(:sync_permissions_and_state!).with('work_123', 'admin')
-      expect(LogUtilsHelper).to have_received(:double_log).with(
-        'Processing record 1 of 2', :info, tag: 'Attachment'
-      )
-      expect(LogUtilsHelper).to have_received(:double_log).with(
-        'Processing record 2 of 2', :info, tag: 'Attachment'
-      )
     end
   end
 end

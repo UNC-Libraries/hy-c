@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 module Tasks
-  require 'tasks/ingest_helper'
+  require 'tasks/ingest_helper_utils/ingest_helper'
   module PubmedIngest
     module Backlog
 
       class PubmedIngestService
         attr_reader :attachment_results
-        include Tasks::IngestHelper
+        include Tasks::IngestHelperUtils::IngestHelper
 
         def initialize(config)
           raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results'] && config['file_retrieval_directory']
@@ -55,15 +55,15 @@ module Tasks
           Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
 
           @retrieved_metadata.each_with_index do |metadata, index|
+            skipped_row = nil
             Rails.logger.info("[Ingest] Processing record ##{index + 1}")
             begin
               article = new_article(metadata)
-              builder = attribute_builder(metadata, article)
-              skipped_row = builder.find_skipped_row(@new_pubmed_works)
+              builder = attribute_builder(metadata)
+              skipped_row = builder.find_skipped_row(@new_pubmed_works, article)
 
               Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
               article.save!
-              article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
               Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
 
               attach_pdf(article, skipped_row)
@@ -87,17 +87,18 @@ module Tasks
               doi = skipped_row&.[]('doi') || 'N/A'
               pmid = skipped_row&.[]('pmid') || 'N/A'
               pmcid = skipped_row&.[]('pmcid') || 'N/A'
+              file_name = skipped_row&.[]('file_name') || 'N/A'
               Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
               Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
               article.destroy if article&.persisted?
               record_result(
                 category: :failed,
-                file_name: skipped_row['file_name'],
+                file_name: file_name,
                 message: "Failed: #{e.message}",
                 ids: {
-                  pmid: skipped_row['pmid'],
-                  pmcid: skipped_row['pmcid'],
-                  doi: skipped_row['doi']
+                  pmid: pmid,
+                  pmcid: pmcid,
+                  doi: doi
                 }
               )
             end
@@ -113,7 +114,10 @@ module Tasks
             model_class = work_hash[:work_type].constantize
             work = model_class.find(work_hash[:work_id])
             depositor =  User.find_by(uid: depositor_onyen)
-            file = attach_pdf_to_work(work, file_path, depositor, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+            file = attach_pdf_to_work(work: work,
+                                      file_path: file_path,
+                                      depositor: depositor,
+                                      visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
             admin_set = ::AdminSet.where(id: work_hash[:admin_set_id]).first
             file.update(permissions_attributes: group_permissions(admin_set))
             Rails.logger.info("[AttachPDFExisting] Successfully attached file for #{work_hash[:work_id]}")
@@ -159,7 +163,7 @@ module Tasks
           article = Article.new
           article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
           builder = attribute_builder(metadata, article)
-          builder.populate_article_metadata
+          builder.populate_article_metadata(article)
         end
 
         def attach_pdf(article, skipped_row)
@@ -175,7 +179,10 @@ module Tasks
             raise StandardError, error_msg
           end
 
-          pdf_file = attach_pdf_to_work(article, file_path, @depositor, article.visibility)
+          pdf_file = attach_pdf_to_work(work: article,
+                                       file_path: file_path,
+                                       depositor: @depositor,
+                                       visibility: article.visibility)
 
           if pdf_file.nil?
             ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
@@ -197,10 +204,10 @@ module Tasks
           metadata.name == 'PubmedArticle'
         end
 
-        def attribute_builder(metadata, article)
+        def attribute_builder(metadata)
           is_pubmed?(metadata) ?
-            SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid) :
-            SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
+            SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, @admin_set, @depositor.uid) :
+            SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, @admin_set, @depositor.uid)
         end
       end
     end

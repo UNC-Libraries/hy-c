@@ -1,10 +1,9 @@
 # frozen_string_literal: true
-# spec/helpers/tasks/ingest_helper_spec.rb
 require 'rails_helper'
 
-RSpec.describe Tasks::IngestHelper do
+RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
   let(:helper) do
-    Class.new { include Tasks::IngestHelper }.new
+    Class.new { include Tasks::IngestHelperUtils::IngestHelper }.new
   end
 
   let(:user) { FactoryBot.create(:admin) }
@@ -89,7 +88,9 @@ RSpec.describe Tasks::IngestHelper do
       # let the helper call the real attach method so we assert behavior
       allow(helper).to receive(:attach_pdf_to_work).and_call_original
 
-      file_set = helper.attach_pdf_to_work_with_file_path!(record, dest_path, 'admin')
+      file_set = helper.attach_pdf_to_work_with_file_path!(record: record,
+                                                           file_path: dest_path,
+                                                           depositor_onyen: 'admin')
 
       expect(File.exist?(dest_path)).to be true
       expect(file_set).to be_a(FileSet)
@@ -97,10 +98,10 @@ RSpec.describe Tasks::IngestHelper do
 
       # verify it attached the file we passed in and used admin depositor visibility
       expect(helper).to have_received(:attach_pdf_to_work).with(
-        an_instance_of(Article),
-        dest_path,
-        admin_user,
-        work.visibility
+        work: an_instance_of(Article),
+        file_path: dest_path,
+        depositor: admin_user,
+        visibility: work.visibility
       )
     end
 
@@ -109,7 +110,9 @@ RSpec.describe Tasks::IngestHelper do
       record = { 'ids' => { 'work_id' => work.id } }
 
       expect {
-        helper.attach_pdf_to_work_with_file_path!(record, dest_path, 'admin')
+        helper.attach_pdf_to_work_with_file_path!(record: record,
+                                                  file_path: dest_path,
+                                                  depositor_onyen: 'admin')
       }.to raise_error(RuntimeError, 'No depositor found')
     end
 
@@ -117,7 +120,9 @@ RSpec.describe Tasks::IngestHelper do
       record = { 'ids' => {} }
 
       expect {
-        helper.attach_pdf_to_work_with_file_path!(record, dest_path, 'admin')
+        helper.attach_pdf_to_work_with_file_path!(record: record,
+                                                  file_path: dest_path,
+                                                  depositor_onyen: 'admin')
       }.to raise_error(ArgumentError, 'No article ID found to attach PDF')
     end
   end
@@ -133,16 +138,28 @@ RSpec.describe Tasks::IngestHelper do
       end
     end
 
-    let(:work) { FactoryBot.create(:article, admin_set: admin_set, depositor: admin_user.uid) }
+    let(:work) do
+      double('Article',
+        id: 'test-work-123',
+        to_global_id: double('GlobalID', to_s: 'gid://app/Article/test-work-123'),
+        admin_set: admin_set,
+        admin_set_id: admin_set.id,
+        'permissions_attributes=': nil,
+        save!: true,
+        reload: nil,
+        update_index: nil
+      )
+    end
 
     before do
       workflow # ensure workflow + state exist
       helper.instance_variable_set(:@config, { 'depositor_onyen' => 'admin' })
+      allow(Article).to receive(:find).with(work.id).and_return(work)
     end
 
     context 'when work has no Sipity entity' do
       it 'creates the entity and sets it to deposited' do
-        helper.sync_permissions_and_state!(work.id, 'admin')
+        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin')
 
         entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
         expect(entity).not_to be_nil
@@ -161,7 +178,7 @@ RSpec.describe Tasks::IngestHelper do
       end
 
       it 'updates the state to deposited' do
-        helper.sync_permissions_and_state!(work.id, 'admin')
+        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin')
 
         expect(existing_entity.reload.workflow_state.name).to eq('deposited')
       end

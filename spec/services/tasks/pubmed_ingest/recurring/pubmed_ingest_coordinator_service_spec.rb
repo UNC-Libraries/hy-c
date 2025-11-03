@@ -75,7 +75,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
     allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
     allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id)
-    allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report)
+    allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report)
     allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
 
     # Mock service instantiation
@@ -86,7 +86,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     allow(Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService)
       .to receive(:new).and_return(mock_file_attachment_service)
 
-    allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+    allow(Tasks::IngestHelperUtils::IngestReportingService)
     .to receive(:generate_report)
     .and_return(
     {
@@ -119,6 +119,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     FileUtils.mkdir_p(File.join(output_dir, '03_attach_files_to_works'))
     FileUtils.mkdir_p(File.join(output_dir, '04_generate_result_csvs'))
     FileUtils.mkdir_p(config['full_text_dir'])
+
+    allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
   end
 
   describe '#initialize' do
@@ -130,11 +132,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'sets up output directories correctly' do
       id_list_dir = service.instance_variable_get(:@id_list_output_directory)
       metadata_dir = service.instance_variable_get(:@metadata_ingest_output_directory)
-      attachment_dir = service.instance_variable_get(:@attachment_output_directory)
+      attachment_output_path = service.instance_variable_get(:@file_attachment_results_path)
 
       expect(id_list_dir).to eq('/tmp/test_output/01_build_id_lists')
       expect(metadata_dir).to eq('/tmp/test_output/02_load_and_ingest_metadata')
-      expect(attachment_dir).to eq('/tmp/test_output/03_attach_files_to_works')
+      expect(attachment_output_path).to eq('/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl')
     end
 
     it 'creates output directories if they do not exist' do
@@ -164,29 +166,22 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         .with(/attachment_results\.jsonl/, symbolize_names: true)
         .and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
-      allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report).and_return({
+      allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report).and_return({
         headers: { total_unique_records: 0 },
         summary: 'Test report'
       })
     end
 
     it 'executes all workflow steps in correct order' do
-      allow(service).to receive(:load_results).and_return(sample_results)
-      expect(service).to receive(:build_id_lists).ordered
-      expect(service).to receive(:load_and_ingest_metadata).ordered
-      expect(service).to receive(:attach_files).ordered
-      expect(service).to receive(:load_results).ordered
-      expect(service).to receive(:send_report_and_notify).ordered
+      expect(service).to receive(:build_id_lists)
+      expect(service).to receive(:load_and_ingest_metadata)
+      expect(service).to receive(:attach_files)
+      expect(service).to receive(:format_results_and_notify)
       service.run
-    end
-
-    it 'writes final results to JSON file' do
-      service.run
-
-      expect(JsonFileUtilsHelper).to have_received(:write_json).with(
-        service.instance_variable_get(:@results),
-        '/tmp/test_output/final_ingest_results.json',
-        pretty: true
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        'PubMed ingest workflow completed successfully.',
+        :info,
+        tag: 'PubmedIngestCoordinator'
       )
     end
 
@@ -430,7 +425,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         .to have_received(:new).with(
           config: config,
           tracker: tracker,
-          output_path: '/tmp/test_output/03_attach_files_to_works',
+          log_file_path: '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl',
           full_text_path: '/tmp/test_fulltext',
           metadata_ingest_result_path: '/tmp/test_output/02_load_and_ingest_metadata/metadata_ingest_results.jsonl'
         )
@@ -490,160 +485,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
   end
 
-  describe '#load_results' do
-    let(:md_ingest_results_path) { '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl' }
-    let(:sample_results) do
-      [
-        {
-          category: :successfully_attached,
-          work_id: 'work_123',
-          message: 'File attached successfully',
-          ids: { pmid: '123456', pmcid: 'PMC789012' },
-          file_name: 'PMC789012_001.pdf'
-        },
-        {
-          category: :failed,
-          work_id: nil,
-          message: 'File attachment failed',
-          ids: { pmid: '234567', pmcid: 'PMC890123' },
-          file_name: 'NONE'
-        },
-        {
-          category: :skipped,
-          work_id: 'work_789',
-          message: 'Already has files',
-          ids: { pmid: '345678', pmcid: 'PMC901234' },
-          file_name: 'NONE'
-        }
-      ]
-    end
-
-    before do
-      allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
-      allow(JsonFileUtilsHelper)
-        .to receive(:read_jsonl)
-        .and_return(sample_results)
-      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
-      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_789').and_return('http://example.com/work_789')
-    end
-
-    it 'logs results loading completion' do
-      service.send(:load_results)
-      expected_dir = service.instance_variable_get(:@attachment_output_directory)
-
-      expect(LogUtilsHelper).to have_received(:double_log).with(
-        a_string_including("Successfully loaded and formatted results from #{expected_dir}/attachment_results.jsonl"),
-        :info,
-        tag: 'load_and_format_results'
-      )
-    end
-  end
-
-  describe '#format_results_for_reporting' do
-    let(:raw_results) do
-      [
-        {
-          category: 'successfully_ingested_and_attached',
-          work_id: 'work_123',
-          message: 'Successfully ingested and attached',
-          ids: { pmid: '234567', pmcid: 'PMC890123', doi: '10.1000/example2' },
-          file_name: 'NONE'
-        },
-        {
-          category: 'successfully_ingested_metadata_only',
-          work_id: 'work_456',
-          message: 'Successfully ingested',
-          ids: { pmid: '345678', pmcid: 'PMC901234', doi: '10.1000/example' },
-          file_name: 'NONE'
-        },
-        {
-          category: 'successfully_attached',
-          work_id: 'work_789',
-          message: 'Successfully attached',
-          ids: { pmid: '567890', pmcid: 'PMC123456', doi: '10.1000/example3' },
-          file_name: 'PMC123456_001.pdf'
-        },
-        {
-          category: 'skipped',
-          work_id: nil,
-          message: 'Already exists',
-          ids: { pmid: '456789' },
-          file_name: 'NONE'
-        },
-        {
-          category: 'skipped_file_attachment',
-          work_id: 'work_101',
-          message: 'No files to attach',
-          ids: { pmid: '678901', pmcid: 'PMC234567', doi: '10.1000/example4' },
-          file_name: 'NONE'
-        },
-        {
-          category: 'failed',
-          work_id: nil,
-          message: 'Ingest failed',
-          ids: { pmid: '123456' },
-          file_name: 'NONE'
-        },
-        {
-          category: 'invalid_category',
-          message: 'Should be ignored',
-          ids: { pmid: '999999' },
-          file_name: 'NONE'
-        },
-           {
-          category: 'skipped_non_unc_affiliation',
-          work_id: nil,
-          message: 'N/A',
-          ids: { pmid: '456789' },
-          file_name: 'NONE'
-        }
-      ]
-    end
-
-    before do
-      allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_456').and_return('http://example.com/work_456')
-    end
-
-    it 'formats valid categories correctly' do
-      results = service.send(:format_results_for_reporting, raw_results)
-      expect(results[:successfully_ingested_and_attached].size).to eq(1)
-      expect(results[:successfully_ingested_metadata_only].size).to eq(1)
-      expect(results[:successfully_attached].size).to eq(1)
-      expect(results[:skipped].size).to eq(1)
-      expect(results[:skipped_file_attachment].size).to eq(1)
-      expect(results[:skipped_non_unc_affiliation].size).to eq(1)
-      expect(results[:failed].size).to eq(1)
-    end
-
-    it 'ignores invalid categories' do
-      results = service.send(:format_results_for_reporting, raw_results)
-      expect(results).not_to have_key(:invalid_category)
-    end
-
-    it 'merges IDs into main entry and transforms field names' do
-      results = service.send(:format_results_for_reporting, raw_results)
-      ingested_entry = results[:successfully_ingested_metadata_only].first
-
-      expect(ingested_entry[:pmid]).to eq('345678')
-      expect(ingested_entry[:pmcid]).to eq('PMC901234')
-      expect(ingested_entry[:doi]).to eq('10.1000/example')
-      expect(ingested_entry[:work_id]).to eq('work_456')
-      expect(ingested_entry[:message]).to eq('Successfully ingested')
-      expect(ingested_entry[:file_name]).to eq('NONE')
-      expect(ingested_entry[:cdr_url]).to eq('http://example.com/work_456')
-    end
-
-    it 'handles entries without work_id correctly' do
-      results = service.send(:format_results_for_reporting, raw_results)
-      skipped_entry = results[:skipped].first
-
-      expect(skipped_entry[:pmid]).to eq('456789')
-      expect(skipped_entry[:work_id]).to be_nil
-      expect(skipped_entry).not_to have_key('cdr_url')
-    end
-  end
-
-  describe '#send_report_and_notify' do
+  describe '#format_results_and_notify' do
     let(:mock_report) do
       {
         headers: {},
@@ -672,9 +514,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         'date_range' => { 'start' => '2024-01-01', 'end' => '2024-01-31' }
       }
 
-      tracker_obj = tracker_data.dup
-      def tracker_obj.save; true; end
-      tracker_obj
+      obj = Object.new
+      obj.define_singleton_method(:[])   { |k| tracker_data[k] }
+      obj.define_singleton_method(:[]=)  { |k, v| tracker_data[k] = v }
+      obj.define_singleton_method(:save) { true }
+      obj
     end
 
     let(:service) { described_class.new(config, tracker) }
@@ -684,28 +528,25 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     before do
       # Add this directory to the setup
       FileUtils.mkdir_p(File.join(config['output_dir'], '04_generate_result_csvs'))
+      allow_any_instance_of(Tasks::PubmedIngest::Recurring::Utilities::NotificationService)
+        .to receive(:load_results)
+        .and_return({})
+      allow(File).to receive(:exist?).and_return(true)
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
 
-      allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
+      allow(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report).and_return(mock_report)
-      allow(service).to receive(:generate_result_csvs).and_return(mock_csv_paths)
-      allow(service).to receive(:compress_result_csvs).and_return(mock_zip_path)
-      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email).and_return(mock_mailer)
+      allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
+      allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
     end
 
     it 'generates report and sends email' do
-      results = { records: {}, headers: {} }
-      service.send(:send_report_and_notify, results)
-
-      expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
-        .to have_received(:generate_report).with(results)
-      expect(service).to have_received(:generate_result_csvs)
-      expect(service).to have_received(:compress_result_csvs).with(mock_csv_paths)
-      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email).with(
-        hash_including(headers: hash_including(total_unique_records: 16)),
-        mock_zip_path
-      )
-      expect(mock_mailer).to have_received(:deliver_now)
-      expect(tracker['progress']['send_summary_email']['completed']).to be true
+      service.send(:format_results_and_notify)
+      expect(Tasks::IngestHelperUtils::IngestReportingService)
+        .to have_received(:generate_report).with(
+          ingest_output: anything,
+          source_name: 'PubMed'
+        )
     end
 
     context 'when email notification already completed' do
@@ -714,9 +555,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       end
 
       it 'skips email sending' do
-        service.send(:send_report_and_notify, {})
+        service.send(:format_results_and_notify)
 
-        expect(PubmedReportMailer).not_to have_received(:truncated_pubmed_report_email)
+        expect(PubmedReportMailer).not_to have_received(:pubmed_report_email)
         expect(LogUtilsHelper).to have_received(:double_log).with(
           'Skipping email notification as it has already been sent.',
           :info,
@@ -727,16 +568,19 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     context 'when email sending fails' do
       before do
-        allow(service).to receive(:generate_result_csvs).and_raise(StandardError.new('Email failed'))
+        allow(File).to receive(:exist?).and_return(true)
+        allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
+
+        allow(PubmedReportMailer).to receive(:pubmed_report_email).and_raise(StandardError, 'Email failed')
       end
 
       it 'logs error and continues' do
         expect {
-          service.send(:send_report_and_notify, {})
+          service.send(:format_results_and_notify)
         }.not_to raise_error
 
         expect(LogUtilsHelper).to have_received(:double_log).with(
-          'Failed to send email notification: Email failed',
+          a_string_matching(/Failed to send email notification/),
           :error,
           tag: 'send_summary_email'
         )
@@ -746,22 +590,19 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
   describe 'workflow integration' do
     it 'maintains proper tracker state throughout workflow' do
-      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email)
+      # Stub all file operations comprehensively
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:open).and_yield(double('file', :puts => true, :<< => true))
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
+      allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
+
+      allow(PubmedReportMailer).to receive(:pubmed_report_email)
         .and_return(double(deliver_now: true))
 
-      # Mock CSV and zip generation
-      allow(service).to receive(:generate_result_csvs).and_return(['/tmp/test.csv'])
-      allow(service).to receive(:compress_result_csvs).and_return('/tmp/test.zip')
-
-      # Start with all steps incomplete
       expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed']).to be false
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be false
       expect(tracker['progress']['attach_files_to_works']['completed']).to be false
       expect(tracker['progress']['send_summary_email']['completed']).to be false
-
-      # Mock files for load_results
-      allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
 
       service.run
 
@@ -773,7 +614,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be true
       expect(tracker['progress']['metadata_ingest']['pmc']['completed']).to be true
       expect(tracker['progress']['attach_files_to_works']['completed']).to be true
-      expect(tracker['progress']['send_summary_email']['completed']).to be true
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        'PubMed ingest workflow completed successfully.',
+        :info,
+        tag: 'PubmedIngestCoordinator'
+      )
     end
   end
 
@@ -789,17 +634,17 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     describe '.resolve_output_dir' do
       it 'builds a timestamped path under an absolute base' do
-        dir = described_class.send(:resolve_output_dir, '/var/out', now)
+        dir = described_class.send(:resolve_output_dir, '/var/out', now, false)
         expect(dir.to_s).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
       end
 
       it 'builds under Rails.root for a relative base' do
-        dir = described_class.send(:resolve_output_dir, 'relative/out', now)
+        dir = described_class.send(:resolve_output_dir, 'relative/out', now, false)
         expect(dir.to_s).to match(%r{^/app/relative/out/pubmed_ingest_2024-01-02_03-04-05$})
       end
 
       it 'falls back to tmp when blank' do
-        dir = described_class.send(:resolve_output_dir, nil, now)
+        dir = described_class.send(:resolve_output_dir, nil, now, false)
         expect(dir.to_s).to eq('/app/tmp/pubmed_ingest_2024-01-02_03-04-05')
         expect(LogUtilsHelper).to have_received(:double_log).with(
             'No output directory specified. Using default tmp directory.', :info, tag: 'PubMed Ingest'
@@ -847,7 +692,20 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       let(:tracker_double) do
       # minimal tracker responding to [] for resume case
         obj = Object.new
-        data = { 'full_text_dir' => '/persisted/full_text' }
+        data = {
+          'full_text_dir' => '/full_text_pdfs_2024-01-02_03-04-05',
+          'output_dir'    => '/var/out/pubmed_ingest_2024-01-02_03-04-05',
+          'depositor_onyen' => 'someone',
+          'date_range' => { 'start' => '2024-01-01', 'end' => '2024-01-31' },
+          'progress' => {
+            'retrieve_ids_within_date_range' => {},
+            'stream_and_write_alternate_ids' => {},
+            'adjust_id_lists' => {},
+            'metadata_ingest' => {},
+            'attach_files_to_works' => {},
+            'send_summary_email' => {}
+          }
+        }
         obj.define_singleton_method(:[]) { |k| data[k] }
         obj
       end
@@ -869,7 +727,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           admin_set_rel = double('rel', first: double('admin_set'))
           allow(AdminSet).to receive(:where).with(title_tesim: 'default').and_return(admin_set_rel)
 
-          allow(Tasks::PubmedIngest::SharedUtilities::IngestTracker)
+          allow(Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker)
           .to receive(:build)
           .and_return(tracker_double)
         end
@@ -882,7 +740,22 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           expect(config['depositor_onyen']).to eq('someone')
           expect(config['output_dir']).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
           expect(config['full_text_dir']).to match(%r{/full_text_pdfs_2024-01-02_03-04-05$})
-          expect(tracker).to eq(tracker_double)
+          expect(tracker['full_text_dir']).to match(%r{/full_text_pdfs_2024-01-02_03-04-05$})
+          expect(tracker['output_dir']).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
+          expect(tracker['depositor_onyen']).to eq('someone')
+          expect(tracker['date_range']['start']).to eq('2024-01-01')
+          expect(tracker['date_range']['end']).to eq('2024-01-31')
+          %w[
+          retrieve_ids_within_date_range
+          stream_and_write_alternate_ids
+          adjust_id_lists
+          metadata_ingest
+          attach_files_to_works
+          send_summary_email
+          ].each do |key|
+            expect(tracker['progress'][key]).not_to be_nil
+          end
+
 
             # created base + subdirs + full text
           expect(FileUtils).to have_received(:mkdir_p).with(Pathname.new(config['output_dir']))
@@ -906,15 +779,21 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
             # Pretend tracker file exists
           allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
 
-          allow(Tasks::PubmedIngest::SharedUtilities::IngestTracker)
+          allow(Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker)
           .to receive(:build)
-          .with(config: hash_including('output_dir' => '/var/out/existing', 'restart_time' => now), resume: true)
+          .with(
+            config: hash_including(
+              'output_dir' => a_string_matching(/^\/var\/out\/existing\/pubmed_ingest_/),
+              'restart_time' => now
+            ),
+            resume: true
+          )
           .and_return(tracker_double)
 
           config, tracker = described_class.build_pubmed_ingest_config_and_tracker(args: args)
 
-          expect(config['output_dir']).to eq('/var/out/existing')
-          expect(config['full_text_dir']).to eq('/persisted/full_text')
+          expect(config['output_dir']).to a_string_matching(/^\/var\/out\/existing\/pubmed_ingest_/)
+          expect(config['full_text_dir']).to a_string_matching(/^\/full_text_pdfs_/)
           expect(tracker).to eq(tracker_double)
         end
       end

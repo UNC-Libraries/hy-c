@@ -7,7 +7,8 @@ class PubmedReportMailerPreview < ActionMailer::Preview
       # Create Fixture
     pubmed_ingest_output_fixture = File.read(File.join(Rails.root, '/spec/fixtures/files/pubmed_ingest_test_fixture.json'))
       # Generate Report
-    report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(JSON.parse(pubmed_ingest_output_fixture, symbolize_names: true))
+    report = Tasks::IngestHelperUtils::IngestReportingService.generate_report(ingest_output: JSON.parse(pubmed_ingest_output_fixture, symbolize_names: true),
+                                                                              source_name: 'PubMed')
     report = report.symbolize_keys
     report[:headers][:total_unique_records] = 23
     report[:headers][:start_date] = '2024-01-01'
@@ -22,6 +23,6 @@ class PubmedReportMailerPreview < ActionMailer::Preview
                             skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
                           }
       # Send Email
-    PubmedReportMailer.pubmed_report_email(report)
+    PubmedReportMailer.pubmed_report_email(report: report, zip_path: nil)
   end
 end

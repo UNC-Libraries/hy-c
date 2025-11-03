@@ -3,9 +3,9 @@ module Tasks
   module PubmedIngest
     module SharedUtilities
       module AttributeBuilders
-        class PubmedAttributeBuilder < BaseAttributeBuilder
+        class PubmedAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
 
-          def find_skipped_row(new_pubmed_works)
+          def find_skipped_row(new_pubmed_works, article)
             Rails.logger.info("[PubMed] Finding skipped row for article: #{article.title}")
             pmid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text
             pmcid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
@@ -45,7 +45,7 @@ module Tasks
             hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
           end
 
-          def apply_additional_basic_attributes
+          def apply_additional_basic_attributes(article)
             article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
             article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text.presence || 'N/A']
             article.date_issued = get_date_issued.strftime('%Y-%m-%d')
@@ -54,7 +54,7 @@ module Tasks
             article.funder = metadata.xpath('MedlineCitation/Article/GrantList/Grant/Agency').map(&:text)
           end
 
-          def set_identifiers
+          def set_identifiers(article)
             article.identifier = format_publication_identifiers
             electronic_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence
             print_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Print"]')&.text.presence
@@ -89,7 +89,7 @@ module Tasks
           end
 
 
-          def set_journal_attributes
+          def set_journal_attributes(article)
             article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
             article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
             article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence

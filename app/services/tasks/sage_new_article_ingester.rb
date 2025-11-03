@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Tasks
   require 'tasks/migration_helper'
-  require 'tasks/ingest_helper'
+  require 'tasks/ingest_helper_utils/ingest_helper'
 
   class SageNewArticleIngester < SageBaseArticleIngester
     attr_accessor :admin_set, :depositor
@@ -14,11 +14,16 @@ module Tasks
       # Add PDF file to Article (including FileSets)
       pdf_path = pdf_file_path
 
-      pdf_file = attach_pdf_to_work(art_with_meta, pdf_path, depositor, art_with_meta.visibility)
+      pdf_file = attach_pdf_to_work(work: art_with_meta,
+                                    file_path: pdf_path,
+                                    depositor: depositor,
+                                    visibility: art_with_meta.visibility)
       pdf_file.update permissions_attributes: group_permissions(admin_set)
 
       # Add xml metadata file to Article
-      xml_file = attach_xml_to_work(art_with_meta, @jats_ingest_work.xml_path, depositor)
+      xml_file = attach_xml_to_work(work: art_with_meta,
+                                  file_path: @jats_ingest_work.xml_path,
+                                  depositor: depositor)
       xml_file.update permissions_attributes: group_permissions(admin_set)
       art_with_meta.id
     end

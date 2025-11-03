@@ -47,7 +47,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
-     file_set_ids: nil
+     file_set_ids: nil,
+     doi: nil,
+     pmcid: nil,
+     pmid: nil
   },
   {
      work_id: '1z40m031g',
@@ -55,7 +58,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
-     file_set_ids:  ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3']
+     file_set_ids:  ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3'],
+     doi: nil,
+     pmcid: nil,
+     pmid: nil
   }
   ]
   }
@@ -434,6 +440,52 @@ RSpec.describe WorkUtilsHelper, type: :module do
       found = described_class.fetch_model_instance('Article', article.id)
       expect(found).to be_a(Article)
       expect(found.id).to eq(article.id)
+    end
+  end
+
+  describe '#find_best_work_match_by_alternate_id' do
+    let(:alternate_ids) { { pmid: '123456', pmcid: 'PMC789012', doi: '10.1000/example' } }
+
+    context 'when DOI matches existing work' do
+      let(:work_data) { { work_id: 'work_123', work_type: 'Article' } }
+
+      before do
+        allow(described_class).to receive(:fetch_work_data_by_doi)
+          .with('10.1000/example').and_return(work_data)
+      end
+
+      it 'returns work data for DOI match' do
+        result = described_class.send(:find_best_work_match_by_alternate_id, **alternate_ids)
+        expect(result).to eq(work_data)
+      end
+    end
+
+    context 'when PMCID matches existing work' do
+      let(:work_data) { { work_id: 'work_456', work_type: 'Article' } }
+
+      before do
+        allow(described_class).to receive(:fetch_work_data_by_alternate_identifier)
+          .with('10.1000/example').and_return(nil)
+        allow(described_class).to receive(:fetch_work_data_by_alternate_identifier)
+          .with('PMC789012').and_return(work_data)
+      end
+
+      it 'returns work data for PMCID match' do
+        result = described_class.send(:find_best_work_match_by_alternate_id, **alternate_ids)
+        expect(result).to eq(work_data)
+      end
+    end
+
+    context 'when no matches found' do
+      before do
+        allow(described_class).to receive(:fetch_work_data_by_doi).and_return(nil)
+        allow(described_class).to receive(:fetch_work_data_by_alternate_identifier).and_return(nil)
+      end
+
+      it 'returns nil' do
+        result = described_class.send(:find_best_work_match_by_alternate_id, **alternate_ids)
+        expect(result).to be_nil
+      end
     end
   end
 end

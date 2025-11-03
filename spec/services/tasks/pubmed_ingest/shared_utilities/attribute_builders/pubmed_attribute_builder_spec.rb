@@ -13,7 +13,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
   let(:metadata_doc) { Nokogiri::XML(File.read(Rails.root.join('spec/fixtures/files/pubmed_api_response_multi.xml'))) }
   let(:article_node) { metadata_doc.xpath('//PubmedArticle').first }
   let(:article) { Article.new }
-  let(:builder) { described_class.new(article_node, article, admin_set, depositor.uid) }
+  let(:builder) { described_class.new(article_node, admin_set, depositor.uid) }
 
   describe '#find_skipped_row' do
     it 'matches by pmid' do
@@ -24,7 +24,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
         .with('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')
         .and_return(nil)
 
-      result = builder.find_skipped_row(skipped_rows)
+      result = builder.find_skipped_row(skipped_rows, article)
       expect(result['pmid']).to eq('12345678')
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
         .with('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')
         .and_return(double(text: 'PMC87654321'))
 
-      result = builder.find_skipped_row(skipped_rows)
+      result = builder.find_skipped_row(skipped_rows, article)
       expect(result['pmcid']).to eq('PMC87654321')
     end
   end
@@ -51,7 +51,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
 
   describe '#set_identifiers' do
     it 'sets identifiers, doi, and issn on the article' do
-      builder.send(:set_identifiers)
+      builder.send(:set_identifiers, article)
       expect(article.identifier).to include(a_string_matching(/^PMID:/))
       expect(article.identifier).to include(a_string_matching(/^PMCID:/)).or be_present
       expect(article.identifier).to include(a_string_matching(/^DOI:/)).or be_present
@@ -74,7 +74,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
       allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Journal/JournalIssue/Volume').and_return(double('Nokogiri::XML::Node', text: '10'))
       allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Journal/JournalIssue/Issue').and_return(double('Nokogiri::XML::Node', text: '2'))
       allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Journal/Title').and_return(double('Nokogiri::XML::Node', text: 'Journal of Testing'))
-      builder.send(:set_journal_attributes)
+      builder.send(:set_journal_attributes, article)
       expect(article.journal_title).to be_present
       expect(article.journal_volume).to be_present
       expect(article.journal_issue).to be_present
@@ -85,7 +85,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
 
   describe '#apply_additional_basic_attributes' do
     it 'sets core descriptive fields on the article' do
-      builder.send(:apply_additional_basic_attributes)
+      builder.send(:apply_additional_basic_attributes, article)
       expect(article.title).to be_present
       expect(article.abstract).to be_present
       expect(article.date_issued).to match(/\d{4}-\d{2}-\d{2}/)
@@ -99,7 +99,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAt
       allow(article_node).to receive(:xpath)
         .with('MedlineCitation/Article/Abstract/AbstractText')
         .and_return(double('Nokogiri::XML::Node', text: ''))
-      builder.send(:apply_additional_basic_attributes)
+      builder.send(:apply_additional_basic_attributes, article)
       expect(article.abstract).to eq(['N/A'])
     end
   end

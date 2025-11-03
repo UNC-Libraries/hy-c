@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttributeBuilder, type: :model do
+RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
   let(:admin_set) { FactoryBot.create(:admin_set) }
   let(:depositor_onyen) { 'admin' }
   let(:article) { Article.new }
@@ -13,15 +13,15 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttr
         [{ 'name' => 'Doe, John', 'orcid' => '', 'index' => '0', 'other_affiliation' => '' }]
       end
 
-      def apply_additional_basic_attributes
+      def apply_additional_basic_attributes(article)
         article.title = ['Stub Title']
       end
 
-      def set_journal_attributes
+      def set_journal_attributes(article)
         article.journal_title = 'Test Journal'
       end
 
-      def set_identifiers
+      def set_identifiers(article)
         article.identifier = ['PMID: 123456']
       end
 
@@ -39,7 +39,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttr
     end
   end
 
-  let(:builder) { stub_builder_class.new(metadata, article, admin_set, depositor_onyen) }
+  let(:builder) { stub_builder_class.new(metadata, admin_set, depositor_onyen) }
 
   describe '#populate_article_metadata' do
     it 'calls metadata population steps and returns the article' do
@@ -48,7 +48,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttr
       expect(builder).to receive(:set_journal_attributes).and_call_original
       expect(builder).to receive(:set_identifiers).and_call_original
 
-      result = builder.populate_article_metadata
+      result = builder.populate_article_metadata(article)
 
       expect(result).to eq(article)
       expect(article.admin_set).to eq(admin_set)
@@ -62,20 +62,43 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttr
 
   describe '#set_rights_and_types' do
     it 'assigns default rights and types' do
-      builder.send(:set_rights_and_types)
+      builder.send(:set_rights_and_types, article)
       expect(article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
       expect(article.rights_statement_label).to eq('In Copyright')
       expect(article.dcmi_type).to eq(['http://purl.org/dc/dcmitype/Text'])
     end
   end
 
-  describe 'abstract methods' do
-    subject(:abstract_builder) { described_class.new(metadata, article, admin_set, depositor_onyen) }
-
-    it 'raises NotImplementedError for find_skipped_row' do
-      expect { abstract_builder.find_skipped_row([]) }.to raise_error(NotImplementedError)
+  describe '#retrieve_alt_ids_from_europe_pmc' do
+    before do
+      allow(Rails.logger).to receive(:error)
     end
 
+    it 'returns pmid and pmcid from successful API response' do
+      response_body = {
+        'hitCount' => 1,
+        'resultList' => {
+          'result' => [{ 'pmid' => '54321', 'pmcid' => 'PMC98765' }]
+        }
+      }.to_json
+      allow(HTTParty).to receive(:get).and_return(double(code: 200, body: response_body))
+      pmid, pmcid = builder.send(:retrieve_alt_ids_from_europe_pmc, '10.5555/deeplearn.2025')
+
+      expect(pmid).to eq('54321')
+      expect(pmcid).to eq('PMC98765')
+    end
+
+    it 'returns nil values when API fails' do
+      allow(HTTParty).to receive(:get).and_return(double(code: 404, body: '{}'))
+      pmid, pmcid = builder.send(:retrieve_alt_ids_from_europe_pmc, '10.5555/deeplearn.2025')
+      expect(pmid).to be_nil
+      expect(pmcid).to be_nil
+      expect(Rails.logger).to have_received(:error)
+    end
+  end
+
+  describe 'abstract methods' do
+    subject(:abstract_builder) { described_class.new(metadata, admin_set, depositor_onyen) }
     it 'raises NotImplementedError for generate_authors' do
       expect { abstract_builder.send(:generate_authors) }.to raise_error(NotImplementedError)
     end
@@ -85,7 +108,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttr
     end
 
     it 'raises NotImplementedError for apply_additional_basic_attributes' do
-      expect { abstract_builder.send(:apply_additional_basic_attributes) }.to raise_error(NotImplementedError)
+      expect { abstract_builder.send(:apply_additional_basic_attributes, article) }.to raise_error(NotImplementedError)
     end
 
     it 'raises NotImplementedError for get_date_issued' do
@@ -93,7 +116,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttr
     end
 
     it 'raises NotImplementedError for set_identifiers' do
-      expect { abstract_builder.send(:set_identifiers) }.to raise_error(NotImplementedError)
+      expect { abstract_builder.send(:set_identifiers, article) }.to raise_error(NotImplementedError)
     end
 
     it 'raises NotImplementedError for format_publication_identifiers' do
@@ -101,7 +124,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::BaseAttr
     end
 
     it 'raises NotImplementedError for set_journal_attributes' do
-      expect { abstract_builder.send(:set_journal_attributes) }.to raise_error(NotImplementedError)
+      expect { abstract_builder.send(:set_journal_attributes, article) }.to raise_error(NotImplementedError)
     end
   end
 end

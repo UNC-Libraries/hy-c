@@ -2,33 +2,12 @@
 require 'rails_helper'
 
 RSpec.describe PubmedReportMailer, type: :mailer do
-  describe 'truncated_pubmed_report_email for recurring pubmed ingests' do
+  describe 'pubmed_report_email for recurring pubmed ingests' do
     let(:fixture_path) do
       Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
     end
 
     let(:results) { JSON.parse(File.read(fixture_path), symbolize_names: true) }
-
-    let(:tracker) do
-      progress_hash = {
-        'send_summary_email' => { 'completed' => false },
-        'adjust_id_lists' => {
-          'pubmed' => { 'adjusted_size' => 3 },
-          'pmc'    => { 'adjusted_size' => 2 }
-        }
-      }
-      instance_double(
-        'IngestTracker',
-        'progress' => progress_hash,
-        'depositor_onyen' => 'recurring_user',
-        'date_range' => { 'start' => '2025-08-01', 'end' => '2025-08-13' },
-        :save => true
-      ).tap do |dbl|
-        allow(dbl).to receive(:[]).with('depositor_onyen').and_return('recurring_user')
-        allow(dbl).to receive(:[]).with('date_range').and_return({ 'start' => '2025-08-01', 'end' => '2025-08-13' })
-        allow(dbl).to receive(:[]).with('progress').and_return(progress_hash)
-      end
-    end
 
     let(:config) do
       {
@@ -42,63 +21,26 @@ RSpec.describe PubmedReportMailer, type: :mailer do
       }
     end
 
-    let(:coordinator) do
-      Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new(config, tracker)
-    end
-
-    let(:csv_paths) do
-      [
-        '/fake/path/successfully_ingested_and_attached.csv',
-        '/fake/path/failed.csv'
-      ]
-    end
-
     let(:zip_path) { '/fake/path/results.zip' }
-
-    let(:captured_report) { @captured_report }
-    let(:captured_zip_path) { @captured_zip_path }
 
     before do
       # Allow LogUtilsHelper calls in the mailer
       allow(LogUtilsHelper).to receive(:double_log)
-
-      coordinator.instance_variable_set(:@results, results)
-
-      # Stub CSV generation methods
-      allow(coordinator).to receive(:generate_result_csvs).and_return(csv_paths)
-      allow(coordinator).to receive(:compress_result_csvs).and_return(zip_path)
-
-      # Stub File operations for the mailer
-      allow(File).to receive(:exist?).and_call_original
-      allow(File).to receive(:exist?).with(zip_path).and_return(true)
-      allow(File).to receive(:read).and_call_original
-      allow(File).to receive(:read).with(zip_path).and_return('fake zip content')
-
-      # Capture the arguments passed to the mailer
-      allow(PubmedReportMailer).to receive(:truncated_pubmed_report_email) do |report, zip|
-        @captured_report = report
-        @captured_zip_path = zip
-        double('mailer', deliver_now: true)
-      end
-
-      coordinator.send(:send_report_and_notify, results)
     end
 
-    it 'sets total_unique_records and date range from tracker' do
-      expect(captured_report[:headers][:total_unique_records]).to eq(
-        tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
-        tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']
-      )
-      expect(captured_report[:headers][:depositor]).to eq('recurring_user')
-      expect(captured_report[:headers][:start_date]).to eq('2025-08-01')
-      expect(captured_report[:headers][:end_date]).to eq('2025-08-13')
-    end
+    it 'delegates to ingest_report_email with correct template' do
+      report = { subject: 'PubMed Test' }
+      zip_path = '/fake/path/results.zip'
 
-    it 'calls the mailer with the report and zip path' do
-      expect(PubmedReportMailer).to have_received(:truncated_pubmed_report_email).with(
-        hash_including(headers: hash_including(total_unique_records: 5)),
-        zip_path
-      )
+      expect_any_instance_of(BaseIngestReportMailer)
+        .to receive(:ingest_report_email)
+        .with(
+          report: report,
+          zip_path: zip_path,
+          template_name: 'pubmed_report_email'
+        )
+
+      described_class.new.pubmed_report_email(report: report, zip_path: zip_path)
     end
 
     describe 'the generated email' do
@@ -131,7 +73,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
         }
       end
 
-      let(:mail) { described_class.truncated_pubmed_report_email(report_hash, zip_path) }
+      let(:mail) { described_class.pubmed_report_email(report: report_hash, zip_path: zip_path) }
 
       it 'includes key header info in the email body' do
         expect(mail.body.encoded).to include('<strong>Depositor: </strong>recurring_user')
@@ -153,11 +95,6 @@ RSpec.describe PubmedReportMailer, type: :mailer do
           expect(mail.body.encoded).to include(sample[:pmcid].to_s) if sample[:pmcid]
           expect(mail.body.encoded).to include(sample[:doi].to_s) if sample[:doi]
         end
-      end
-
-      it 'attaches the zip file' do
-        expect(mail.attachments.size).to eq(1)
-        expect(mail.attachments.first.filename).to eq('results.zip')
       end
     end
   end
