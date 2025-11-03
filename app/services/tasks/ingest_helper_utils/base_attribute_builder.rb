@@ -2,26 +2,22 @@
 module Tasks
     # Abstract base for attribute builders for newly ingested articles
   class IngestHelperUtils::BaseAttributeBuilder
-    attr_reader :metadata, :article, :admin_set, :depositor_onyen
+    attr_reader :metadata, :admin_set, :depositor_onyen
 
-    def initialize(metadata, article, admin_set, depositor_onyen)
+    def initialize(metadata, admin_set, depositor_onyen)
       @metadata = metadata
-      @article = article
       @admin_set = admin_set
       @depositor_onyen = depositor_onyen
     end
 
-    def populate_article_metadata
-      set_rights_and_types
-      set_basic_attributes
-      set_journal_attributes
-      set_identifiers
+    def populate_article_metadata(article)
+      raise ArgumentError, 'Article cannot be nil' if article.nil?
+
+      set_rights_and_types(article)
+      set_basic_attributes(article)
+      set_journal_attributes(article)
+      set_identifiers(article)
       article
-    end
-
-
-    def find_skipped_row(new_pubmed_works)
-      raise NotImplementedError
     end
 
     def get_date_issued
@@ -30,15 +26,15 @@ module Tasks
 
       private
 
-    def set_basic_attributes
+    def set_basic_attributes(article)
       article.admin_set = admin_set
       article.depositor = depositor_onyen
       article.resource_type = ['Article']
       article.creators_attributes = generate_authors
-      apply_additional_basic_attributes
+      apply_additional_basic_attributes(article)
     end
 
-    def set_rights_and_types
+    def set_rights_and_types(article)
       rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
       article.rights_statement = rights_statement
       article.rights_statement_label = CdrRightsStatementsService.label(rights_statement)
@@ -53,11 +49,11 @@ module Tasks
       raise NotImplementedError
     end
 
-    def apply_additional_basic_attributes
+    def apply_additional_basic_attributes(article)
       raise NotImplementedError
     end
 
-    def set_identifiers
+    def set_identifiers(article)
       raise NotImplementedError
     end
 
@@ -65,7 +61,7 @@ module Tasks
       raise NotImplementedError
     end
 
-    def set_journal_attributes
+    def set_journal_attributes(article)
       raise NotImplementedError
     end
   end

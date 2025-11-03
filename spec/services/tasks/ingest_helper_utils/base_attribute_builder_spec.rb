@@ -71,11 +71,6 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
 
   describe 'abstract methods' do
     subject(:abstract_builder) { described_class.new(metadata, article, admin_set, depositor_onyen) }
-
-    it 'raises NotImplementedError for find_skipped_row' do
-      expect { abstract_builder.find_skipped_row([]) }.to raise_error(NotImplementedError)
-    end
-
     it 'raises NotImplementedError for generate_authors' do
       expect { abstract_builder.send(:generate_authors) }.to raise_error(NotImplementedError)
     end

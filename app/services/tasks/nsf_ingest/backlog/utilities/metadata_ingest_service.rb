@@ -30,11 +30,11 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       openalex_md = fetch_metadata_for_doi(source: 'openalex', doi: record['doi'])
       datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
 
-      source = select_source(crossref_md, openalex_md, record['doi'])
-      resolved_md = crossref_md || openalex_md
-      merge_additional_metadata(resolved_md, openalex_md, datacite_md)
+      source = verify_source_md_available(crossref_md, openalex_md, record['doi'])
+      resolved_md = merge_metadata_sources(resolved_md, openalex_md, datacite_md)
+      attr_builder = construct_attribute_builder(resolved_md)
 
-      article = new_article(resolved_md, source)
+      article = new_article(resolved_md, attr_builder)
       record_result(category: :successfully_ingested_metadata_only, doi: record['doi'], article: article, filename: record['filename'])
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
@@ -50,16 +50,11 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
   private
 
-  def new_article(metadata, source)
+  def new_article(metadata, attr_builder)
    # Create new work
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-    builder = if source == 'openalex'
-                Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
-    else
-      Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
-    end
-    builder.populate_article_metadata
+    attr_builder.populate_article_metadata(article)
     article.save!
 
     # Sync permissions and state
@@ -126,23 +121,32 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     end
   end
 
-  def select_source(crossref_md, openalex_md, doi)
+  def verify_source_md_available(crossref_md, openalex_md, doi)
     if crossref_md.nil? && openalex_md.nil?
       raise 'No metadata found from Crossref or OpenAlex.'
     end
     if crossref_md.nil?
       LogUtilsHelper.double_log("No metadata found from Crossref for DOI #{doi}. Falling back to OpenAlex metadata.", :warn, tag: 'MetadataIngestService')
-      'openalex'
-    else
-      'crossref'
     end
   end
 
-  def merge_additional_metadata(resolved_md, openalex_md, datacite_md)
+  def merge_metadata_sources(crossref_md, openalex_md, datacite_md)
+    # Default to OpenAlex metadata if available else Crossref
+    resolved_md = openalex_md || crossref_md
+    resolved_md['source'] = openalex_md.present? ? 'openalex' : 'crossref'
     resolved_md['openalex_abstract'] = generate_openalex_abstract(openalex_md)
     resolved_md['datacite_abstract'] = datacite_md.dig('attributes', 'description') if datacite_md&.dig('attributes', 'description').present?
     resolved_md['openalex_keywords'] = extract_keywords_from_openalex(openalex_md)
+    resolved_md
   end
+
+  def construct_attribute_builder(resolved_md)
+    case resolved_md['source']
+    when 'openalex'
+      Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
+    when 'crossref'
+      Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
+    end
 
   def parse_response(res, source, doi)
     parsed = JSON.parse(res.body)

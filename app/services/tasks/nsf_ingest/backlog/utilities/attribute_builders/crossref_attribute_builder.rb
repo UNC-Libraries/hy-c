@@ -29,7 +29,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
     end
 
-    def apply_additional_basic_attributes
+    def apply_additional_basic_attributes(article)
       article.title = [metadata['title']&.first].compact.presence
       article.abstract = [metadata['openalex_abstract'] || metadata['datacite_abstract'] || 'N/A']
       article.date_issued = metadata['indexed']['date-time']
@@ -38,7 +38,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       article.funder = retrieve_funder_names
     end
 
-    def set_identifiers
+    def set_identifiers(article)
       article.identifier = format_publication_identifiers
       article.issn = retrieve_issn
     end
@@ -94,7 +94,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       [pmid, pmcid]
     end
 
-    def set_journal_attributes
+    def set_journal_attributes(article)
       article.journal_title = extract_journal_title
       article.journal_volume = metadata['volume']&.presence
       article.journal_issue = metadata['journal-issue']&.dig('issue')&.presence
