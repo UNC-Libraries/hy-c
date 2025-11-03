@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
   class CrossrefAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
-    TRUNCATED_AUTHORS_LIMIT = 100
+    # Articles with extremely long author lists can cause indexing and UI issues
+    TRUNCATED_AUTHORS_LIMIT = 275
     private
 
     def generate_authors
