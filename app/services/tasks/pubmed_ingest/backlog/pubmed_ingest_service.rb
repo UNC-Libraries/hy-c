@@ -59,8 +59,8 @@ module Tasks
             Rails.logger.info("[Ingest] Processing record ##{index + 1}")
             begin
               article = new_article(metadata)
-              builder = attribute_builder(metadata, article)
-              skipped_row = builder.find_skipped_row(@new_pubmed_works)
+              builder = attribute_builder(metadata)
+              skipped_row = builder.find_skipped_row(@new_pubmed_works, article)
 
               Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
               article.save!
@@ -163,7 +163,7 @@ module Tasks
           article = Article.new
           article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
           builder = attribute_builder(metadata, article)
-          builder.populate_article_metadata
+          builder.populate_article_metadata(article)
         end
 
         def attach_pdf(article, skipped_row)
@@ -204,10 +204,10 @@ module Tasks
           metadata.name == 'PubmedArticle'
         end
 
-        def attribute_builder(metadata, article)
+        def attribute_builder(metadata)
           is_pubmed?(metadata) ?
-            SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid) :
-            SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
+            SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, @admin_set, @depositor.uid) :
+            SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, @admin_set, @depositor.uid)
         end
       end
     end

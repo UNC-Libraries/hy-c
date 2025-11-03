@@ -219,8 +219,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
   def attribute_builder(metadata, article)
     is_pubmed?(metadata) ?
-    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen']) :
-    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
+    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen']) :
+    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
   end
 
   def record_result(category:, message: '', ids: {}, article: nil)
