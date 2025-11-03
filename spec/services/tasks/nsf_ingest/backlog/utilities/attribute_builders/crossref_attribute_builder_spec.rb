@@ -117,22 +117,6 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
     end
   end
 
-  describe '#retrieve_alt_ids_from_europe_pmc' do
-    it 'returns pmid and pmcid from successful API response' do
-      pmid, pmcid = builder.send(:retrieve_alt_ids_from_europe_pmc, '10.5555/deeplearn.2025')
-      expect(pmid).to eq('54321')
-      expect(pmcid).to eq('PMC98765')
-    end
-
-    it 'returns nil values when API fails' do
-      allow(HTTParty).to receive(:get).and_return(double(code: 404, body: '{}'))
-      pmid, pmcid = builder.send(:retrieve_alt_ids_from_europe_pmc, '10.5555/deeplearn.2025')
-      expect(pmid).to be_nil
-      expect(pmcid).to be_nil
-      expect(Rails.logger).to have_received(:error)
-    end
-  end
-
   describe '#set_journal_attributes' do
     it 'assigns journal, volume, issue, and page range' do
       builder.send(:set_journal_attributes, article)

@@ -75,25 +75,6 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       end
     end
 
-    def retrieve_alt_ids_from_europe_pmc(doi)
-      pmid, pmcid = nil, nil
-      if doi.present?
-        alternate_id_api_url = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:'
-        res = HTTParty.get(URI.join(alternate_id_api_url, doi, '&format=json'))
-        if res.code == 200
-          result = JSON.parse(res.body)
-          if result['hitCount'].to_i > 0
-            first_result = result.dig('resultList', 'result')&.first
-            pmid = first_result['pmid'].presence
-            pmcid = first_result['pmcid'].presence
-          end
-        else
-          Rails.logger.error("[CrossrefAttributeBuilder] Failed to retrieve alternate IDs from Europe PMC for DOI #{doi}: HTTP #{res.code}")
-        end
-      end
-      [pmid, pmcid]
-    end
-
     def set_journal_attributes(article)
       article.journal_title = extract_journal_title
       article.journal_volume = metadata['volume']&.presence

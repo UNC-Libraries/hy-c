@@ -159,7 +159,6 @@ RSpec.describe Tasks::IngestHelperUtils::ReportingHelper, type: :module do
 
     it 'logs results loading completion' do
       Tasks::IngestHelperUtils::ReportingHelper.send(:load_results, path: md_ingest_results_path, tracker: tracker)
-    #   expected_dir = service.instance_variable_get(:@attachment_output_directory)
 
       expect(LogUtilsHelper).to have_received(:double_log).with(
         a_string_including('Successfully loaded and formatted results from'),

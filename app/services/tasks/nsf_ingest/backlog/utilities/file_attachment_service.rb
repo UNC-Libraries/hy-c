@@ -43,12 +43,12 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
     @existing_ids << doi if doi.present?
 
     entry = {
-    ids: record['ids'],
-    timestamp: Time.now.utc.iso8601,
-    category: category,
-    message: message,
-    file_name: file_name
-  }
+      ids: record['ids'],
+      timestamp: Time.now.utc.iso8601,
+      category: category,
+      message: message,
+      file_name: file_name
+    }
     tracker.save
     File.open(log_file_path, 'a') { |f| f.puts(entry.to_json) }
   end

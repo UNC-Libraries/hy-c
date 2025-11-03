@@ -87,7 +87,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       'pmid' => work_hash[:pmid],
       'pmcid' => work_hash[:pmcid],
       'work_id' => work_hash[:work_id],
-  }.compact
+    }.compact
   end
 
   def flush_buffer_if_needed
@@ -154,15 +154,6 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
     when 'crossref'
       Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
-    end
-  end
-
-  def parse_response(res, source, doi)
-    parsed = JSON.parse(res.body)
-    case source
-    when 'crossref' then parsed['message']
-    when 'openalex' then parsed
-    when 'datacite' then parsed['data']
     end
   end
 
