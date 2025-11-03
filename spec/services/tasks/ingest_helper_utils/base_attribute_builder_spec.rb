@@ -13,15 +13,15 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
         [{ 'name' => 'Doe, John', 'orcid' => '', 'index' => '0', 'other_affiliation' => '' }]
       end
 
-      def apply_additional_basic_attributes
+      def apply_additional_basic_attributes(article)
         article.title = ['Stub Title']
       end
 
-      def set_journal_attributes
+      def set_journal_attributes(article)
         article.journal_title = 'Test Journal'
       end
 
-      def set_identifiers
+      def set_identifiers(article)
         article.identifier = ['PMID: 123456']
       end
 
@@ -39,7 +39,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
     end
   end
 
-  let(:builder) { stub_builder_class.new(metadata, article, admin_set, depositor_onyen) }
+  let(:builder) { stub_builder_class.new(metadata, admin_set, depositor_onyen) }
 
   describe '#populate_article_metadata' do
     it 'calls metadata population steps and returns the article' do
@@ -48,7 +48,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
       expect(builder).to receive(:set_journal_attributes).and_call_original
       expect(builder).to receive(:set_identifiers).and_call_original
 
-      result = builder.populate_article_metadata
+      result = builder.populate_article_metadata(article)
 
       expect(result).to eq(article)
       expect(article.admin_set).to eq(admin_set)
@@ -62,7 +62,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
 
   describe '#set_rights_and_types' do
     it 'assigns default rights and types' do
-      builder.send(:set_rights_and_types)
+      builder.send(:set_rights_and_types, article)
       expect(article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
       expect(article.rights_statement_label).to eq('In Copyright')
       expect(article.dcmi_type).to eq(['http://purl.org/dc/dcmitype/Text'])
@@ -70,7 +70,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
   end
 
   describe 'abstract methods' do
-    subject(:abstract_builder) { described_class.new(metadata, article, admin_set, depositor_onyen) }
+    subject(:abstract_builder) { described_class.new(metadata, admin_set, depositor_onyen) }
     it 'raises NotImplementedError for generate_authors' do
       expect { abstract_builder.send(:generate_authors) }.to raise_error(NotImplementedError)
     end
@@ -80,7 +80,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
     end
 
     it 'raises NotImplementedError for apply_additional_basic_attributes' do
-      expect { abstract_builder.send(:apply_additional_basic_attributes) }.to raise_error(NotImplementedError)
+      expect { abstract_builder.send(:apply_additional_basic_attributes, article) }.to raise_error(NotImplementedError)
     end
 
     it 'raises NotImplementedError for get_date_issued' do
@@ -88,7 +88,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
     end
 
     it 'raises NotImplementedError for set_identifiers' do
-      expect { abstract_builder.send(:set_identifiers) }.to raise_error(NotImplementedError)
+      expect { abstract_builder.send(:set_identifiers, article) }.to raise_error(NotImplementedError)
     end
 
     it 'raises NotImplementedError for format_publication_identifiers' do
@@ -96,7 +96,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseAttributeBuilder, type: :model do
     end
 
     it 'raises NotImplementedError for set_journal_attributes' do
-      expect { abstract_builder.send(:set_journal_attributes) }.to raise_error(NotImplementedError)
+      expect { abstract_builder.send(:set_journal_attributes, article) }.to raise_error(NotImplementedError)
     end
   end
 end

@@ -24,7 +24,8 @@ module Tasks
       raise NotImplementedError
     end
 
-      private
+
+    private
 
     def set_basic_attributes(article)
       article.admin_set = admin_set

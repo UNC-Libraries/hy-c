@@ -147,6 +147,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     when 'crossref'
       Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
     end
+  end
 
   def parse_response(res, source, doi)
     parsed = JSON.parse(res.body)
