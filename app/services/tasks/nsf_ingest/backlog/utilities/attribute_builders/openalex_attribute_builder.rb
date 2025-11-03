@@ -32,8 +32,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
 
     def apply_additional_basic_attributes(article)
       article.title = [metadata['title']].compact.presence
-      article.abstract = [metadata['openalex_abstract'] || 'N/A']
-      # ('%Y-%m-%dT00:00:00Z')
+      article.abstract = [metadata['openalex_abstract'] || metadata['datacite_abstract'] || 'N/A']
       article.date_issued = DateTime.parse(metadata['publication_date']).strftime('%Y-%m-%dT00:00:00Z')
       article.publisher = [metadata.dig('primary_location', 'source', 'host_organization_name')].compact.presence
       article.keyword = metadata['openalex_keywords'] || []

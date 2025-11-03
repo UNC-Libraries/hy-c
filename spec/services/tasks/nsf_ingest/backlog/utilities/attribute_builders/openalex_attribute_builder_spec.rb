@@ -50,7 +50,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
     }
   end
 
-  subject(:builder) { described_class.new(metadata, article, admin_set, depositor) }
+  subject(:builder) { described_class.new(metadata, admin_set, depositor) }
 
   before do
     allow(AffiliationUtilsHelper).to receive(:is_unc_affiliation?).and_wrap_original do |_, aff|
@@ -102,7 +102,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
 
   describe '#apply_additional_basic_attributes' do
     it 'sets expected article attributes' do
-      builder.send(:apply_additional_basic_attributes)
+      builder.send(:apply_additional_basic_attributes, article)
       expect(article.title).to eq(['Sample OpenAlex Article'])
       expect(article.abstract).to eq(['An inverted abstract.'])
       expect(article.date_issued).to eq('2024-03-01T00:00:00Z')
@@ -114,7 +114,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
 
   describe '#set_identifiers' do
     it 'populates identifier and ISSN attributes' do
-      builder.send(:set_identifiers)
+      builder.send(:set_identifiers, article)
       expect(article.identifier).to include('PMID: 12345', 'PMCID: PMC67890', 'DOI: https://dx.doi.org/10.1234/test.doi')
       expect(article.issn).to eq(['1234-5678'])
     end
@@ -122,7 +122,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Openalex
 
   describe '#set_journal_attributes' do
     it 'assigns correct journal and page metadata' do
-      builder.send(:set_journal_attributes)
+      builder.send(:set_journal_attributes, article)
       expect(article.journal_title).to eq('Journal of Test Studies')
       expect(article.journal_volume).to eq('12')
       expect(article.journal_issue).to eq('4')
