@@ -41,7 +41,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
     }
   end
 
-  subject(:builder) { described_class.new(metadata, article, admin_set, depositor) }
+  subject(:builder) { described_class.new(metadata, admin_set, depositor) }
 
   before do
     # Mock helpers
@@ -77,7 +77,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
 
   describe '#apply_additional_basic_attributes' do
     it 'assigns core article attributes from metadata' do
-      builder.send(:apply_additional_basic_attributes)
+      builder.send(:apply_additional_basic_attributes, article)
 
       expect(article.title).to eq(['Test Article from CrossRef'])
       expect(article.abstract).to eq(['Open abstract text here.'])
@@ -90,28 +90,28 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
     it 'falls back to datacite_abstract when openalex_abstract missing' do
       metadata.delete('openalex_abstract')
       metadata['datacite_abstract'] = 'Alt abstract text.'
-      builder.send(:apply_additional_basic_attributes)
+      builder.send(:apply_additional_basic_attributes, article)
       expect(article.abstract).to eq(['Alt abstract text.'])
     end
   end
 
   describe '#set_identifiers' do
     it 'builds identifiers and ISSNs correctly' do
-      builder.send(:set_identifiers)
+      builder.send(:set_identifiers, article)
       expect(article.identifier).to include('PMID: 54321', 'PMCID: PMC98765', 'DOI: https://dx.doi.org/10.5555/deeplearn.2025')
       expect(article.issn).to eq(['9876-2222']) # electronic preferred
     end
 
     it 'logs warning and uses print ISSN if no electronic ISSN exists' do
       metadata['issn-type'] = [{ 'type' => 'print', 'value' => '1234-1111' }]
-      builder.send(:set_identifiers)
+      builder.send(:set_identifiers, article)
       expect(article.issn).to eq(['1234-1111'])
-      expect(Rails.logger).to have_received(:warn)
+      expect(Rails.logger).to have_received(:warn).with(/No electronic ISSN found/)
     end
 
     it 'logs warning if no ISSNs exist at all' do
       metadata['issn-type'] = []
-      builder.send(:set_identifiers)
+      builder.send(:set_identifiers, article)
       expect(article.issn).to eq([])
       expect(Rails.logger).to have_received(:warn)
     end
@@ -135,7 +135,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
 
   describe '#set_journal_attributes' do
     it 'assigns journal, volume, issue, and page range' do
-      builder.send(:set_journal_attributes)
+      builder.send(:set_journal_attributes, article)
       expect(article.journal_title).to eq('Journal of Scientific Studies')
       expect(article.journal_volume).to eq('10')
       expect(article.journal_issue).to eq('42')
@@ -145,7 +145,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
 
     it 'handles single-page values correctly' do
       metadata['page'] = '55'
-      builder.send(:set_journal_attributes)
+      builder.send(:set_journal_attributes, article)
       expect(article.page_start).to eq('55')
       expect(article.page_end).to be_nil
     end

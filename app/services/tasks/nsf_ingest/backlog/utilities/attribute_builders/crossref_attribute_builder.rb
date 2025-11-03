@@ -40,7 +40,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
 
     def set_identifiers(article)
       article.identifier = format_publication_identifiers
-      article.issn = retrieve_issn
+      article.issn = retrieve_issn(article)
     end
 
     def format_publication_identifiers
@@ -58,7 +58,7 @@ module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
       Array(metadata['funder']).map { |f| f['name'] }.compact.uniq
     end
 
-    def retrieve_issn
+    def retrieve_issn(article)
       issns = metadata['issn-type'] || []
       epub_issn = issns.find { |issn| issn['type'] == 'electronic' }&.dig('value').presence
       ppub_issn = issns.find { |issn| issn['type'] == 'print' }&.dig('value').presence
