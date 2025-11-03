@@ -66,7 +66,7 @@ module Tasks
       raise NotImplementedError
     end
 
-     def retrieve_alt_ids_from_europe_pmc(doi)
+    def retrieve_alt_ids_from_europe_pmc(doi)
       pmid, pmcid = nil, nil
       if doi.present?
         alternate_id_api_url = 'https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:'
