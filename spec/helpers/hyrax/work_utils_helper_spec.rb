@@ -5,7 +5,7 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe WorkUtilsHelper, type: :module do
   let(:fileset_ids) { ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3'] }
-  let(:admin_set_name) { 'Open_Access_Articles_and_Book_Chapters' }
+  let(:admin_set_title) { 'Open_Access_Articles_and_Book_Chapters' }
   let(:host) { 'http://cdr-example.lib.unc.edu' }
 
   let(:mock_records) { [[{
@@ -46,7 +46,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
      work_type: 'Article',
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
-     admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
+     admin_set_title: 'Open_Access_Articles_and_Book_Chapters',
      file_set_ids: nil,
      doi: nil,
      pmcid: nil,
@@ -57,7 +57,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
      work_type: 'Article',
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
-     admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
+     admin_set_title: 'Open_Access_Articles_and_Book_Chapters',
      file_set_ids:  ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3'],
      doi: nil,
      pmcid: nil,
@@ -74,7 +74,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
   describe '#fetch_work_data_by_fileset_id' do
     it 'fetches the work data correctly' do
       allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{fileset_ids[0]}", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
-      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
+      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
       result = WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_ids[0])
       expect(result).to eq(expected_work_data[0])
     end
@@ -85,7 +85,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
       allow(Rails.logger).to receive(:warn)
       result = WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_ids[0])
       expect(Rails.logger).to have_received(:warn).with("No work found associated with fileset id: #{fileset_ids[0]}")
-      expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with fileset id: #{fileset_ids[0]} has no admin set name.")
       expect(result).to be_nil
     end
 
@@ -95,17 +94,17 @@ RSpec.describe WorkUtilsHelper, type: :module do
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{fileset_ids[1]}", rows: 1).and_return('response' => { 'docs' => mock_records[1] })
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_ids[1])
-        expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with fileset id: #{fileset_ids[1]} has no admin set name.")
+        expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with id: #{fileset_ids[1]} has no admin set name.")
         expect(result[:admin_set_id]).to be_nil
       end
 
       it 'logs an appropriate message if the query for an admin set returns nothing' do
         # Using the mock record with an admin set title
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{fileset_ids[1]}", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
-        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_ids[1])
-        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_name}.")
+        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_title}.")
         expect(result[:admin_set_id]).to be_nil
       end
     end
@@ -123,7 +122,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
         allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => mock_records[0] })
 
         allow(ActiveFedora::SolrService).to receive(:get).with(
-          "title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",
+          "title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",
           { 'df' => 'title_tesim', :rows => 1 }
         ).and_return('response' => { 'docs' => mock_admin_set })
 
@@ -185,7 +184,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
       result = WorkUtilsHelper.fetch_work_data_by_doi(raw_doi)
       expect(result[:work_id]).to eq('work-123')
-      expect(result[:admin_set_name]).to eq('Sample Admin Set')
+      expect(result[:admin_set_title]).to eq('Sample Admin Set')
     end
   end
 
@@ -193,7 +192,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
     it 'fetches the work data correctly' do
       mock_record_id = mock_records[0][0]['id']
       allow(ActiveFedora::SolrService).to receive(:get).with("id:#{mock_record_id}", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
-      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
+      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
       result = WorkUtilsHelper.fetch_work_data_by_id(mock_record_id)
       expect(result).to eq(expected_work_data[0])
     end
@@ -205,7 +204,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
       allow(Rails.logger).to receive(:warn)
       result = WorkUtilsHelper.fetch_work_data_by_id(mock_record_id)
       expect(Rails.logger).to have_received(:warn).with("No work found associated with work id: #{mock_record_id}")
-      expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with id: #{mock_record_id} has no admin set name.")
       expect(result).to be_nil
     end
 
@@ -224,10 +222,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
         mock_record_id = mock_records[1][0]['id']
         # Using the mock record with an admin set title
         allow(ActiveFedora::SolrService).to receive(:get).with("id:#{mock_record_id}", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
-        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_id(mock_record_id)
-        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_name}.")
+        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_title}.")
         expect(result[:admin_set_id]).to be_nil
       end
     end
@@ -237,7 +235,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
     let (:mock_pmid) { '12345678' }
     it 'fetches the work data correctly' do
       allow(ActiveFedora::SolrService).to receive(:get).with("identifier_tesim:\"#{mock_pmid}\" NOT has_model_ssim:(\"FileSet\")", rows: 1).and_return('response' => { 'docs' => mock_records[2] })
-      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
+      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
       (0..3).each do |i|
         allow(ActiveFedora::SolrService).to receive(:get).with("id:#{fileset_ids[i]}", rows: 1).and_return('response' => { 'docs' => [{'title_tesim' => ["title_#{i}"]}] })
       end
@@ -251,13 +249,12 @@ RSpec.describe WorkUtilsHelper, type: :module do
       allow(Rails.logger).to receive(:warn)
       result = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(mock_pmid)
       expect(Rails.logger).to have_received(:warn).with("No work found associated with alternate identifier: #{mock_pmid}")
-      expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with id: #{mock_pmid} has no admin set name.")
       expect(result).to be_nil
     end
 
     it 'logs a message if a fileset cannot be found with the id' do
       allow(ActiveFedora::SolrService).to receive(:get).with("identifier_tesim:\"#{mock_pmid}\" NOT has_model_ssim:(\"FileSet\")", rows: 1).and_return('response' => { 'docs' => mock_records[2] })
-      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
+      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
       (0..2).each do |i|
         allow(ActiveFedora::SolrService).to receive(:get).with("id:#{fileset_ids[i]}", rows: 1).and_return('response' => { 'docs' => [{'title_tesim' => ["title_#{i}"]}] })
       end
@@ -282,10 +279,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
       it 'logs an appropriate message if the query for an admin set returns nothing' do
         # Using the mock record with an admin set title
         allow(ActiveFedora::SolrService).to receive(:get).with("identifier_tesim:\"#{mock_pmid}\" NOT has_model_ssim:(\"FileSet\")", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
-        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(mock_pmid)
-        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_name}.")
+        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_title}.")
         expect(result[:admin_set_id]).to be_nil
       end
     end
@@ -295,7 +292,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
     it 'fetches the work data correctly' do
       mock_record_doi = mock_records[0][0]['doi_tesim'].first
       allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
-      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
+      allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
       result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
       expect(result).to eq(expected_work_data[0])
     end
@@ -324,10 +321,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
         mock_record_doi = mock_records[0][0]['doi_tesim'].first
         # Using the mock record with an admin set title
         allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
-        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
-        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_name}.")
+        expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_title}.")
         expect(result[:admin_set_id]).to be_nil
       end
     end

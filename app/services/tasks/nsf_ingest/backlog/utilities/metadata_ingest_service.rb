@@ -20,7 +20,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
     records_from_csv.each do |record|
       next if @seen_doi_list.include?(record['doi']) && record['doi'].present?
-      match = WorkUtilsHelper.fetch_work_data_by_doi(record['doi'])
+      match = WorkUtilsHelper.fetch_work_data_by_doi(record['doi'], admin_set_title: @config['admin_set_title'])
       if match.present? && match[:work_id].present?
         skip_existing_work(record, match, filename: record['filename'])
         next

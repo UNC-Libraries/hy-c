@@ -1,36 +1,24 @@
 # frozen_string_literal: true
 module WorkUtilsHelper
-  def self.fetch_work_data_by_alternate_identifier(identifier)
+  def self.fetch_work_data_by_alternate_identifier(identifier, admin_set_title: nil)
     query = "identifier_tesim:\"#{identifier}\" NOT has_model_ssim:(\"FileSet\")"
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
-    admin_set_name = work_data['admin_set_tesim']&.first
-    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
-    Rails.logger.warn(self.generate_warning_message(admin_set_name, identifier)) if admin_set_data.blank?
-    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
-    result.compact.empty? ? nil : result
+    self.resolve_admin_set_and_build_result(work_data, admin_set_title, identifier, :alternate_id)
   end
-  def self.fetch_work_data_by_fileset_id(fileset_id)
+  def self.fetch_work_data_by_fileset_id(fileset_id, admin_set_title: nil)
     # Retrieve the work related to the fileset
     work_data = ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with fileset id: #{fileset_id}") if work_data.blank?
-    admin_set_name = work_data['admin_set_tesim']&.first
-    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
-    Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id, :fileset)) if admin_set_data.blank?
-    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
-    result.compact.empty? ? nil : result
+    self.resolve_admin_set_and_build_result(work_data, admin_set_title, fileset_id, :fileset_id)
   end
-  def self.fetch_work_data_by_id(work_id)
+  def self.fetch_work_data_by_id(work_id, admin_set_title: nil)
     work_data = ActiveFedora::SolrService.get("id:#{work_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with work id: #{work_id}") if work_data.blank?
-    admin_set_name = work_data['admin_set_tesim']&.first
-    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
-    Rails.logger.warn(self.generate_warning_message(admin_set_name, work_id)) if admin_set_data.blank?
-    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
-    result.compact.empty? ? nil : result
+    self.resolve_admin_set_and_build_result(work_data, admin_set_title, work_id)
   end
 
-  def self.fetch_work_data_by_doi(doi)
+  def self.fetch_work_data_by_doi(doi, admin_set_title: nil)
     # Step 1: Exact match on doi_tesim
     query = "doi_tesim:\"#{doi}\""
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first
@@ -47,25 +35,14 @@ module WorkUtilsHelper
         return nil
       end
     end
-
     if work_data.blank?
       Rails.logger.warn("No work found associated with doi: #{doi}")
       return nil
     end
-
-    admin_set_name = work_data['admin_set_tesim']&.first
-    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get(
-      "title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")",
-      { :rows => 1, 'df' => 'title_tesim'}
-      )['response']['docs'].first : {}
-
-    Rails.logger.warn(self.generate_warning_message(admin_set_name, doi, :doi)) if admin_set_data.blank?
-
-    result = self.generate_result_hash(work_data, admin_set_data, admin_set_name)
-    result.compact.empty? ? nil : result
+    self.resolve_admin_set_and_build_result(work_data, admin_set_title, doi, :doi)
   end
 
-  def self.generate_result_hash(work_data, admin_set_data, admin_set_name)
+  def self.generate_result_hash(work_data, admin_set_data, admin_set_title)
     identifiers = work_data['identifier_tesim'] || []
 
     pmid  = identifiers.find { |id| id.match?(/\APMID:\s*\d+/i) }&.split(':')&.last&.strip
@@ -77,7 +54,7 @@ module WorkUtilsHelper
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
       admin_set_id: admin_set_data['id'],
-      admin_set_name: admin_set_data['title_tesim']&.first,
+      admin_set_title: admin_set_data['title_tesim']&.first,
       file_set_ids: work_data['file_set_ids_ssim'],
       pmid: pmid,
       pmcid: pmcid,
@@ -163,8 +140,23 @@ module WorkUtilsHelper
     nil
   end
 
-  def self.generate_warning_message(admin_set_name, id, concern = :id)
-    if admin_set_name.blank?
+  def self.resolve_admin_set_and_build_result(work_data, admin_set_title, context_id, concern = :id)
+    return nil if work_data.blank?
+
+    admin_set_title ||= work_data['admin_set_tesim']&.first
+    admin_set_data = admin_set_title ? ActiveFedora::SolrService.get(
+      "title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",
+      :rows => 1, 'df' => 'title_tesim'
+    )['response']['docs'].first : {}
+
+    Rails.logger.warn(generate_warning_message(admin_set_title, context_id, concern)) if admin_set_data.blank?
+    result = generate_result_hash(work_data, admin_set_data, admin_set_title)
+    # No work_id means no valid result
+    result if result[:work_id].present?
+  end
+
+  def self.generate_warning_message(admin_set_title, id, concern = :id)
+    if admin_set_title.blank?
       logged_concern = 'id'
       case concern
       when :doi
@@ -174,7 +166,7 @@ module WorkUtilsHelper
       end
       return "Could not find an admin set, the work with #{logged_concern}: #{id} has no admin set name."
     else
-      return "No admin set found with title_tesim: #{admin_set_name}."
+      return "No admin set found with title_tesim: #{admin_set_title}."
     end
   end
 
