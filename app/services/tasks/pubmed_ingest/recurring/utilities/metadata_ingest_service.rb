@@ -208,7 +208,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
     builder = attribute_builder(metadata, article)
-    builder.populate_article_metadata
+    builder.populate_article_metadata(article)
     article
   end
 
