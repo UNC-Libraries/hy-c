@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# NOTE: Leverage the admin_set_title parameter when building ingest tools. Incomplete indexes can lead to incorrect or missing results.
 module WorkUtilsHelper
   def self.fetch_work_data_by_alternate_identifier(identifier, admin_set_title: nil)
     query = "identifier_tesim:\"#{identifier}\" NOT has_model_ssim:(\"FileSet\")"
@@ -84,7 +85,7 @@ module WorkUtilsHelper
 
     permissions_array
   end
-
+  
   def self.fetch_model_instance(work_type, work_id)
     raise ArgumentError, 'Both work_type and work_id are required' unless work_type.present? && work_id.present?
 

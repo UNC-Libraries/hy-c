@@ -85,13 +85,13 @@ class Tasks::IngestHelperUtils::BaseFileAttachmentService
   end
 
   def has_fileset?(work_id)
-    work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
+    work = WorkUtilsHelper.fetch_work_data_by_id(work_id, @config['admin_set_title'])
     bool = work && work[:file_set_ids]&.any?
     bool || false
   end
 
   def generate_filename_for_work(work_id, prefix)
-    work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
+    work = WorkUtilsHelper.fetch_work_data_by_id(work_id, @config['admin_set_title'])
     return nil unless work&.dig(:work_id).present?
 
     suffix = work[:file_set_ids].present? ? format('%03d', work[:file_set_ids].size + 1) : '001'

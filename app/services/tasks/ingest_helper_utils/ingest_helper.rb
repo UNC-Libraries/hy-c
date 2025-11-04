@@ -49,7 +49,7 @@ module Tasks
             Rails.logger.debug("Calling create_content for FileSet #{file_set.id} with file #{file.path}")
             actor.create_content(file)
 
-            file_set.permissions_attributes = group_permissions(work.admin_set)
+            file_set.permissions_attributes = group_permissions(work.admin_set_id)
             file_set.save!
 
             Rails.logger.info("Successfully attached FileSet #{file_set.id} to work #{work.id}")
@@ -65,8 +65,8 @@ module Tasks
         end
       end
 
-      def group_permissions(admin_set)
-        @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
+      def group_permissions(admin_set_id)
+        @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set_id)
       end
 
         # Creates a Sipity::Entity for a work and links it to an *existing* workflow/state.
@@ -99,7 +99,7 @@ module Tasks
         entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
 
         create_sipity_workflow(work: work) if entity.nil?
-        work.permissions_attributes = group_permissions(work.admin_set)
+        work.permissions_attributes = group_permissions(work.admin_set_id)
         work.save!
 
         force_workflow_state!(work: work, state: state)
