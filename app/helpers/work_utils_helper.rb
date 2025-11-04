@@ -4,13 +4,13 @@ module WorkUtilsHelper
     query = "identifier_tesim:\"#{identifier}\" NOT has_model_ssim:(\"FileSet\")"
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
-    self.resolve_admin_set_and_build_result(work_data, admin_set_title, identifier)
+    self.resolve_admin_set_and_build_result(work_data, admin_set_title, identifier, :alternate_id)
   end
   def self.fetch_work_data_by_fileset_id(fileset_id, admin_set_title: nil)
     # Retrieve the work related to the fileset
     work_data = ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with fileset id: #{fileset_id}") if work_data.blank?
-    self.resolve_admin_set_and_build_result(work_data, admin_set_title, fileset_id, :fileset)
+    self.resolve_admin_set_and_build_result(work_data, admin_set_title, fileset_id, :fileset_id)
   end
   def self.fetch_work_data_by_id(work_id, admin_set_title: nil)
     work_data = ActiveFedora::SolrService.get("id:#{work_id}", rows: 1)['response']['docs'].first || {}
@@ -39,7 +39,7 @@ module WorkUtilsHelper
       Rails.logger.warn("No work found associated with doi: #{doi}")
       return nil
     end
-    self.resolve_admin_set_and_build_result(work_data, admin_set_title, doi)
+    self.resolve_admin_set_and_build_result(work_data, admin_set_title, doi, :doi)
   end
 
   def self.generate_result_hash(work_data, admin_set_data, admin_set_title)

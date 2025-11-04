@@ -407,7 +407,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
       expect(result).to include(
         work_id: 'test_work_id',
         file_set_ids: ['fileset1'],
-        admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
+        admin_set_title: 'Open_Access_Articles_and_Book_Chapters',
         admin_set_id: admin_set.id,
         work_type: 'Article',
         title: 'Test Article'
