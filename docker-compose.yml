@@ -4,8 +4,6 @@ services:
   web: &web
     build:
       context: .
-    image: cazzerson/hy-c-universal
-    platform: linux/amd64
     depends_on:
       - clamav
       - db
@@ -28,8 +26,6 @@ services:
   sidekiq:
     build:
       context: .
-    image: cazzerson/hy-c-universal
-    platform: linux/amd64
     depends_on:
       - clamav
       - db
