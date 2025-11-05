@@ -58,13 +58,13 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     article.save!
 
     # Sync permissions and state
-    sync_permissions_and_state!(work_id: article.id, depositor_uid: @config['depositor_onyen'])
+    sync_permissions_and_state!(work_id: article.id, depositor_uid: @config['depositor_onyen'], admin_set: @admin_set)
     article
   end
 
   def record_result(category:, message: '', doi: nil, article: nil, filename: nil)
     @seen_doi_list << doi if doi.present?
-    ids = { 'doi' => doi }
+    ids = { 'doi' => doi, 'work_id' => article&.id&.to_s }
     ids.merge!(extract_alternate_ids_from_article(article, category) || {}) if article.present?
 
     log_entry = {
@@ -81,12 +81,11 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   def extract_alternate_ids_from_article(article, category)
     negative_categories = [:skipped, :skipped_non_unc_affiliation, :failed]
     return if article.nil? || negative_categories.include?(category)
-    work_hash = WorkUtilsHelper.fetch_work_data_by_id(article.id)
+    work_hash = WorkUtilsHelper.fetch_work_data_by_id(article.id, admin_set_title: @config['admin_set_title'])
     return if work_hash.blank?
     {
       'pmid' => work_hash[:pmid],
-      'pmcid' => work_hash[:pmcid],
-      'work_id' => work_hash[:work_id],
+      'pmcid' => work_hash[:pmcid]
     }.compact
   end
 

@@ -331,7 +331,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
   end
 
   describe '#get_permissions_attributes' do
-    let(:admin_set) { AdminSet.new(id: Date.today.to_time.to_i.to_s, title: ['a test admin set']) }
+    let(:admin_set) { FactoryBot.create(:admin_set, title: ['a test admin set']) }
     let(:permission_template) { Hyrax::PermissionTemplate.new(id: Date.today.to_time.to_i, source_id: admin_set.id) }
     let(:manager_group) { Role.new(id: Date.today.to_time.to_i, name: 'manager_group') }
     let(:viewer_group) { Role.new(id: Date.today.to_time.to_i, name: 'viewer_group') }

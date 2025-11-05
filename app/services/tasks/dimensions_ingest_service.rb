@@ -47,7 +47,7 @@ module Tasks
                                       file_path: pdf_path,
                                       depositor: @depositor,
                                       visibility: article.visibility)
-        pdf_file.update(permissions_attributes: group_permissions(@admin_set))
+        pdf_file.update(permissions_attributes: group_permissions(@admin_set.id))
       end
       article
     end
@@ -56,7 +56,7 @@ module Tasks
       article = Article.new
       populate_article_metadata(article, publication)
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-      article.permissions_attributes = group_permissions(@admin_set)
+      article.permissions_attributes = group_permissions(@admin_set.id)
       article.save!
       article
     end

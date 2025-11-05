@@ -42,6 +42,7 @@ module Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
   end
 
   def extract_keywords_from_openalex(metadata)
+    return [] unless metadata&.dig('concepts').present? || metadata&.dig('keywords').present?
     concepts = Array(metadata['concepts']).map { |c| c['display_name'] }
     keywords = Array(metadata['keywords']).map { |k| k['display_name'] }
     (concepts + keywords).uniq
