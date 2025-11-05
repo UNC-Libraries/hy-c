@@ -62,7 +62,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
     it 'skips works that already have files' do
       allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
-        .with('work_with_files')
+        .with('work_with_files', admin_set_title: 'Test Admin Set')
         .and_return({ file_set_ids: ['abc'] })
 
       record = { 'ids' => { 'work_id' => 'work_with_files' }, 'category' => 'anything' }
@@ -141,7 +141,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
     context 'when work exists but has no file sets' do
       before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123', admin_set_title: 'Test Admin Set').and_return({
           file_set_ids: [],
           work_id: 'work_123'
         })
@@ -155,7 +155,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
     context 'when work does not exist' do
       before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return(nil)
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123', admin_set_title: 'Test Admin Set').and_return(nil)
       end
 
       it 'returns nil' do
