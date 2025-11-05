@@ -28,7 +28,7 @@ class Tasks::IngestHelperUtils::BaseFileAttachmentService
     end
 
     work_ids.uniq.each do |id|
-      sync_permissions_and_state!(work_id: id, depositor_uid: config['depositor_onyen'])
+      sync_permissions_and_state!(work_id: id, depositor_uid: config['depositor_onyen'], admin_set: @admin_set)
       sleep(SLEEP_BETWEEN_REQUESTS)
     end
   end
