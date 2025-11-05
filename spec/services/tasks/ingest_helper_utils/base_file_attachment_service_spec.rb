@@ -62,7 +62,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
     it 'skips works that already have files' do
       allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
-        .with('work_with_files')
+        .with('work_with_files', admin_set_title: 'Test Admin Set')
         .and_return({ file_set_ids: ['abc'] })
 
       record = { 'ids' => { 'work_id' => 'work_with_files' }, 'category' => 'anything' }
@@ -141,7 +141,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
     context 'when work exists but has no file sets' do
       before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return({
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123', admin_set_title: 'Test Admin Set').and_return({
           file_set_ids: [],
           work_id: 'work_123'
         })
@@ -155,7 +155,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
     context 'when work does not exist' do
       before do
-        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123').and_return(nil)
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with('work_123', admin_set_title: 'Test Admin Set').and_return(nil)
       end
 
       it 'returns nil' do
@@ -242,7 +242,7 @@ RSpec.describe Tasks::IngestHelperUtils::BaseFileAttachmentService, type: :servi
 
       expect(service).to have_received(:process_record).with(sample_record)
       expect(service).to have_received(:process_record).with(sample_record_without_pmcid)
-      expect(service).to have_received(:sync_permissions_and_state!).with(work_id: 'work_123', depositor_uid: 'admin')
+      expect(service).to have_received(:sync_permissions_and_state!).with(work_id: 'work_123', depositor_uid: 'admin', admin_set: admin_set)
       expect(Rails.logger).to have_received(:info).with('Processing record 1 of 2')
       expect(Rails.logger).to have_received(:info).with('Processing record 2 of 2')
     end

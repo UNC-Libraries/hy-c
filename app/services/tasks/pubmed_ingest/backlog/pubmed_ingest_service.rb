@@ -118,8 +118,7 @@ module Tasks
                                       file_path: file_path,
                                       depositor: depositor,
                                       visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-            admin_set = ::AdminSet.where(id: work_hash[:admin_set_id]).first
-            file.update(permissions_attributes: group_permissions(admin_set))
+            file.update(permissions_attributes: group_permissions(work_hash[:admin_set_id]))
             Rails.logger.info("[AttachPDFExisting] Successfully attached file for #{work_hash[:work_id]}")
             file
         rescue StandardError => e

@@ -18,13 +18,13 @@ module Tasks
                                     file_path: pdf_path,
                                     depositor: depositor,
                                     visibility: art_with_meta.visibility)
-      pdf_file.update permissions_attributes: group_permissions(admin_set)
+      pdf_file.update permissions_attributes: group_permissions(admin_set.id)
 
       # Add xml metadata file to Article
       xml_file = attach_xml_to_work(work: art_with_meta,
                                   file_path: @jats_ingest_work.xml_path,
                                   depositor: depositor)
-      xml_file.update permissions_attributes: group_permissions(admin_set)
+      xml_file.update permissions_attributes: group_permissions(admin_set.id)
       art_with_meta.id
     end
 
@@ -34,7 +34,7 @@ module Tasks
       art.admin_set = @admin_set
       populate_article_metadata(art)
       art.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-      art.permissions_attributes = group_permissions(admin_set)
+      art.permissions_attributes = group_permissions(admin_set.id)
       art.save!
       # return the Article object
       art

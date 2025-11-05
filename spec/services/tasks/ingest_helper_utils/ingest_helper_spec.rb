@@ -159,7 +159,7 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
 
     context 'when work has no Sipity entity' do
       it 'creates the entity and sets it to deposited' do
-        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin')
+        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin', admin_set: admin_set)
 
         entity = Sipity::Entity.find_by(proxy_for_global_id: work.to_global_id.to_s)
         expect(entity).not_to be_nil
@@ -178,7 +178,7 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
       end
 
       it 'updates the state to deposited' do
-        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin')
+        helper.sync_permissions_and_state!(work_id: work.id, depositor_uid: 'admin', admin_set: admin_set)
 
         expect(existing_entity.reload.workflow_state.name).to eq('deposited')
       end
