@@ -19,6 +19,19 @@ module WorkUtilsHelper
     self.resolve_admin_set_and_build_result(work_data, admin_set_title, work_id)
   end
 
+  def self.fetch_admin_set_by_title_or_id(admin_set_title: nil, admin_set_id: nil)
+    return nil if admin_set_title.blank? && admin_set_id.blank?
+    
+    if admin_set_id.present?
+      AdminSet.find(admin_set_id)
+    else
+      AdminSet.where(title: admin_set_title).first
+    end
+  rescue ActiveFedora::ObjectNotFoundError, ActiveRecord::RecordNotFound => e
+    Rails.logger.warn("Admin set not found (title: #{admin_set_title}, id: #{admin_set_id}): #{e.message}")
+    nil
+  end
+
   def self.fetch_work_data_by_doi(doi, admin_set_title: nil)
     # Step 1: Exact match on doi_tesim
     query = "doi_tesim:\"#{doi}\""
