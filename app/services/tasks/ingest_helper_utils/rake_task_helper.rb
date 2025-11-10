@@ -17,7 +17,7 @@ module Tasks
       def retrieve_tracker_json(output_dir)
         tracker_path = File.join(output_dir, Tasks::IngestHelperUtils::BaseIngestTracker::TRACKER_FILENAME)
         unless File.exist?(tracker_path)
-          puts "❌ Tracker file not found at #{tracker_path}"
+          puts "Tracker file not found at #{tracker_path}"
           exit(1)
         end
         JsonFileUtilsHelper.read_json(tracker_path)
@@ -67,7 +67,7 @@ module Tasks
         if output_dir.include?('*')
           expanded = Dir.glob(output_dir).select { |f| File.directory?(f) && File.basename(f).start_with?("#{prefix}_") }
           if expanded.empty?
-            puts "❌ No matching ingest directories found for pattern '#{output_dir}'"
+            puts "No matching ingest directories found for pattern '#{output_dir}'"
             exit(1)
           end
 
@@ -77,13 +77,13 @@ module Tasks
         end
 
         unless Dir.exist?(output_dir)
-          puts "❌ The specified output_dir '#{output_dir}' does not exist."
+          puts "The specified output_dir '#{output_dir}' does not exist."
           exit(1)
         end
 
         basename = File.basename(output_dir)
         unless basename.start_with?("#{prefix}_")
-          puts "❌ When resuming, output_dir must match '#{prefix}_YYYYMMDD_HHMMSS'"
+          puts "When resuming, output_dir must match '#{prefix}_YYYYMMDD_HHMMSS'"
           exit(1)
         end
 

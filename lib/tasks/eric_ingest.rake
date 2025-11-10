@@ -4,7 +4,7 @@ task :eric_backlog_ingest, [:resume, :output_dir, :full_text_dir, :admin_set_tit
 
   now = Time.now
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
-  
+
   required_keys = %i[full_text_dir output_dir admin_set_title depositor_onyen]
   validate_args!(args, required_keys) unless resume
 
