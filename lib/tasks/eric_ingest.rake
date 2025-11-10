@@ -14,7 +14,7 @@ task :eric_backlog_ingest, [:resume, :output_dir, :full_text_dir, :admin_set_tit
 
   write_intro_banner(config: config, ingest_type: 'ERIC')
 
-  coordinator = Tasks::ERICIngest::Backlog::ERICIngestCoordinatorService.new(config)
+  coordinator = Tasks::EricIngest::Backlog::EricIngestCoordinatorService.new(config)
   coordinator.run
 end
 
