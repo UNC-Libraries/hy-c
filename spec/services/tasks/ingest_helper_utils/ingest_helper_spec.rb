@@ -7,7 +7,7 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
   end
 
   let(:user) { FactoryBot.create(:admin) }
-  let(:admin_set) { FactoryBot.create(:admin_set) }
+  let(:admin_set) { FactoryBot.create(:admin_set, title: 'Test Admin Set') }
   let(:work) { Article.new(title: ['Test Work'], depositor: user.uid, admin_set: admin_set) }
   let(:file_path) { Rails.root.join('spec/fixtures/files/sample_pdf.pdf') }
   let(:visibility) { Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
@@ -182,6 +182,31 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
 
         expect(existing_entity.reload.workflow_state.name).to eq('deposited')
       end
+    end
+  end
+
+  describe '#new_article' do
+    let(:pubmed_xml_doc) { Nokogiri::XML(sample_pubmed_xml) }
+    let(:pubmed_article) { pubmed_xml_doc.xpath('//PubmedArticle').first }
+    let(:mock_article) { double('article', visibility: nil, 'visibility=': nil) }
+    let(:mock_builder) { double('builder', populate_article_metadata: true) }
+
+    before do
+      allow(Article).to receive(:new).and_return(mock_article)
+      allow(service).to receive(:attribute_builder).and_return(mock_builder)
+    end
+
+    it 'creates new article with private visibility' do
+      config = { 'depositor_onyen' => 'test_user', 'admin_set_title' => 'Test Admin Set' }
+      result = service.send(:new_article, article: pubmed_article, config: {}, attr_builder: mock_builder)
+
+      expect(Article).to have_received(:new)
+      expect(mock_article).to have_received(:visibility=).with(
+        Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+      )
+      expect(service).to have_received(:attribute_builder).with(pubmed_article, mock_article)
+      expect(mock_builder).to have_received(:populate_article_metadata)
+      expect(result).to eq(mock_article)
     end
   end
 end

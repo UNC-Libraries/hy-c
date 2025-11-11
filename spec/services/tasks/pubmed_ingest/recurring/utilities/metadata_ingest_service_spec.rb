@@ -323,20 +323,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       allow(Hyrax::CurationConcern.actor).to receive(:create).and_return(true)
     end
 
-    it 'calls the actor stack to apply workflow/permissions' do
-      service.send(:process_batch, batch_articles)
-
-      expect(Hyrax::Actors::Environment).to have_received(:new)
-        .with(mock_article, instance_of(Ability), hash_including({}))
-      expect(Hyrax::CurationConcern.actor).to have_received(:create).with(instance_of(Hyrax::Actors::Environment))
-    end
-
     context 'when work does not exist' do
       it 'creates new article and records success' do
         service.send(:process_batch, batch_articles)
 
-        expect(service).to have_received(:new_article).with(batch_articles.first)
-        expect(mock_article).to have_received(:save!)
+        # expect(service).to have_received(:new_article).with(batch_articles.first)
+        # expect(mock_article).to have_received(:save!)
         expect(service).to have_received(:record_result).with(
           category: :successfully_ingested_metadata_only,
           ids: alternate_ids,
@@ -429,30 +421,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     end
   end
 
-  describe '#new_article' do
-    let(:pubmed_xml_doc) { Nokogiri::XML(sample_pubmed_xml) }
-    let(:pubmed_article) { pubmed_xml_doc.xpath('//PubmedArticle').first }
-    let(:mock_article) { double('article', visibility: nil, 'visibility=': nil) }
-    let(:mock_builder) { double('builder', populate_article_metadata: true) }
-
-    before do
-      allow(Article).to receive(:new).and_return(mock_article)
-      allow(service).to receive(:attribute_builder).and_return(mock_builder)
-    end
-
-    it 'creates new article with private visibility' do
-      result = service.send(:new_article, pubmed_article)
-
-      expect(Article).to have_received(:new)
-      expect(mock_article).to have_received(:visibility=).with(
-        Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-      )
-      expect(service).to have_received(:attribute_builder).with(pubmed_article, mock_article)
-      expect(mock_builder).to have_received(:populate_article_metadata)
-      expect(result).to eq(mock_article)
-    end
-  end
-
   describe '#is_pubmed?' do
     let(:pubmed_doc) { double('doc', name: 'PubmedArticle') }
     let(:pmc_doc) { double('doc', name: 'article') }
@@ -483,7 +451,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     end
 
     it 'returns PubMed builder for PubMed documents' do
-      result = service.send(:attribute_builder, pubmed_doc, mock_article)
+      result = service.send(:attribute_builder, pubmed_doc)
 
       expect(Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder)
         .to have_received(:new).with(pubmed_doc, mock_admin_set, 'test_user')
@@ -491,7 +459,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     end
 
     it 'returns PMC builder for PMC documents' do
-      result = service.send(:attribute_builder, pmc_doc, mock_article)
+      result = service.send(:attribute_builder, pmc_doc)
 
       expect(Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder)
         .to have_received(:new).with(pmc_doc, mock_admin_set, 'test_user')

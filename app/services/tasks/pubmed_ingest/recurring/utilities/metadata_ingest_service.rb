@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
+  include Tasks::IngestHelperUtils::IngestHelper
   def initialize(config:, tracker:, md_ingest_results_path:)
     @config = config
     @output_dir = config['output_dir']
@@ -158,7 +159,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
         # If no match found, create a new article
         Rails.logger.info("[MetadataIngestService] No existing work found for IDs: #{alternate_ids.inspect}. Creating new article.")
-        builder = attribute_builder(metadata, article)
+        builder = attribute_builder(doc)
         article = new_article(metadata: doc, attr_builder: builder, config: @config)
         article.save!
 
@@ -208,7 +209,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     metadata.name == 'PubmedArticle'
   end
 
-  def attribute_builder(metadata, article)
+  def attribute_builder(metadata)
     is_pubmed?(metadata) ?
     Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen']) :
     Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
