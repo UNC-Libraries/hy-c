@@ -15,25 +15,25 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   def process_backlog
-    records_from_csv = remaining_records_from_csv(@seen_eric_id_list)
+    eric_ids = remaining_ids_from_directory(@config['full_text_dir'])
 
-    records_from_csv.each do |record|
-      next if @seen_eric_id_list.include?(record['doi']) && record['doi'].present?
-      match = WorkUtilsHelper.fetch_work_data_by_doi(record['doi'], admin_set_title: @config['admin_set_title'])
-      if match.present? && match[:work_id].present?
-        skip_existing_work(record, match, filename: record['filename'])
-        next
-      end
+    eric_ids.each do |id|
+      next if @seen_eric_id_list.include?(id)
+    #   match = WorkUtilsHelper.fetch_work_data_by_doi(record['doi'], admin_set_title: @config['admin_set_title'])
+    #   if match.present? && match[:work_id].present?
+    #     skip_existing_work(record, match, filename: record['filename'])
+    #     next
+    #   end
 
-      crossref_md = fetch_metadata_for_doi(source: 'crossref', doi: record['doi'])
-      openalex_md = fetch_metadata_for_doi(source: 'openalex', doi: record['doi'])
-      datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
+    #   crossref_md = fetch_metadata_for_doi(source: 'crossref', doi: record['doi'])
+    #   openalex_md = fetch_metadata_for_doi(source: 'openalex', doi: record['doi'])
+    #   datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
 
       source = verify_source_md_available(crossref_md, openalex_md, record['doi'])
       resolved_md = merge_metadata_sources(crossref_md, openalex_md, datacite_md)
       attr_builder = construct_attribute_builder(resolved_md)
 
-      article = new_article(resolved_md, attr_builder)
+      article = new_article(metadata: resolved_md, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, doi: record['doi'], article: article, filename: record['filename'])
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
@@ -48,18 +48,6 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   private
-
-  def new_article(metadata, attr_builder)
-   # Create new work
-    article = Article.new
-    article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-    attr_builder.populate_article_metadata(article)
-    article.save!
-
-    # Sync permissions and state
-    sync_permissions_and_state!(work_id: article.id, depositor_uid: @config['depositor_onyen'], admin_set: @admin_set)
-    article
-  end
 
   def record_result(category:, message: '', eric_id: nil, article: nil, filename: nil)
     @seen_eric_id_list << eric_id if eric_id.present?
@@ -111,23 +99,26 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     end.flatten.compact)
   end
 
-  def remaining_records_from_csv(seen_eric_id_list)
-    records = CSV.read(@file_info_csv_path, headers: true).map(&:to_h)
-    # records.reject do |record|
-    #   doi = record['doi']
-    #   doi.present? && seen_doi_list.include?(doi)
-    # end
+  def remaining_ids_from_directory(path)
+    # Extract ERIC IDs from PDFs in the specified directory
+    ids = []
+    Dir.glob(File.join(path, '*.pdf')).each do |file_path|
+      filename = File.basename(file_path)
+      eric_id = filename.sub('.pdf', '')
+      ids << eric_id
+    end
+    ids.reject { |id| @seen_eric_id_list.include?(id) }
   end
 
-  def skip_existing_work(record, match, filename: nil)
-    Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
+  def skip_existing_work(eric_id, match, filename: nil)
+    Rails.logger.info("[MetadataIngestService] Skipping work with ID #{eric_id} — already exists.")
     article = WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
-    record_result(category: :skipped, message: 'Pre-filtered: work exists', doi: record['doi'], article: article, filename: nil)
+    record_result(category: :skipped, message: 'Pre-filtered: work exists', eric_id: eric_id, article: article, filename: nil)
   end
 
-  def handle_record_error(record, error, filename: nil)
-    Rails.logger.error("[MetadataIngestService] Error processing record for DOI #{record['doi']}: #{error.message}")
+  def handle_record_error(eric_id, error, filename: nil)
+    Rails.logger.error("[MetadataIngestService] Error processing work with ID #{eric_id}: #{error.message}")
     Rails.logger.error(error.backtrace.join("\n"))
-    record_result(category: :failed, message: error.message, doi: record['doi'], article: nil, filename: filename)
+    record_result(category: :failed, message: error.message, eric_id: eric_id, article: nil, filename: filename)
   end
 end
