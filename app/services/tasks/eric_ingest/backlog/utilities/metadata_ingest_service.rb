@@ -29,8 +29,9 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     #   openalex_md = fetch_metadata_for_doi(source: 'openalex', doi: record['doi'])
     #   datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
 
-      source = verify_source_md_available(crossref_md, openalex_md, record['doi'])
-      resolved_md = merge_metadata_sources(crossref_md, openalex_md, datacite_md)
+      metadata = fetch_metadata_for_eric_id(id)
+      # source = verify_source_md_available(crossref_md, openalex_md, record['doi'])
+      # resolved_md = merge_metadata_sources(crossref_md, openalex_md, datacite_md)
       attr_builder = construct_attribute_builder(resolved_md)
 
       article = new_article(metadata: resolved_md, attr_builder: attr_builder, config: @config)
@@ -48,6 +49,28 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   private
+
+  def fetch_metadata_for_eric_id(eric_id)
+    raise ArgumentError, 'ERIC ID cannot be blank' if eric_id.blank?
+    uri = URI('https://api.ies.ed.gov/eric/')
+    uri.query = URI.encode_www_form(search: "id:\"#{eric_id}\"")
+
+    response = HTTParty.get(uri.to_s)
+    if response.code != 200
+      raise "Failed to fetch metadata for ERIC ID #{eric_id}: HTTP #{response.code}"
+    end
+    
+    extract_json_from_response(response)
+  end
+
+  def extract_json_from_response(response)
+    data = JSON.parse(response.body)
+    if data['response'] && data['response']['docs'] && data['response']['docs'].any?
+      return data['response']['docs'].first
+    else
+      raise "No metadata found in response for ERIC ID"
+    end
+  end
 
   def record_result(category:, message: '', eric_id: nil, article: nil, filename: nil)
     @seen_eric_id_list << eric_id if eric_id.present?
