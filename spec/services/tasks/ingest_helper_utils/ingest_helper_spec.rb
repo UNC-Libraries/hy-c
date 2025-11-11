@@ -216,8 +216,8 @@ RSpec.describe Tasks::IngestHelperUtils::IngestHelper do
     before do
       allow(Article).to receive(:new).and_return(mock_article)
       allow(mock_article).to receive(:save!)
-      allow(mock_article).to receive(:id).and_return('mock_id_123') 
-      allow(helper).to receive(:sync_permissions_and_state!)  
+      allow(mock_article).to receive(:id).and_return('mock_id_123')
+      allow(helper).to receive(:sync_permissions_and_state!)
     end
 
     it 'creates new article with private visibility' do

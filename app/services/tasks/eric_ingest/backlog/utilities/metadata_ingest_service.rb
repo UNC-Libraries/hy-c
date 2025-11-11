@@ -19,21 +19,11 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
     eric_ids.each do |id|
       next if @seen_eric_id_list.include?(id)
-    #   match = WorkUtilsHelper.fetch_work_data_by_doi(record['doi'], admin_set_title: @config['admin_set_title'])
-    #   if match.present? && match[:work_id].present?
-    #     skip_existing_work(record, match, filename: record['filename'])
-    #     next
-    #   end
-
-    #   crossref_md = fetch_metadata_for_doi(source: 'crossref', doi: record['doi'])
-    #   openalex_md = fetch_metadata_for_doi(source: 'openalex', doi: record['doi'])
-    #   datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
-
       metadata = fetch_metadata_for_eric_id(id)
-      attr_builder = construct_attribute_builder(resolved_md)
+      attr_builder = Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
 
       article = new_article(metadata: resolved_md, attr_builder: attr_builder, config: @config)
-      record_result(category: :successfully_ingested_metadata_only, doi: record['doi'], article: article, filename: record['filename'])
+      record_result(category: :successfully_ingested_metadata_only, eric_id: id, article: article, filename: "#{id}.pdf")
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
     rescue => e
@@ -57,7 +47,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     if response.code != 200
       raise "Failed to fetch metadata for ERIC ID #{eric_id}: HTTP #{response.code}"
     end
-    
+
     extract_json_from_response(response)
   end
 
@@ -66,7 +56,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     if data['response'] && data['response']['docs'] && data['response']['docs'].any?
       return data['response']['docs'].first
     else
-      raise "No metadata found in response for ERIC ID"
+      raise 'No metadata found in response for ERIC ID'
     end
   end
 
