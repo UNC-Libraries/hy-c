@@ -158,7 +158,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
         # If no match found, create a new article
         Rails.logger.info("[MetadataIngestService] No existing work found for IDs: #{alternate_ids.inspect}. Creating new article.")
-        article = new_article(doc)
+        builder = attribute_builder(metadata, article)
+        article = new_article(metadata: doc, attr_builder: builder, config: @config)
         article.save!
 
         # Apply workflow and permissions via actor stack
@@ -202,16 +203,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       nil
     end
   end
-
-  def new_article(metadata)
-    Rails.logger.debug('[MetadataIngestService] Initializing new article object')
-    article = Article.new
-    article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-    builder = attribute_builder(metadata, article)
-    builder.populate_article_metadata(article)
-    article
-  end
-
 
   def is_pubmed?(metadata)
     metadata.name == 'PubmedArticle'

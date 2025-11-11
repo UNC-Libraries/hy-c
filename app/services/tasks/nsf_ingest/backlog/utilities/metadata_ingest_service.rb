@@ -34,7 +34,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       resolved_md = merge_metadata_sources(crossref_md, openalex_md, datacite_md)
       attr_builder = construct_attribute_builder(resolved_md)
 
-      article = new_article(resolved_md, attr_builder)
+      article = new_article(metadata: resolved_md, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, doi: record['doi'], article: article, filename: record['filename'])
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
@@ -49,18 +49,6 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   end
 
   private
-
-  def new_article(metadata, attr_builder)
-   # Create new work
-    article = Article.new
-    article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-    attr_builder.populate_article_metadata(article)
-    article.save!
-
-    # Sync permissions and state
-    sync_permissions_and_state!(work_id: article.id, depositor_uid: @config['depositor_onyen'], admin_set: @admin_set)
-    article
-  end
 
   def record_result(category:, message: '', doi: nil, article: nil, filename: nil)
     @seen_doi_list << doi if doi.present?
