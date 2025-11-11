@@ -30,8 +30,6 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     #   datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: record['doi'])
 
       metadata = fetch_metadata_for_eric_id(id)
-      # source = verify_source_md_available(crossref_md, openalex_md, record['doi'])
-      # resolved_md = merge_metadata_sources(crossref_md, openalex_md, datacite_md)
       attr_builder = construct_attribute_builder(resolved_md)
 
       article = new_article(metadata: resolved_md, attr_builder: attr_builder, config: @config)
