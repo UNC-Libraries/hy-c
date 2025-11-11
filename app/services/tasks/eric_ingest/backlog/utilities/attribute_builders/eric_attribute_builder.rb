@@ -39,4 +39,9 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
         end
         article.identifier = identifiers
     end
+
+    # Stubbed methods since ERIC metadata does not include these fields
+     def set_journal_attributes(article); end
+     def retrieve_author_affiliations(hash, author); end
+     def format_publication_identifiers; end
 end
