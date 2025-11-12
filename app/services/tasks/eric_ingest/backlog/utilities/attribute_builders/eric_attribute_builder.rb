@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
   class EricAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
 
     def get_date_issued
-      pub_year = metadata['PublicationYear'] 
+      pub_year = metadata['PublicationYear']
       DateTime.new(pub_year.to_i) if pub_year.present?
     end
 
@@ -18,30 +19,32 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
     end
 
     def apply_additional_basic_attributes(article)
-        article.title = [metadata['title']]
-        article.abstract = [metadata['description']] if metadata['abstract'].present?
-        article.date_issued = get_date_issued.strftime('%Y-%m-%d')
-        article.keyword = metadata['subject'] if metadata['subject'].present?
-        article.publisher = [metadata['publisher']] if metadata['publisher'].present?
+      article.title = [metadata['title']]
+      article.abstract = [metadata['description']] if metadata['abstract'].present?
+      article.date_issued = get_date_issued.strftime('%Y-%m-%d')
+      article.keyword = metadata['subject'] if metadata['subject'].present?
+      article.publisher = [metadata['publisher']] if metadata['publisher'].present?
     end
 
     def set_identifiers(article)
-        identifiers = []
-        if metadata['eric_id'].present?
-            identifiers << "ERIC: #{metadata['eric_id']}"
-        end
+      identifiers = []
+      if metadata['eric_id'].present?
+        identifiers << "ERIC: #{metadata['eric_id']}"
+      end
 
-         if metadata['issn'].present?
-            metadata['issn'].each do |issn|
-            # remove the "ISSN-" prefix if present, and strip whitespace
-            article.issn = [issn.sub(/^ISSN[-:\s]*/i, '').strip]
-            end
+      if metadata['issn'].present?
+        metadata['issn'].each do |issn|
+         # remove the "ISSN-" prefix if present, and strip whitespace
+          article.issn = [issn.sub(/^ISSN[-:\s]*/i, '').strip]
         end
-        article.identifier = identifiers
+     end
+      article.identifier = identifiers
     end
 
     # Stubbed methods since ERIC metadata does not include these fields
-     def set_journal_attributes(article); end
-     def retrieve_author_affiliations(hash, author); end
-     def format_publication_identifiers; end
+    def set_journal_attributes(article); end
+    def retrieve_author_affiliations(hash, author); end
+    def format_publication_identifiers; end
+
+    end
 end

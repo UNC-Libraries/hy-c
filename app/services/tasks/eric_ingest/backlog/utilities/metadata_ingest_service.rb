@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
+class Tasks::EricIngest::Backlog::Utilities::MetadataIngestService
   include Tasks::IngestHelperUtils::IngestHelper
-  include Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
 
   def initialize(config:, tracker:, md_ingest_results_path:)
     @config = config
@@ -22,18 +21,18 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       metadata = fetch_metadata_for_eric_id(id)
       attr_builder = Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
 
-      article = new_article(metadata: resolved_md, attr_builder: attr_builder, config: @config)
+      article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, eric_id: id, article: article, filename: "#{id}.pdf")
 
-      Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
+      Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for publication with ERIC ID #{id}")
     rescue => e
-      handle_record_error(record, e, filename: record['filename'])
+      handle_record_error(id, e, filename: "#{id}.pdf")
     ensure
       flush_buffer_if_needed
     end
 
     flush_buffer_to_file unless @write_buffer.empty?
-    LogUtilsHelper.double_log("[MetadataIngestService] Ingest complete. Processed #{records_from_csv.size} records.", :info, tag: 'MetadataIngestService')
+    LogUtilsHelper.double_log("Ingest complete. Processed #{eric_ids.size} IDs.", :info, tag: 'MetadataIngestService')
   end
 
   private

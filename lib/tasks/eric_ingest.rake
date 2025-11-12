@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 desc 'Ingest new PDFs from the ERIC backlog and attach them to Hyrax works if matched'
 task :eric_backlog_ingest, [:resume, :output_dir, :full_text_dir, :admin_set_title, :depositor_onyen] => :environment do |_task, args|
+  include Tasks::IngestHelperUtils::RakeTaskHelper
 
   now = Time.now
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
