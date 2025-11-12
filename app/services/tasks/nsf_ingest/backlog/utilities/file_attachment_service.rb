@@ -42,15 +42,7 @@ class Tasks::NsfIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inges
     return if @existing_ids.include?(doi) && doi.present?
     @existing_ids << doi if doi.present?
 
-    entry = {
-      ids: record['ids'],
-      timestamp: Time.now.utc.iso8601,
-      category: category,
-      message: message,
-      file_name: file_name
-    }
-    tracker.save
-    File.open(log_file_path, 'a') { |f| f.puts(entry.to_json) }
+    super(record, category: category, message: message, file_name: file_name)
   end
 
   def generate_doi_to_filenames

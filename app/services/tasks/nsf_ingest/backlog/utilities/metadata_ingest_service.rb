@@ -28,7 +28,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       next if @seen_identifier_list.include?(doi) && doi.present?
       match = WorkUtilsHelper.fetch_work_data_by_doi(doi, admin_set_title: @config['admin_set_title'])
       if match.present? && match[:work_id].present?
-        skip_existing_work(record, match, filename: record['filename'])
+        skip_existing_work(doi, match, filename: record['filename'])
         next
       end
 
@@ -45,7 +45,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
     rescue => e
-      handle_record_error(record, e, filename: record['filename'])
+      handle_record_error(doi, e, filename: record['filename'])
     ensure
       flush_buffer_if_needed
     end
