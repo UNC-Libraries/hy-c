@@ -29,7 +29,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
     def set_identifiers(article)
       identifiers = []
       if metadata['eric_id'].present?
-        identifiers << "ERIC: #{metadata['eric_id']}"
+        identifiers << "ERIC ID: #{metadata['eric_id']}"
       end
 
       if metadata['issn'].present?

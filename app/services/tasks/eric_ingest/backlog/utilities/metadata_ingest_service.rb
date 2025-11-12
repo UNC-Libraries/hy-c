@@ -19,6 +19,7 @@ class Tasks::EricIngest::Backlog::Utilities::MetadataIngestService
     eric_ids.each do |id|
       next if @seen_eric_id_list.include?(id)
       metadata = fetch_metadata_for_eric_id(id)
+      metadata['eric_id'] = id
       attr_builder = Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
 
       article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config)
