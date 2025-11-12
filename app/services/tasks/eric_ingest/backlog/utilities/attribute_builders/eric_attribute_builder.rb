@@ -10,7 +10,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
     private
 
     def generate_authors
-      metadata['author'].map.with_index do |full_name, i|
+      metadata['author']&.map.with_index do |full_name, i|
         {
           'name' => full_name,
           'index' => i.to_s

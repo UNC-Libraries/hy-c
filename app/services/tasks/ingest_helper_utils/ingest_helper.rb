@@ -139,7 +139,8 @@ module Tasks
         article.save!
 
         # Sync permissions and state
-        sync_permissions_and_state!(work_id: article.id, depositor_uid: config['depositor_onyen'], admin_set: config['admin_set_title'])
+        admin_set = AdminSet.where(title: config['admin_set_title'])&.first
+        sync_permissions_and_state!(work_id: article.id, depositor_uid: config['depositor_onyen'], admin_set: admin_set)
         article
       end
     end
