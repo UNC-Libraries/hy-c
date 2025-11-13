@@ -67,5 +67,28 @@ RSpec.describe Tasks::EricIngest::Backlog::Utilities::MetadataIngestService do
       expect(service).to have_received(:flush_buffer_if_needed).at_least(:once)
       expect(Rails.logger).to have_received(:info).at_least(:once)
     end
+
+    it 'skips already seen ERIC IDs' do
+      service.instance_variable_get(:@seen_identifier_list).add('ED123456')
+
+      service.process_backlog
+
+      expect(service).to have_received(:fetch_metadata_for_eric_id).once.with('ED654321')
+      expect(service).to have_received(:record_result).once
+    end
+
+    it 'skips existing works with the same ERIC ID' do
+      allow(WorkUtilsHelper).to receive(:fetch_work_data_by_alternate_identifier)
+        .with('ED123456', admin_set_title: config['admin_set_title'])
+        .and_return({ work_id: 'existing-work-id' })
+      allow(WorkUtilsHelper).to receive(:fetch_work_data_by_alternate_identifier)
+        .with('ED654321', admin_set_title: config['admin_set_title'])
+        .and_return(nil)
+
+      service.process_backlog
+
+      expect(service).to have_received(:record_result).once
+      expect(service).to have_received(:fetch_metadata_for_eric_id).once.with('ED654321')
+    end
   end
 end

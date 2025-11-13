@@ -45,7 +45,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
             'pmc'    => { 'cursor' => 0, 'completed' => false }
           },
           'attach_files_to_works' => { 'completed' => false },
-          'send_summary_email'    => { 'completed' => false }
+          'send_summary_email'    => { 'completed' => false },
+          'prepare_email_attachments' => { 'completed' => false }
         }
       }
 
