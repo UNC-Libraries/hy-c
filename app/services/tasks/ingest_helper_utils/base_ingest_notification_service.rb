@@ -40,6 +40,7 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
   rescue StandardError => e
     LogUtilsHelper.double_log("Failed to send email notification: #{e.message}", :error, tag: 'send_summary_email')
     Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
+    raise e
   end
 
   private
