@@ -42,4 +42,30 @@ RSpec.describe Tasks::EricIngest::Backlog::Utilities::MetadataIngestService do
       expect(service.identifier_key_name).to eq('eric_id')
     end
   end
+
+  describe '#process_backlog' do
+    before do
+      allow(service).to receive(:remaining_ids_from_directory).and_return(['ED123456', 'ED654321'])
+      allow(service).to receive(:fetch_metadata_for_eric_id).with('ED123456').and_return({ 'title' => 'Test Title 1' })
+      allow(service).to receive(:fetch_metadata_for_eric_id).with('ED654321').and_return({ 'title' => 'Test Title 2' })
+      allow(Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAttributeBuilder).to receive(:new).and_call_original
+      allow(service).to receive(:new_article).and_return(FactoryBot.build(:article))
+      allow(service).to receive(:record_result)
+      allow(service).to receive(:flush_buffer_if_needed)
+      allow(service).to receive(:flush_buffer_to_file)
+      allow(Rails.logger).to receive(:info)
+    end
+
+    it 'processes remaining ERIC IDs and records results' do
+      service.process_backlog
+
+      expect(service).to have_received(:remaining_ids_from_directory).with(config['full_text_dir'])
+      expect(service).to have_received(:fetch_metadata_for_eric_id).twice
+      expect(Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAttributeBuilder).to have_received(:new).twice
+      expect(service).to have_received(:new_article).twice
+      expect(service).to have_received(:record_result).twice
+      expect(service).to have_received(:flush_buffer_if_needed).at_least(:once)
+      expect(Rails.logger).to have_received(:info).at_least(:once)
+    end
+  end
 end
