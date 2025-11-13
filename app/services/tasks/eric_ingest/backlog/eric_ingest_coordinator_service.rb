@@ -21,9 +21,9 @@ class Tasks::EricIngest::Backlog::EricIngestCoordinatorService
   def run
     NotificationUtilsHelper.suppress_emails do
       load_and_ingest_metadata
-        attach_files
+      attach_files
     end
-    # format_results_and_notify
+    format_results_and_notify
 
     LogUtilsHelper.double_log('ERIC ingest workflow completed successfully.', :info, tag: 'EricIngestCoordinator')
     rescue => e
@@ -61,6 +61,22 @@ class Tasks::EricIngest::Backlog::EricIngestCoordinatorService
     )
     file_attachment_service.run
     @tracker['progress']['attach_files_to_works']['completed'] = true
+    @tracker.save
+  end
+
+  def format_results_and_notify
+    if @tracker['progress']['send_summary_email']['completed']
+      LogUtilsHelper.double_log('Result formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'EricIngestCoordinatorService')
+      return
+  end
+    LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'EricIngestCoordinatorService')
+    notification_service = Tasks::IngestHelperUtils::ResultNotificationService.new(
+      tracker: @tracker,
+      generated_results_csv_dir: @generated_results_csv_dir,
+      max_display_rows: MAX_ROWS
+    )
+    notification_service.run
+    @tracker['progress']['send_summary_email']['completed'] = true
     @tracker.save
   end
 

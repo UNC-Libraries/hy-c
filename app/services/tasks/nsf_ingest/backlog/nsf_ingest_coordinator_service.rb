@@ -66,6 +66,10 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
   end
 
   def format_results_and_notify
+    if @tracker['progress']['send_summary_email']['completed']
+      LogUtilsHelper.double_log('Result formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'NsfIngestCoordinatorService')
+      return
+    end
     LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'NsfIngestCoordinatorService')
     notification_service = Tasks::NSFIngest::Backlog::Utilities::NotificationService.new(
       config: @config,
@@ -75,6 +79,8 @@ class Tasks::NsfIngest::Backlog::NsfIngestCoordinatorService
       max_display_rows: MAX_ROWS
     )
     notification_service.run
+    @tracker['progress']['send_summary_email']['completed'] = true
+    @tracker.save
   end
 
   def generate_output_subdirectories
