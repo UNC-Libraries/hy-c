@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::EricIngest::Backlog::Utilities::FileAttachmentService
+class Tasks::EricIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
     SLEEP_INTERVAL = 1
     def initialize(config:, tracker:, log_file_path:, metadata_ingest_result_path:)
         super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
