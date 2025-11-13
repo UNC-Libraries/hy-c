@@ -23,7 +23,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
 
     def apply_additional_basic_attributes(article)
       article.title = [metadata['title']]
-      article.abstract = [metadata['description']] if metadata['abstract'].present?
+      article.abstract = [metadata['description']] if metadata['description'].present?
       article.date_issued = get_date_issued.strftime('%Y-%m-%d')
       article.keyword = metadata['subject'] if metadata['subject'].present?
       article.publisher = [metadata['publisher']] if metadata['publisher'].present?
