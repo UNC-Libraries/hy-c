@@ -23,6 +23,13 @@ class Tasks::EricIngest::Backlog::Utilities::MetadataIngestService
 
     eric_ids.each do |id|
       next if @seen_identifier_list.include?(id)
+      # Skip if work with this ERIC ID already exists
+      match = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id, admin_set_title: @config['admin_set_title'])
+      if match.present? && match[:work_id].present?
+        skip_existing_work(id, match, filename: "#{id}.pdf")
+        next
+      end
+
       metadata = fetch_metadata_for_eric_id(id)
       metadata['eric_id'] = id
       attr_builder = Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
