@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class Tasks::IngestHelperUtils::BaseIngestNotificationService
   include Tasks::IngestHelperUtils::ReportingHelper
+  INGEST_RESULTS_FILENAME = 'ingest_results.zip'
 
   def initialize(config:, tracker:, output_dir:, file_attachment_results_path:, max_display_rows: 100)
     @config = config
@@ -32,7 +33,7 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
 
     if @tracker['progress']['prepare_email_attachments']['completed']
       LogUtilsHelper.double_log('Email attachments already prepared according to tracker. Skipping attachment generation.', :info, tag: 'send_summary_email')
-      zip_path = File.join(@output_dir, 'ingest_results.zip')
+      zip_path = File.join(@output_dir, INGEST_RESULTS_FILENAME)
     else
       LogUtilsHelper.double_log('Generating CSV attachments for email...', :info, tag: 'send_summary_email')
       csv_paths = generate_result_csvs(results: report[:records], csv_output_dir: @output_dir)

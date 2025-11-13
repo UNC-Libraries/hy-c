@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module Tasks::IngestHelperUtils::ReportingHelper
   extend self
+  INGEST_RESULTS_FILENAME = 'ingest_results.zip'
+  
   def load_results(path:, tracker:)
     unless File.exist?(path)
       LogUtilsHelper.double_log("Results file not found at #{path}", :error, tag: 'load_and_format_results')
@@ -55,7 +57,7 @@ module Tasks::IngestHelperUtils::ReportingHelper
   end
 
   def compress_result_csvs(csv_paths:, zip_output_dir:)
-    zip_path = File.join(zip_output_dir, 'ingest_results.zip')
+    zip_path = File.join(zip_output_dir, INGEST_RESULTS_FILENAME)
     Zip::File.open(zip_path, Zip::File::CREATE) do |zip|
       csv_paths.each { |path| zip.add(File.basename(path), path) if File.exist?(path) }
     end
