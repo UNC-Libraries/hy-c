@@ -2,7 +2,7 @@
 module Tasks::IngestHelperUtils::ReportingHelper
   extend self
   INGEST_RESULTS_FILENAME = 'ingest_results.zip'
-  
+
   def load_results(path:, tracker:)
     unless File.exist?(path)
       LogUtilsHelper.double_log("Results file not found at #{path}", :error, tag: 'load_and_format_results')

@@ -23,4 +23,3 @@ class Tasks::EricIngest::Backlog::Utilities::NotificationService < Tasks::Ingest
     ERICReportMailer.eric_report_email(report: report, zip_path: zip_path).deliver_now
   end
 end
-

@@ -76,7 +76,7 @@ class Tasks::IngestHelperUtils::BaseIngestTracker
         'progress' => {
           'attach_files_to_works' => { 'completed' => false },
           'prepare_email_attachments' => { 'completed' => false },
-          'send_summary_email' => { 'completed' => false
+          'send_summary_email' => { 'completed' => false }
         }
     }
   end
