@@ -70,9 +70,11 @@ class Tasks::EricIngest::Backlog::EricIngestCoordinatorService
       return
   end
     LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'EricIngestCoordinatorService')
-    notification_service = Tasks::IngestHelperUtils::ResultNotificationService.new(
+    notification_service = Tasks::EricIngest::Backlog::Utilities::NotificationService.new(
+      config: @config,
       tracker: @tracker,
-      generated_results_csv_dir: @generated_results_csv_dir,
+      output_dir: @generated_results_csv_dir,
+      file_attachment_results_path: @file_attachment_results_path,
       max_display_rows: MAX_ROWS
     )
     notification_service.run
