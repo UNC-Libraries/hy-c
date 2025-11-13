@@ -5,9 +5,7 @@ class Tasks::NSFIngest::Backlog::Utilities::NsfIngestTracker < Tasks::IngestHelp
     @data['progress'].merge!(
       'metadata_ingest' => {
         'completed' => false
-      },
-      'attach_files_to_works' => { 'completed' => false },
-      'send_summary_email' => { 'completed' => false }
+      }
     )
     @data['file_info_csv_path'] = config['file_info_csv_path']
   end

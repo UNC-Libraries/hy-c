@@ -30,8 +30,16 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
     report[:truncated_categories] = generate_truncated_categories(report[:records], max_rows: @max_display_rows)
     report[:max_display_rows] = @max_display_rows
 
-    csv_paths = generate_result_csvs(results: report[:records], csv_output_dir: @output_dir)
-    zip_path  = compress_result_csvs(csv_paths: csv_paths, zip_output_dir: @output_dir)
+    if @tracker['progress']['prepare_email_attachments']['completed']
+      LogUtilsHelper.double_log('Email attachments already prepared according to tracker. Skipping attachment generation.', :info, tag: 'send_summary_email')
+      zip_path = File.join(@output_dir, 'ingest_results.zip')
+    else
+      LogUtilsHelper.double_log('Generating CSV attachments for email...', :info, tag: 'send_summary_email')
+      csv_paths = generate_result_csvs(results: report[:records], csv_output_dir: @output_dir)
+      zip_path  = compress_result_csvs(csv_paths: csv_paths, zip_output_dir: @output_dir)
+      @tracker['progress']['prepare_email_attachments']['completed'] = true
+      @tracker.save
+    end
 
     send_mail(report, zip_path)
 

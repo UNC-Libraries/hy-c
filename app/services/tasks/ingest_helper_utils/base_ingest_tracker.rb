@@ -73,7 +73,11 @@ class Tasks::IngestHelperUtils::BaseIngestTracker
         'depositor_onyen' => config['depositor_onyen'],
         'output_dir' => config['output_dir'],
         'full_text_dir' => config['full_text_dir'],
-        'progress' => {}
+        'progress' => {
+          'attach_files_to_works' => { 'completed' => false },
+          'prepare_email_attachments' => { 'completed' => false },
+          'send_summary_email' => { 'completed' => false
+        }
     }
   end
 end

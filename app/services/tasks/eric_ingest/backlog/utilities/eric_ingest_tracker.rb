@@ -5,9 +5,7 @@ class Tasks::EricIngest::Backlog::Utilities::EricIngestTracker < Tasks::IngestHe
     @data['progress'].merge!(
       'metadata_ingest' => {
         'completed' => false
-      },
-      'attach_files_to_works' => { 'completed' => false },
-      'send_summary_email' => { 'completed' => false }
+      }
     )
   end
 end
