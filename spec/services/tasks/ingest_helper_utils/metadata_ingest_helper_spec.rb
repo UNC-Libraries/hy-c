@@ -32,7 +32,7 @@ RSpec.describe Tasks::IngestHelperUtils::MetadataIngestHelper do
     File.delete(instance.md_ingest_results_path) if File.exist?(instance.md_ingest_results_path)
 
     # Stub Rails logger - include all log methods
-    allow(Rails).to receive(:logger).and_return(double(info: nil, error: nil, warn: nil))
+    allow(Rails).to receive(:logger).and_return(double(info: nil, error: nil, warn: nil, debug: nil))
     allow(LogUtilsHelper).to receive(:double_log)
   end
 
