@@ -22,6 +22,7 @@ RSpec.describe Tasks::EricIngest::Backlog::Utilities::NotificationService do
 
   describe '#populate_headers!' do
     it 'populates the report headers correctly' do
+      allow(service).to receive(:eric_pdf_count).and_return(3)
       report = {
           headers: { total_files: 0 },
           records: {
