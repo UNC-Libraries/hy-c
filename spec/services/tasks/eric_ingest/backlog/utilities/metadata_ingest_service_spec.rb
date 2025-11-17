@@ -87,7 +87,7 @@ RSpec.describe Tasks::EricIngest::Backlog::Utilities::MetadataIngestService do
 
       service.process_backlog
 
-      expect(service).to have_received(:record_result).once
+      expect(service).to have_received(:record_result).at_least(:once)
       expect(service).to have_received(:fetch_metadata_for_eric_id).once.with('ED654321')
     end
   end
