@@ -144,7 +144,11 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestTracker, type: :service do
       base = tracker.send(:build_base_tracker, config)
       expect(base).to include('start_time', 'restart_time', 'date_range', 'admin_set_title')
       expect(base['date_range']['start']).to eq('2025-10-01')
-      expect(base['progress']).to eq({})
+      expect(base['progress']).to eq({
+        'attach_files_to_works' => { 'completed' => false },
+        'prepare_email_attachments' => { 'completed' => false },
+        'send_summary_email' => { 'completed' => false }
+      })
     end
   end
 end
