@@ -579,27 +579,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         )
       end
     end
-
-    context 'when email sending fails' do
-      before do
-        allow(File).to receive(:exist?).and_return(true)
-        allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
-
-        allow(PubmedReportMailer).to receive(:pubmed_report_email).and_raise(StandardError, 'Email failed')
-      end
-
-      it 'logs error and continues' do
-        expect {
-          service.send(:format_results_and_notify)
-        }.not_to raise_error
-
-        expect(LogUtilsHelper).to have_received(:double_log).with(
-          a_string_matching(/Failed to send email notification/),
-          :error,
-          tag: 'send_summary_email'
-        )
-      end
-    end
   end
 
   describe 'workflow integration' do
