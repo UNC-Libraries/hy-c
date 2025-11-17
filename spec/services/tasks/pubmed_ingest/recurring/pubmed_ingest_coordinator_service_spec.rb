@@ -161,6 +161,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     before do
+      allow(Zip::File).to receive(:open).and_yield(double('zip', add: true))
       allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
       allow(JsonFileUtilsHelper)
         .to receive(:read_jsonl)
@@ -169,8 +170,20 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
       allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report).and_return({
         headers: { total_unique_records: 0 },
-        summary: 'Test report'
-      })
+        summary: 'Test report',
+        records: {
+          successfully_attached: [
+            {
+              work_id: 'work_123',
+              cdr_url: 'http://example.com/work_123',
+              message: 'File attached successfully',
+              pmid: '123456',
+              pmcid: 'PMC789012',
+              file_name: 'PMC789012_001.pdf'
+            }
+          ]
+      }
+    })
     end
 
     it 'executes all workflow steps in correct order' do
@@ -509,7 +522,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
             'pmc'    => { 'adjusted_size' => 8 },
             'pubmed' => { 'adjusted_size' => 8 }
           },
-          'send_summary_email' => { 'completed' => false }
+          'send_summary_email' => { 'completed' => false },
+          'prepare_email_attachments' => { 'completed' => true },
         },
         'depositor_onyen' => 'test_user',
         'date_range' => { 'start' => '2024-01-01', 'end' => '2024-01-31' }
@@ -527,7 +541,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     let(:mock_zip_path) { '/tmp/test_output/04_generate_result_csvs/pubmed_ingest_results.zip' }
 
     before do
-      # Add this directory to the setup
       FileUtils.mkdir_p(File.join(config['output_dir'], '04_generate_result_csvs'))
       allow_any_instance_of(Tasks::PubmedIngest::Recurring::Utilities::NotificationService)
         .to receive(:load_results)
@@ -596,6 +609,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(File).to receive(:open).and_yield(double('file', :puts => true, :<< => true))
       allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
       allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
+      allow(Zip::File).to receive(:open).and_yield(double('zip', add: true))
+
 
       allow(PubmedReportMailer).to receive(:pubmed_report_email)
         .and_return(double(deliver_now: true))
