@@ -11,7 +11,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
 
     def generate_authors
       # Some ERIC records do not have authors
-      return [] unless metadata['author'].present?
+      return ['N/A'] unless metadata['author'].present?
 
       metadata['author'].map.with_index do |full_name, i|
         {
