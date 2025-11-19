@@ -22,7 +22,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
     end
 
     def apply_additional_basic_attributes(article)
-      article.title = [metadata['title']]
+      article.title = [CGI.unescapeHTML(metadata['title'])]
       article.abstract = [metadata['description']] if metadata['description'].present?
       article.date_issued = get_date_issued
       article.keyword = metadata['subject'] if metadata['subject'].present?
