@@ -13,7 +13,10 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
       # Some ERIC records do not have authors
       return ['N/A'] unless metadata['author'].present?
 
-      metadata['author'].map.with_index do |full_name, i|
+      # Filter out "and others" entries
+      authors = metadata['author'].reject { |name| name.match?(/\band others\b/i) }
+
+      authors.map.with_index do |full_name, i|
         {
           'name' => full_name,
           'index' => i.to_s
