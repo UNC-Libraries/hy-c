@@ -30,8 +30,8 @@ RSpec.describe Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAtt
   end
 
   describe '#get_date_issued' do
-    it 'returns a DateTime object for valid publication year' do
-      expect(builder.get_date_issued).to eq(DateTime.new(2023))
+    it 'returns a formatted date string when publication year is present' do
+      expect(builder.get_date_issued).to eq(DateTime.new(2023).strftime('%Y-%m-%d'))
     end
 
     it 'returns nil if publication year is missing' do

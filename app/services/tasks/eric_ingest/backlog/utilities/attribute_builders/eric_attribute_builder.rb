@@ -4,7 +4,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
 
     def get_date_issued
       pub_year = metadata['publicationdateyear']
-      DateTime.new(pub_year.to_i) if pub_year.present?
+      pub_year.present? ? DateTime.new(pub_year.to_i).strftime('%Y-%m-%d') : nil
     end
 
     private
@@ -24,7 +24,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
     def apply_additional_basic_attributes(article)
       article.title = [metadata['title']]
       article.abstract = [metadata['description']] if metadata['description'].present?
-      article.date_issued = get_date_issued.strftime('%Y-%m-%d')
+      article.date_issued = get_date_issued
       article.keyword = metadata['subject'] if metadata['subject'].present?
       article.publisher = [metadata['publisher']] if metadata['publisher'].present?
     end
@@ -40,7 +40,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
          # remove the "ISSN-" prefix if present, and strip whitespace
           article.issn = [issn.sub(/^ISSN[-:\s]*/i, '').strip]
         end
-     end
+      end
       article.identifier = identifiers
     end
 

@@ -326,9 +326,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     context 'when work does not exist' do
       it 'creates new article and records success' do
         service.send(:process_batch, batch_articles)
-
-        # expect(service).to have_received(:new_article).with(batch_articles.first)
-        # expect(mock_article).to have_received(:save!)
+        expect(service).to have_received(:new_article).at_least(:once)
         expect(service).to have_received(:record_result).with(
           category: :successfully_ingested_metadata_only,
           ids: alternate_ids,

@@ -68,7 +68,7 @@ class Tasks::EricIngest::Backlog::EricIngestCoordinatorService
     if @tracker['progress']['send_summary_email']['completed']
       LogUtilsHelper.double_log('Result formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'EricIngestCoordinatorService')
       return
-  end
+    end
     LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'EricIngestCoordinatorService')
     notification_service = Tasks::EricIngest::Backlog::Utilities::NotificationService.new(
       config: @config,
