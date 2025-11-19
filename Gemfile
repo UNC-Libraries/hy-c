@@ -109,4 +109,3 @@ group :test do
   gem 'webdrivers', '~> 5.3', require: false
   gem 'webmock', '~> 3.14.0'
 end
-gem 'irb'
