@@ -31,7 +31,7 @@ gem 'hydra-editor', '~> 6.2.0'
 gem 'hydra-pcdm', '~> 1.3.0'
 gem 'hydra-role-management', '~> 1.1.0'
 gem 'hydra-works', '~> 2.1.0'
-gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'hyc-2112'
+gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyrax-4-development'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
