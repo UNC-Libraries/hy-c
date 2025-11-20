@@ -63,7 +63,7 @@ module Tasks
         identifier_key = identifier_key_name
         Rails.logger.info("[MetadataIngestService] Skipping work with #{identifier_key} #{identifier} — already exists.")
         article = WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
-        record_result(category: :skipped, message: 'Pre-filtered: work exists', identifier: identifier, article: article, filename: nil)
+        record_result(category: :skipped, message: 'Pre-filtered: work exists', identifier: identifier, article: article, filename: filename)
       end
 
       def handle_record_error(identifier_or_record, error, filename: nil)

@@ -11,7 +11,7 @@ module Tasks::EricIngest::Backlog::Utilities::AttributeBuilders
 
     def generate_authors
       # Some ERIC records do not have authors
-      return [{ 'name' => 'N/A', 'index' => '0' }] unless metadata['author'].present?
+      return [{ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' }] unless metadata['author'].present?
 
       # Filter out "and others" entries
       authors = metadata['author'].reject { |name| name.match?(/\band others\b/i) }

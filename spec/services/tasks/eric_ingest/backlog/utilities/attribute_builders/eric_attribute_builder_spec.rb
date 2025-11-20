@@ -48,10 +48,10 @@ RSpec.describe Tasks::EricIngest::Backlog::Utilities::AttributeBuilders::EricAtt
       expect(authors[1]).to eq({ 'name' => 'Smith, Jane', 'index' => '1' })
     end
 
-    it 'returns M/A if no authors are present' do
+    it 'returns default value if no authors are present' do
       metadata.delete('author')
       authors = builder.send(:generate_authors)
-      expect(authors[0]).to eq({ 'name' => 'N/A', 'index' => '0' })
+      expect(authors[0]).to eq({ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' })
     end
   end
 
