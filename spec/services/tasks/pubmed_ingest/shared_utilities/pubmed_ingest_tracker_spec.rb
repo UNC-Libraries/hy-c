@@ -14,7 +14,11 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker, type: 
     allow_any_instance_of(Tasks::IngestHelperUtils::BaseIngestTracker)
       .to receive(:initialize_new!)
       .and_wrap_original do |m, *args|
-        tracker.instance_variable_set(:@data, { 'progress' => {} })
+        tracker.instance_variable_set(:@data, { 'progress' => {
+          'attach_files_to_works' => { 'completed' => false },
+          'send_summary_email' =>    { 'completed' => false },
+          'prepare_email_attachments' => { 'completed' => false }
+        } })
       end
   end
 
@@ -24,12 +28,14 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker, type: 
       data = tracker.instance_variable_get(:@data)
 
       progress = data['progress']
-      expect(progress).to include(
+      progress_keys = progress.keys.map(&:to_s)
+      expect(progress_keys).to include(
         'retrieve_ids_within_date_range',
         'stream_and_write_alternate_ids',
         'adjust_id_lists',
         'metadata_ingest',
         'attach_files_to_works',
+        'prepare_email_attachments',
         'send_summary_email'
       )
 

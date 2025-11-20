@@ -130,6 +130,19 @@ module Tasks
         work.reload
         work.update_index
       end
+
+      def new_article(metadata:, attr_builder:, config:)
+      # Create new work
+        article = Article.new
+        article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        attr_builder.populate_article_metadata(article)
+        article.save!
+
+        # Sync permissions and state
+        admin_set = AdminSet.where(title: config['admin_set_title'])&.first
+        sync_permissions_and_state!(work_id: article.id, depositor_uid: config['depositor_onyen'], admin_set: admin_set)
+        article
+      end
     end
   end
 end

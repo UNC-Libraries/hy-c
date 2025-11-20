@@ -19,9 +19,7 @@ class Tasks::PubmedIngest::SharedUtilities::PubmedIngestTracker < Tasks::IngestH
       'metadata_ingest' => {
         'pubmed' => { 'completed' => false },
         'pmc' => { 'completed' => false }
-      },
-      'attach_files_to_works' => { 'completed' => false },
-      'send_summary_email' => { 'completed' => false }
+      }
     )
   end
 end

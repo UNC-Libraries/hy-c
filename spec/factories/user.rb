@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 FactoryBot.define do
   factory :user do
-    # Onyens are any 3-8 character alphanumeric string beginning with a letter - we are using the uid field to hold they onyen
-    uid { FFaker::InternetSE.user_name_variant_short }
+    # Onyens are any 3-8 character alphanumeric string beginning with a letter - we are using the uid field to hold the onyen
+    # Use a sequence to ensure uniqueness
+    sequence(:uid) { |n| "#{FFaker::InternetSE.user_name_variant_short}_#{n}" }
     display_name { FFaker::Name.name }
     email { FFaker::Internet.email }
 

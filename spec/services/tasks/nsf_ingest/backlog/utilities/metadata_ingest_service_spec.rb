@@ -34,7 +34,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
       expect(service.instance_variable_get(:@output_dir)).to eq('/tmp/nsf_output')
       expect(service.instance_variable_get(:@md_ingest_results_path)).to eq('/tmp/md_results.jsonl')
       expect(service.instance_variable_get(:@tracker)).to eq(tracker)
-      expect(service.instance_variable_get(:@seen_doi_list)).to be_a(Set)
+      expect(service.instance_variable_get(:@seen_identifier_list)).to be_a(Set)
       expect(service.instance_variable_get(:@write_buffer)).to eq([])
     end
   end
@@ -113,16 +113,16 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
       service.instance_variable_set(:@flush_threshold, 1)
       allow(service).to receive(:flush_buffer_to_file)
       allow(service).to receive(:extract_alternate_ids_from_article).and_return(nil)
-      service.send(:record_result, category: :ok, doi: '10.1000/foo', article: article)
+      service.send(:record_result, category: :ok, identifier: '10.1000/foo', article: article)
       expect(service).to have_received(:flush_buffer_to_file)
     end
 
     it 'does not duplicate seen DOI entries' do
       seen = Set.new(['10.1000/foo'])
-      service.instance_variable_set(:@seen_doi_list, seen)
+      service.instance_variable_set(:@seen_identifier_list, seen)
       allow(service).to receive(:flush_buffer_to_file)
       allow(service).to receive(:extract_alternate_ids_from_article).and_return(nil)
-      service.send(:record_result, category: :ok, doi: '10.1000/foo', article: article)
+      service.send(:record_result, category: :ok, identifier: '10.1000/foo', article: article)
       # Now it should write because the duplicate check was removed
       expect(service.instance_variable_get(:@write_buffer).size).to eq(1)
     end
@@ -180,7 +180,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
 
       allow(service).to receive(:record_result)
       service.send(:handle_record_error, record, error)
-      expect(Rails.logger).to have_received(:error).with(/Error processing record/)
+      expect(Rails.logger).to have_received(:error).with(/Error processing work/)
       expect(Rails.logger).to have_received(:error).with(/line1/)
       expect(service).to have_received(:record_result).with(
         hash_including(category: :failed, message: 'ouch')

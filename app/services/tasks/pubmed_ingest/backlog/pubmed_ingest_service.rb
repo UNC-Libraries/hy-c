@@ -58,8 +58,8 @@ module Tasks
             skipped_row = nil
             Rails.logger.info("[Ingest] Processing record ##{index + 1}")
             begin
-              article = new_article(metadata)
               builder = attribute_builder(metadata)
+              article = new_article(metadata: metadata, attr_builder: builder, config: { 'admin_set_title' => @admin_set, 'depositor_onyen' => @depositor })
               skipped_row = builder.find_skipped_row(@new_pubmed_works, article)
 
               Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
@@ -155,14 +155,6 @@ module Tasks
             current_arr = xml_doc.xpath(db_matcher)
             @retrieved_metadata += current_arr
           end
-        end
-
-        def new_article(metadata)
-          Rails.logger.info('[Article] Initializing new article object')
-          article = Article.new
-          article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-          builder = attribute_builder(metadata, article)
-          builder.populate_article_metadata(article)
         end
 
         def attach_pdf(article, skipped_row)

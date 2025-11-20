@@ -1,0 +1,88 @@
+<!-- Rails matches html templates with mailers with the directory and file_name -->
+<!-- Folder == Mailer Name, File == Function Name -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<p style="font-size: 16px; margin-bottom: 10px;">Reporting publications from ERIC Ingest on <strong><%= @report[:formatted_time] %></strong></p>
+
+<p style="font-size: 16px; margin-bottom: 10px;">
+  <strong>Depositor: </strong><%= @report[:headers][:depositor] %>
+</p>
+
+<p style="font-size: 16px; margin-bottom: 10px;">
+  <strong>Total Files: </strong>
+  <%= @report[:headers][:total_files].presence  %>
+</p>
+
+<% if @report[:truncated_categories].any? %>
+  <p style="font-size: 16px; margin-bottom: 10px; background-color:#fff3cd; color:#856404; padding:8px; border:1px solid #ffeeba;">
+    Note: The following categories were truncated to the first <%= @report[:max_display_rows] %> records for email display:
+    <strong><%= @report[:truncated_categories].map(&:to_s).join(", ") %></strong>.
+    Please see the attached CSV files for full results.
+  </p>
+<% end %>
+
+<!-- Generate tables for each record category -->
+<% @report[:categories].each do |key, label| %>
+
+  <!-- spacer instead of margin-top (Outlook-safe) -->
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+    <tr><td height="24" style="line-height:24px; font-size:24px;">&nbsp;</td></tr>
+  </table>
+
+  <!-- heading as a table or a <p> with margin:0 -->
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+    <tr>
+      <td style="font-size:20px; font-weight:bold; padding:0; margin:0; mso-margin-top-alt:0; mso-margin-bottom-alt:0;">
+        <%= label %>: <%= @report[:records][key].size %> Records
+      </td>
+    </tr>
+  </table>
+
+  <!-- data table -->
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse; table-layout:fixed;">
+    <thead>
+       <tr>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">Filename</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">CDR URL</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">DOI</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">Error / Attachment Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @report[:records][key].first(@report[:max_display_rows]).each_with_index do |record, index| %>
+        <tr>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:file_name] %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
+            <% if record[:cdr_url].present? %>
+               <a href="<%= record[:cdr_url] %>" style="word-break:break-word;">View in CDR</a>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:doi] || 'NONE' %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
+            <% if [:skipped, :failed, :successfully_ingested_metadata_only, :skipped_file_attachment].include?(key) %>
+              <%= record[:message].presence || 'N/A' %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @report[:records][key].size > @report[:max_display_rows] %>
+        <tr>
+          <td colspan="6" style="border:2px solid #dddddd; padding:10px; background-color:#ffeeba; font-weight:bold; color:#856404;">
+            Showing first <%= @report[:max_display_rows] %> of <%= @report[:records][key].size %> records.
+            Full list available in attached CSV.
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+</body>
+</html>

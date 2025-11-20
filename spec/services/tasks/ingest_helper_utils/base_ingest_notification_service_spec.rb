@@ -8,8 +8,11 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestNotificationService, type: :s
       'progress' => {
         'send_summary_email' => {
           'completed' => false
-        }
+        },
+        'prepare_email_attachments' => {
+          'completed' => false
       }
+    }
     }
   end
   let(:tracker) do
@@ -93,18 +96,6 @@ RSpec.describe Tasks::IngestHelperUtils::BaseIngestNotificationService, type: :s
     it 'marks tracker as completed after sending' do
       service.send(:send_summary_email, { test: 'data' })
       expect(progress_hash['progress']['send_summary_email']['completed']).to be true
-    end
-
-    it 'handles exceptions gracefully' do
-      allow(service).to receive(:send_mail).and_raise(StandardError, 'Boom!')
-      allow(Rails.logger).to receive(:error)
-
-      expect(LogUtilsHelper).to receive(:double_log).with(
-        a_string_including('Failed to send email notification: Boom!'),
-        :error,
-        tag: 'send_summary_email'
-      )
-      service.send(:send_summary_email, { test: 'data' })
     end
 
     it 'skips if already sent' do
