@@ -1,0 +1,25 @@
+<%# [hyc-override] Guard clause to prevent rendering malformed facets %>
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/584ed4151374659e7ef6964a5a3ff1a4d884996f/app/views/catalog/facet.html.erb %>
+<%# Blacklight 7.24.0 %>
+<%# Override app/views/catalog/facet.html.erb %>
+
+<% if @facet&.index_range && @display_facet&.index? %>
+  <%= render Blacklight::System::ModalComponent.new do |component| %>
+    <%# Removed component prefix that duplicates the facet pagination view %>
+
+    <% component.title { facet_field_label(@facet.key) } %>
+
+    <%= render partial: 'facet_index_navigation' if @facet&.index_range && @display_facet.index? %>
+
+    <div class="facet-extended-list">
+      <%= render_facet_limit(@display_facet, layout: false) %>
+    </div>
+
+    <%# Removed component footer and placed the facet pagination partial within a `container` div %>
+    <div class="container">
+      <div class="facet-pagination bottom row justify-content-between">
+        <%= render :partial=>'facet_pagination' %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
