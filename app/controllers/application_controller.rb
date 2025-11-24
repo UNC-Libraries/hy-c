@@ -32,10 +32,10 @@ class ApplicationController < ActionController::Base
   rescue_from ArgumentError, with: :render_400
   rescue_from URI::InvalidURIError, with: :render_400
   rescue_from NoMethodError do |exception|
-    if exception.message.include?("collection_path")
+    if exception.message.include?('collection_path')
       work = ActiveFedora::Base.find(params[:id]) rescue nil
       if work.is_a?(Collection)
-        redirect_to "/collections/#{work.id}", alert: "This is a collection. Redirecting to the correct URL."
+        redirect_to "/collections/#{work.id}", alert: 'This is a collection. Redirecting to the correct URL.'
       else
         raise exception
       end
