@@ -46,4 +46,11 @@ class Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService
     @tracker['progress']['metadata_ingest']['completed'] = true
     @tracker.save
   end
+
+  def generate_output_subdirectories
+    [LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR, RESULT_CSV_OUTPUT_DIR].each do |dir|
+      full_path = File.join(@config['output_dir'], dir)
+      FileUtils.mkdir_p(full_path) unless Dir.exist?(full_path)
+    end
+  end
 end
