@@ -52,24 +52,12 @@ class Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService
 
   def fetch_metadata_for_rosap_id(rosap_id)
     raise ArgumentError, 'ROSA-P ID cannot be blank' if rosap_id.blank?
-    uri = URI('https://api.ies.ed.gov/rosap/')
-    uri.query = URI.encode_www_form(search: "id:\"#{rosap_id}\"")
-
-    response = HTTParty.get(uri.to_s)
+    response = HTTParty.get("https://rosap.ntl.bts.gov/view/dot/#{rosap_id}")
     if response.code != 200
       raise "Failed to fetch metadata for ROSA-P ID #{rosap_id}: HTTP #{response.code}"
     end
 
-    extract_json_from_response(response)
-  end
-
-  def extract_json_from_response(response)
-    data = JSON.parse(response.body)
-    if data['response'] && data['response']['docs'] && data['response']['docs'].any?
-      return data['response']['docs'].first
-    else
-      raise 'No metadata found in response for ROSA-P ID'
-    end
+    Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService.parse_metadata_from_html(response.body)
   end
 
   def remaining_ids_from_directory(path)

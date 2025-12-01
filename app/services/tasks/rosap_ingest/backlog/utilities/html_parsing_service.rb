@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+class Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
+  extend self
+  def parse_metadata_from_html(html_content)
+    doc = Nokogiri::HTML(html_content)
+    metadata = {}
+
+    metadata['title'] = safe_plain_text(doc.at_css('h1#mainTitle')) ||
+                        safe_content(doc.at_xpath('//meta[@name="citation_title"]'))
+                        
+    metadata['abstract'] = safe_plain_text(doc.at_css('#collapseDetails')) ||
+                           safe_content(doc.at_xpath('//meta[@name="citation_abstract"]'))
+
+    metadata['publication_date'] = safe_plain_text(doc.at_css('.bookHeaderListData p')) ||
+                                   safe_content(doc.at_xpath('//meta[@name="citation_publication_date"]')) 
+                                   
+    metadata
+  end
+
+  private
+
+  def safe_plain_text(html_snippet)
+    html_snippet&.text&.strip
+  end
+
+  def safe_content(meta_snippet)
+    meta_snippet&.[]('content')
+  end
+end
