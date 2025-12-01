@@ -48,6 +48,30 @@ class Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService
     LogUtilsHelper.double_log("Ingest complete. Processed #{rosap_ids.size} IDs.", :info, tag: 'MetadataIngestService')
   end
 
+  # Override for directory-specific recording
+  def record_result(category:, message: '', identifier: nil, article: nil, filename: nil)
+    identifier_key = identifier_key_name # Implemented by including class
+    @seen_identifier_list << identifier if identifier.present?
+
+    ids = { identifier_key => identifier, 'work_id' => article&.id&.to_s }
+    alternate_ids = extract_alternate_ids_from_article(article, category)
+    ids.merge!(alternate_ids) if alternate_ids.present?
+    pdfs_in_dir = Dir.glob(File.join(@config['full_text_dir'], identifier, '*.pdf'))
+
+    pdfs_in_dir.each do |pdf_path|
+      log_entry = {
+      ids: ids,
+      timestamp: Time.now.utc.iso8601,
+      category: category,
+      filename: File.basename(pdf_path)
+      }
+      log_entry[:message] = message if message.present?
+
+      @write_buffer << log_entry
+      flush_buffer_if_needed
+    end
+  end
+
   private
 
   def fetch_metadata_for_rosap_id(rosap_id)
@@ -63,9 +87,9 @@ class Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService
   def remaining_ids_from_directory(path)
     # Extract ROSA-P IDs from PDFs in the specified directory
     ids = []
-    Dir.glob(File.join(path, '*.pdf')).each do |file_path|
-      filename = File.basename(file_path)
-      rosap_id = filename.sub('.pdf', '')
+    Dir.glob(File.join(path, '*/')).each do |dir_path|
+        # Get just the directory name (the ROSA-P ID)
+      rosap_id = File.basename(dir_path)
       ids << rosap_id
     end
     ids.reject { |id| @seen_identifier_list.include?(id) }

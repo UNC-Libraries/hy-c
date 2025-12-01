@@ -7,13 +7,13 @@ class Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
 
     metadata['title'] = safe_plain_text(doc.at_css('h1#mainTitle')) ||
                         safe_content(doc.at_xpath('//meta[@name="citation_title"]'))
-                        
+
     metadata['abstract'] = safe_plain_text(doc.at_css('#collapseDetails')) ||
                            safe_content(doc.at_xpath('//meta[@name="citation_abstract"]'))
 
     metadata['publication_date'] = safe_plain_text(doc.at_css('.bookHeaderListData p')) ||
-                                   safe_content(doc.at_xpath('//meta[@name="citation_publication_date"]')) 
-                                   
+                                   safe_content(doc.at_xpath('//meta[@name="citation_publication_date"]'))
+
     metadata
   end
 
