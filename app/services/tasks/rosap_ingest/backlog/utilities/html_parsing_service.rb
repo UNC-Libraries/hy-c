@@ -17,8 +17,12 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
     metadata['publisher'] = extract_multi_value_field(doc, 'Corporate Publisher', multiple: true)
 
     metadata['keywords'] = extract_keywords(doc)
+
+    # Funding information is not consistently available; stub as empty array
+    metadata['funder'] = []
+
     # WIP Log for metadata mapping (Remove later)
-    wip_log_object = metadata.slice('title', 'date_issued', 'publisher', 'keywords')
+    wip_log_object = metadata.except('abstract')
     LogUtilsHelper.double_log("Parsed metadata: #{wip_log_object.inspect}", :debug, tag: 'HTMLParsingService')
     metadata
   end
