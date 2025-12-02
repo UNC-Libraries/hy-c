@@ -18,7 +18,7 @@ class BaseIngestReportMailer < ApplicationMailer
 
     @report = report
     mail(
-      to: report[:to] || 'cdr@unc.edu',
+      to: report[:to] || 'dcam@unc.edu',
       subject: report[:subject],
       template_name: template_name
     )
