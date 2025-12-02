@@ -23,7 +23,7 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
 
     report = Tasks::IngestHelperUtils::IngestReportingService.generate_report(
       ingest_output: attachment_results,
-      source_name: source_name
+      source_name: source_name.capitalize
     )
 
     populate_headers!(report)
