@@ -14,7 +14,7 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
     metadata['date_issued'] = safe_plain_text(doc.at_css('.bookHeaderListData p')) ||
                                    safe_content(doc.at_xpath('//meta[@name="citation_publication_date"]'))
 
-    metadata['publisher'] = extract_multi_value_field(doc, 'Corporate Publisher', multiple: true)
+    metadata['publisher'] = extract_multi_value_field(doc, 'Corporate Publisher', multiple: false)
 
     metadata['keywords'] = extract_keywords(doc)
 
