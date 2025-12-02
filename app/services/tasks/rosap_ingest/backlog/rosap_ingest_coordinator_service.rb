@@ -23,7 +23,7 @@ class Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService
       load_and_ingest_metadata
       attach_files
     end
-    # format_results_and_notify
+    format_results_and_notify
 
     LogUtilsHelper.double_log('ROSA-P ingest workflow completed successfully.', :info, tag: 'RosapIngestCoordinator')
     rescue => e
@@ -49,10 +49,10 @@ class Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService
 
   def attach_files
     if @tracker['progress']['attach_files_to_works']['completed']
-      LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'EricIngestCoordinatorService')
+      LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'RosapIngestCoordinatorService')
       return
     end
-    LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'EricIngestCoordinatorService')
+    LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'RosapIngestCoordinatorService')
     file_attachment_service = Tasks::RosapIngest::Backlog::Utilities::FileAttachmentService.new(
         config: @config,
         tracker: @tracker,
@@ -61,6 +61,24 @@ class Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService
     )
     file_attachment_service.run
     @tracker['progress']['attach_files_to_works']['completed'] = true
+    @tracker.save
+  end
+
+  def format_results_and_notify
+    if @tracker['progress']['send_summary_email']['completed']
+      LogUtilsHelper.double_log('Result formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'RosapIngestCoordinatorService')
+      return
+    end
+    LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'RosapIngestCoordinatorService')
+    notification_service = Tasks::RosapIngest::Backlog::Utilities::NotificationService.new(
+      config: @config,
+      tracker: @tracker,
+      output_dir: @generated_results_csv_dir,
+      file_attachment_results_path: @file_attachment_results_path,
+      max_display_rows: MAX_ROWS
+    )
+    notification_service.run
+    @tracker['progress']['send_summary_email']['completed'] = true
     @tracker.save
   end
 
