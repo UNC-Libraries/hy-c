@@ -16,16 +16,16 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
 
     metadata['publisher'] = extract_multi_value_field(doc, 'Corporate Publisher', multiple: true)
     # WIP Log for metadata mapping (Remove later)
-    wip_log_object = metadata.slice('title', 'publication_date')
+    wip_log_object = metadata.slice('title', 'date_issued', 'publisher')
     LogUtilsHelper.double_log("Parsed metadata: #{wip_log_object.inspect}", :debug, tag: 'HTMLParsingService')
     metadata
   end
 
   private
 
-  def extract_multi_value_field(doc, css_selector, multiple: false)
+  def extract_multi_value_field(doc, label_text, multiple: false)
     section_matching_label = doc.css('.bookDetails-row').find do |row|
-      safe_plain_text(row.at_css('.bookDetails-label')) == css_selector
+      safe_plain_text(row.at_css('.bookDetailsLabel')) == "#{label_text}:"
     end
 
     return multiple ? [] : nil unless section_matching_label
