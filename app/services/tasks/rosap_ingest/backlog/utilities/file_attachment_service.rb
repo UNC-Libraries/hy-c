@@ -14,7 +14,7 @@ class Tasks::RosapIngest::Backlog::Utilities::FileAttachmentService < Tasks::Ing
     begin
         Dir.glob(File.join(file_path, '*.pdf')).each do |file_pdf_path|
             file_set = attach_pdf_to_work_with_file_path!(record: record,
-                                                    file_path: file_path,
+                                                    file_path: file_pdf_path,
                                                     depositor_onyen: config['depositor_onyen'])
 
             if file_set
