@@ -22,7 +22,7 @@ module Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders
     def generate_authors
       metadata['authors']
     end
-    
+
     def set_journal_attributes(article); end
     def retrieve_author_affiliations(hash, author); end
     def format_publication_identifiers; end

@@ -48,13 +48,13 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
   def extract_authors_from_details_section(doc)
     author_section = doc.at_css('#moretextPAmods\\.sm_creator')
     return [] unless author_section
-    
+
     author_links = author_section.css('a[id^="metadataLink-Creators-"]')
-    
+
     author_links.map.with_index do |link, index|
       author_name = safe_plain_text(link)
       orcid = extract_orcid_for_author(link)
-      
+
       {
         'name' => author_name,
         'orcid' => orcid,
@@ -65,11 +65,11 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
 
   def extract_authors_from_meta_tags(doc)
     tags = doc.xpath('//meta[@name="citation_author"]')
-    
+
     tags.map.with_index do |tag, index|
       author_name = safe_content(tag)
       next unless author_name
-      
+
       {
         'name' => author_name,
         'orcid' => '',
@@ -81,7 +81,7 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
   def extract_orcid_for_author(author_link)
     orcid_link = author_link.next_element
     return '' unless orcid_link&.[]('href')&.include?('orcid.org')
-    
+
     orcid_link['href'].split('/').last
   end
 
