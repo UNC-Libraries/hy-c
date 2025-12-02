@@ -19,6 +19,6 @@ class Tasks::ROSAPIngest::Backlog::Utilities::NotificationService < Tasks::Inges
   end
 
   def send_mail(report, zip_path)
-    ROSAPReportMailer.rosap_report_email(report: report, zip_path: zip_path).deliver_now
+    ROSAPReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
   end
 end

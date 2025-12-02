@@ -4,7 +4,7 @@ class ROSAPReportMailer < BaseIngestReportMailer
     ingest_report_email(
       report: report,
       zip_path: zip_path,
-      template_name: 'rosap_report_email'
+      template_name: 'report_email'
     )
   end
 end

@@ -67,7 +67,7 @@
               N/A
             <% end %>
           </td>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:ids][:rosap_id] || 'NONE' %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:rosap_id] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
             <% if [:skipped, :failed, :successfully_ingested_metadata_only, :skipped_file_attachment].include?(key) %>
               <%= record[:message].presence || 'N/A' %>
