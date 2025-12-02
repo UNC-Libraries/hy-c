@@ -11,9 +11,10 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
     metadata['abstract'] = safe_plain_text(doc.at_css('#collapseDetails')) ||
                            safe_content(doc.at_xpath('//meta[@name="citation_abstract"]'))
 
-    metadata['publication_date'] = safe_plain_text(doc.at_css('.bookHeaderListData p')) ||
+    metadata['date_issued'] = safe_plain_text(doc.at_css('.bookHeaderListData p')) ||
                                    safe_content(doc.at_xpath('//meta[@name="citation_publication_date"]'))
 
+    metadata['publisher'] = safe_content(doc.at_xpath('//meta[@name="citation_publisher"]'))
     # WIP Log for metadata mapping (Remove later)
     wip_log_object = metadata.slice('title', 'publication_date')
     LogUtilsHelper.double_log("Parsed metadata: #{wip_log_object.inspect}", :debug, tag: 'HTMLParsingService')
@@ -21,6 +22,23 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
   end
 
   private
+
+  def extract_multi_value_field(doc, css_selector, multiple: false)
+    section_matching_label = doc.css('.bookDetails-row').find do |row|
+      safe_plain_text(row.at_css('.bookDetails-label')) == css_selector
+    end
+
+    return multiple ? [] : nil unless section_matching_label
+
+    if multiple
+      # Extract all links as an array
+      section_matching_label.css('.bookDetailsData a').map { |elem| safe_plain_text(elem) }
+    else
+      # Extract single value (prefer link text, fall back to any text)
+      safe_plain_text(section_matching_label.at_css('.bookDetailsData')) ||
+      safe_plain_text(section_matching_label.at_css('.bookDetailsData a'))
+    end
+  end
 
   def safe_plain_text(html_snippet)
     html_snippet&.text&.strip
