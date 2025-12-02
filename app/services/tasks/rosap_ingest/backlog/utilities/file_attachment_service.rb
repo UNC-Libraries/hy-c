@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # frozen_string literal: true
-class Tasks::RosapIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
+class Tasks::ROSAPIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   SLEEP_INTERVAL = 1
   def initialize(config:, tracker:, log_file_path:, metadata_ingest_result_path:)
     super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)

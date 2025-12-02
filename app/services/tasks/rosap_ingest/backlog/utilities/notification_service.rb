@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::RosapIngest::Backlog::Utilities::NotificationService < Tasks::IngestHelperUtils::BaseIngestNotificationService
+class Tasks::ROSAPIngest::Backlog::Utilities::NotificationService < Tasks::IngestHelperUtils::BaseIngestNotificationService
   private
 
   def source_name
@@ -19,6 +19,6 @@ class Tasks::RosapIngest::Backlog::Utilities::NotificationService < Tasks::Inges
   end
 
   def send_mail(report, zip_path)
-    RosapReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
+    ROSAPReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
   end
 end

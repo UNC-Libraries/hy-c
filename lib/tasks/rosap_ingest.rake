@@ -15,7 +15,7 @@ task :rosap_backlog_ingest, [:resume, :output_dir, :full_text_dir, :admin_set_ti
 
   write_intro_banner(config: config, ingest_type: 'ROSA-P')
 
-  coordinator = Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService.new(config)
+  coordinator = Tasks::ROSAPIngest::Backlog::ROSAPIngestCoordinatorService.new(config)
   coordinator.run
 end
 

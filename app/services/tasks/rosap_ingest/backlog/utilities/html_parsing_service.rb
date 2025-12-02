@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
+module Tasks::ROSAPIngest::Backlog::Utilities::HTMLParsingService
   extend self
   def parse_metadata_from_html(html_content)
     doc = Nokogiri::HTML(html_content)
