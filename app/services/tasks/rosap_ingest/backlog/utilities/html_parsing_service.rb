@@ -21,19 +21,68 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
     # Funding information is not consistently available; stub as empty array
     metadata['funder'] = []
 
+    metadata['authors'] = extract_authors(doc)
+
     # WIP Log for metadata mapping (Remove later)
     wip_log_object = metadata.except('abstract')
     LogUtilsHelper.double_log("Parsed metadata: #{wip_log_object.inspect}", :debug, tag: 'HTMLParsingService')
     metadata
   end
 
-  private
-
   def extract_keywords(doc)
     keywords_from_meta_tags = extract_keywords_from_meta_tags(doc)
     return keywords_from_meta_tags if keywords_from_meta_tags.any?
     # Fallback to details section
     extract_keywords_from_details_section(doc)
+  end
+
+  def extract_authors(doc)
+    authors_from_details_section = extract_authors_from_details_section(doc)
+    return authors_from_details_section if authors_from_details_section.any?
+    # Fallback to meta tags
+    extract_authors_from_meta_tags(doc)
+  end
+
+  private
+
+  def extract_authors_from_details_section(doc)
+    author_section = doc.at_css('#moretextPAmods\\.sm_creator')
+    return [] unless author_section
+    
+    author_links = author_section.css('a[id^="metadataLink-Creators-"]')
+    
+    author_links.map.with_index do |link, index|
+      author_name = safe_plain_text(link)
+      orcid = extract_orcid_for_author(link)
+      
+      {
+        'name' => author_name,
+        'orcid' => orcid,
+        'index' => index.to_s
+      }
+    end
+  end
+
+  def extract_authors_from_meta_tags(doc)
+    tags = doc.xpath('//meta[@name="citation_author"]')
+    
+    tags.map.with_index do |tag, index|
+      author_name = safe_content(tag)
+      next unless author_name
+      
+      {
+        'name' => author_name,
+        'orcid' => '',
+        'index' => index.to_s
+      }
+    end.compact
+  end
+
+  def extract_orcid_for_author(author_link)
+    orcid_link = author_link.next_element
+    return '' unless orcid_link&.[]('href')&.include?('orcid.org')
+    
+    orcid_link['href'].split('/').last
   end
 
   def extract_keywords_from_meta_tags(doc)
