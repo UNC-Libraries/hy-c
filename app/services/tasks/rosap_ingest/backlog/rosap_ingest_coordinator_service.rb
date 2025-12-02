@@ -21,7 +21,7 @@ class Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService
   def run
     NotificationUtilsHelper.suppress_emails do
       load_and_ingest_metadata
-    # attach_files
+      attach_files
     end
     # format_results_and_notify
 
@@ -44,6 +44,23 @@ class Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService
     )
     md_ingest_service.process_backlog
     @tracker['progress']['metadata_ingest']['completed'] = true
+    @tracker.save
+  end
+
+  def attach_files
+    if @tracker['progress']['attach_files_to_works']['completed']
+      LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'EricIngestCoordinatorService')
+      return
+    end
+    LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'EricIngestCoordinatorService')
+    file_attachment_service = Tasks::RosapIngest::Backlog::Utilities::FileAttachmentService.new(
+        config: @config,
+        tracker: @tracker,
+        log_file_path: @file_attachment_results_path,
+        metadata_ingest_result_path: @md_ingest_results_path
+    )
+    file_attachment_service.run
+    @tracker['progress']['attach_files_to_works']['completed'] = true
     @tracker.save
   end
 
