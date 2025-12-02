@@ -15,13 +15,36 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
                                    safe_content(doc.at_xpath('//meta[@name="citation_publication_date"]'))
 
     metadata['publisher'] = extract_multi_value_field(doc, 'Corporate Publisher', multiple: true)
+
+    metadata['keywords'] = extract_keywords(doc)
     # WIP Log for metadata mapping (Remove later)
-    wip_log_object = metadata.slice('title', 'date_issued', 'publisher')
+    wip_log_object = metadata.slice('title', 'date_issued', 'publisher', 'keywords')
     LogUtilsHelper.double_log("Parsed metadata: #{wip_log_object.inspect}", :debug, tag: 'HTMLParsingService')
     metadata
   end
 
   private
+
+  def extract_keywords(doc)
+    keywords_from_meta_tags = extract_keywords_from_meta_tags(doc)
+    return keywords_from_meta_tags if keywords_from_meta_tags.any?
+    # Fallback to details section
+    extract_keywords_from_details_section(doc)
+  end
+
+  def extract_keywords_from_meta_tags(doc)
+    tags = doc.xpath('//meta[@name="citation_keywords"]')
+
+    tags.map { |tag| safe_content(tag) }.compact
+  end
+
+  def extract_keywords_from_details_section(doc)
+    keyword_section = doc.css('#mesh-keywords')
+    return [] if keyword_section.empty?
+
+    keyword_links = keyword_section.css('a[id^="metadataLink-Subject/TRT Terms-"]')
+    keyword_links.map { |link| link.text.strip }
+  end
 
   def extract_multi_value_field(doc, label_text, multiple: false)
     section_matching_label = doc.css('.bookDetails-row').find do |row|
