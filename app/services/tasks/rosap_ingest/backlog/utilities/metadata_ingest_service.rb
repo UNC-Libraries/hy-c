@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 class Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService
+  API_REQUEST_DELAY_SECONDS = 3
   include Tasks::IngestHelperUtils::IngestHelper
   include Tasks::IngestHelperUtils::MetadataIngestHelper
 
@@ -42,6 +43,8 @@ class Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService
       handle_record_error(id, e, filename: "#{id}.pdf")
     ensure
       flush_buffer_if_needed
+      # Respect rate limiting
+      sleep(API_REQUEST_DELAY_SECONDS)
     end
 
     flush_buffer_to_file unless @write_buffer.empty?
