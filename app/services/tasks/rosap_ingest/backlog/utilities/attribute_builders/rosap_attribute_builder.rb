@@ -16,18 +16,13 @@ module Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders
       if metadata['rosap_id'].present?
         identifiers << "ROSA-P ID: #{metadata['rosap_id']}"
       end
-
-      if metadata['issn'].present?
-        metadata['issn'].each do |issn|
-        # remove the "ISSN-" prefix if present, and strip whitespace
-          article.issn = [issn.sub(/^ISSN[-:\s]*/i, '').strip]
-        end
-      end
       article.identifier = identifiers
     end
 
-      # Stubbed methods WIP
-    def generate_authors; end
+    def generate_authors
+      metadata['authors']
+    end
+    
     def set_journal_attributes(article); end
     def retrieve_author_affiliations(hash, author); end
     def format_publication_identifiers; end
