@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::ROSAPIngest::Backlog::Utilities::NotificationService < Tasks::IngestHelperUtils::BaseIngestNotificationService
+class Tasks::RosapIngest::Backlog::Utilities::NotificationService < Tasks::IngestHelperUtils::BaseIngestNotificationService
 
     # Override for all-caps subject line
   def send_summary_email(attachment_results)

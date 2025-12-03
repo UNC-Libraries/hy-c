@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::ROSAPIngest::Backlog::Utilities::ROSAPIngestTracker < Tasks::IngestHelperUtils::BaseIngestTracker
+class Tasks::RosapIngest::Backlog::Utilities::RosapIngestTracker < Tasks::IngestHelperUtils::BaseIngestTracker
   def initialize_new!(config)
     super
     @data['progress'].merge!(

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::ROSAPIngest::Backlog::ROSAPIngestCoordinatorService
+class Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService
   LOAD_METADATA_OUTPUT_DIR  = '01_load_and_ingest_metadata'
   ATTACH_FILES_OUTPUT_DIR   = '02_attach_files_to_works'
   RESULT_CSV_OUTPUT_DIR     = '03_generate_result_csvs'
@@ -8,7 +8,7 @@ class Tasks::ROSAPIngest::Backlog::ROSAPIngestCoordinatorService
   def initialize(config)
       # Initialize ingest tracker
     @config = config
-    @tracker = Tasks::ROSAPIngest::Backlog::Utilities::ROSAPIngestTracker.build(
+    @tracker = Tasks::RosapIngest::Backlog::Utilities::RosapIngestTracker.build(
         config: config,
         resume: config['resume'])
     @md_ingest_results_path = File.join(@config['output_dir'], LOAD_METADATA_OUTPUT_DIR, 'metadata_ingest_results.jsonl')
@@ -25,19 +25,19 @@ class Tasks::ROSAPIngest::Backlog::ROSAPIngestCoordinatorService
     end
     format_results_and_notify
 
-    LogUtilsHelper.double_log('ROSA-P ingest workflow completed successfully.', :info, tag: 'ROSAPIngestCoordinator')
+    LogUtilsHelper.double_log('ROSA-P ingest workflow completed successfully.', :info, tag: 'RosapIngestCoordinator')
     rescue => e
-      LogUtilsHelper.double_log("ROSA-P ingest workflow failed: #{e.message}", :error, tag: 'ROSAPIngestCoordinator')
+      LogUtilsHelper.double_log("ROSA-P ingest workflow failed: #{e.message}", :error, tag: 'RosapIngestCoordinator')
       raise e
   end
 
   def load_and_ingest_metadata
     if @tracker['progress']['metadata_ingest']['completed']
-      LogUtilsHelper.double_log('Metadata ingest already completed according to tracker. Skipping this step.', :info, tag: 'ROSAPIngestCoordinatorService')
+      LogUtilsHelper.double_log('Metadata ingest already completed according to tracker. Skipping this step.', :info, tag: 'RosapIngestCoordinatorService')
       return
     end
-    LogUtilsHelper.double_log('Starting metadata ingest step.', :info, tag: 'ROSAPIngestCoordinatorService')
-    md_ingest_service = Tasks::ROSAPIngest::Backlog::Utilities::MetadataIngestService.new(
+    LogUtilsHelper.double_log('Starting metadata ingest step.', :info, tag: 'RosapIngestCoordinatorService')
+    md_ingest_service = Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService.new(
         config: @config,
         tracker: @tracker,
         md_ingest_results_path: @md_ingest_results_path
@@ -49,11 +49,11 @@ class Tasks::ROSAPIngest::Backlog::ROSAPIngestCoordinatorService
 
   def attach_files
     if @tracker['progress']['attach_files_to_works']['completed']
-      LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'ROSAPIngestCoordinatorService')
+      LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'RosapIngestCoordinatorService')
       return
     end
-    LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'ROSAPIngestCoordinatorService')
-    file_attachment_service = Tasks::ROSAPIngest::Backlog::Utilities::FileAttachmentService.new(
+    LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'RosapIngestCoordinatorService')
+    file_attachment_service = Tasks::RosapIngest::Backlog::Utilities::FileAttachmentService.new(
         config: @config,
         tracker: @tracker,
         log_file_path: @file_attachment_results_path,
@@ -66,11 +66,11 @@ class Tasks::ROSAPIngest::Backlog::ROSAPIngestCoordinatorService
 
   def format_results_and_notify
     if @tracker['progress']['send_summary_email']['completed']
-      LogUtilsHelper.double_log('Result formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'ROSAPIngestCoordinatorService')
+      LogUtilsHelper.double_log('Result formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'RosapIngestCoordinatorService')
       return
     end
-    LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'ROSAPIngestCoordinatorService')
-    notification_service = Tasks::ROSAPIngest::Backlog::Utilities::NotificationService.new(
+    LogUtilsHelper.double_log('Starting result formatting and notification step.', :info, tag: 'RosapIngestCoordinatorService')
+    notification_service = Tasks::RosapIngest::Backlog::Utilities::NotificationService.new(
       config: @config,
       tracker: @tracker,
       output_dir: @generated_results_csv_dir,

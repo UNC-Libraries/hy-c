@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Tasks::ROSAPIngest::Backlog::Utilities::MetadataIngestService
+class Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService
   API_REQUEST_DELAY_SECONDS = 3
   include Tasks::IngestHelperUtils::IngestHelper
   include Tasks::IngestHelperUtils::MetadataIngestHelper
@@ -33,7 +33,7 @@ class Tasks::ROSAPIngest::Backlog::Utilities::MetadataIngestService
 
       metadata = fetch_metadata_for_rosap_id(id)
       metadata['rosap_id'] = id
-      attr_builder = Tasks::ROSAPIngest::Backlog::Utilities::AttributeBuilders::ROSAPAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
+      attr_builder = Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::ROSAPAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
 
       article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, identifier: id, article: article, filename: "#{id}.pdf")
@@ -84,7 +84,7 @@ class Tasks::ROSAPIngest::Backlog::Utilities::MetadataIngestService
       raise "Failed to fetch metadata for ROSA-P ID #{rosap_id}: HTTP #{response.code}"
     end
 
-    Tasks::ROSAPIngest::Backlog::Utilities::HTMLParsingService.parse_metadata_from_html(response.body)
+    Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService.parse_metadata_from_html(response.body)
   end
 
   def remaining_ids_from_directory(path)

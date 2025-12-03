@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::ROSAPIngest::Backlog::Utilities::AttributeBuilders
+module Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders
   class ROSAPAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
     private
 
