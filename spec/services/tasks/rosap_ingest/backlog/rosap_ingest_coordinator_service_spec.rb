@@ -93,4 +93,73 @@ RSpec.describe Tasks::RosapIngest::Backlog::RosapIngestCoordinatorService do
       expect(log_calls).to include(['ROSA-P ingest workflow failed: Ingest failed', :error, { tag: 'RosapIngestCoordinator' }])
     end
   end
+
+  describe '#load_and_ingest_metadata' do
+    it 'runs metadata ingest service and marks complete' do
+      allow(md_ingest_service).to receive(:process_backlog)
+      expect(Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService).to receive(:new).and_return(md_ingest_service)
+
+      coordinator.send(:load_and_ingest_metadata)
+
+      expect(tracker_hash['progress']['metadata_ingest']['completed']).to be true
+    end
+
+    it 'skips if already completed' do
+      tracker_hash['progress']['metadata_ingest']['completed'] = true
+
+      coordinator.send(:load_and_ingest_metadata)
+
+      expect(log_calls).to include(['Metadata ingest already completed according to tracker. Skipping this step.', :info, { tag: 'RosapIngestCoordinatorService' }])
+    end
+  end
+
+  describe '#attach_files' do
+    it 'runs file attachment service and marks complete' do
+      allow(file_attachment_service).to receive(:run)
+      expect(Tasks::RosapIngest::Backlog::Utilities::FileAttachmentService).to receive(:new).and_return(file_attachment_service)
+
+      coordinator.send(:attach_files)
+
+      expect(tracker_hash['progress']['attach_files_to_works']['completed']).to be true
+    end
+
+    it 'skips if already completed' do
+      tracker_hash['progress']['attach_files_to_works']['completed'] = true
+
+      coordinator.send(:attach_files)
+
+      expect(log_calls).to include(['File attachment already completed according to tracker. Skipping this step.', :info, { tag: 'RosapIngestCoordinatorService' }])
+    end
+  end
+
+  describe '#format_results_and_notify' do
+    it 'runs notification service and marks complete' do
+      allow(notification_service).to receive(:run)
+      expect(Tasks::RosapIngest::Backlog::Utilities::NotificationService).to receive(:new).and_return(notification_service)
+
+      coordinator.send(:format_results_and_notify)
+
+      expect(tracker_hash['progress']['send_summary_email']['completed']).to be true
+    end
+
+    it 'skips if already completed' do
+      tracker_hash['progress']['send_summary_email']['completed'] = true
+
+      coordinator.send(:format_results_and_notify)
+
+      expect(log_calls).to include(['Result formatting and notification already completed according to tracker. Skipping this step.', :info, { tag: 'RosapIngestCoordinatorService' }])
+    end
+  end
+
+  describe '#generate_output_subdirectories' do
+    it 'creates all output subdirectories' do
+      allow(Dir).to receive(:exist?).and_return(false)
+
+      coordinator.generate_output_subdirectories
+
+      expect(FileUtils).to have_received(:mkdir_p).with(/01_load_and_ingest_metadata/).at_least(:once)
+      expect(FileUtils).to have_received(:mkdir_p).with(/02_attach_files_to_works/).at_least(:once)
+      expect(FileUtils).to have_received(:mkdir_p).with(/03_generate_result_csvs/).at_least(:once)
+    end
+  end
 end
