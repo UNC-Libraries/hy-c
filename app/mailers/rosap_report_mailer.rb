@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ROSAPReportMailer < BaseIngestReportMailer
+class RosapReportMailer < BaseIngestReportMailer
   def report_email(report:, zip_path: nil)
     ingest_report_email(
       report: report,

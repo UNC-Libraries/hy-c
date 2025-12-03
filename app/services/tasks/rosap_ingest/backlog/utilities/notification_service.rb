@@ -57,6 +57,6 @@ rescue StandardError => e
   end
 
   def send_mail(report, zip_path)
-    ROSAPReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
+    RosapReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
   end
 end
