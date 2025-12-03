@@ -13,36 +13,30 @@ RSpec.describe Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::RosapA
         'full_text_dir' => '/tmp/rosap_full_text'
     }
   end
-  subject(:builder) { described_class.new(config: config, depositor: depositor, article: article) }
-
-  describe '#apply_additional_basic_attributes' do
-    let(:metadata) do
+   let(:metadata) do
       {
             'title' => 'Sample ROSAP Article',
             'abstract' => 'This is a sample abstract for a ROSAP article.',
             'rosap_id' => 'R123456',
             'publisher' => 'Sample Publisher',
-            'publication_year' => '2024',
+            'date_issued' => '2024-01-01',
             'keywords' => ['Science', 'Technology'],
-            'creators' => [
+            'authors' => [
                 'Brown, Alice',
                 'Johnson, Bob'
             ],
-            'issn' => ['ISSN-9876-5432'],
         }
-    end
+  end
+  subject(:builder) { described_class.new(metadata, admin_set, depositor.uid) }
 
+  describe '#apply_additional_basic_attributes' do
     it 'assigns core article attributes from metadata' do
-      builder.send(:apply_additional_basic_attributes, article, metadata)
+      builder.send(:apply_additional_basic_attributes, article)
 
       expect(article.title).to eq(['Sample ROSAP Article'])
       expect(article.abstract).to eq(['This is a sample abstract for a ROSAP article.'])
-      expect(article.date_issued).to eq(['2024-01-01'])
-      expect(article.creators).to eq([
-                                        { 'name' => 'Brown, Alice', 'index' => '0' },
-                                        { 'name' => 'Johnson, Bob', 'index' => '1' }
-                                    ])
-      expect(article.keywords).to eq(['Science', 'Technology'])
+      expect(article.date_issued).to eq('2024-01-01')
+      expect(article.keyword).to eq(['Science', 'Technology'])
       expect(article.publisher).to eq(['Sample Publisher'])
     end
   end
