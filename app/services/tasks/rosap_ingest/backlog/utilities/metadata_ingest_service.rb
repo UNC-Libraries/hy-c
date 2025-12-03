@@ -33,7 +33,7 @@ class Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService
 
       metadata = fetch_metadata_for_rosap_id(id)
       metadata['rosap_id'] = id
-      attr_builder = Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::ROSAPAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
+      attr_builder = Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::RosapAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
 
       article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, identifier: id, article: article, filename: "#{id}.pdf")

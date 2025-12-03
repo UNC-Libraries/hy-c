@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders
-  class ROSAPAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
+  class RosapAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
     private
 
     def apply_additional_basic_attributes(article)
