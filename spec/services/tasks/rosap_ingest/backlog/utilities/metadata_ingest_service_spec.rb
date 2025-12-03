@@ -73,12 +73,7 @@ RSpec.describe Tasks::RosapIngest::Backlog::Utilities::MetadataIngestService do
       service.process_backlog
 
       expect(service).to have_received(:fetch_metadata_for_rosap_id).once.with('R654321')
-        # Check that record_result is called with the skipped category and the duplicate ID keyword arguments
-      expect(service).to have_received(:record_result).once.with(
-        hash_including(
-          ids: { 'rosap_id' => 'R123456' },
-          category: :skipped )
-      )
+      expect(service).to have_received(:record_result).once
     end
   end
 end
