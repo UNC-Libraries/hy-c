@@ -23,7 +23,7 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
 
     report = Tasks::IngestHelperUtils::IngestReportingService.generate_report(
       ingest_output: attachment_results,
-      source_name: capitalize_first_letter(source_name)
+      source_name: source_name
     )
 
     populate_headers!(report)
@@ -53,11 +53,6 @@ class Tasks::IngestHelperUtils::BaseIngestNotificationService
   end
 
   private
-
-  def capitalize_first_letter(string)
-    return string if string.blank?
-    string[0].upcase + string[1..]
-  end
 
   def already_sent?
     if @tracker['progress']['send_summary_email']['completed']
