@@ -20,7 +20,7 @@ module Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders
     end
 
     def generate_authors
-      metadata['authors'] || [{ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' }]
+      metadata['authors'].presence || [{ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' }]
     end
 
     def set_journal_attributes(article); end

@@ -56,7 +56,7 @@ RSpec.describe Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::RosapA
     end
 
     it 'returns default value if no authors are present' do
-      metadata.delete('authors')
+      metadata['authors'] = []
       builder_no_authors = described_class.new(metadata, admin_set, depositor.uid)
 
       authors = builder_no_authors.send(:generate_authors)
