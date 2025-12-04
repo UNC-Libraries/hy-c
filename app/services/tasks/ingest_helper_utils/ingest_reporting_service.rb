@@ -22,7 +22,7 @@ module Tasks
         end
 
         {
-          subject: "#{source_name.capitalize} Ingest Report for #{formatted_time}",
+          subject: "#{source_name} Ingest Report for #{formatted_time}",
           formatted_time: formatted_time,
           source_name: source_name,
           file_retrieval_directory: ingest_output[:file_retrieval_directory],
