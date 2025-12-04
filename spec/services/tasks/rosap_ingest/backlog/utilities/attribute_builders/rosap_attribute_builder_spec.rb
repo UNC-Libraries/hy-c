@@ -54,5 +54,13 @@ RSpec.describe Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::RosapA
       authors = builder.send(:generate_authors)
       expect(authors).to eq(['Brown, Alice', 'Johnson, Bob'])
     end
+
+    it 'returns default value if no authors are present' do
+      metadata.delete('authors')
+      builder_no_authors = described_class.new(metadata, admin_set, depositor.uid)
+
+      authors = builder_no_authors.send(:generate_authors)
+      expect(authors[0]).to eq({ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' })
+    end
   end
 end
