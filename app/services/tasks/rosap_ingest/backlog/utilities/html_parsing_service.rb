@@ -23,9 +23,6 @@ module Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService
 
     metadata['authors'] = extract_authors(doc)
 
-    # WIP Log for metadata mapping (Remove later)
-    wip_log_object = metadata.except('abstract')
-    LogUtilsHelper.double_log("Parsed metadata: #{wip_log_object.inspect}", :debug, tag: 'HTMLParsingService')
     metadata
   end
 
