@@ -43,10 +43,15 @@ Hyrax::DownloadsController.class_eval do
   # Hydra::Ability#download_permissions can't be used in this case because it assumes
   # that files are in a LDP basic container, and thus, included in the asset's uri.
   def authorize_download!
+    Rails.logger.info "DEBUG: current_user = #{current_user&.email}, checking download for #{params[asset_param_key]}"
     authorize! :download, params[asset_param_key]
-    # Deny access if the work containing this file is restricted by a workflow
-    return unless workflow_restriction?(file_set_parent(params[asset_param_key]), ability: current_ability)
-    raise Hyrax::WorkflowAuthorizationException
+    parent = file_set_parent(params[asset_param_key])
+    # Check if user has reviewer permissions
+    user_is_reviewer = current_ability.can?(:review, parent)
+    # Deny access if the work containing this file is restricted by a workflow and the user is not a reviewer
+    if workflow_restriction?(parent, ability: current_ability) && !user_is_reviewer
+      raise Hyrax::WorkflowAuthorizationException
+    end
   rescue CanCan::AccessDenied, Hyrax::WorkflowAuthorizationException
     # [hyc-override] Send permission failures to
     render_401
