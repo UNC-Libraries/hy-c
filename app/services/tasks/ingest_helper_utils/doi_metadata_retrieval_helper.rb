@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
+module Tasks::IngestHelperUtils::DoiMetadataRetrievalHelper
   extend self
   SOURCES = %w[crossref openalex datacite].freeze
   def fetch_metadata_for_doi(source:, doi:)
