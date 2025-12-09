@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder do
+RSpec.describe Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttributeBuilder do
   let(:admin_set) { double('AdminSet') }
   let(:depositor) { 'test-user' }
   let(:article) { Article.new }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder, type: :service do
+RSpec.describe Tasks::IngestHelperUtils::SharedAttributeBuilders::OpenalexAttributeBuilder, type: :service do
   let(:admin_set) { double('AdminSet') }
   let(:depositor) { 'test-depositor' }
   let(:article) { Article.new }

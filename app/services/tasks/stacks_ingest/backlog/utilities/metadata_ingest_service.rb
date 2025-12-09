@@ -19,7 +19,7 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
   end
 
   def process_backlog
-    stacks_ids = remaining_ids_from_directory(@config['full_text_dir'])
+    stacks_ids = remaining_ids_from_csv(@config['input_csv_path'])
 
     stacks_ids.each do |id|
       next if @seen_identifier_list.include?(id)
@@ -62,13 +62,12 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
     Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService.parse_metadata_from_html(response.body)
   end
 
-  def remaining_ids_from_directory(path)
+  def remaining_ids_from_csv(path)
     # Extract Stacks IDs from PDFs in the specified directory
     ids = []
-    Dir.glob(File.join(path, '*/')).each do |dir_path|
-        # Get just the directory name (the Stacks ID)
-      stacks_id = File.basename(dir_path)
-      ids << stacks_id
+    CSV.foreach(path, headers: true) do |row|
+      stacks_id = row['stacks_id']&.strip
+      ids << stacks_id if stacks_id.present?
     end
     ids.reject { |id| @seen_identifier_list.include?(id) }
   end
