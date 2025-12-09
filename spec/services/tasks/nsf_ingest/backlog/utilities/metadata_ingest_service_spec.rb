@@ -51,18 +51,17 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
       # Stub record loading
       allow(service).to receive(:remaining_records_from_csv).and_return(records)
       allow(service).to receive(:load_last_results).and_return(Set.new)
-      # Stub metadata retrieval
-      allow(service).to receive(:fetch_metadata_for_doi).and_return({ 'title' => 'Foo' })
-      allow(service).to receive(:generate_openalex_abstract).and_return('abstract text')
-      allow(service).to receive(:extract_keywords_from_openalex).and_return(%w[k1 k2])
+      # Stub the DoiMetadataResolver
+      mock_attr_builder = double('AttributeBuilder', populate_article_metadata: true)
+
+      mock_resolver = double('DoiMetadataResolver',
+        resolve_and_build: mock_attr_builder,
+        resolved_metadata: { 'title' => 'Test Title', 'source' => 'openalex', 'doi' => '10.1000/abc' }
+      )
+
+      allow(Tasks::IngestHelperUtils::DoiMetadataResolver).to receive(:new).and_return(mock_resolver)
+
       allow(service).to receive(:sync_permissions_and_state!).and_return(true)
-      # Stub builder behavior
-      crossref_builder = double(populate_article_metadata: true)
-      openalex_builder  = double(populate_article_metadata: true)
-      allow(Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttributeBuilder).to receive(:new)
-        .and_return(crossref_builder)
-      allow(Tasks::IngestHelperUtils::SharedAttributeBuilders::OpenalexAttributeBuilder).to receive(:new)
-        .and_return(openalex_builder)
       # WorkUtilsHelper
       allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return({})
       # File flush

@@ -2,7 +2,6 @@
 class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   include Tasks::IngestHelperUtils::IngestHelper
   include Tasks::IngestHelperUtils::MetadataIngestHelper
-  include Tasks::IngestHelperUtils::DoiMetadataRetrievalHelper
 
   def initialize(config:, tracker:, md_ingest_results_path:)
     @config = config
@@ -32,15 +31,14 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
         next
       end
 
-      crossref_md = fetch_metadata_for_doi(source: 'crossref', doi: doi)
-      openalex_md = fetch_metadata_for_doi(source: 'openalex', doi: doi)
-      datacite_md = fetch_metadata_for_doi(source: 'datacite', doi: doi)
+      resolver = Tasks::IngestHelperUtils::DoiMetadataResolver.new(
+        doi: doi,
+        admin_set: @admin_set,
+        depositor_onyen: @config['depositor_onyen']
+      )
+      attr_builder = resolver.resolve_and_build
 
-      source = verify_source_md_available(crossref_md, openalex_md, doi)
-      resolved_md = merge_metadata_sources(crossref_md, openalex_md, datacite_md)
-      attr_builder = construct_attribute_builder(resolved_md)
-
-      article = new_article(metadata: resolved_md, attr_builder: attr_builder, config: @config)
+      article = new_article(metadata: resolver.resolved_metadata, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, identifier: doi, article: article, filename: record['filename'])
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for record #{record.inspect}")
@@ -61,42 +59,6 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
     records.reject do |record|
       doi = record['doi']
       doi.present? && seen_list.include?(doi)
-    end
-  end
-
-  def verify_source_md_available(crossref_md, openalex_md, doi)
-    return if crossref_md && openalex_md
-
-    if crossref_md.nil? && openalex_md.nil?
-      raise "No metadata found from Crossref or OpenAlex for DOI #{doi}."
-    end
-
-    missing_source = crossref_md.nil? ? 'Crossref' : 'OpenAlex'
-    chosen_source  = crossref_md.nil? ? 'OpenAlex' : 'Crossref'
-    LogUtilsHelper.double_log(
-      "No metadata found from #{missing_source} for DOI #{doi}. Using #{chosen_source} metadata.",
-      :warn,
-      tag: 'MetadataIngestService'
-    )
-  end
-
-
-  def merge_metadata_sources(crossref_md, openalex_md, datacite_md)
-    # Default to OpenAlex metadata if available else Crossref
-    resolved_md = openalex_md || crossref_md
-    resolved_md['source'] = openalex_md.present? ? 'openalex' : 'crossref'
-    resolved_md['openalex_abstract'] = generate_openalex_abstract(openalex_md)
-    resolved_md['datacite_abstract'] = datacite_md.dig('attributes', 'description') if datacite_md&.dig('attributes', 'description').present?
-    resolved_md['openalex_keywords'] = extract_keywords_from_openalex(openalex_md)
-    resolved_md
-  end
-
-  def construct_attribute_builder(resolved_md)
-    case resolved_md['source']
-    when 'openalex'
-      Tasks::IngestHelperUtils::SharedAttributeBuilders::OpenalexAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
-    when 'crossref'
-      Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
     end
   end
 end
