@@ -43,7 +43,6 @@ Hyrax::DownloadsController.class_eval do
   # Hydra::Ability#download_permissions can't be used in this case because it assumes
   # that files are in a LDP basic container, and thus, included in the asset's uri.
   def authorize_download!
-    Rails.logger.info "DEBUG: current_user = #{current_user&.email}, checking download for #{params[asset_param_key]}"
     authorize! :download, params[asset_param_key]
     parent = file_set_parent(params[asset_param_key])
     # Check if user has reviewer permissions
