@@ -8,9 +8,19 @@ class Ability
 
   # Define any customized permissions here.
   def custom_permissions
+
     if current_user.admin?
       can [:create, :show, :add_user, :remove_user, :index, :edit, :update, :destroy], Role
       can :manage, User
+    end
+
+    can :download, FileSet do |file_set|
+      test_read(file_set.id)
+    end
+
+    # Allow reviewers to bypass workflow restrictions for Honors Theses
+    can :review, HonorsThesis do |work|
+      test_read(work.id)
     end
     # Limits deleting objects to a the admin user
     #
