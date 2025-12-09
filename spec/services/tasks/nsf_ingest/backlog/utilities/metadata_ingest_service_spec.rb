@@ -59,9 +59,9 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService do
       # Stub builder behavior
       crossref_builder = double(populate_article_metadata: true)
       openalex_builder  = double(populate_article_metadata: true)
-      allow(Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder).to receive(:new)
+      allow(Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttributeBuilder).to receive(:new)
         .and_return(crossref_builder)
-      allow(Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder).to receive(:new)
+      allow(Tasks::IngestHelperUtils::SharedAttributeBuilders::OpenalexAttributeBuilder).to receive(:new)
         .and_return(openalex_builder)
       # WorkUtilsHelper
       allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return({})

@@ -94,9 +94,9 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   def construct_attribute_builder(resolved_md)
     case resolved_md['source']
     when 'openalex'
-      Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::OpenalexAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
+      Tasks::IngestHelperUtils::SharedAttributeBuilders::OpenalexAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
     when 'crossref'
-      Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
+      Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttributeBuilder.new(resolved_md, @admin_set, @config['depositor_onyen'])
     end
   end
 end
