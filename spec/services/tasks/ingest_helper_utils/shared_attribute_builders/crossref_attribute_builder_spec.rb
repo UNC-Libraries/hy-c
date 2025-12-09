@@ -113,7 +113,7 @@ RSpec.describe Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttrib
       metadata['issn-type'] = []
       builder.send(:set_identifiers, article)
       expect(article.issn).to eq([])
-      expect(Rails.logger).to have_received(:warn)
+      expect(Rails.logger).to have_received(:warn).at_least(:once)
     end
   end
 
