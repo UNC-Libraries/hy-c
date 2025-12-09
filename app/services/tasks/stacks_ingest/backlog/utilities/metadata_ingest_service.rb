@@ -19,27 +19,29 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
   end
 
   def process_backlog
-    stacks_ids = remaining_ids_from_csv(@config['input_csv_path'])
+    remaining_csv_rows = remaining_rows_from_csv(@seen_identifier_list)
 
-    stacks_ids.each do |id|
+    remaining_csv_rows.each do |row|
+      id = row['stacks_id']
+      filename = row['main_file']
       next if @seen_identifier_list.include?(id)
       # Skip if work with this Stacks ID already exists
       match = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id, admin_set_title: @config['admin_set_title'])
       if match.present? && match[:work_id].present?
-        skip_existing_work(id, match, filename: "#{id}.pdf")
+        skip_existing_work(id, match, filename: filename)
         next
       end
 
-      metadata = fetch_metadata_for_stacks_id(id)
-      metadata['stacks_id'] = id
-      attr_builder = Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::RosapAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
+      # metadata = fetch_metadata_for_stacks_id(id)
+      # metadata['stacks_id'] = id
+      # attr_builder = Tasks::RosapIngest::Backlog::Utilities::AttributeBuilders::RosapAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
 
       article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, identifier: id, article: article, filename: "#{id}.pdf")
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for publication with Stacks ID #{id}")
     rescue => e
-      handle_record_error(id, e, filename: "#{id}.pdf")
+      handle_record_error(id, e, filename: filename)
     ensure
       flush_buffer_if_needed
       # Respect rate limiting
@@ -62,13 +64,12 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
     Tasks::RosapIngest::Backlog::Utilities::HTMLParsingService.parse_metadata_from_html(response.body)
   end
 
-  def remaining_ids_from_csv(path)
-    # Extract Stacks IDs from PDFs in the specified directory
-    ids = []
+  def remaining_rows_from_csv(path)
+    # Extract Stacks info from CSV
+    rows = []
     CSV.foreach(path, headers: true) do |row|
-      stacks_id = row['stacks_id']&.strip
-      ids << stacks_id if stacks_id.present?
+      rows << row.to_h
     end
-    ids.reject { |id| @seen_identifier_list.include?(id) }
+    rows.reject { |row| @seen_identifier_list.include?(row['stacks_id']) }
   end
 end
