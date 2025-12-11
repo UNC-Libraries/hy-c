@@ -161,12 +161,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         Rails.logger.info("[MetadataIngestService] No existing work found for IDs: #{alternate_ids.inspect}. Creating new article.")
         builder = attribute_builder(doc)
         article = new_article(metadata: doc, attr_builder: builder, config: @config)
-        article.save!
-
-        # Apply workflow and permissions via actor stack
-        user = User.find_by(uid: @config['depositor_onyen'])
-        env  = Hyrax::Actors::Environment.new(article, Ability.new(user), {})
-        Hyrax::CurationConcern.actor.create(env)
 
         record_result(
             category: :successfully_ingested_metadata_only,
