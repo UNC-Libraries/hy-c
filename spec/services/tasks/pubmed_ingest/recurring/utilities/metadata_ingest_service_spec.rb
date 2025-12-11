@@ -311,16 +311,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     let(:batch_articles) { pubmed_xml_doc.xpath('//PubmedArticle') }
     let(:mock_article) { double('article', save!: true, id: 'new_article_123', persisted?: true, destroy: true) }
     let(:alternate_ids) { { 'pmid' => '123456', 'pmcid' => 'PMC789012', 'doi' => '10.1000/example1' } }
-    let(:test_user) { User.new(uid: 'test_user', email: 'test@example.com') }
 
     before do
-      allow(User).to receive(:find_by).with(uid: 'test_user').and_return(test_user)
       allow(service).to receive(:retrieve_alternate_ids_for_doc).and_return(alternate_ids)
       allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return(nil)
       allow(service).to receive(:new_article).and_return(mock_article)
       allow(service).to receive(:record_result)
-      allow(Hyrax::Actors::Environment).to receive(:new).and_call_original
-      allow(Hyrax::CurationConcern.actor).to receive(:create).and_return(true)
     end
 
     context 'when work does not exist' do
@@ -361,19 +357,55 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     context 'when article creation fails' do
       before do
-        allow(mock_article).to receive(:save!).and_raise(StandardError.new('Save failed'))
+        allow(service).to receive(:new_article).and_raise(StandardError.new('Creation failed'))
       end
 
-      it 'destroys article and records failure' do
+      it 'records failure' do
         service.send(:process_batch, batch_articles)
 
-        expect(mock_article).to have_received(:destroy)
+        # article is never created, so destroy is never called
         expect(service).to have_received(:record_result).with(
           category: :failed,
-          message: 'Save failed',
+          message: 'Creation failed',
           ids: alternate_ids
         )
       end
+    end
+  end
+
+  describe 'integration test for process_batch' do
+    let(:pubmed_xml_doc) { Nokogiri::XML(sample_pubmed_xml) }
+    let(:batch_articles) { pubmed_xml_doc.xpath('//PubmedArticle') }
+    let(:alternate_ids) { { 'pmid' => '123456', 'pmcid' => 'PMC789012', 'doi' => '10.1000/example1' } }
+    let(:mock_builder) { double('builder', populate_article_metadata: true) }
+    let(:mock_article_instance) do
+      instance_double(Article,
+        'visibility=' => nil,
+        'save!' => true,
+        :id => 'new_123',
+        'persisted?' => true
+      )
+    end
+
+    before do
+      allow(service).to receive(:retrieve_alternate_ids_for_doc).and_return(alternate_ids)
+      allow(WorkUtilsHelper).to receive(:find_best_work_match_by_alternate_id).and_return(nil)
+      allow(service).to receive(:attribute_builder).and_return(mock_builder)
+      allow(service).to receive(:record_result)
+
+      # Mock the underlying Article creation
+      allow(Article).to receive(:new).and_return(mock_article_instance)
+
+      # Mock sync_permissions_and_state!
+      allow(service).to receive(:sync_permissions_and_state!)
+    end
+
+    it 'creates article through new_article and syncs permissions' do
+      service.send(:process_batch, batch_articles)
+
+      expect(Article).to have_received(:new)
+      expect(mock_builder).to have_received(:populate_article_metadata)
+      expect(service).to have_received(:sync_permissions_and_state!)
     end
   end
 
