@@ -2,8 +2,6 @@
 # Fetches and resolves DOI metadata from OAI-PMH sources.
 module Tasks::IngestHelperUtils
   class OaiPmhMetadataResolver
-    include Tasks::IngestHelperUtils::OaiPmhMetadataRetrievalHelper
-
     attr_reader :cdc_id, :metadata_path, :admin_set, :depositor_onyen, :resolved_metadata
 
     def initialize(cdc_id:, full_text_dir:, admin_set:, depositor_onyen:)
@@ -37,14 +35,16 @@ module Tasks::IngestHelperUtils
       @resolved_metadata['date_issued'] = extract_date(doc)
 
       contributors = extract_dc_fields(doc, 'contributor')
-      @resolved_metadata['publisher'] = contributors&.first if contributors.any?
-      @resolved_metadata['funders'] = contributors[1..] if contributors&.size.to_i > 1
+      if contributors.any?
+        @resolved_metadata['authors'] = contributors.map.with_index { |name, i| { 'name' => name, 'index' => i.to_s } }
+      else
+        @resolved_metadata['authors'] = [{ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' }]
+      end
 
-      # Authors typically are not present in Stacks OAI-PMH records, stub with default
-      @resolved_metadata['authors'] = [{
-        'name' => 'The University of North Carolina at Chapel Hill',
-        'index' => '0'
-      }]
+    #  WIP: Temporarily write metadata to file
+      file = File.open(Rails.root.join('tmp', "oai_pmh_metadata_#{cdc_id}.json"), 'w')
+      file.write(JSON.pretty_generate(@resolved_metadata))
+      file.close
 
       @resolved_metadata
     end
@@ -57,12 +57,12 @@ module Tasks::IngestHelperUtils
     private
 
     def extract_dc_field(doc, field_name)
-      node = doc.at_xpath("//dc:#{field_name}")
+      node = doc.at_xpath("//#{field_name}")
       node&.text&.strip
     end
 
     def extract_dc_fields(doc, field_name)
-      nodes = doc.xpath("//dc:#{field_name}")
+      nodes = doc.xpath("//#{field_name}")
       nodes.map { |node| node.text.strip }.reject(&:empty?)
     end
 
