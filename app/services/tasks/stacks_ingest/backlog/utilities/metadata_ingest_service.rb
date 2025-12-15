@@ -53,14 +53,15 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
 
   # IngestHelper method override
   def new_article(metadata:, attr_builder:, config:, cdc_id:)
-      # Create new work
+    # Create new work
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
     attr_builder.populate_article_metadata(article)
+    # Override: Add Stacks CDC ID to identifiers
     article.identifier << "Stacks-CDC ID: #{cdc_id}"
     article.save!
 
-        # Sync permissions and state
+    # Sync permissions and state
     admin_set = AdminSet.where(title: config['admin_set_title'])&.first
     sync_permissions_and_state!(work_id: article.id, depositor_uid: config['depositor_onyen'], admin_set: admin_set)
     article
