@@ -2,14 +2,15 @@
 # Fetches and resolves DOI metadata from OAI-PMH sources.
 module Tasks::IngestHelperUtils
   class OaiPmhMetadataResolver
-    attr_reader :cdc_id, :metadata_path, :admin_set, :depositor_onyen, :resolved_metadata
+    attr_reader :id, :metadata_path, :admin_set, :depositor_onyen, :resolved_metadata
 
-    def initialize(cdc_id:, full_text_dir:, admin_set:, depositor_onyen:)
-      @cdc_id = cdc_id
-      @metadata_path = File.join(full_text_dir, cdc_id, 'oai_pmh_metadata.xml')
+    def initialize(id:, identifier_key_name:, full_text_dir:, admin_set:, depositor_onyen:)
+      @id = id
+      @metadata_path = File.join(full_text_dir, id, 'oai_pmh_metadata.xml')
       @admin_set = admin_set
       @depositor_onyen = depositor_onyen
       @resolved_metadata = {}
+      @identifier_key_name = identifier_key_name
     end
 
     def resolve_and_build
@@ -22,8 +23,8 @@ module Tasks::IngestHelperUtils
       doc = Nokogiri::XML(xml_content)
       doc.remove_namespaces! # Simplifies XPath queries
 
-      # Extract CDC ID from OAI identifier
-      @resolved_metadata['cdc_id'] = @cdc_id
+      # Attach ID to metadata
+      @resolved_metadata["#{@identifier_key_name}"] = @id
 
       # Extract title
       @resolved_metadata['title'] = extract_dc_field(doc, 'title')
@@ -42,7 +43,7 @@ module Tasks::IngestHelperUtils
       end
 
     #  WIP: Temporarily write metadata to file
-      file = File.open(Rails.root.join('tmp', "oai_pmh_metadata_#{cdc_id}.json"), 'w')
+      file = File.open(Rails.root.join('tmp', "oai_pmh_metadata_#{id}.json"), 'w')
       file.write(JSON.pretty_generate(@resolved_metadata))
       file.close
 
@@ -50,14 +51,14 @@ module Tasks::IngestHelperUtils
     end
 
     def construct_attribute_builder
-      raise NotImplementedError, 'Method construct_attribute_builder must be implemented in including class'
+      Tasks::IngestHelperUtils::SharedAttributeBuilders::OaiPmhAttributeBuilder.new(@resolved_metadata, @admin_set, @depositor_onyen)
     end
 
     private
 
     def extract_best_abstract(descriptions)
       return nil if descriptions.empty?
-      
+
       # Filter out junk descriptions
       filtered = descriptions.reject do |desc|
         desc.match?(/\A(19|20)\d{2}\z/) ||                    # Just a year
@@ -66,7 +67,7 @@ module Tasks::IngestHelperUtils
         desc.match?(/^\d{1,2}\/\d{1,2}\/\d{4}\z/) ||          # Just a date
         desc.split(/\s+/).length < 5                        # Too short (< 5 words)
       end
-      
+
       # Take the longest remaining description (usually the actual abstract)
       filtered.max_by(&:length)
     end

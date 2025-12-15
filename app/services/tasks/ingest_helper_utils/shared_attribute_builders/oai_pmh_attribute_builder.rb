@@ -17,6 +17,11 @@ module Tasks::IngestHelperUtils::SharedAttributeBuilders
       metadata['authors'].presence || [{ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' }]
     end
 
+    def set_identifiers(article)
+      # Intentionally empty. Set in subclass or during post processing
+      []
+    end
+
     def set_journal_attributes(article); end
     def retrieve_author_affiliations(hash, author); end
     def format_publication_identifiers; end

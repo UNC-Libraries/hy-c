@@ -35,8 +35,7 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
       end
 
       attr_builder, metadata = resolve_attr_builder_and_metadata_for_row(row)
-      metadata['cdc_id'] = id
-      article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config)
+      article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config, cdc_id: id)
       record_result(category: :successfully_ingested_metadata_only, identifier: id, article: article, filename: "#{id}.pdf")
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for publication with Stacks ID #{id}")
@@ -50,6 +49,21 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
 
     flush_buffer_to_file unless @write_buffer.empty?
     LogUtilsHelper.double_log("Ingest complete. Processed #{remaining_csv_rows.size} IDs.", :info, tag: 'MetadataIngestService')
+  end
+
+  # IngestHelper method override
+  def new_article(metadata:, attr_builder:, config:, cdc_id:)
+      # Create new work
+    article = Article.new
+    article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+    attr_builder.populate_article_metadata(article)
+    article.identifier << "Stacks-CDC ID: #{cdc_id}"
+    article.save!
+
+        # Sync permissions and state
+    admin_set = AdminSet.where(title: config['admin_set_title'])&.first
+    sync_permissions_and_state!(work_id: article.id, depositor_uid: config['depositor_onyen'], admin_set: admin_set)
+    article
   end
 
   private
@@ -66,8 +80,9 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
         depositor_onyen: @config['depositor_onyen']
       )
     else
-      resolver = Tasks::StacksIngest::Backlog::Utilities::StacksMetadataResolver.new(
-        cdc_id: cdc_id,
+      resolver = Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
+        id: cdc_id,
+        identifier_key_name: identifier_key_name,
         full_text_dir: @config['full_text_dir'],
         admin_set: @admin_set,
         depositor_onyen: @config['depositor_onyen']
