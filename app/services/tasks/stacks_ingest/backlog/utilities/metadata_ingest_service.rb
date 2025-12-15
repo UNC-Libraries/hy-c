@@ -57,6 +57,7 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
   def resolve_attr_builder_and_metadata_for_row(row)
     cdc_id = row['cdc_id']
     doi = row['doi']
+    resolver = nil
     raise ArgumentError, 'Stacks ID cannot be blank' if cdc_id.blank?
     if doi.present?
       resolver = Tasks::IngestHelperUtils::DoiMetadataResolver.new(
@@ -64,12 +65,19 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
         admin_set: @admin_set,
         depositor_onyen: @config['depositor_onyen']
       )
-      attr_builder = resolver.resolve_and_build
-      metadata = resolver.resolved_metadata
-      return attr_builder, metadata
     else
-      raise "No DOI provided for Stacks ID #{cdc_id}, cannot fetch metadata"
+      resolver = Tasks::IngestHelperUtils::StacksIdMetadataResolver.new(
+        cdc_id: cdc_id,
+        admin_set: @admin_set,
+        depositor_onyen: @config['depositor_onyen']
+      )
     end
+    attr_builder = resolver.resolve_and_build
+    metadata = resolver.resolved_metadata
+    return attr_builder, metadata
+  rescue => e
+    Rails.logger.error("Error resolving metadata for Stacks ID #{cdc_id}: #{e.message}")
+    raise
   end
 
   def remaining_rows_from_csv(path)
