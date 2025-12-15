@@ -6,6 +6,8 @@ module Tasks::IngestHelperUtils::DoiMetadataRetrievalHelper
     raise ArgumentError, 'DOI must be provided' if doi.blank?
     raise ArgumentError, "Source must be one of: #{SOURCES.join(', ')}" unless SOURCES.include?(source)
 
+    normalized_doi = WorkUtilsHelper.normalize_doi(doi) || doi
+
     base_url = case source
                when 'crossref' then 'https://api.crossref.org/works/'
                when 'openalex' then 'https://api.openalex.org/works/https://doi.org/'
@@ -15,12 +17,12 @@ module Tasks::IngestHelperUtils::DoiMetadataRetrievalHelper
     url = URI.join(base_url, CGI.escape(doi))
     res = HTTParty.get(url)
 
-    return parse_response(res, source, doi) if res.code == 200
+    return parse_response(res, source, normalized_doi) if res.code == 200
 
     Rails.logger.error("[MetadataRetrievalHelper] Failed to retrieve metadata from #{source.capitalize}. HTTP #{res.code}")
     nil
   rescue => e
-    Rails.logger.error("[MetadataRetrievalHelper] Error retrieving #{source.capitalize} metadata for DOI #{doi}: #{e.message}")
+    Rails.logger.error("[MetadataRetrievalHelper] Error retrieving #{source.capitalize} metadata for DOI #{normalized_doi}: #{e.message}")
     nil
   end
 
