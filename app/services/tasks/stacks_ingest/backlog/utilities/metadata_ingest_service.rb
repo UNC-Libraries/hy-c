@@ -66,8 +66,9 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
         depositor_onyen: @config['depositor_onyen']
       )
     else
-      resolver = Tasks::IngestHelperUtils::StacksIdMetadataResolver.new(
+      resolver = Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
         cdc_id: cdc_id,
+        full_text_path: @config['full_text_dir'],
         admin_set: @admin_set,
         depositor_onyen: @config['depositor_onyen']
       )
