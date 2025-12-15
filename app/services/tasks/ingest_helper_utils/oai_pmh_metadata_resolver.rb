@@ -30,7 +30,7 @@ module Tasks::IngestHelperUtils
 
       # Extract description/abstract (may be multiple, take first)
       descriptions = extract_dc_fields(doc, 'description')
-      @resolved_metadata['abstract'] = descriptions.first if descriptions.any?
+      @resolved_metadata['abstract'] = extract_best_abstract(descriptions) if descriptions.any?
 
       @resolved_metadata['date_issued'] = extract_date(doc)
 
@@ -49,12 +49,27 @@ module Tasks::IngestHelperUtils
       @resolved_metadata
     end
 
-    # Stubs
     def construct_attribute_builder
-      # TODO: Implement
+      raise NotImplementedError, 'Method construct_attribute_builder must be implemented in including class'
     end
 
     private
+
+    def extract_best_abstract(descriptions)
+      return nil if descriptions.empty?
+      
+      # Filter out junk descriptions
+      filtered = descriptions.reject do |desc|
+        desc.match?(/\A(19|20)\d{2}\z/) ||                    # Just a year
+        desc.match?(/\A\d+\z/) ||                              # Just a number
+        desc.match?(/^\w+@\w+\.\w+/) ||                        # Email address
+        desc.match?(/^\d{1,2}\/\d{1,2}\/\d{4}\z/) ||          # Just a date
+        desc.split(/\s+/).length < 5                        # Too short (< 5 words)
+      end
+      
+      # Take the longest remaining description (usually the actual abstract)
+      filtered.max_by(&:length)
+    end
 
     def extract_dc_field(doc, field_name)
       node = doc.at_xpath("//#{field_name}")
