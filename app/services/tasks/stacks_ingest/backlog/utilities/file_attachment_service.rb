@@ -72,6 +72,7 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService < Tasks::In
           next
         end
 
+        LogUtilsHelper.double_log("Attaching supplemental file #{filename} to work #{work_id}", :info, tag: 'Stacks File Attachment Service')
         file_set = attach_file_set_to_work(
           work: work,
           file_path: file_path,
@@ -102,10 +103,13 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService < Tasks::In
   def log_attachment_outcome(record, category:, message:, file_name:)
     # Use CDC ID to track seen records
     cdc_id = record.dig('ids', 'cdc_id')
-    return if @existing_ids.include?(cdc_id) && cdc_id.present?
-    @existing_ids << cdc_id if cdc_id.present?
+    tracking_key = "#{cdc_id}:#{file_name}"
+
+    # Skip if this exact file was already processed
+    return if @existing_ids.include?(tracking_key)
 
     super(record, category: category, message: message, file_name: file_name)
+    @existing_ids << tracking_key if tracking_key.present?
   end
 
   private
