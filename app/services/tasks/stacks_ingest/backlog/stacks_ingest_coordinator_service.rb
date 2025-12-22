@@ -45,6 +45,7 @@ class Tasks::StacksIngest::Backlog::StacksIngestCoordinatorService
     md_ingest_service.process_backlog
     @tracker['progress']['metadata_ingest']['completed'] = true
     @tracker.save
+    LogUtilsHelper.double_log('Metadata ingest step completed.', :info, tag: 'StacksIngestCoordinatorService')
   end
 
   def attach_files
@@ -52,6 +53,7 @@ class Tasks::StacksIngest::Backlog::StacksIngestCoordinatorService
       LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'StacksIngestCoordinatorService')
       return
     end
+
     LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'StacksIngestCoordinatorService')
     file_attachment_service = Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService.new(
         config: @config,
@@ -60,12 +62,21 @@ class Tasks::StacksIngest::Backlog::StacksIngestCoordinatorService
         metadata_ingest_result_path: @md_ingest_results_path
     )
     file_attachment_service.run
+
+    LogUtilsHelper.double_log('Aggregating file attachment results.', :info, tag: 'StacksIngestCoordinatorService')
+    aggregator = Tasks::StacksIngest::Backlog::Utilities::FileAttachmentResultAggregator.new(
+        attachment_results_path: @file_attachment_results_path,
+        output_path: File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'aggregated_attachment_results.jsonl')
+    )
+    aggregator.aggregate_results
+
     @tracker['progress']['attach_files_to_works']['completed'] = true
     @tracker.save
+    LogUtilsHelper.double_log('File attachment step completed.', :info, tag: 'StacksIngestCoordinatorService')
   end
 
   def format_results_and_notify
-    if @tracker['progress']['format_results_and_notify']['completed']
+    if @tracker['progress']['send_summary_email']['completed']
       LogUtilsHelper.double_log('Results formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'StacksIngestCoordinatorService')
       return
     end
@@ -78,8 +89,9 @@ class Tasks::StacksIngest::Backlog::StacksIngestCoordinatorService
         max_display_rows: MAX_ROWS
     )
     notification_service.run
-    @tracker['progress']['format_results_and_notify']['completed'] = true
+    @tracker['progress']['send_summary_email']['completed'] = true
     @tracker.save
+    LogUtilsHelper.double_log('Results formatting and notification step completed.', :info, tag: 'StacksIngestCoordinatorService')
   end
 
   def generate_output_subdirectories

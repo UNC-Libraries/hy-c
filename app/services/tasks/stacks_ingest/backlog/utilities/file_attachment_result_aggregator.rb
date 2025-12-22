@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentResultAggregator
-  include JsonFileUtilsHelper
-
   def initialize(attachment_results_path:, output_path:)
     @attachment_results_path = attachment_results_path
     @output_path = output_path
@@ -23,7 +21,7 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentResultAggregator
       }
 
         # Store filenames under the grouped key
-      grouped[key] << entry['filename']
+      grouped[key] << entry['file_name']
     end
 
       # Convert aggregated results to an array format
@@ -40,6 +38,6 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentResultAggregator
     end
 
       # Write aggregated results to output JSONL file
-    write_jsonl(aggregated_results, @output_path, mode: 'w')
+    JsonFileUtilsHelper.write_jsonl(aggregated_results, @output_path, mode: 'w')
   end
 end

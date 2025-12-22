@@ -6,8 +6,13 @@ task :stacks_backlog_ingest, [:resume, :input_csv_path, :output_dir, :full_text_
   now = Time.now
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
 
-  required_keys = %i[resume input_csv_path output_dir full_text_dir admin_set_title depositor_onyen]
-  validate_args!(args, required_keys) unless resume
+  if resume
+    required_keys = %i[resume output_dir]
+  else
+    required_keys = %i[resume input_csv_path output_dir full_text_dir admin_set_title depositor_onyen]
+  end
+
+  validate_args!(args, required_keys)
 
   output_directory = resolve_output_directory(args, now, prefix: 'stacks_backlog_ingest')
   tracker = resume ? retrieve_tracker_json(output_directory) : nil
@@ -24,7 +29,10 @@ def build_stacks_config(args, tracker, output_dir, now)
   resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
 
   if resume
-    tracker.merge('restart_time' => now, 'resume' => true)
+    tracker.merge(
+      'restart_time' => now,
+      'resume' => true
+    )
   else
     {
       'start_time' => now,
@@ -33,8 +41,8 @@ def build_stacks_config(args, tracker, output_dir, now)
       'admin_set_title' => args[:admin_set_title],
       'depositor_onyen' => args[:depositor_onyen],
       'output_dir' => output_dir,
-      'input_csv_path' => normalize_path(args[:input_csv_path]),
-      'full_text_dir' => normalize_path(args[:full_text_dir])
+      'input_csv_path' => normalize_path(args[:input_csv_path]).to_s,
+      'full_text_dir' => normalize_path(args[:full_text_dir]).to_s
     }
   end
 end
