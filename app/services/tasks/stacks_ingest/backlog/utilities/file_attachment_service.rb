@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   SLEEP_INTERVAL = 0.5
-  
+
   def initialize(config:, tracker:, log_file_path:, metadata_ingest_result_path:)
     super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
     @existing_ids = load_seen_attachment_ids
@@ -16,10 +16,10 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService < Tasks::In
     work = Article.find(work_id)
     depositor = ::User.find_by(uid: config['depositor_onyen'])
     current_file_name = nil
-    
+
     # Find corresponding CSV row for file information
     csv_row = @csv_rows.find { |row| row['cdc_id'] == cdc_id }
-    
+
     unless csv_row
       log_attachment_outcome(record,
                             category: :skipped,
@@ -27,28 +27,28 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService < Tasks::In
                             file_name: 'N/A')
       return
     end
-    
+
     begin
       # Attach main file (PDF)
       main_file = csv_row['main_file']
       if main_file.present?
         current_file_name = main_file
         file_path = File.join(@full_text_path, cdc_id, main_file)
-        
+
         if File.exist?(file_path)
           file_set = attach_pdf_to_work_with_file_path!(
             record: record,
             file_path: file_path,
             depositor_onyen: config['depositor_onyen']
           )
-          
+
           if file_set
             log_attachment_outcome(record,
                                   category: category_for_successful_attachment(record),
                                   message: 'Main PDF successfully attached',
                                   file_name: main_file)
           end
-          
+
           sleep(SLEEP_INTERVAL)
         else
           log_attachment_outcome(record,
@@ -57,13 +57,13 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService < Tasks::In
                                 file_name: main_file)
         end
       end
-      
+
       # Attach supplemental files
       supplemental_files = parse_pipe_delimited(csv_row['supplemental_files'])
       supplemental_files.each do |filename|
         current_file_name = filename
         file_path = File.join(@full_text_path, cdc_id, filename)
-        
+
         unless File.exist?(file_path)
           log_attachment_outcome(record,
                                 category: :failed,
@@ -79,17 +79,17 @@ class Tasks::StacksIngest::Backlog::Utilities::FileAttachmentService < Tasks::In
           user: depositor,
           visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
         )
-        
+
         if file_set
           log_attachment_outcome(record,
                                 category: category_for_successful_attachment(record),
                                 message: 'Supplemental file successfully attached',
                                 file_name: filename)
         end
-        
+
         sleep(SLEEP_INTERVAL)
       end
-      
+
     rescue => e
       Rails.logger.error("Error processing record #{cdc_id}: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n"))
