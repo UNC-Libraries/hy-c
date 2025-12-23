@@ -63,17 +63,18 @@
             <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>; word-break:break-word;">
             <% if record[:filenames].present? %>
                 <% if record[:filenames].is_a?(Array) %>
-                <%= record[:filenames].join(', ') %>
+                <% if record[:filenames].size == 1 %>
+                    <%= record[:filenames].first %>
+                <% else %>
+                    <ul style="margin:0; padding-left:20px; list-style-type:disc;">
+                    <% record[:filenames].each do |filename| %>
+                        <li style="margin-bottom:2px;"><%= filename %></li>
+                    <% end %>
+                    </ul>
+                <% end %>
                 <% else %>
                 <%= record[:filenames] %>
                 <% end %>
-            <% else %>
-                N/A
-            <% end %>
-            </td>
-            <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
-            <% if record[:cdr_url].present? %>
-                <a href="<%= record[:cdr_url] %>" style="word-break:break-word;">View in CDR</a>
             <% else %>
                 N/A
             <% end %>

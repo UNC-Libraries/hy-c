@@ -42,11 +42,6 @@ module Tasks::IngestHelperUtils
         @resolved_metadata['authors'] = [{ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' }]
       end
 
-    #  WIP: Temporarily write metadata to file
-      file = File.open(Rails.root.join('tmp', "oai_pmh_metadata_#{id}.json"), 'w')
-      file.write(JSON.pretty_generate(@resolved_metadata))
-      file.close
-
       @resolved_metadata
     end
 
