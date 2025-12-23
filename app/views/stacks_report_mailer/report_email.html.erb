@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
 </head>
 <body>
-<p style="font-size: 16px; margin-bottom: 10px;">Reporting publications from ROSA-P Ingest on <strong><%= @report[:formatted_time] %></strong></p>
+<p style="font-size: 16px; margin-bottom: 10px;">Reporting publications from CDC-Stacks Ingest on <strong><%= @report[:formatted_time] %></strong></p>
 
 <p style="font-size: 16px; margin-bottom: 10px;">
   <strong>Depositor: </strong><%= @report[:headers][:depositor] %>
@@ -47,46 +47,56 @@
   </table>
 
   <!-- data table -->
-  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse; table-layout:fixed;">
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse; table-layout:fixed;">
     <thead>
-       <tr>
-        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">Filename</th>
-        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">CDR URL</th>
-        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">ROSA-P ID</th>
-        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:25%;">Error / Attachment Status</th>
-      </tr>
+        <tr>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:15%;">CDC-Stacks ID</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:35%;">Filename(s)</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:20%;">CDR URL</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:30%;">Error / Attachment Status</th>
+        </tr>
     </thead>
     <tbody>
-      <% @report[:records][key].first(@report[:max_display_rows]).each_with_index do |record, index| %>
+        <% @report[:records][key].first(@report[:max_display_rows]).each_with_index do |record, index| %>
         <tr>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:file_name] %></td>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
+            <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:cdc_id] || 'NONE' %></td>
+            <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>; word-break:break-word;">
+            <% if record[:filenames].present? %>
+                <% if record[:filenames].is_a?(Array) %>
+                <%= record[:filenames].join(', ') %>
+                <% else %>
+                <%= record[:filenames] %>
+                <% end %>
+            <% else %>
+                N/A
+            <% end %>
+            </td>
+            <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
             <% if record[:cdr_url].present? %>
-               <a href="<%= record[:cdr_url] %>" style="word-break:break-word;">View in CDR</a>
+                <a href="<%= record[:cdr_url] %>" style="word-break:break-word;">View in CDR</a>
             <% else %>
-              N/A
+                N/A
             <% end %>
-          </td>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:rosap_id] || 'NONE' %></td>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
+            </td>
+            <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>; word-break:break-word;">
             <% if [:skipped, :failed, :successfully_ingested_metadata_only, :skipped_file_attachment].include?(key) %>
-              <%= record[:message].presence || 'N/A' %>
+                <%= record[:message].presence || 'N/A' %>
             <% else %>
-              N/A
+                N/A
             <% end %>
-          </td>
+            </td>
         </tr>
-      <% end %>
-      <% if @report[:records][key].size > @report[:max_display_rows] %>
+        <% end %>
+        <% if @report[:records][key].size > @report[:max_display_rows] %>
         <tr>
-          <td colspan="6" style="border:2px solid #dddddd; padding:10px; background-color:#ffeeba; font-weight:bold; color:#856404;">
+            <td colspan="4" style="border:2px solid #dddddd; padding:10px; background-color:#ffeeba; font-weight:bold; color:#856404;">
             Showing first <%= @report[:max_display_rows] %> of <%= @report[:records][key].size %> records.
             Full list available in attached CSV.
-          </td>
+            </td>
         </tr>
-      <% end %>
+        <% end %>
     </tbody>
-  </table>
+    </table>
 <% end %>
 </body>
 </html>

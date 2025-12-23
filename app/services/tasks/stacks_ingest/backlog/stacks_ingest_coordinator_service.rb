@@ -13,6 +13,7 @@ class Tasks::StacksIngest::Backlog::StacksIngestCoordinatorService
         resume: config['resume'])
     @md_ingest_results_path = File.join(@config['output_dir'], LOAD_METADATA_OUTPUT_DIR, 'metadata_ingest_results.jsonl')
     @file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
+    @aggregated_file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'aggregated_attachment_results.jsonl')
     @generated_results_csv_dir = File.join(@config['output_dir'], RESULT_CSV_OUTPUT_DIR)
       # Create output directories if they don't exist
     generate_output_subdirectories
@@ -66,7 +67,7 @@ class Tasks::StacksIngest::Backlog::StacksIngestCoordinatorService
     LogUtilsHelper.double_log('Aggregating file attachment results.', :info, tag: 'StacksIngestCoordinatorService')
     aggregator = Tasks::StacksIngest::Backlog::Utilities::FileAttachmentResultAggregator.new(
         attachment_results_path: @file_attachment_results_path,
-        output_path: File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'aggregated_attachment_results.jsonl')
+        output_path: @aggregated_file_attachment_results_path
     )
     aggregator.aggregate_results
 
@@ -85,7 +86,7 @@ class Tasks::StacksIngest::Backlog::StacksIngestCoordinatorService
         config: @config,
         tracker: @tracker,
         output_dir: @generated_results_csv_dir,
-        file_attachment_results_path: @file_attachment_results_path,
+        file_attachment_results_path: @aggregated_file_attachment_results_path,
         max_display_rows: MAX_ROWS
     )
     notification_service.run

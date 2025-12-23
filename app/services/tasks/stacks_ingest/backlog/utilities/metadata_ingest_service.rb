@@ -58,7 +58,7 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
     attr_builder.populate_article_metadata(article)
     # Override: Add Stacks CDC ID to identifiers
-    article.identifier << "Stacks-CDC ID: #{cdc_id}"
+    article.identifier << "CDC-Stacks ID: #{cdc_id}"
     article.save!
 
     # Sync permissions and state
