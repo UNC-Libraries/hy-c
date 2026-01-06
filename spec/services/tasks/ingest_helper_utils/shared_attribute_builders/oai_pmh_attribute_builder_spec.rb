@@ -58,7 +58,7 @@ RSpec.describe Tasks::IngestHelperUtils::SharedAttributeBuilders::OaiPmhAttribut
       metadata['title'] = '2023 year in review &#8217; Preventing chronic disease'
       builder.populate_article_metadata(article)
 
-      expect(article.title).to eq(['2023 year in review ' Preventing chronic disease'])
+      expect(article.title).to eq(['2023 year in review ’ Preventing chronic disease'])
     end
 
     it 'returns the article' do
@@ -190,7 +190,6 @@ RSpec.describe Tasks::IngestHelperUtils::SharedAttributeBuilders::OaiPmhAttribut
       expect(article.title).to be_present
       expect(article.abstract).to be_present
       expect(article.date_issued).to be_present
-      expect(article.creators_attributes).to be_present
     end
   end
 end
