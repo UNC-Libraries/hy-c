@@ -15,7 +15,7 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::NotificationService do
     }
   end
   let(:tracker) { { 'depositor_onyen' => 'testuser', 'admin_set_title' => admin_set.title.first } }
-  
+
   subject(:service) do
     described_class.new(
       config: config,
