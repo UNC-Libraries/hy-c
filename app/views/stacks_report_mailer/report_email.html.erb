@@ -67,15 +67,11 @@
             <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>; word-break:break-word;">
             <% if record[:filenames].present? %>
                 <% if record[:filenames].is_a?(Array) %>
-                <% if record[:filenames].size == 1 %>
-                    <%= record[:filenames].first %>
-                <% else %>
-                    <ul style="margin:0; padding-left:20px; list-style-type:disc;">
-                    <% record[:filenames].each do |filename| %>
-                        <li style="margin-bottom:2px;"><%= filename %></li>
-                    <% end %>
-                    </ul>
-                <% end %>
+                  <ul style="margin:0; padding-left:20px; list-style-type:disc;">
+                  <% record[:filenames].each do |filename| %>
+                      <li style="margin-bottom:2px;"><%= filename %></li>
+                  <% end %>
+                  </ul>
                 <% else %>
                 <%= record[:filenames] %>
                 <% end %>
