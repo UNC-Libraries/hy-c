@@ -102,9 +102,8 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
     # Read CSV and extract rows
     CSV.open(path, headers: true) do |csv|
       csv.each do |row|
-        rows << row
+        rows << row unless @seen_identifier_list.include?(row['cdc_id'])
       end
     end
-    rows.reject { |row| @seen_identifier_list.include?(row['cdc_id']) }
   end
 end

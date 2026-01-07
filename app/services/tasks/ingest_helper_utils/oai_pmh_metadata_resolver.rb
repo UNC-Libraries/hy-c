@@ -68,12 +68,12 @@ module Tasks::IngestHelperUtils
     end
 
     def extract_dc_field(doc, field_name)
-      node = doc.at_xpath("//#{field_name}")
+      node = doc.at_xpath("//metadata//#{field_name}")
       node&.text&.strip
     end
 
     def extract_dc_fields(doc, field_name)
-      nodes = doc.xpath("//#{field_name}")
+      nodes = doc.xpath("//metadata//#{field_name}")
       nodes.map { |node| node.text.strip }.reject(&:empty?)
     end
 
@@ -83,6 +83,10 @@ module Tasks::IngestHelperUtils
       # Look for descriptions that are ONLY a year (and whitespace)
       descriptions.each do |desc|
         trimmed = desc.strip
+        # Match YYYY-MM-DD (already normalized)
+        if trimmed.match?(/\A((19|20)\d{2})-\d{2}-\d{2}\z/)
+          return trimmed
+        end
         # Match if the entire description is just a 4-digit year
         if trimmed.match?(/\A(19|20)\d{2}\z/)
           return "#{trimmed}-01-01" # Normalize to YYYY-01-01
@@ -99,10 +103,6 @@ module Tasks::IngestHelperUtils
           year = match[3]
           return "#{year}-#{month}-#{day}" # Normalize to YYYY-MM-DD
         end
-        # Match YYYY-MM-DD (already normalized)
-        if trimmed.match?(/\A((?:19|20)\d{2})-\d{2}-\d{2}\z/)
-          return trimmed
-        end
       end
 
       # Fallback to datestamp from header
@@ -110,8 +110,7 @@ module Tasks::IngestHelperUtils
       if datestamp
         timestamp = datestamp.text.strip
         # Extract just the date part (YYYY-MM-DD) from the ISO timestamp
-        return timestamp.split('T').first if timestamp.include?('T')
-        return timestamp
+        return timestamp.split('T').first
       end
 
       nil

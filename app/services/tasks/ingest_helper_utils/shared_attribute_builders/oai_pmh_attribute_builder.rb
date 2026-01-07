@@ -5,7 +5,7 @@ module Tasks::IngestHelperUtils::SharedAttributeBuilders
 
     def apply_additional_basic_attributes(article)
       article.title = [CGI.unescapeHTML(metadata['title'])] if metadata['title'].present?
-      article.abstract = [metadata['abstract']] if metadata['abstract'].present?
+      article.abstract = [CGI.unescapeHTML(metadata['abstract'])] if metadata['abstract'].present?
       article.date_issued = metadata['date_issued'] if metadata['date_issued'].present?
       # Publisher, keyword and funder info not typically available in OAI-PMH records
       article.publisher = []
@@ -25,5 +25,5 @@ module Tasks::IngestHelperUtils::SharedAttributeBuilders
     def set_journal_attributes(article); end
     def retrieve_author_affiliations(hash, author); end
     def format_publication_identifiers; end
-end
+  end
 end

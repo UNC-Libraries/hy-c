@@ -64,9 +64,9 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::FileAttachmentResultAggr
     context 'with multiple works' do
       let(:input_data) do
         [
-          { ids: { cdc_id: '79129', work_id: 'work1' }, category: 'successfully_ingested_and_attached', message: 'Main PDF successfully attached', file_name: 'file1.pdf' },
-          { ids: { cdc_id: '79129', work_id: 'work1' }, category: 'successfully_ingested_and_attached', message: 'Main PDF successfully attached', file_name: 'file2.pdf' },
-          { ids: { cdc_id: '53458', work_id: 'work2' }, category: 'successfully_ingested_and_attached', message: 'Main PDF successfully attached', file_name: 'file3.pdf' }
+          { ids: { cdc_id: '79129' }, category: 'successfully_ingested_and_attached', message: 'Main PDF successfully attached', file_name: 'file1.pdf' },
+          { ids: { cdc_id: '79129' }, category: 'successfully_ingested_and_attached', message: 'Main PDF successfully attached', file_name: 'file2.pdf' },
+          { ids: { cdc_id: '53458' }, category: 'successfully_ingested_and_attached', message: 'Main PDF successfully attached', file_name: 'file3.pdf' }
         ]
       end
 
@@ -76,16 +76,16 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::FileAttachmentResultAggr
         end
       end
 
-      it 'groups files separately by work_id' do
+      it 'groups files separately by cdc_id' do
         aggregator.aggregate_results
 
         expect(JsonFileUtilsHelper).to have_received(:write_jsonl) do |results, _path, _options|
           expect(results.size).to eq(2)
 
-          work1_group = results.find { |r| r[:ids][:work_id] == 'work1' }
+          work1_group = results.find { |r| r[:ids][:cdc_id] == '79129' }
           expect(work1_group[:filenames]).to contain_exactly('file1.pdf', 'file2.pdf')
 
-          work2_group = results.find { |r| r[:ids][:work_id] == 'work2' }
+          work2_group = results.find { |r| r[:ids][:cdc_id] == '53458' }
           expect(work2_group[:filenames]).to eq(['file3.pdf'])
         end
       end
