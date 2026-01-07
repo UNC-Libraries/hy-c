@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper do
+RSpec.describe Tasks::IngestHelperUtils::DoiMetadataRetrievalHelper do
   let(:helper) { described_class }
   let(:doi) { '10.1234/example' }
 

@@ -1,10 +1,12 @@
 # frozen_string_literal: true
-module Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
+module Tasks::IngestHelperUtils::DoiMetadataRetrievalHelper
   extend self
   SOURCES = %w[crossref openalex datacite].freeze
   def fetch_metadata_for_doi(source:, doi:)
     raise ArgumentError, 'DOI must be provided' if doi.blank?
     raise ArgumentError, "Source must be one of: #{SOURCES.join(', ')}" unless SOURCES.include?(source)
+
+    normalized_doi = WorkUtilsHelper.normalize_doi(doi) || doi
 
     base_url = case source
                when 'crossref' then 'https://api.crossref.org/works/'
@@ -15,12 +17,12 @@ module Tasks::NsfIngest::Backlog::Utilities::MetadataRetrievalHelper
     url = URI.join(base_url, CGI.escape(doi))
     res = HTTParty.get(url)
 
-    return parse_response(res, source, doi) if res.code == 200
+    return parse_response(res, source, normalized_doi) if res.code == 200
 
     Rails.logger.error("[MetadataRetrievalHelper] Failed to retrieve metadata from #{source.capitalize}. HTTP #{res.code}")
     nil
   rescue => e
-    Rails.logger.error("[MetadataRetrievalHelper] Error retrieving #{source.capitalize} metadata for DOI #{doi}: #{e.message}")
+    Rails.logger.error("[MetadataRetrievalHelper] Error retrieving #{source.capitalize} metadata for DOI #{normalized_doi}: #{e.message}")
     nil
   end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::CrossrefAttributeBuilder do
+RSpec.describe Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttributeBuilder do
   let(:admin_set) { double('AdminSet') }
   let(:depositor) { 'test-user' }
   let(:article) { Article.new }
@@ -113,7 +113,7 @@ RSpec.describe Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders::Crossref
       metadata['issn-type'] = []
       builder.send(:set_identifiers, article)
       expect(article.issn).to eq([])
-      expect(Rails.logger).to have_received(:warn)
+      expect(Rails.logger).to have_received(:warn).at_least(:once)
     end
   end
 

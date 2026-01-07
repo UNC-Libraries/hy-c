@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::NsfIngest::Backlog::Utilities::AttributeBuilders
+module Tasks::IngestHelperUtils::SharedAttributeBuilders
   class OpenalexAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
     TRUNCATED_AUTHORS_LIMIT = 100
     private
