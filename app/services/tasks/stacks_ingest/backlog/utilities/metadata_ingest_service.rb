@@ -105,5 +105,6 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
         rows << row unless @seen_identifier_list.include?(row['cdc_id'])
       end
     end
+    rows
   end
 end
