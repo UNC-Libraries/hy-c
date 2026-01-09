@@ -73,9 +73,7 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
     doi = row['doi']
     raise ArgumentError, 'Stacks ID cannot be blank' if cdc_id.blank?
 
-    resolver = resolve_metadata(cdc_id: cdc_id, doi: doi)
-    attr_builder = resolver.resolve_and_build
-    metadata = resolver.resolved_metadata
+    attr_builder, metadata = resolve_metadata(cdc_id: cdc_id, doi: doi)
 
     [attr_builder, metadata]
   rescue => e
@@ -94,24 +92,26 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
   end
 
   def try_doi_resolver(cdc_id:, doi:)
-    Tasks::IngestHelperUtils::DoiMetadataResolver.new(
+    resolver = Tasks::IngestHelperUtils::DoiMetadataResolver.new(
       doi: doi,
       admin_set: @admin_set,
       depositor_onyen: @config['depositor_onyen']
     )
+    [resolver.resolve_and_build, resolver.resolved_metadata]
   rescue => e
-    Rails.logger.warn("DOI resolution failed for DOI #{doi} (Stacks ID #{cdc_id}): #{e.message}. Falling back to OAI-PMH.")
+    Rails.logger.warn("[MetadataIngestService] DOI resolution failed for DOI #{doi} (Stacks ID #{cdc_id}): #{e.message}. Falling back to OAI-PMH.")
     oai_pmh_resolver(cdc_id)
   end
 
   def oai_pmh_resolver(cdc_id)
-    Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
+    resolver = Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
       id: cdc_id,
       identifier_key_name: identifier_key_name,
       full_text_dir: @config['full_text_dir'],
       admin_set: @admin_set,
       depositor_onyen: @config['depositor_onyen']
     )
+    [resolver.resolve_and_build, resolver.resolved_metadata]
   end
 
   def remaining_rows_from_csv(path)
