@@ -210,21 +210,21 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService do
 
     context 'when metadata resolution raises error' do
       before do
-        allow(doi_resolver).to receive(:resolve_and_build).and_raise(StandardError.new('API error'))
+        allow(oai_resolver).to receive(:resolve_and_build).and_raise(StandardError.new('API error'))
       end
 
       it 'handles error and records failure' do
         service.process_backlog
 
         expect(Rails.logger).to have_received(:error).with(
-          '[MetadataIngestService] Error processing work with cdc_id 999999: API error'
+          '[MetadataIngestService] Error processing work with cdc_id 140512: API error'
         )
         expect(service).to have_received(:record_result).with(
           category: :failed,
           message: 'API error',
-          identifier: '79129',
+          identifier: '140512',
           article: nil,
-          filename: 'cdc_79129_DS1.pdf'
+          filename: 'cdc_140512_DS1.pdf'
         )
       end
 
