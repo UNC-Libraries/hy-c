@@ -67,34 +67,51 @@ class Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService
     article
   end
 
-  private
 
   def resolve_attr_builder_and_metadata_for_row(row)
     cdc_id = row['cdc_id']
     doi = row['doi']
-    resolver = nil
     raise ArgumentError, 'Stacks ID cannot be blank' if cdc_id.blank?
-    if doi.present?
-      resolver = Tasks::IngestHelperUtils::DoiMetadataResolver.new(
-        doi: doi,
-        admin_set: @admin_set,
-        depositor_onyen: @config['depositor_onyen']
-      )
-    else
-      resolver = Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
-        id: cdc_id,
-        identifier_key_name: identifier_key_name,
-        full_text_dir: @config['full_text_dir'],
-        admin_set: @admin_set,
-        depositor_onyen: @config['depositor_onyen']
-      )
-    end
+
+    resolver = resolve_metadata(cdc_id: cdc_id, doi: doi)
     attr_builder = resolver.resolve_and_build
     metadata = resolver.resolved_metadata
-    return attr_builder, metadata
+
+    [attr_builder, metadata]
   rescue => e
     Rails.logger.error("Error resolving metadata for Stacks ID #{cdc_id}: #{e.message}")
     raise
+  end
+
+  private
+
+  def resolve_metadata(cdc_id:, doi:)
+    if doi.present?
+      try_doi_resolver(cdc_id: cdc_id, doi: doi)
+    else
+      oai_pmh_resolver(cdc_id)
+    end
+  end
+
+  def try_doi_resolver(cdc_id:, doi:)
+    Tasks::IngestHelperUtils::DoiMetadataResolver.new(
+      doi: doi,
+      admin_set: @admin_set,
+      depositor_onyen: @config['depositor_onyen']
+    )
+  rescue => e
+    Rails.logger.warn("DOI resolution failed for DOI #{doi} (Stacks ID #{cdc_id}): #{e.message}. Falling back to OAI-PMH.")
+    oai_pmh_resolver(cdc_id)
+  end
+
+  def oai_pmh_resolver(cdc_id)
+    Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
+      id: cdc_id,
+      identifier_key_name: identifier_key_name,
+      full_text_dir: @config['full_text_dir'],
+      admin_set: @admin_set,
+      depositor_onyen: @config['depositor_onyen']
+    )
   end
 
   def remaining_rows_from_csv(path)
