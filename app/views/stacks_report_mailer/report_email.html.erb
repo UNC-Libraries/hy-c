@@ -18,7 +18,8 @@
 
 <p style="font-size: 16px; margin-bottom: 10px;">
   <strong>Total Unique Records: </strong>
-  <%= @report[:headers][:total_files].presence  %>
+  <% unique_cdc_ids_overall = @report[:records].values.flatten.map { |record| record[:cdc_id] }.compact.uniq %>
+  <%= unique_cdc_ids_overall.size %>
 </p>
 
 <% if @report[:truncated_categories].any? %>
@@ -28,6 +29,10 @@
     Please see the attached CSV files for full results.
   </p>
 <% end %>
+
+<p style="font-size: 16px; margin-bottom: 10px; background-color:#fff3cd; color:#856404; padding:8px; border:1px solid #ffeeba;">
+  Note: A single CDC-Stacks ID may appear in more than one entry if files were processed separately   (e.g., main file vs. supplemental files) or if files related to the same work appear in different categories.
+</p>
 
 <!-- Generate tables for each record category -->
 <% @report[:categories].each do |key, label| %>
@@ -44,7 +49,7 @@
   <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
     <tr>
       <td style="font-size:20px; font-weight:bold; padding:0; margin:0; mso-margin-top-alt:0; mso-margin-bottom-alt:0;">
-        <%= label %>: <%= unique_cdc_ids.size %> Unique Records
+        <%= label %>: <%= unique_cdc_ids.size %> Entries
       </td>
     </tr>
   </table>
