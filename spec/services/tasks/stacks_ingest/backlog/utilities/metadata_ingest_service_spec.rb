@@ -210,21 +210,21 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService do
 
     context 'when metadata resolution raises error' do
       before do
-        allow(doi_resolver).to receive(:resolve_and_build).and_raise(StandardError.new('API error'))
+        allow(oai_resolver).to receive(:resolve_and_build).and_raise(StandardError.new('API error'))
       end
 
       it 'handles error and records failure' do
         service.process_backlog
 
         expect(Rails.logger).to have_received(:error).with(
-          '[MetadataIngestService] Error processing work with cdc_id 999999: API error'
+          '[MetadataIngestService] Error processing work with cdc_id 140512: API error'
         )
         expect(service).to have_received(:record_result).with(
           category: :failed,
           message: 'API error',
-          identifier: '79129',
+          identifier: '140512',
           article: nil,
-          filename: 'cdc_79129_DS1.pdf'
+          filename: 'cdc_140512_DS1.pdf'
         )
       end
 
@@ -356,11 +356,14 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService do
   describe '#resolve_attr_builder_and_metadata_for_row' do
     let(:row) { CSV::Row.new(['cdc_id', 'doi'], ['140512', 'http://dx.doi.org/10.1234/test']) }
     let(:doi_resolver) { instance_double(Tasks::IngestHelperUtils::DoiMetadataResolver) }
+    let(:oai_resolver) { instance_double(Tasks::IngestHelperUtils::OaiPmhMetadataResolver) }
     let(:attr_builder) { instance_double(Tasks::IngestHelperUtils::SharedAttributeBuilders::CrossrefAttributeBuilder) }
     let(:resolved_metadata) { { 'title' => 'Test' } }
 
     before do
       allow(Tasks::IngestHelperUtils::DoiMetadataResolver).to receive(:new).and_return(doi_resolver)
+      allow(oai_resolver).to receive(:resolve_and_build).and_return(attr_builder)
+      allow(oai_resolver).to receive(:resolved_metadata).and_return(resolved_metadata)
       allow(doi_resolver).to receive(:resolve_and_build).and_return(attr_builder)
       allow(doi_resolver).to receive(:resolved_metadata).and_return(resolved_metadata)
     end
@@ -424,19 +427,29 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::MetadataIngestService do
       end
     end
 
-    context 'when resolver raises error' do
+    context 'when doi resolver raises error' do
       before do
         allow(doi_resolver).to receive(:resolve_and_build).and_raise(StandardError.new('Resolution failed'))
+        allow(Tasks::IngestHelperUtils::OaiPmhMetadataResolver).to receive(:new).and_return(oai_resolver)
+        allow(oai_resolver).to receive(:resolve_and_build).and_return(attr_builder)
+        allow(oai_resolver).to receive(:resolved_metadata).and_return(resolved_metadata)
       end
 
-      it 'logs error and re-raises' do
-        expect {
-          service.send(:resolve_attr_builder_and_metadata_for_row, row)
-        }.to raise_error(StandardError, 'Resolution failed')
+      it 'logs error and falls back to OAI-PMH resolver' do
+        builder, metadata = service.send(:resolve_attr_builder_and_metadata_for_row, row)
 
-        expect(Rails.logger).to have_received(:error).with(
-          'Error resolving metadata for Stacks ID 140512: Resolution failed'
+        expect(Rails.logger).to have_received(:warn).with(
+          '[MetadataIngestService] DOI resolution failed for DOI http://dx.doi.org/10.1234/test (Stacks ID 140512): Resolution failed. Falling back to OAI-PMH.'
         )
+        expect(Tasks::IngestHelperUtils::OaiPmhMetadataResolver).to have_received(:new).with(
+          id: '140512',
+          identifier_key_name: 'cdc_id',
+          full_text_dir: '/tmp/stacks_full_text',
+          admin_set: admin_set,
+          depositor_onyen: depositor.uid
+        )
+        expect(builder).to eq(attr_builder)
+        expect(metadata).to eq(resolved_metadata)
       end
     end
   end
