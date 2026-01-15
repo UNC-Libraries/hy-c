@@ -157,6 +157,14 @@ RSpec.describe HtmlSanitizationRemediationService do
       expect(result).not_to include('font-size')
     end
 
+    it 'handles quotes inside style attribute values' do
+      html = %q(<span style="font-size: 12pt; font-family: 'Times New Roman',serif; line-height: 200%;">Text</span>)
+      result = described_class.send(:strip_disallowed_styles, html)
+      expect(result).to eq('<span style="line-height: 200%;">Text</span>')
+      expect(result).not_to include('font-family')
+      expect(result).not_to include('font-size')
+    end
+
     it 'preserves other HTML' do
       html = '<p><strong>Bold</strong> and <em>italic</em></p>'
       result = described_class.send(:strip_disallowed_styles, html)

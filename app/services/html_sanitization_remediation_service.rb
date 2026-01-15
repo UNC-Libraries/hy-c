@@ -73,13 +73,13 @@ class HtmlSanitizationRemediationService
     return html if html.blank?
 
     # Match style attributes and clean them
-    html.gsub(/\sstyle\s*=\s*["']([^"']+)["']/i) do |match|
-      style_content = $1
+    html.gsub(/\sstyle\s*=\s*("([^"]*)"|'([^']*)')/i) do |match|
+      style_content = $2 || $3
 
-      # Remove font-family and font-size properties (and their values)
+     # Remove font-family and font-size properties (and their values)
       cleaned = style_content.gsub(/\s*font-(?:family|size)\s*:\s*[^;]+;?\s*/i, '')
 
-      # If there are remaining styles, keep the attribute; otherwise remove it entirely
+     # If there are remaining styles, keep the attribute; otherwise remove it entirely
       if cleaned.strip.empty?
         ''
       else
