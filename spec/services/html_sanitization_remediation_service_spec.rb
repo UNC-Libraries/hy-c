@@ -135,9 +135,24 @@ RSpec.describe HtmlSanitizationRemediationService do
       expect(result).to eq('<p>Text</p>')
     end
 
-    it 'removes both font-family and font-size' do
-      html = '<span style="font-family: Arial; font-size: 14px; color: red;">Text</span>'
+    it 'removes font styles but preserves other styles' do
+      html = '<div style="margin: 0px; font-family: Arial; padding: 10px; font-size: 14px; color: red;">Text</div>'
       result = described_class.send(:strip_disallowed_styles, html)
+      expect(result).to eq('<div style="margin: 0px;padding: 10px;color: red;">Text</div>')
+      expect(result).not_to include('font-family')
+      expect(result).not_to include('font-size')
+    end
+
+    it 'removes entire style attribute if only font styles present' do
+      html = '<span style="font-family: Arial; font-size: 14px;">Text</span>'
+      result = described_class.send(:strip_disallowed_styles, html)
+      expect(result).to eq('<span>Text</span>')
+    end
+
+    it 'handles complex Microsoft Word styles' do
+      html = '<div style="margin: 0px; padding: 0px; font-family: Segoe UI, Arial; font-size: 12px; user-select: text;">Text</div>'
+      result = described_class.send(:strip_disallowed_styles, html)
+      expect(result).to eq('<div style="margin: 0px; padding: 0px;user-select: text;">Text</div>')
       expect(result).not_to include('font-family')
       expect(result).not_to include('font-size')
     end

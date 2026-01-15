@@ -71,8 +71,21 @@ class HtmlSanitizationRemediationService
 
   def self.strip_disallowed_styles(html)
     return html if html.blank?
-    # Remove style attributes containing font-family or font-size
-    html.gsub(/\s*style\s*=\s*["'][^"']*(?:font-family|font-size)[^"']*["']/i, '')
+
+    # Match style attributes and clean them
+    html.gsub(/\sstyle\s*=\s*["']([^"']+)["']/i) do |match|
+      style_content = $1
+
+      # Remove font-family and font-size properties (and their values)
+      cleaned = style_content.gsub(/\s*font-(?:family|size)\s*:\s*[^;]+;?\s*/i, '')
+
+      # If there are remaining styles, keep the attribute; otherwise remove it entirely
+      if cleaned.strip.empty?
+        ''
+      else
+        " style=\"#{cleaned.strip}\""
+      end
+    end
   end
 
   def self.truncate_for_preview(text)
