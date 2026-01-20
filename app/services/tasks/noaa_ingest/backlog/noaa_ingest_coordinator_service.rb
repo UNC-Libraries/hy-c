@@ -22,9 +22,9 @@ class Tasks::NoaaIngest::Backlog::NoaaIngestCoordinatorService
   def run
     NotificationUtilsHelper.suppress_emails do
       load_and_ingest_metadata
-        # attach_files
+      attach_files
     end
-    # format_results_and_notify
+    format_results_and_notify
 
     LogUtilsHelper.double_log('NOAA ingest workflow completed successfully', :info, tag: 'NoaaIngestCoordinator')
     rescue => e
@@ -47,6 +47,52 @@ class Tasks::NoaaIngest::Backlog::NoaaIngestCoordinatorService
     @tracker['progress']['metadata_ingest']['completed'] = true
     @tracker.save
     LogUtilsHelper.double_log('Metadata ingest step completed.', :info, tag: 'NoaaIngestCoordinatorService')
+  end
+
+  def attach_files
+    if @tracker['progress']['attach_files_to_works']['completed']
+      LogUtilsHelper.double_log('File attachment already completed according to tracker. Skipping this step.', :info, tag: 'NoaaIngestCoordinatorService')
+      return
+    end
+
+    LogUtilsHelper.double_log('Starting file attachment step.', :info, tag: 'NoaaIngestCoordinatorService')
+    file_attachment_service = Tasks::NoaaIngest::Backlog::Utilities::FileAttachmentService.new(
+        config: @config,
+        tracker: @tracker,
+        log_file_path: @file_attachment_results_path,
+        metadata_ingest_result_path: @md_ingest_results_path
+    )
+    file_attachment_service.run
+
+    LogUtilsHelper.double_log('Aggregating file attachment results.', :info, tag: 'NoaaIngestCoordinatorService')
+    aggregator = Tasks::NoaaIngest::Backlog::Utilities::FileAttachmentResultAggregator.new(
+        attachment_results_path: @file_attachment_results_path,
+        output_path: @aggregated_file_attachment_results_path
+    )
+    aggregator.aggregate_results
+
+    @tracker['progress']['attach_files_to_works']['completed'] = true
+    @tracker.save
+    LogUtilsHelper.double_log('File attachment step completed.', :info, tag: 'NoaaIngestCoordinatorService')
+  end
+
+  def format_results_and_notify
+    if @tracker['progress']['send_summary_email']['completed']
+      LogUtilsHelper.double_log('Results formatting and notification already completed according to tracker. Skipping this step.', :info, tag: 'NoaaIngestCoordinatorService')
+      return
+    end
+    LogUtilsHelper.double_log('Starting results formatting and notification step.', :info, tag: 'NoaaIngestCoordinatorService')
+    notification_service = Tasks::NoaaIngest::Backlog::Utilities::NotificationService.new(
+        config: @config,
+        tracker: @tracker,
+        output_dir: @generated_results_csv_dir,
+        file_attachment_results_path: @aggregated_file_attachment_results_path,
+        max_display_rows: MAX_ROWS
+    )
+    notification_service.run
+    @tracker['progress']['send_summary_email']['completed'] = true
+    @tracker.save
+    LogUtilsHelper.double_log('Results formatting and notification step completed.', :info, tag: 'NoaaIngestCoordinatorService')
   end
 
   def generate_output_subdirectories
