@@ -52,13 +52,13 @@ class Tasks::NoaaIngest::Backlog::Utilities::MetadataIngestService
   end
 
   # IngestHelper method override
-  def new_article(metadata:, attr_builder:, config:, cdc_id:)
+  def new_article(metadata:, attr_builder:, config:, noaa_id:)
     # Create new work
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
     attr_builder.populate_article_metadata(article)
     # Override: Add NOAA ID to identifiers
-    article.identifier << "NOAA ID: #{cdc_id}"
+    article.identifier << "NOAA ID: #{noaa_id}"
     article.save!
 
     # Sync permissions and state
@@ -69,29 +69,29 @@ class Tasks::NoaaIngest::Backlog::Utilities::MetadataIngestService
 
 
   def resolve_attr_builder_and_metadata_for_row(row)
-    cdc_id = row['cdc_id']
+    noaa_id = row['noaa_id']
     doi = row['doi']
-    raise ArgumentError, 'NOAA ID cannot be blank' if cdc_id.blank?
+    raise ArgumentError, 'NOAA ID cannot be blank' if noaa_id.blank?
 
-    attr_builder, metadata = resolve_metadata(cdc_id: cdc_id, doi: doi)
+    attr_builder, metadata = resolve_metadata(noaa_id: noaa_id, doi: doi)
 
     [attr_builder, metadata]
   rescue => e
-    Rails.logger.error("Error resolving metadata for NOAA ID #{cdc_id}: #{e.message}")
+    Rails.logger.error("Error resolving metadata for NOAA ID #{noaa_id}: #{e.message}")
     raise
   end
 
   private
 
-  def resolve_metadata(cdc_id:, doi:)
+  def resolve_metadata(noaa_id:, doi:)
     if doi.present?
-      try_doi_resolver(cdc_id: cdc_id, doi: doi)
+      try_doi_resolver(noaa_id: noaa_id, doi: doi)
     else
-      oai_pmh_resolver(cdc_id)
+      oai_pmh_resolver(noaa_id)
     end
   end
 
-  def try_doi_resolver(cdc_id:, doi:)
+  def try_doi_resolver(noaa_id:, doi:)
     resolver = Tasks::IngestHelperUtils::DoiMetadataResolver.new(
       doi: doi,
       admin_set: @admin_set,
@@ -99,13 +99,13 @@ class Tasks::NoaaIngest::Backlog::Utilities::MetadataIngestService
     )
     [resolver.resolve_and_build, resolver.resolved_metadata]
   rescue => e
-    Rails.logger.warn("[MetadataIngestService] DOI resolution failed for DOI #{doi} (NOAA ID #{cdc_id}): #{e.message}. Falling back to OAI-PMH.")
-    oai_pmh_resolver(cdc_id)
+    Rails.logger.warn("[MetadataIngestService] DOI resolution failed for DOI #{doi} (NOAA ID #{noaa_id}): #{e.message}. Falling back to OAI-PMH.")
+    oai_pmh_resolver(noaa_id)
   end
 
-  def oai_pmh_resolver(cdc_id)
+  def oai_pmh_resolver(noaa_id)
     resolver = Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
-      id: cdc_id,
+      id: noaa_id,
       identifier_key_name: identifier_key_name,
       full_text_dir: @config['full_text_dir'],
       admin_set: @admin_set,
@@ -119,7 +119,7 @@ class Tasks::NoaaIngest::Backlog::Utilities::MetadataIngestService
     # Read CSV and extract rows
     CSV.open(path, headers: true) do |csv|
       csv.each do |row|
-        rows << row unless @seen_identifier_list.include?(row['cdc_id'])
+        rows << row unless @seen_identifier_list.include?(row['noaa_id'])
       end
     end
     rows

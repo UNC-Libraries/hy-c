@@ -12,16 +12,25 @@ task noaa_backlog_ingest: :environment do
   now = Time.now
   resume_bool = ActiveModel::Type::Boolean.new.cast(resume)
 
+  args = {
+    resume: resume,
+    input_csv_path: input_csv_path,
+    output_dir: output_dir,
+    full_text_dir: full_text_dir,
+    admin_set_title: admin_set_title,
+    depositor_onyen: depositor_onyen
+  }
+
   if resume_bool
     required_keys = %i[resume output_dir]
   else
     required_keys = %i[resume input_csv_path output_dir full_text_dir admin_set_title depositor_onyen]
   end
 
-  validate_args!(ENV, required_keys)
-  output_directory = resolve_output_directory(ENV, now, prefix: 'noaa_backlog_ingest')
+  validate_args!(args, required_keys)
+  output_directory = resolve_output_directory(args, now, prefix: 'noaa_backlog_ingest')
   tracker = resume_bool ? retrieve_tracker_json(output_directory) : nil
-  config = build_noaa_config(ENV, tracker, output_directory, now)
+  config = build_noaa_config(args, tracker, output_directory, now)
 
   write_intro_banner(config: config, ingest_type: 'NOAA Backlog')
 
@@ -29,9 +38,9 @@ task noaa_backlog_ingest: :environment do
   coordinator.run
 end
 
-def build_noaa_config(env, tracker, output_dir, now)
+def build_noaa_config(args, tracker, output_dir, now)
   include Tasks::IngestHelperUtils::RakeTaskHelper
-  resume = ActiveModel::Type::Boolean.new.cast(env['RESUME'])
+  resume = ActiveModel::Type::Boolean.new.cast(args['resume'])
 
   if resume
     tracker.merge(
@@ -43,11 +52,11 @@ def build_noaa_config(env, tracker, output_dir, now)
         'start_time' => now,
         'restart_time' => nil,
         'resume' => false,
-        'admin_set_title' => env['ADMIN_SET_TITLE'],
-        'depositor_onyen' => env['DEPOSITOR_ONYEN'],
+        'admin_set_title' => args[:admin_set_title],
+        'depositor_onyen' => args[:depositor_onyen],
         'output_dir' => output_dir,
-        'input_csv_path' => normalize_path(env['INPUT_CSV_PATH']).to_s,
-        'full_text_dir' => normalize_path(env['FULL_TEXT_DIR']).to_s
+        'input_csv_path' => normalize_path(args[:input_csv_path]).to_s,
+        'full_text_dir' => normalize_path(args[:full_text_dir]).to_s
     }
   end
 end
