@@ -26,7 +26,7 @@ class Tasks::NoaaIngest::Backlog::NoaaIngestCoordinatorService
     end
     format_results_and_notify
 
-    LogUtilsHelper.double_log('NOAA ingest workflow completed successfully', :info, tag: 'NoaaIngestCoordinator')
+    LogUtilsHelper.double_log('NOAA ingest workflow completed successfully.', :info, tag: 'NoaaIngestCoordinator')
     rescue => e
       LogUtilsHelper.double_log("NOAA ingest workflow failed: #{e.message}", :error, tag: 'NoaaIngestCoordinator')
       raise e
