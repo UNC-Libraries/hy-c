@@ -22,9 +22,9 @@ class Tasks::OstiIngest::Backlog::OstiIngestCoordinatorService
   def run
     NotificationUtilsHelper.suppress_emails do
       load_and_ingest_metadata
-      attach_files
+      # attach_files
     end
-    format_results_and_notify
+    # format_results_and_notify
 
     LogUtilsHelper.double_log('OSTI ingest workflow completed successfully.', :info, tag: 'OstiIngestCoordinator')
     rescue => e

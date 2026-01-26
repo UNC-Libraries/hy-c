@@ -35,12 +35,12 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
       end
 
       attr_builder, metadata = resolve_attr_builder_and_metadata_for_json(metadata_json)
-      article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config, osti_id: id)
-      record_result(category: :successfully_ingested_metadata_only, identifier: id, article: article, filename: "#{id}.pdf")
+      article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config, osti_id: osti_id)
+      record_result(category: :successfully_ingested_metadata_only, identifier: osti_id, article: article, filename: "#{osti_id}.pdf")
 
-      Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for publication with OSTI ID #{id}")
+      Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for publication with OSTI ID #{osti_id}")
   rescue => e
-    handle_record_error(id, e, filename: filename)
+    handle_record_error(osti_id, e, filename: filename)
   ensure
     flush_buffer_if_needed
       # Respect rate limiting
@@ -87,7 +87,9 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     if doi.present?
       try_doi_resolver(osti_id: osti_id, doi: doi)
     else
-      oai_pmh_resolver(osti_id)
+      # WIP
+      # oai_pmh_resolver(osti_id)
+      LogUtilsHelper.double_log("[MetadataIngestService] No DOI provided for OSTI ID #{osti_id}. Falling back to OSTI JSON resolver.", :warn, tag: self.class.name)
     end
   end
 
@@ -99,8 +101,10 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     )
     [resolver.resolve_and_build, resolver.resolved_metadata]
   rescue => e
-    Rails.logger.warn("[MetadataIngestService] DOI resolution failed for DOI #{doi} (OSTI ID #{osti_id}): #{e.message}. Falling back to OAI-PMH.")
-    oai_pmh_resolver(osti_id)
+    # WIP
+    LogUtilsHelper.double_log("[MetadataIngestService] DOI resolution failed for DOI #{doi} (OSTI ID #{osti_id}): #{e.message}. Falling back to OSTI JSON resolver.", :warn, tag: self.class.name)
+    # Rails.logger.warn("[MetadataIngestService] DOI resolution failed for DOI #{doi} (OSTI ID #{osti_id}): #{e.message}. Falling back to OAI-PMH.")
+    # oai_pmh_resolver(osti_id)
   end
 
   def osti_json_resolver(osti_id)
