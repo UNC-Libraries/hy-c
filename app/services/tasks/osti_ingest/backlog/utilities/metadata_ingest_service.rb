@@ -30,7 +30,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
       match = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(osti_id, admin_set_title: @config['admin_set_title']) ||
       WorkUtilsHelper.fetch_work_data_by_doi(metadata_json['doi'], admin_set_title: @config['admin_set_title'])
       if match.present? && match[:work_id].present?
-        skip_existing_work(osti_id, match, filename: filename)
+        skip_existing_work(osti_id, match, filename: "#{osti_id}.pdf")
         next
       end
 
@@ -40,7 +40,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for publication with OSTI ID #{osti_id}")
   rescue => e
-    handle_record_error(osti_id, e, filename: filename)
+    handle_record_error(osti_id, e, filename: "#{osti_id}.pdf")
   ensure
     flush_buffer_if_needed
       # Respect rate limiting

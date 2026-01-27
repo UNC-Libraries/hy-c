@@ -22,7 +22,7 @@ class Tasks::OstiIngest::Backlog::OstiIngestCoordinatorService
   def run
     NotificationUtilsHelper.suppress_emails do
       load_and_ingest_metadata
-      # attach_files
+      attach_files
     end
     # format_results_and_notify
 
@@ -63,13 +63,6 @@ class Tasks::OstiIngest::Backlog::OstiIngestCoordinatorService
         metadata_ingest_result_path: @md_ingest_results_path
     )
     file_attachment_service.run
-
-    LogUtilsHelper.double_log('Aggregating file attachment results.', :info, tag: 'OstiIngestCoordinatorService')
-    aggregator = Tasks::OstiIngest::Backlog::Utilities::FileAttachmentResultAggregator.new(
-        attachment_results_path: @file_attachment_results_path,
-        output_path: @aggregated_file_attachment_results_path
-    )
-    aggregator.aggregate_results
 
     @tracker['progress']['attach_files_to_works']['completed'] = true
     @tracker.save
