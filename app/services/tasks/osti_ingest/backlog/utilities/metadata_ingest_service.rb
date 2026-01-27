@@ -48,7 +48,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     end
 
     flush_buffer_to_file unless @write_buffer.empty?
-    LogUtilsHelper.double_log("Ingest complete. Processed #{remaining_csv_rows.size} IDs.", :info, tag: 'MetadataIngestService')
+    LogUtilsHelper.double_log("Ingest complete. Processed #{remaining_ids_from_data_dir.size} IDs.", :info, tag: 'MetadataIngestService')
   end
 
   # IngestHelper method override
@@ -59,6 +59,11 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     attr_builder.populate_article_metadata(article)
     # Override: Add OSTI ID to identifiers
     article.identifier << "OSTI ID: #{osti_id}"
+    # Override: Use backlog abstract if present
+    # OSTI backlog abstracts are generally higher quality than those retrieved via DOI resolution
+    if metadata['backlog_abstract'].present?
+      article.abstract = [metadata['backlog_abstract']]
+    end
     article.save!
 
     # Sync permissions and state
@@ -74,6 +79,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     raise ArgumentError, 'OSTI ID cannot be blank' if osti_id.blank?
 
     attr_builder, metadata = resolve_metadata(osti_id: osti_id, doi: doi)
+    metadata['backlog_abstract'] = metadata_json['description']
 
     [attr_builder, metadata]
   rescue => e
@@ -87,9 +93,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     if doi.present?
       try_doi_resolver(osti_id: osti_id, doi: doi)
     else
-      # WIP
-      # oai_pmh_resolver(osti_id)
-      LogUtilsHelper.double_log("[MetadataIngestService] No DOI provided for OSTI ID #{osti_id}. Falling back to OSTI JSON resolver.", :warn, tag: self.class.name)
+      raise ArgumentError, "No DOI present for OSTI ID #{osti_id}; cannot resolve metadata."
     end
   end
 
@@ -101,21 +105,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     )
     [resolver.resolve_and_build, resolver.resolved_metadata]
   rescue => e
-    # WIP
-    LogUtilsHelper.double_log("[MetadataIngestService] DOI resolution failed for DOI #{doi} (OSTI ID #{osti_id}): #{e.message}. Falling back to OSTI JSON resolver.", :warn, tag: self.class.name)
-    # Rails.logger.warn("[MetadataIngestService] DOI resolution failed for DOI #{doi} (OSTI ID #{osti_id}): #{e.message}. Falling back to OAI-PMH.")
-    # oai_pmh_resolver(osti_id)
-  end
-
-  def osti_json_resolver(osti_id)
-    resolver = Tasks::IngestHelperUtils::OaiPmhMetadataResolver.new(
-      id: osti_id,
-      identifier_key_name: identifier_key_name,
-      full_text_dir: @config['full_text_dir'],
-      admin_set: @admin_set,
-      depositor_onyen: @config['depositor_onyen']
-    )
-    [resolver.resolve_and_build, resolver.resolved_metadata]
+    raise "DOI resolution failed for OSTI ID #{osti_id} with DOI #{doi}: #{e.message}"
   end
 
   # IDs are derived from folder names in data directory
