@@ -64,6 +64,8 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     if metadata['backlog_abstract'].present?
       article.abstract = [metadata['backlog_abstract']]
     end
+    # Remove HTML tags from title
+    article.title = [sanitize_text(article.title.first)]
     article.save!
 
     # Sync permissions and state
@@ -88,6 +90,13 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
   end
 
   private
+
+  def sanitize_text(text)
+    return nil if text.blank?
+    # Strip all HTML tags (including <scp>, <sup>, etc.)
+    cleaned = ActionController::Base.helpers.strip_tags(text)
+    cleaned.strip
+  end
 
   def resolve_metadata(osti_id:, doi:)
     if doi.present?
