@@ -13,7 +13,6 @@ class Tasks::OstiIngest::Backlog::OstiIngestCoordinatorService
         resume: config['resume'])
     @md_ingest_results_path = File.join(@config['output_dir'], LOAD_METADATA_OUTPUT_DIR, 'metadata_ingest_results.jsonl')
     @file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
-    @aggregated_file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'aggregated_attachment_results.jsonl')
     @generated_results_csv_dir = File.join(@config['output_dir'], RESULT_CSV_OUTPUT_DIR)
     # Create output directories if they don't exist
     generate_output_subdirectories
@@ -24,7 +23,7 @@ class Tasks::OstiIngest::Backlog::OstiIngestCoordinatorService
       load_and_ingest_metadata
       attach_files
     end
-    # format_results_and_notify
+    format_results_and_notify
 
     LogUtilsHelper.double_log('OSTI ingest workflow completed successfully.', :info, tag: 'OstiIngestCoordinator')
     rescue => e
@@ -79,7 +78,7 @@ class Tasks::OstiIngest::Backlog::OstiIngestCoordinatorService
         config: @config,
         tracker: @tracker,
         output_dir: @generated_results_csv_dir,
-        file_attachment_results_path: @aggregated_file_attachment_results_path,
+        file_attachment_results_path: @file_attachment_results_path,
         max_display_rows: MAX_ROWS
     )
     notification_service.run
