@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # frozen_string literal: true
 class Tasks::OstiIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   SLEEP_INTERVAL = 1
@@ -9,11 +10,25 @@ class Tasks::OstiIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inge
 
   def process_record(record)
     record_id = record.dig('ids', 'work_id')
-    file_path = File.join(@data_dir , record.dig('ids', 'osti_id'))
+    osti_id = record.dig('ids', 'osti_id')
+    file_path = File.join(@data_dir, osti_id)
     current_file_name = nil
-    # Attach all pdfs
+
+    # Find all PDFs in the directory
+    pdf_files = Dir.glob(File.join(file_path, '*.pdf'))
+
+    # If no PDFs found, log as skipped
+    if pdf_files.empty?
+      log_attachment_outcome(record,
+                            category: :successfully_ingested_metadata_only,
+                            message: 'No PDF files found in directory',
+                            file_name: 'N/A')
+      return
+    end
+
+    # Attach all PDFs
     begin
-      Dir.glob(File.join(file_path, '*.pdf')).each do |file_pdf_path|
+      pdf_files.each do |file_pdf_path|
         current_file_name = File.basename(file_pdf_path)
         file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                 file_path: file_pdf_path,
@@ -25,16 +40,16 @@ class Tasks::OstiIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inge
                           message: 'PDF successfully attached.',
                           file_name: current_file_name)
         end
-          # Sleep briefly to avoid overwhelming fedora with rapid requests
+        # Sleep briefly to avoid overwhelming fedora with rapid requests
         sleep(SLEEP_INTERVAL)
       end
-rescue =>  e
-  Rails.logger.error("Error processing record #{record_id}: #{e.message}")
-  Rails.logger.error(e.backtrace.join("\n"))
-  log_attachment_outcome(record,
-                          category: :failed,
-                          message: "OSTI File Attachment Error: #{e.message}",
-                          file_name: current_file_name || 'unknown')
+    rescue => e
+      Rails.logger.error("Error processing record #{record_id}: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      log_attachment_outcome(record,
+                            category: :failed,
+                            message: "OSTI File Attachment Error: #{e.message}",
+                            file_name: current_file_name || 'unknown')
     end
   end
 

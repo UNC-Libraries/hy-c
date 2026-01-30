@@ -53,7 +53,7 @@ rescue StandardError => e
   def osti_dir_count
       # Count of OSTI directories in the data directory
     data_dir = @config['data_dir']
-    Dir.entries(data_dir).select { |entry| File.directory?(File.join(data_dir, entry)) && !(entry =='.' || entry == '..') }.count
+    Dir.entries(data_dir).count { |entry| File.directory?(File.join(data_dir, entry)) && !(entry =='.' || entry == '..') }
   end
 
   def send_mail(report, zip_path)

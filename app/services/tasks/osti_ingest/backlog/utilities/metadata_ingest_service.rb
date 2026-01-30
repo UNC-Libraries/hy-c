@@ -126,7 +126,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
   def metadata_json_for_osti_id(osti_id)
     path = File.join(@data_dir, osti_id, 'metadata.json')
     return nil unless File.exist?(path)
-    
+
     file_content = File.read(path)
     JSON.parse(file_content)
   rescue => e
