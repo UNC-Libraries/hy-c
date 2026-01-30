@@ -76,5 +76,23 @@ RSpec.describe Tasks::OstiIngest::Backlog::Utilities::FileAttachmentService do
           file_name: '1987654.pdf'
       )
     end
+
+    context 'when no PDF files exist' do
+      before do
+        allow(Dir).to receive(:glob).with('/tmp/osti_data/1987654/*.pdf')
+          .and_return([])
+      end
+
+      it 'logs as successfully ingested metadata only' do
+        service.process_record(record)
+
+        expect(service).to have_received(:log_attachment_outcome).with(
+          record,
+          category: :successfully_ingested_metadata_only,
+          message: 'No PDF files found in directory',
+          file_name: 'N/A'
+        )
+      end
+    end
   end
 end
