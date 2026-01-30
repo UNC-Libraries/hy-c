@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 # frozen_string literal: true
 class Tasks::OstiIngest::Backlog::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   SLEEP_INTERVAL = 1
