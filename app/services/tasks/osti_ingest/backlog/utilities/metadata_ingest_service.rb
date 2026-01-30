@@ -66,6 +66,11 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     end
     # Remove HTML tags from title
     article.title = [sanitize_text(article.title.first)]
+
+    # Override: Replace creators with OSTI authors
+    article.creators.clear
+    article.creators_attributes = parse_osti_authors(metadata['authors'])
+  
     article.save!
 
     # Sync permissions and state
@@ -82,6 +87,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
 
     attr_builder, metadata = resolve_metadata(osti_id: osti_id, doi: doi)
     metadata['backlog_abstract'] = metadata_json['description']
+    metadata['authors'] = metadata_json['authors']
 
     [attr_builder, metadata]
   rescue => e
@@ -132,5 +138,27 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
   rescue => e
     Rails.logger.error("Error reading metadata.json for OSTI ID #{osti_id}: #{e.message}")
     raise e
+  end
+
+  def parse_osti_authors(authors_array)
+    authors_array.map.with_index do |author_string, index|
+      # Parse "Lastname, Firstname [Affiliation]"
+      if author_string.match(/^(.+?)\s+\[(.+?)\]$/)
+        name = $1.strip
+        affiliation = $2.strip
+        res = { 'name' => name, 'index' => index.to_s }
+
+        if affiliation.present? && AffiliationUtilsHelper.is_unc_affiliation?(affiliation)
+          res['affiliation'] = [affiliation]
+        elsif affiliation.present?
+          res['other_affiliation'] = affiliation
+        end
+
+        res
+      else
+        # Fallback if no affiliation brackets
+        { 'name' => author_string.strip, 'index' => index.to_s }
+      end
+    end
   end
 end

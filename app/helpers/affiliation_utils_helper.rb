@@ -5,10 +5,10 @@ module AffiliationUtilsHelper
   # Case-insensitive and whitespace-tolerant
   UNC_AFFILIATION_REGEX = /
   \bUNC(?:[-\s]?Chapel\s*Hill)?\b |                # "UNC Chapel Hill" or "UNC-Chapel Hill"
-  \bUNCCH\b |                                     # "UNCCH"
-  \bUniversity\s+of\s+(North|N)\s+Carolina        # "University of North Carolina"
+  \bUNCCH\b |                                      # "UNCCH"
+  \bUniversity\s+of\s+(North|N)\.?\s+Carolina      # "University of North Carolina"
     (?:[-,\s]+(?:at\s+)?)?Chapel\s*Hill\b |       # Optional: ", at", " at", " Chapel Hill"
-  \bUniv(?:ersity)?\s+(?:of\s+)?N(?:orth)?\s+     # "Univ of N Carolina at Chapel Hill"
+  \bUniv(?:ersity)?\.?\s+(?:of\s+)?N(?:orth)?\.?\s+ # "Univ. of N. Carolina" (with optional periods)
     Carolina(?:[-,\s]+(?:at\s+)?)?Chapel\s*Hill\b
 /ix.freeze
 
@@ -16,6 +16,7 @@ module AffiliationUtilsHelper
      # Core names
      'University of North Carolina at Chapel Hill',
      'University of North Carolina Chapel Hill',
+     'Univ. of North Carolina, Chapel Hill',
      'UNC Chapel Hill',
      'UNC-Chapel Hill',
      'UNCCH',
