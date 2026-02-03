@@ -36,15 +36,15 @@ RSpec.describe Tasks::IngestHelperUtils::SharedAttributeBuilders::OpenalexAttrib
           'author' => {
             'display_name' => 'Ming Yang',
             'orcid' => nil,
-            'institutions' => [{ 'display_name' => 'University of North Carolina at Chapel Hill' }]
-          }
+          },
+          'institutions' => [{ 'display_name' => 'University of North Carolina at Chapel Hill' }]
         },
         {
           'author' => {
             'display_name' => 'James H. Anderson',
             'orcid' => 'https://orcid.org/0000-0001-7138-939X',
-            'institutions' => [{ 'display_name' => 'University of North Carolina' }]
-          }
+          },
+          'institutions' => [{ 'display_name' => 'University of North Carolina' }]
         }
       ]
     }
