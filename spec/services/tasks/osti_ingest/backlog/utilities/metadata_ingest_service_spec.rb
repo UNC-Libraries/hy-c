@@ -333,7 +333,7 @@ RSpec.describe Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService do
       expect(article.title).to eq(['Title with HTML tags'])
     end
 
-    it 'strips HTML from abstract' do
+    it 'retains HTML in abstract' do
       metadata = {
         'backlog_abstract' => '<p>Abstract with <strong>bold</strong> and <em>italic</em></p>',
         'authors' => []
