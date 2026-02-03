@@ -149,7 +149,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
         res = { 'name' => name, 'index' => index.to_s }
 
         if affiliation.present? && AffiliationUtilsHelper.is_unc_affiliation?(affiliation)
-          res['affiliation'] = [affiliation]
+          res['affiliation'] = affiliation
         elsif affiliation.present?
           res['other_affiliation'] = affiliation
         end

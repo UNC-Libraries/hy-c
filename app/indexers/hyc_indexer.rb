@@ -16,33 +16,6 @@ class HycIndexer < Hyrax::WorkIndexer
       solr_doc['date_issued_isim'] =  Array(object.date_issued).map { |date| Hyc::EdtfYearIndexer.index_dates(date) }.flatten unless object.date_issued.blank?
       solr_doc['date_issued_sort_ssi'] = Array(object.date_issued).first unless object.date_issued.blank?
       solr_doc['title_sort_ssi'] = Array(object.title).first.downcase unless object.title.blank?
-
-      # Index creators with affiliations
-      solr_doc['creator_display_tesim'] = index_creators_with_affiliation
-    end
-  end
-
-  private
-
-  def index_creators_with_affiliation
-    object.creators.map do |creator|
-      name = creator.name.first
-      affiliation = creator.affiliation.first
-      other_affiliation = creator.other_affiliation.first
-      orcid = creator.orcid.first
-
-      parts = ['', name] # Start with empty string, then name
-
-      # Add affiliation if present (will show as "Affiliation: ...")
-      parts << "Affiliation: #{affiliation}" if affiliation.present?
-
-      # Add other affiliation if present
-      parts << "Other Affiliation: #{other_affiliation}" if other_affiliation.present?
-
-      # Add ORCID if present
-      parts << "ORCID: #{orcid}" if orcid.present?
-
-      parts.join('||')
     end
   end
 end
