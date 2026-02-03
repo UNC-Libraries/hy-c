@@ -22,9 +22,9 @@ RSpec.describe Tasks::OstiIngest::Backlog::Utilities::NotificationService do
 
   describe '#populate_headers!' do
     it 'populates the report headers correctly' do
-      allow(service).to receive(:osti_pdf_count).and_return(3)
+      allow(service).to receive(:osti_dir_count).and_return(3)
       report = {
-          headers: { total_files: 0 },
+          headers: { data_sources: 0 },
           records: {
           success: [
               { 'ids' => { 'osti_id' => '123456' } },
@@ -39,7 +39,7 @@ RSpec.describe Tasks::OstiIngest::Backlog::Utilities::NotificationService do
       service.send(:populate_headers!, report)
 
       expect(report[:headers][:depositor]).to eq('testuser')
-      expect(report[:headers][:total_files]).to eq(3)
+      expect(report[:headers][:data_sources]).to eq(3)
     end
   end
 
