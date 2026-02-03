@@ -70,7 +70,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
     # Override: Replace creators with OSTI authors
     article.creators.clear
     article.creators_attributes = parse_osti_authors(metadata['authors'])
-  
+
     article.save!
 
     # Sync permissions and state
