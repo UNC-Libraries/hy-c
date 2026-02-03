@@ -146,14 +146,7 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
       if author_string.match(/^(.+?)\s+\[(.+?)\]$/)
         name = $1.strip
         affiliation = $2.strip
-        res = { 'name' => name, 'index' => index.to_s }
-
-        if affiliation.present? && AffiliationUtilsHelper.is_unc_affiliation?(affiliation)
-          res['affiliation'] = affiliation
-        elsif affiliation.present?
-          res['other_affiliation'] = affiliation
-        end
-
+        res = { 'name' => name, 'index' => index.to_s, 'other_affiliation' =>  affiliation }
         res
       else
         # Fallback if no affiliation brackets
