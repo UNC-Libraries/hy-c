@@ -142,11 +142,14 @@ class Tasks::OstiIngest::Backlog::Utilities::MetadataIngestService
 
   def parse_osti_authors(authors_array)
     authors_array.map.with_index do |author_string, index|
-      # Parse "Lastname, Firstname [Affiliation]"
-      if author_string.match(/^(.+?)\s+\[(.+?)\]$/)
+      # Parse "Lastname, Firstname [Affiliation] (ORCID:...)" or "Lastname, Firstname [Affiliation]"
+      if author_string.match(/^(.+?)\s+\[(.+?)\](?:\s*\(ORCID:(.+?)\))?/)
         name = $1.strip
         affiliation = $2.strip
-        res = { 'name' => name, 'index' => index.to_s, 'other_affiliation' =>  affiliation }
+        orcid = $3&.strip  # Optional ORCID
+
+        res = { 'name' => name, 'index' => index.to_s, 'other_affiliation' => affiliation }
+        res['orcid'] = orcid if orcid.present?
         res
       else
         # Fallback if no affiliation brackets
