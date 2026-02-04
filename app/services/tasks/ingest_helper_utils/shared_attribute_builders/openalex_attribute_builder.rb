@@ -17,13 +17,17 @@ module Tasks::IngestHelperUtils::SharedAttributeBuilders
           'orcid' => author.dig('orcid'),
           'index' => i.to_s
         }
-        retrieve_author_affiliations(res, author)
+        retrieve_author_affiliations(res, obj)
         res
       end
     end
 
     def retrieve_author_affiliations(hash, author)
       affiliations = author['institutions']&.map { |aff| aff['display_name'] } || []
+      # Fallback to 'raw_affiliation_string' if no institutions listed
+      if affiliations.empty? && author['raw_affiliation_string'].present?
+        affiliations << author['raw_affiliation_string']
+      end
       # Search for UNC affiliation
       unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }
       # Fallback to first affiliation if no UNC affiliation found
