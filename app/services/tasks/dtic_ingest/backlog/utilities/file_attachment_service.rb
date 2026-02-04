@@ -54,7 +54,8 @@ class Tasks::DTICIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inge
   private
 
   def find_pdf_in_directory(base_path, filename)
-    # Search recursively for the PDF
-    Dir.glob(File.join(base_path, '**', filename)).first
+    # Search recursively for the PDF, but only return if it's a file
+    matches = Dir.glob(File.join(base_path, '**', filename))
+    matches.find { |path| File.file?(path) }
   end
 end

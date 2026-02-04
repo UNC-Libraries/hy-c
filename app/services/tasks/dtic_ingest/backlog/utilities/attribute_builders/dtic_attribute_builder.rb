@@ -25,8 +25,10 @@ module Tasks::DTICIngest::Backlog::Utilities::AttributeBuilders
 
       authors = metadata['author'].split(';').map(&:strip)
       authors.map.with_index do |full_name, i|
+        # Ensure space after comma in names
+        normalized_name = full_name.gsub(/,(?!\s)/, ', ')
         {
-          'name' => full_name,
+          'name' => normalized_name,
           'index' => i.to_s
         }
       end
