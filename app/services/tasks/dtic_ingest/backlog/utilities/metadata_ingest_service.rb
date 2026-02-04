@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
+class Tasks::DTICIngest::Backlog::Utilities::MetadataIngestService
   include Tasks::IngestHelperUtils::IngestHelper
   include Tasks::IngestHelperUtils::MetadataIngestHelper
 
   def initialize(config:, tracker:, md_ingest_results_path:)
     @config = config
-    @file_info_csv_path = config['file_info_csv_path']
+    @input_csv_path = config['input_csv_path']
     @output_dir = config['output_dir']
     @md_ingest_results_path = md_ingest_results_path
     @admin_set = AdminSet.where(title: config['admin_set_title']).first
@@ -32,7 +32,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
       end
 
 
-      attr_builder = Tasks::DTICIngest::Backlog::Utilities::AttributeBuilders::DTICAttributeBuilder.new(metadata, @admin_set, @config['depositor_onyen'])
+      attr_builder = Tasks::DTICIngest::Backlog::Utilities::AttributeBuilders::DTICAttributeBuilder.new(record, @admin_set, @config['depositor_onyen'])
       article = new_article(metadata: record, attr_builder: attr_builder, config: @config)
       record_result(category: :successfully_ingested_metadata_only, identifier: dtic_id, article: article, filename: record['filename'])
 
@@ -50,7 +50,7 @@ class Tasks::NsfIngest::Backlog::Utilities::MetadataIngestService
   private
 
   def remaining_records_from_csv(seen_list)
-    records = CSV.read(@file_info_csv_path, headers: true).map(&:to_h)
+    records = CSV.read(@input_csv_path, headers: true).map(&:to_h)
     records.reject do |record|
       dtic_id = record['filename'].split('.').first
       dtic_id.present? && seen_list.include?(dtic_id)
