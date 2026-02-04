@@ -36,7 +36,7 @@ class Tasks::DTICIngest::Backlog::Utilities::FileAttachmentService < Tasks::Inge
       # Sleep briefly to avoid overwhelming fedora with rapid requests
       sleep(SLEEP_INTERVAL)
   rescue =>  e
-    Rails.logger.error("Error processing record #{record_id}: #{e.message}")
+    Rails.logger.error("Error processing record #{record['filename']}: #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
     log_attachment_outcome(record, category: :failed, message: "DTIC File Attachment Error: #{e.message}", file_name: record['filename'])
     end
