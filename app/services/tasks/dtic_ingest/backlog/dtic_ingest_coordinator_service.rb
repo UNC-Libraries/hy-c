@@ -21,7 +21,7 @@ class Tasks::DTICIngest::Backlog::DTICIngestCoordinatorService
   def run
     NotificationUtilsHelper.suppress_emails do
       load_and_ingest_metadata
-      # attach_files
+      attach_files
     end
     # format_results_and_notify
 
