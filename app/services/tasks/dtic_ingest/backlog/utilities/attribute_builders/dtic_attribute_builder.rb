@@ -5,7 +5,7 @@ module Tasks::DTICIngest::Backlog::Utilities::AttributeBuilders
 
     def apply_additional_basic_attributes(article)
       article.title = [metadata['title']]
-      article.abstract = [metadata['subject']] if metadata['subject'].present?
+      article.abstract = [metadata['subject'] || 'N/A']
       article.date_issued = Date.parse(metadata['content_date']).edtf if metadata['content_date'].present?
     end
 
