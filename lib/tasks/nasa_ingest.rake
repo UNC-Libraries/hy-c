@@ -38,7 +38,7 @@ end
 
 def build_nasa_config(args, tracker, output_dir, now)
   include Tasks::IngestHelperUtils::RakeTaskHelper
-  resume = ActiveModel::Type::Boolean.new.cast(args['resume'])
+  resume = ActiveModel::Type::Boolean.new.cast(args[:resume])
 
   if resume
     tracker.merge(
