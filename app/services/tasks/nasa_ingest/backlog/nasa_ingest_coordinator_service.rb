@@ -13,6 +13,7 @@ class Tasks::NASAIngest::Backlog::NASAIngestCoordinatorService
         resume: config['resume'])
     @md_ingest_results_path = File.join(@config['output_dir'], LOAD_METADATA_OUTPUT_DIR, 'metadata_ingest_results.jsonl')
     @file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
+    @aggregated_file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'aggregated_attachment_results.jsonl')
     @generated_results_csv_dir = File.join(@config['output_dir'], RESULT_CSV_OUTPUT_DIR)
     # Create output directories if they don't exist
     generate_output_subdirectories
@@ -21,7 +22,7 @@ class Tasks::NASAIngest::Backlog::NASAIngestCoordinatorService
   def run
     NotificationUtilsHelper.suppress_emails do
       load_and_ingest_metadata
-      # attach_files
+      attach_files
     end
     # format_results_and_notify
 
@@ -62,6 +63,13 @@ class Tasks::NASAIngest::Backlog::NASAIngestCoordinatorService
         metadata_ingest_result_path: @md_ingest_results_path
     )
     file_attachment_service.run
+
+    LogUtilsHelper.double_log('Aggregating file attachment results.', :info, tag: 'NASAIngestCoordinatorService')
+    aggregator = Tasks::NASAIngest::Backlog::Utilities::FileAttachmentResultAggregator.new(
+        attachment_results_path: @file_attachment_results_path,
+        output_path: @aggregated_file_attachment_results_path
+    )
+    aggregator.aggregate_results
 
     @tracker['progress']['attach_files_to_works']['completed'] = true
     @tracker.save
