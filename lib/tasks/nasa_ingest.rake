@@ -32,7 +32,7 @@ task nasa_backlog_ingest: :environment do
 
   write_intro_banner(config: config, ingest_type: 'NASA Backlog')
 
-  coordinator = Tasks::OstiIngest::Backlog::OstiIngestCoordinatorService.new(config)
+  coordinator = Tasks::NASAIngest::Backlog::NASAIngestCoordinatorService.new(config)
   coordinator.run
 end
 

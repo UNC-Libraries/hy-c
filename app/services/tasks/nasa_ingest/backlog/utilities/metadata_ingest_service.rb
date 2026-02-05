@@ -34,7 +34,7 @@ class Tasks::NASAIngest::Backlog::Utilities::MetadataIngestService
       end
 
       attr_builder = Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders::NASAAttributeBuilder.new(metadata_json, @admin_set, @config['depositor_onyen'])
-      article = new_article(metadata: metadata, attr_builder: attr_builder, config: @config, nasa_id: nasa_id)
+      article = new_article(metadata: metadata_json, attr_builder: attr_builder, config: @config, nasa_id: nasa_id)
       record_result(category: :successfully_ingested_metadata_only, identifier: nasa_id, article: article, filename: "#{nasa_id}.pdf")
 
       Rails.logger.info("[MetadataIngestService] Created new Article #{article.id} for publication with NASA ID #{nasa_id}")

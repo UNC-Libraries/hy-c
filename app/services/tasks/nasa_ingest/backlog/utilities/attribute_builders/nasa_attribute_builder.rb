@@ -6,12 +6,13 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
     def apply_additional_basic_attributes(article)
       article.title = [metadata['title']]
       article.abstract = [metadata['abstract'].presence || 'N/A']
-      article.date_issued = Date.parse(metadata['content_date']).edtf if metadata['content_date'].present?
+      article.date_issued = Date.parse(metadata['distributionDate']).edtf if metadata['distributionDate'].present?
+      article.keyword = metadata['keywords'] || []
     end
 
     def set_identifiers(article)
       identifiers = []
-      nasa_id = metadata.dig('exportControl', 'submissionId')
+      nasa_id = metadata['id']
       # If NASA ID is present
       if nasa_id.present?
         identifiers << "NASA ID: #{nasa_id}"
@@ -20,22 +21,33 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
     end
 
     def generate_authors
-      # Fallback to single institutional author if no authors listed
       return [{ 'name' => 'The University of North Carolina at Chapel Hill', 'index' => '0' }] unless metadata['authorAffiliations'].present?
 
-      authors = metadata['authorAffiliations']
-      authors.map.with_index do |full_name, i|
-        # Ensure space after comma in names
-        normalized_name = full_name.gsub(/,(?!\s)/, ', ')
-        {
-          'name' => normalized_name,
-          'index' => i.to_s
-        }
-      end
+      metadata['authorAffiliations']
+        .sort_by { |affil| affil['sequence'] }
+        .map.with_index do |affil, i|
+          author_name = affil.dig('meta', 'author', 'name')
+          res ={
+            'name' => author_name,
+            'index' => i.to_s
+          }
+          retrieve_author_affiliations(res, affil)
+          res
+        end
+    end
+
+    def retrieve_author_affiliations(hash, author)
+      author_index = author['index'].to_i
+      affiliation_data = metadata['authorAffiliations'].find { |a| a['sequence'] == author_index }
+
+      return unless affiliation_data
+
+      org_name = affiliation_data.dig('meta', 'organization', 'name')
+
+      hash['other_affiliation'] = [org_name]
     end
 
     def set_journal_attributes(article); end
-    def retrieve_author_affiliations(hash, author); end
     def format_publication_identifiers; end
   end
 end
