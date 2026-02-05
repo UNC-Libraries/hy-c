@@ -8,6 +8,7 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
       article.abstract = [metadata['abstract'].presence || 'N/A']
       article.date_issued = Date.parse(metadata['distributionDate']).edtf if metadata['distributionDate'].present?
       article.keyword = metadata['keywords'] || []
+      article.publisher = [metadata.dig('publications', 0, 'publisher')].compact.presence
     end
 
     def set_identifiers(article)
@@ -18,6 +19,8 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
         identifiers << "NASA ID: #{nasa_id}"
       end
       article.identifier = identifiers
+      article.issn = [metadata.dig('publications', 0, 'eissn')].compact.presence
+      article.doi = metadata.dig('publications', 0, 'doi').presence
     end
 
     def generate_authors
@@ -36,18 +39,18 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
         end
     end
 
-    def retrieve_author_affiliations(hash, author)
-      author_index = author['index'].to_i
-      affiliation_data = metadata['authorAffiliations'].find { |a| a['sequence'] == author_index }
-
+    def retrieve_author_affiliations(hash, affiliation_data)
       return unless affiliation_data
 
       org_name = affiliation_data.dig('meta', 'organization', 'name')
-
-      hash['other_affiliation'] = [org_name]
+      hash['other_affiliation'] = [org_name] if org_name.present?
     end
 
-    def set_journal_attributes(article); end
+    def set_journal_attributes(article)
+      article.journal_title = metadata.dig('publications', 0, 'publicationName')
+      article.journal_volume = metadata.dig('publications', 0, 'volume').presence
+    end
+
     def format_publication_identifiers; end
   end
 end
