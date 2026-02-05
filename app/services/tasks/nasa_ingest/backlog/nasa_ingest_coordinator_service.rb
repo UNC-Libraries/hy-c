@@ -86,7 +86,7 @@ class Tasks::NASAIngest::Backlog::NASAIngestCoordinatorService
         config: @config,
         tracker: @tracker,
         output_dir: @generated_results_csv_dir,
-        file_attachment_results_path: @file_attachment_results_path,
+        file_attachment_results_path: @aggregated_file_attachment_results_path,
         max_display_rows: MAX_ROWS
     )
     notification_service.run

@@ -60,7 +60,7 @@
     <tbody>
         <% @report[:records][key].first(@report[:max_display_rows]).each_with_index do |record, index| %>
         <tr>
-            <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:cdc_id] || 'NONE' %></td>
+            <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:nasa_id] || 'NONE' %></td>
             <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>; word-break:break-word;">
             <% if record[:filenames].present? %>
                 <% if record[:filenames].is_a?(Array) %>
