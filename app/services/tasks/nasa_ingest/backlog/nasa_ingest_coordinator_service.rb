@@ -24,7 +24,7 @@ class Tasks::NASAIngest::Backlog::NASAIngestCoordinatorService
       load_and_ingest_metadata
       attach_files
     end
-    # format_results_and_notify
+    format_results_and_notify
 
     LogUtilsHelper.double_log('NASA ingest workflow completed successfully.', :info, tag: 'NASAIngestCoordinator')
     rescue => e
