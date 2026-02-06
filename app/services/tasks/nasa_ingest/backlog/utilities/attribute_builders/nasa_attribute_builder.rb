@@ -14,7 +14,7 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
     def set_identifiers(article)
       identifiers = []
       nasa_id = metadata['id']
-      doi = metadata.dig('publications', 0, 'doi')
+      doi = normalize_doi(metadata.dig('publications', 0, 'doi'))
       identifiers << "NASA ID: #{nasa_id}" if nasa_id.present?
       identifiers << "DOI: https://doi.org/#{doi}" if doi.present?
       article.identifier = identifiers
@@ -41,6 +41,13 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
       return name unless name.present? && name.match?(/\s/)
       parts = name.split(' ')
       "#{parts.pop}, #{parts.join(' ')}"
+    end
+
+    def normalize_doi(doi)
+      return nil unless doi.present?
+
+      # Strip out any existing https://doi.org/ prefix
+      doi.sub(%r{^https?://doi\.org/}, '')
     end
 
     def retrieve_author_affiliations(hash, affiliation_data)
