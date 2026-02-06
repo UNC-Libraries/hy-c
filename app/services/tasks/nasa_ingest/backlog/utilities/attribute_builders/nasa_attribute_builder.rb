@@ -39,6 +39,8 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
 
     def reformat_author_name(name)
       return name unless name.present? && name.match?(/\s/)
+      # Return early if name is already in "Last, First" format
+      return name if name.match?(/,/)
       parts = name.split(' ')
       "#{parts.pop}, #{parts.join(' ')}"
     end
