@@ -56,21 +56,6 @@ class Tasks::NASAIngest::Backlog::Utilities::MetadataIngestService
     article = Article.new
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
     attr_builder.populate_article_metadata(article)
-    # WIP Remove Later -----------
-    # Override: Add NASA ID to identifiers
-    # article.identifier << "NASA ID: #{nasa_id}"
-    # Override: Use backlog abstract if present
-    # NASA backlog abstracts are generally higher quality than those retrieved via DOI resolution
-    # if metadata['backlog_abstract'].present?
-    #   article.abstract = [metadata['backlog_abstract']]
-    # end
-    # Remove HTML tags from title
-    # article.title = [sanitize_text(article.title.first)]
-
-    # Override: Replace creators with NASA authors
-    # article.creators.clear
-    # article.creators_attributes = parse_nasa_authors(metadata['authors'])
-
     article.save!
 
     # Sync permissions and state
