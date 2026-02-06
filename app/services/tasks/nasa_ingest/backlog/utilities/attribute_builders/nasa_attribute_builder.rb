@@ -14,13 +14,11 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
     def set_identifiers(article)
       identifiers = []
       nasa_id = metadata['id']
-      # If NASA ID is present
-      if nasa_id.present?
-        identifiers << "NASA ID: #{nasa_id}"
-      end
+      doi = metadata.dig('publications', 0, 'doi')
+      identifiers << "NASA ID: #{nasa_id}" if nasa_id.present?
+      identifiers << "DOI: https://doi.org/#{doi}" if doi.present?
       article.identifier = identifiers
       article.issn = [metadata.dig('publications', 0, 'eissn')].compact.presence
-      article.doi = metadata.dig('publications', 0, 'doi').presence
     end
 
     def generate_authors
@@ -31,12 +29,18 @@ module Tasks::NASAIngest::Backlog::Utilities::AttributeBuilders
         .map.with_index do |affil, i|
           author_name = affil.dig('meta', 'author', 'name')
           res ={
-            'name' => author_name,
+            'name' => reformat_author_name(author_name),
             'index' => i.to_s
           }
           retrieve_author_affiliations(res, affil)
           res
         end
+    end
+
+    def reformat_author_name(name)
+      return name unless name.present? && name.match?(/\s/)
+      parts = name.split(' ')
+      "#{parts.pop}, #{parts.join(' ')}"
     end
 
     def retrieve_author_affiliations(hash, affiliation_data)
