@@ -27,7 +27,7 @@ RSpec.describe Tasks::NASAIngest::Backlog::Utilities::FileAttachmentService do
   end
 
   let(:work) { FactoryBot.create(:article, admin_set: admin_set) }
-  
+
   let(:record) do
     {
       'ids' => {
@@ -104,7 +104,7 @@ RSpec.describe Tasks::NASAIngest::Backlog::Utilities::FileAttachmentService do
 
     it 'logs failure when directory does not exist' do
       record['ids']['nasa_id'] = 'nonexistent'
-      
+
       service.process_record(record)
 
       expect(service).to have_received(:log_attachment_outcome).with(
@@ -120,7 +120,7 @@ RSpec.describe Tasks::NASAIngest::Backlog::Utilities::FileAttachmentService do
     it 'logs failure when no PDF files found' do
       # Remove all PDFs
       Dir.glob(File.join(data_dir, '20230015324', '*.pdf')).each { |f| File.delete(f) }
-      
+
       service.process_record(record)
 
       expect(service).to have_received(:log_attachment_outcome).with(
