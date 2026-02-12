@@ -8,8 +8,17 @@ class Tasks::PubmedIngest::Recurring::Utilities::NotificationService < Tasks::In
 
   def populate_headers!(report)
     report[:headers][:depositor] = @tracker['depositor_onyen']
-    all_pmids = report[:records].values.flatten.map { |r| r[:pmid] || r['pmid'] }.compact.uniq
-    report[:headers][:total_unique_records] = all_pmids.size
+
+    # Use a set to track unique combinations of PMID and PMCID to calculate total unique records
+    seen = Set.new
+
+    report[:records].values.flatten.each do |r|
+      pmid = r[:pmid]
+      pmcid = r[:pmcid]
+
+      seen.add("#{pmid}-#{pmcid}")
+    end
+    report[:headers][:total_unique_records] = unique_records.size
     report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
     report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
   end
