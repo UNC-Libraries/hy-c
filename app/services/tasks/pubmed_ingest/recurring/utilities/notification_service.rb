@@ -18,7 +18,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::NotificationService < Tasks::In
 
       seen.add("#{pmid}-#{pmcid}")
     end
-    report[:headers][:total_unique_records] = unique_records.size
+    report[:headers][:total_unique_records] = seen.size
     report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
     report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
   end
