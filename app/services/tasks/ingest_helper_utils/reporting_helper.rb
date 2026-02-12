@@ -18,19 +18,10 @@ module Tasks::IngestHelperUtils::ReportingHelper
 
   def format_results_for_reporting(raw_results_array:, tracker:)
     results = initialize_category_hash(tracker)
-    seen_pmids = Set.new
 
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
       next unless results.key?(category)
-
-      # Skip if we've already seen this PMID (to avoid double-counting in totals)
-      pmid = entry.dig(:ids, :pmid)
-      if pmid.present?
-        next if seen_pmids.include?(pmid)
-        seen_pmids.add(pmid)
-      end
-
       entry.merge!(entry.delete(:ids) || {})
       entry[:cdr_url] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry[:work_id]) if entry[:work_id].present?
       results[category] << entry
