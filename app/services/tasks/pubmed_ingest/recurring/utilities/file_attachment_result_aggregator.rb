@@ -7,7 +7,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentResultAggregator
 
   def aggregate_results
     # Default structure for grouped results
-    grouped = Hash.new { |h, k| h[k] = [] }
+    grouped = Hash.new { |h, k| h[k] = Set.new }
 
     File.readlines(@attachment_results_path).each do |line|
       entry = JSON.parse(line.strip)
