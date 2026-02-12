@@ -16,6 +16,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentResultAggregator
       key = {
         pmid: entry.dig('ids', 'pmid'),
         pmcid: entry.dig('ids', 'pmcid'),
+        doi: entry.dig('ids', 'doi'),
         work_id: entry.dig('ids', 'work_id'),
         category: entry.dig('category'),
         message: entry.dig('message')
@@ -31,6 +32,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentResultAggregator
         ids: {
           pmid: key[:pmid],
           pmcid: key[:pmcid],
+          doi: key[:doi],
           work_id: key[:work_id]
         },
         category: key[:category],
