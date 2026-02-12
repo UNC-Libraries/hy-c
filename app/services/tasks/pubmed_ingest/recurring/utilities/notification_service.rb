@@ -8,9 +8,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::NotificationService < Tasks::In
 
   def populate_headers!(report)
     report[:headers][:depositor] = @tracker['depositor_onyen']
-    report[:headers][:total_unique_records] =
-      @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] +
-      @tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']
+    all_pmids = report[:records].values.flatten.map { |r| r[:pmid] || r['pmid'] }.compact.uniq
+    report[:headers][:total_unique_records] = all_pmids.size
     report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
     report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
   end
