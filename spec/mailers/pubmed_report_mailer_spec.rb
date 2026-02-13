@@ -88,7 +88,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
           next if results[category].nil? || results[category].empty?
 
           sample = results[category].first
-          expect(mail.body.encoded).to include(sample[:file_name].to_s) if sample[:file_name]
+          expect(mail.body.encoded).to include(sample[:filenames].first.to_s) if sample[:filenames]&.first
           expect(mail.body.encoded).to include(sample[:cdr_url].to_s) if sample[:cdr_url]
           expect(mail.body.encoded).to include(sample[:message].to_s) if sample[:message]
           expect(mail.body.encoded).to include(sample[:pmid].to_s) if sample[:pmid]
