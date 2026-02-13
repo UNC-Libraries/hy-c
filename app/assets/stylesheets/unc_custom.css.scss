@@ -22,6 +22,14 @@ body {
   margin-bottom: 0;
 }
 
+#unc-utility-bar {
+  #unc-search {
+    background-color: inherit;
+    margin: inherit;
+    padding: inherit;
+  }
+}
+
 a {
   color: #2a62bc;
 }
@@ -64,6 +72,11 @@ a {
 
 span.institution_name {
   font-family: LibreBaskerville, sans-serif;
+
+  span { // UNC Library text
+    font-family: Verdana, Arial, sans-serif;
+    padding-right: 15px;
+  }
 
   a, a:hover, a:visited {
     color: $text-color;
@@ -153,8 +166,15 @@ span.institution_name {
 
   .repo-name {
     font-family: LibreBaskerville, sans-serif;
+    font-size: 2.2rem;
     padding-left: 15px;
+    margin-top: -12px;
     white-space: nowrap;
+
+    span {
+      font-family: Verdana, Arial, sans-serif;
+      font-size: 2rem;
+    }
   }
 
   img.banner-img {
@@ -171,6 +191,7 @@ span.institution_name {
     color: $text-color;
     font-size: 1.2rem;
     font-weight: bold;
+    margin: 0;
 
     &:hover {
       color: $light-gray;
@@ -884,6 +905,11 @@ Hide it entirely until the issue is resolved upstreeam
 }
 
 @media only screen and (max-width: 1100px) {
+  #unc-search {
+    .repo-name {
+      white-space: normal;
+    }
+  }
   dl.work-show {
     margin-left: 75px;
   }
@@ -1195,6 +1221,26 @@ Hide it entirely until the issue is resolved upstreeam
   .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
     margin-left: inherit;
   }
+
+  /* Homepage */
+  body {
+    /* Subtract the margins and padding */
+    --unc-utility-bar-width: calc(100% - 330px);
+  }
+
+  /* Interior Pages */
+  body:has(#masthead #logo) {
+    /* Subtract the margins and padding */
+    --unc-utility-bar-width: calc(100% - 2rem);
+  }
+}
+
+@media (max-width: 1400px) {
+  /* Homepage */
+  body {
+    /* Subtract the margins and padding */
+    --unc-utility-bar-width: calc(100% - 30px);
+  }
 }
 
 @media (max-width: 1066px) {
@@ -1209,10 +1255,10 @@ Hide it entirely until the issue is resolved upstreeam
 
     .navbar-collapse {
       border-top: 1px solid transparent;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      /* box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1); */
       padding-left: 25px;
       background: inherit;
-      margin: 8px -15px 0 -15px;
+      margin: 0 -15px;
       z-index: 100;
 
       #user_utility_links {
@@ -1229,10 +1275,6 @@ Hide it entirely until the issue is resolved upstreeam
     .navbar-fixed-top {
       top: 0;
       border-width: 0 0 1px;
-    }
-
-    .navbar-nav {
-      margin-top: 7.5px;
     }
 
     .navbar-nav > li > a {
