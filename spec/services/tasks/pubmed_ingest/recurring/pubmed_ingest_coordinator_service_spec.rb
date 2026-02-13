@@ -64,6 +64,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
   let(:mock_id_retrieval_service) { double('id_retrieval_service') }
   let(:mock_metadata_ingest_service) { double('metadata_ingest_service') }
   let(:mock_file_attachment_service) { double('file_attachment_service') }
+  let(:mock_aggregator) { double('file_attachment_result_aggregator') }
   let(:mock_mailer) { double('mailer', deliver_now: true) }
 
   before do
@@ -86,6 +87,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       .to receive(:new).and_return(mock_metadata_ingest_service)
     allow(Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService)
       .to receive(:new).and_return(mock_file_attachment_service)
+    allow(Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentResultAggregator)
+      .to receive(:new).and_return(mock_aggregator)
 
     allow(Tasks::IngestHelperUtils::IngestReportingService)
     .to receive(:generate_report)
@@ -112,6 +115,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     allow(mock_metadata_ingest_service).to receive(:load_alternate_ids_from_file)
     allow(mock_metadata_ingest_service).to receive(:batch_retrieve_and_process_metadata)
     allow(mock_file_attachment_service).to receive(:run)
+    allow(mock_aggregator).to receive(:aggregate_results)
 
     # Set up output directories
     output_dir = config['output_dir']
@@ -504,12 +508,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       {
         headers: {},
         records: {
-          successfully_ingested_and_attached: ['1', '2', '3', '4', '5'],
-          successfully_ingested_metadata_only: ['6', '7', '8'],
-          successfully_attached: ['9', '10'],
-          skipped: ['11', '12'],
-          skipped_file_attachment: ['13', '14'],
-          skipped_non_unc_affiliation: ['15', '16'],
+          successfully_ingested_and_attached: (1..5).map { |i| { pmid: i.to_s, pmcid: "PMC#{i}" } },
+          successfully_ingested_metadata_only: (6..8).map { |i| { pmid: i.to_s, pmcid: "PMC#{i}" } },
+          successfully_attached: (9..10).map { |i| { pmid: i.to_s, pmcid: "PMC#{i}" } },
+          skipped: (11..12).map { |i| { pmid: i.to_s, pmcid: "PMC#{i}" } },
+          skipped_file_attachment: (13..14).map { |i| { pmid: i.to_s, pmcid: "PMC#{i}" } },
+          skipped_non_unc_affiliation: (15..16).map { |i| { pmid: i.to_s, pmcid: "PMC#{i}" } },
           failed: []
         }
       }
