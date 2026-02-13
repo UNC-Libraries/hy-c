@@ -12,6 +12,9 @@ $description-shadow: inset $shadow-base-top gray;
 $font-size-base: .875rem;
 $font-size-sm: $font-size-base;
 
+$padding-large: 150px;
+$padding-large-negative: -150px;
+
 @font-face {
   font-family: LibreBaskerville;
   src: url(asset-path("libre-baskerville/LibreBaskerville-Italic.otf")) format("opentype");
@@ -1020,6 +1023,14 @@ Hide it entirely until the issue is resolved upstreeam
   }
 }
 
+#user_utility_links {
+  &:last-child {
+    .nav-link {
+      padding-right: 0;
+    }
+  }
+}
+
 @media only screen and (max-width: 768px) {
   #masthead .navbar-brand {
     padding-right: 0;
@@ -1203,14 +1214,14 @@ Hide it entirely until the issue is resolved upstreeam
 
 @media only screen and (min-width: 1400px) {
   #unc-search, #unc-description {
-    padding-left: 150px;
-    padding-right: 150px;
+    padding-left: $padding-large;
+    padding-right: $padding-large;
   }
 
   .large-screen {
     background-color: $carolina-blue;
-    margin-left: -150px;
-    margin-right: -150px;
+    margin-left: $padding-large-negative;
+    margin-right: $padding-large-negative;
   }
 
   #masthead {
@@ -1220,7 +1231,7 @@ Hide it entirely until the issue is resolved upstreeam
   }
 
   .container-fluid, #unc-featured, #unc-deposit {
-    padding: 0 150px;
+    padding: 0 $padding-large;
   }
 
   .container-fluid.header-bar {
@@ -1242,6 +1253,10 @@ Hide it entirely until the issue is resolved upstreeam
   body:has(#masthead #logo) {
     /* Subtract the margins and padding */
     --unc-utility-bar-width: calc(100% - 2rem);
+  }
+
+  #user_utility_links {
+    padding-right: $padding-large;
   }
 }
 
@@ -1272,6 +1287,12 @@ Hide it entirely until the issue is resolved upstreeam
 
       #user_utility_links {
         text-align: center;
+
+        &:last-child {
+          .nav-link {
+            padding-right: 15px;
+          }
+        }
       }
     }
 
