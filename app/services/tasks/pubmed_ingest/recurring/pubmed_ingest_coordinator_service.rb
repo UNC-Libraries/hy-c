@@ -17,6 +17,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @result_output_directory = File.join(config['output_dir'], RESULT_CSV_OUTPUT_DIR)
 
     @file_attachment_results_path = File.join(config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
+    @aggregated_file_attachment_results_path = File.join(@config['output_dir'], ATTACH_FILES_OUTPUT_DIR, 'aggregated_attachment_results.jsonl')
     @metadata_ingest_results_path = File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl')
     @generated_results_csv_dir = File.join(@config['output_dir'], RESULT_CSV_OUTPUT_DIR)
   end
@@ -54,6 +55,13 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       )
 
       file_attachment_service.run
+
+      LogUtilsHelper.double_log('Aggregating file attachment results.', :info, tag: 'attach_files')
+      aggregator = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentResultAggregator.new(
+        attachment_results_path: @file_attachment_results_path,
+        output_path: @aggregated_file_attachment_results_path
+      )
+      aggregator.aggregate_results
 
       @tracker['progress']['attach_files_to_works']['completed'] = true
       @tracker.save
@@ -137,7 +145,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       config: @config,
       tracker: @tracker,
       output_dir: @generated_results_csv_dir,
-      file_attachment_results_path: @file_attachment_results_path,
+      file_attachment_results_path: @aggregated_file_attachment_results_path,
       max_display_rows: MAX_ROWS
     )
     notification_service.run

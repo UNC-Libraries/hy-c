@@ -18,6 +18,7 @@ module Tasks::IngestHelperUtils::ReportingHelper
 
   def format_results_for_reporting(raw_results_array:, tracker:)
     results = initialize_category_hash(tracker)
+
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
       next unless results.key?(category)

@@ -6,12 +6,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::NotificationService, t
     {
       'depositor_onyen' => 'admin',
       'date_range' => { 'start' => '2025-01-01', 'end' => '2025-02-01' },
-      'progress' => {
-        'adjust_id_lists' => {
-          'pubmed' => { 'adjusted_size' => 3 },
-          'pmc'    => { 'adjusted_size' => 2 }
-        }
-      }
     }.with_indifferent_access
   end
 
@@ -42,7 +36,12 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::NotificationService, t
 
   describe '#populate_headers!' do
     it 'fills report headers with depositor, totals, and formatted dates' do
-      report = { headers: {} }
+      report = { headers: {},
+                 records: { '1' => [{ pmid: '123' }],
+                            '2' => [{ pmid: '456' }],
+                            '3' => [{ pmid: '789' }],
+                            '4' => [{ pmid: '101112' }],
+                            '5' => [{ pmid: '131415' }] } }
 
       service.send(:populate_headers!, report)
 

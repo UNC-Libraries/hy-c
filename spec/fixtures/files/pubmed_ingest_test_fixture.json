@@ -1,7 +1,7 @@
 {
     "skipped_file_attachment": [
         {
-            "file_name": "39050868",
+            "filenames": ["39050868"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/pk02cr76x",
             "has_fileset": "false",
             "message": "Skipped: Already encountered this work during current run",
@@ -10,7 +10,7 @@
             "doi": "10.1016/j.socscimed.2024.117142"
         },
         {
-            "file_name": "PMC11268832",
+            "filenames": ["PMC11268832"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/t148fx873",
             "has_fileset": "false",
             "message": "Skipped: Already encountered this work during current run",
@@ -19,7 +19,7 @@
             "doi": "10.1016/j.jglr.2024.102336"
         },
         {
-            "file_name": "39006379",
+            "filenames": ["39006379"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/sq87c7745",
             "has_fileset": "false",
             "message": "Skipped: Already encountered this work during current run",
@@ -28,7 +28,7 @@
             "doi": "10.1080/10888691.2023.2221437"
         },
         {
-            "file_name": "PMC11178324",
+            "filenames": ["PMC11178324"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/08613218p",
             "has_fileset": "false",
             "message": "Skipped: Already encountered this work during current run",
@@ -39,7 +39,7 @@
     ],
     "skipped": [
         {
-            "file_name": "38784917",
+            "filenames": ["38784917"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/0z7099690",
             "has_fileset": "false",
             "message": "Skipped: Already encountered this work during current run",
@@ -48,7 +48,7 @@
             "doi": null
         },
         {
-            "file_name": "PMC11109937",
+            "filenames": ["PMC11109937"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/cr56nf341",
             "has_fileset": "false",
             "message": "Skipped: Already encountered this work during current run",
@@ -57,7 +57,7 @@
             "doi": "10.1016/j.ahr.2023.100158"
         },
         {
-            "file_name": "38748942",
+            "filenames": ["38748942"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/fj236g356",
             "has_fileset": "false",
             "message": "Skipped: Already encountered this work during current run",
@@ -68,7 +68,7 @@
     ],
     "successfully_attached": [
         {
-            "file_name": "PMC11645656",
+            "filenames": ["PMC11645656"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/d504s116c",
             "has_fileset": "false",
             "message": "Success",
@@ -77,7 +77,7 @@
             "doi": "10.1126/scitranslmed.adk8198"
           },
           {
-            "file_name": "38707600",
+            "filenames": ["38707600"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz011389p",
             "has_fileset": "false",
             "message": "Success",
@@ -86,7 +86,7 @@
             "doi": "10.1177/26349825231156900"
           },
           {
-            "file_name": "PMC11257377",
+            "filenames": ["PMC11257377"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/70795p88b",
             "has_fileset": "false",
             "message": "Success",
@@ -95,7 +95,7 @@
             "doi": "10.1016/j.celrep.2024.114164"
           },
           {
-            "file_name": "38707601",
+            "filenames": ["38707601"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz012389p",
             "has_fileset": "false",
             "message": "Success",
@@ -104,7 +104,7 @@
             "doi": "10.1177/26349825231156901"
           },
           {
-            "file_name": "PMC11257378",
+            "filenames": ["PMC11257378"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/70796p88b",
             "has_fileset": "false",
             "message": "Success",
@@ -115,7 +115,7 @@
     ],
     "successfully_ingested_and_attached": [
         {
-            "file_name": "PMC22168832",
+            "filenames": ["PMC22168832"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/t248fx873",
             "has_fileset": "false",
             "message": "Success",
@@ -124,7 +124,7 @@
             "doi": "10.1016/j.jglr.2025.102336"
         },
         {
-            "file_name": "39116379",
+            "filenames": ["39116379"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/sq89c7745",
             "has_fileset": "false",
             "message": "Success",
@@ -133,7 +133,7 @@
             "doi": "10.1080/10888691.2023.2331437"
         },
         {
-            "file_name": "PMC18878324",
+            "filenames": ["PMC18878324"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/08688218p",
             "has_fileset": "false",
             "message": "Success",
@@ -144,7 +144,7 @@
     ],
     "successfully_ingested_metadata_only": [
         {
-            "file_name": "32724917",
+            "filenames": ["32724917"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/0z7011690",
             "has_fileset": "false",
             "message": "Success",
@@ -153,7 +153,7 @@
             "doi": null
         },
         {
-            "file_name": "PMC19909937",
+            "filenames": ["PMC19909937"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/cr56nf3425",
             "has_fileset": "false",
             "message": "Success",
@@ -162,7 +162,7 @@
             "doi": "10.1016/j.ahr.2088.100158"
         },
         {
-            "file_name": "36748900",
+            "filenames": ["36748900"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/fj236g716",
             "has_fileset": "false",
             "message": "Success",
@@ -173,7 +173,7 @@
     ],
     "failed": [
         {
-            "file_name": "PMC11775656",
+            "filenames": ["PMC11775656"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/d577s116c",
             "has_fileset": "false",
             "message": "Failed: Work or Admin Set not found",
@@ -182,7 +182,7 @@
             "doi": "10.1144/scitranslmed.adk8198"
           },
           {
-            "file_name": "11707600",
+            "filenames": ["11707600"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz017789p",
             "has_fileset": "false",
             "message": "Failed: Test Error Stack Strace",
@@ -191,7 +191,7 @@
             "doi": "10.1177/26349888831156900"
           },
           {
-            "file_name": "PMC11254444",
+            "filenames": ["PMC11254444"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/707954444",
             "has_fileset": "false",
             "message": "Failed: Test Error Stack Strace",
@@ -200,7 +200,7 @@
             "doi": "10.1016/j.celrep.2024.114444"
           },
           {
-            "file_name": "68707606",
+            "filenames": ["68707606"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz612386p",
             "has_fileset": "false",
             "message": "Failed: Test Error Stack Strace",
@@ -209,7 +209,7 @@
             "doi": "10.1177/26349825231156945"
           },
           {
-            "file_name": "PMC11252222",
+            "filenames": ["PMC11252222"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/707962211",
             "has_fileset": "false",
             "message": "Failed: Test Error Stack Strace",
@@ -220,7 +220,7 @@
     ],
     "skipped_non_unc_affiliation": [
       {
-            "file_name": "68707222",
+            "filenames": ["68707222"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz612333p",
             "has_fileset": "false",
             "message": "N/A",
@@ -229,7 +229,7 @@
             "doi": "10.1177/55549825231156945"
           },
           {
-            "file_name": "PMC11252444",
+            "filenames": ["PMC11252444"],
             "cdr_url": "https://cdr.lib.unc.edu/concern/articles/111933311",
             "has_fileset": "false",
             "message": "N/A",

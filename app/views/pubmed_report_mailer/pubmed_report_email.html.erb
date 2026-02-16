@@ -58,18 +58,20 @@
   <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse; table-layout:fixed;">
     <thead>
        <tr>
-        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:12%;">Filename</th>
-        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:18%;">CDR URL</th>
-        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:28%;">DOI</th>
         <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:8%;">PMID</th>
         <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:14%;">PMCID</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:28%;">DOI</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:18%;">CDR URL</th>
+        <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:12%;">Filename(s)</th>
         <th style="border:2px solid #dddddd; text-align:left; padding:10px; background-color:#f2f2f2; width:20%;">Error / Attachment Status</th>
       </tr>
     </thead>
     <tbody>
       <% @report[:records][key].first(@report[:max_display_rows]).each_with_index do |record, index| %>
         <tr>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:file_name] %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmid] || 'NONE' %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmcid] || 'NONE' %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:doi] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
             <% if record[:cdr_url].present? %>
                <a href="<%= record[:cdr_url] %>" style="word-break:break-word;">View in CDR</a>
@@ -77,9 +79,21 @@
               N/A
             <% end %>
           </td>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:doi] || 'NONE' %></td>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmid] || 'NONE' %></td>
-          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmcid] || 'NONE' %></td>
+          <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>; word-break:break-word;">
+            <% if record[:filenames].present? %>
+                <% if record[:filenames].is_a?(Array) %>
+                  <ul style="margin:0; padding-left:20px; list-style-type:disc;">
+                  <% record[:filenames].each do |filename| %>
+                      <li style="margin-bottom:2px;"><%= filename %></li>
+                  <% end %>
+                  </ul>
+                <% else %>
+                <%= record[:filenames] %>
+                <% end %>
+            <% else %>
+                N/A
+            <% end %>
+            </td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
             <% if [:skipped, :failed, :successfully_ingested_metadata_only, :skipped_file_attachment].include?(key) %>
               <%= record[:message].presence || 'N/A' %>
