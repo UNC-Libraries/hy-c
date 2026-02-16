@@ -12,6 +12,9 @@ $description-shadow: inset $shadow-base-top gray;
 $font-size-base: .875rem;
 $font-size-sm: $font-size-base;
 
+$padding-large: 150px;
+$padding-large-negative: -150px;
+
 @font-face {
   font-family: LibreBaskerville;
   src: url(asset-path("libre-baskerville/LibreBaskerville-Italic.otf")) format("opentype");
@@ -20,6 +23,14 @@ $font-size-sm: $font-size-base;
 body {
   font-family: Verdana, Arial, sans-serif;
   margin-bottom: 0;
+}
+
+#unc-utility-bar {
+  #unc-search {
+    background-color: inherit;
+    margin: inherit;
+    padding: inherit;
+  }
 }
 
 a {
@@ -64,6 +75,11 @@ a {
 
 span.institution_name {
   font-family: LibreBaskerville, sans-serif;
+
+  span { // UNC Library text
+    font-family: Verdana, Arial, sans-serif;
+    padding-right: 15px;
+  }
 
   a, a:hover, a:visited {
     color: $text-color;
@@ -153,8 +169,15 @@ span.institution_name {
 
   .repo-name {
     font-family: LibreBaskerville, sans-serif;
+    font-size: 2.2rem;
     padding-left: 15px;
+    margin-top: -12px;
     white-space: nowrap;
+
+    span {
+      font-family: Verdana, Arial, sans-serif;
+      font-size: 2rem;
+    }
   }
 
   img.banner-img {
@@ -171,6 +194,7 @@ span.institution_name {
     color: $text-color;
     font-size: 1.2rem;
     font-weight: bold;
+    margin: 0;
 
     &:hover {
       color: $light-gray;
@@ -884,6 +908,11 @@ Hide it entirely until the issue is resolved upstreeam
 }
 
 @media only screen and (max-width: 1100px) {
+  #unc-search {
+    .repo-name {
+      white-space: normal;
+    }
+  }
   dl.work-show {
     margin-left: 75px;
   }
@@ -994,6 +1023,14 @@ Hide it entirely until the issue is resolved upstreeam
   }
 }
 
+#user_utility_links {
+  &:last-child {
+    .nav-link {
+      padding-right: 0;
+    }
+  }
+}
+
 @media only screen and (max-width: 768px) {
   #masthead .navbar-brand {
     padding-right: 0;
@@ -1043,6 +1080,16 @@ Hide it entirely until the issue is resolved upstreeam
       max-height: 20px;
     }
   }
+  #unc-search {
+    .repo-name {
+      font-size: 1.5rem;
+
+      span {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
 
   .hyc-metadata {
     margin-left: 0;
@@ -1167,14 +1214,14 @@ Hide it entirely until the issue is resolved upstreeam
 
 @media only screen and (min-width: 1400px) {
   #unc-search, #unc-description {
-    padding-left: 150px;
-    padding-right: 150px;
+    padding-left: $padding-large;
+    padding-right: $padding-large;
   }
 
   .large-screen {
     background-color: $carolina-blue;
-    margin-left: -150px;
-    margin-right: -150px;
+    margin-left: $padding-large-negative;
+    margin-right: $padding-large-negative;
   }
 
   #masthead {
@@ -1184,7 +1231,7 @@ Hide it entirely until the issue is resolved upstreeam
   }
 
   .container-fluid, #unc-featured, #unc-deposit {
-    padding: 0 150px;
+    padding: 0 $padding-large;
   }
 
   .container-fluid.header-bar {
@@ -1194,6 +1241,30 @@ Hide it entirely until the issue is resolved upstreeam
 
   .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
     margin-left: inherit;
+  }
+
+  /* Homepage */
+  body {
+    /* Subtract the margins and padding */
+    --unc-utility-bar-width: calc(100% - 330px);
+  }
+
+  /* Interior Pages */
+  body:has(#masthead #logo) {
+    /* Subtract the margins and padding */
+    --unc-utility-bar-width: calc(100% - 2rem);
+  }
+
+  #user_utility_links {
+    padding-right: $padding-large;
+  }
+}
+
+@media (max-width: 1400px) {
+  /* Homepage */
+  body {
+    /* Subtract the margins and padding */
+    --unc-utility-bar-width: calc(100% - 30px);
   }
 }
 
@@ -1209,14 +1280,19 @@ Hide it entirely until the issue is resolved upstreeam
 
     .navbar-collapse {
       border-top: 1px solid transparent;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
       padding-left: 25px;
       background: inherit;
-      margin: 8px -15px 0 -15px;
+      margin: 0 -15px;
       z-index: 100;
 
       #user_utility_links {
         text-align: center;
+
+        &:last-child {
+          .nav-link {
+            padding-right: 15px;
+          }
+        }
       }
     }
 
@@ -1229,10 +1305,6 @@ Hide it entirely until the issue is resolved upstreeam
     .navbar-fixed-top {
       top: 0;
       border-width: 0 0 1px;
-    }
-
-    .navbar-nav {
-      margin-top: 7.5px;
     }
 
     .navbar-nav > li > a {

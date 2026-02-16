@@ -36,5 +36,18 @@
     <%= render 'shared/footer_social' %>
     <%= render 'shared/footer' %>
     <%= render 'shared/modal' %>
+    <script type="text/javascript" id="unc-ub-script" defer data-color="dark-gray" src="https://unc.edu/web-assets/utility-bar/utility-bar.min.js"></script>
+    <script type="text/javascript">
+        // UNC toolbar script doesn't work well with Rails turbo.
+        // So we have to load the script in the body so it executes.
+        // We also have to remove any current toolbars to avoid duplicate toolbars
+        (() => {
+            const UNC_TOOLBAR_SELECTOR = "#unc-utility-bar"; // The id added by the script
+            let currentUncToolbarElements = document.querySelectorAll(UNC_TOOLBAR_SELECTOR);
+            for (let i = 0; i < currentUncToolbarElements.length; i++) {
+                currentUncToolbarElements[i].parentNode.removeChild(currentUncToolbarElements[i]);
+            }
+        })();
+    </script>
   </body>
 </html>
