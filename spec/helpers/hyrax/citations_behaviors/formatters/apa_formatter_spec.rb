@@ -18,7 +18,7 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
       expect(formatter.format(presenter)).to eq '<span class="citation-author">Depositor, A.</span> (2019). <i class="citation-title">new article title.</i> NC: a publisher. doi.org/some-doi'
     end
 
-    it 'handles nil doi value in array gracefully' do
+    it 'handles nil doi value gracefully' do
       article_no_doi = Article.new(title: ['new article title'],
                                    creators_attributes: { '0' => { 'name' => 'a depositor'} },
                                    date_issued: '2019-10-11',
