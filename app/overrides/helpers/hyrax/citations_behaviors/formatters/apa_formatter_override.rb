@@ -12,7 +12,7 @@ Hyrax::CitationsBehaviors::Formatters::ApaFormatter.class_eval do
     text += add_title_text_for(work)
     text += add_publisher_text_for(work)
     # [hyc-override] Add DOI
-    text = "#{text.strip} #{work.doi[0]}" if !work.doi.blank?
+    text = "#{text.strip} #{work.doi[0]}" if work.doi&.first.present?
 
     text.html_safe
   end

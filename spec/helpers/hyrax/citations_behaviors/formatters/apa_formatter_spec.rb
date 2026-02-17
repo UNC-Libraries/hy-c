@@ -17,6 +17,17 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
     it 'returns a citation in apa format with a doi' do
       expect(formatter.format(presenter)).to eq '<span class="citation-author">Depositor, A.</span> (2019). <i class="citation-title">new article title.</i> NC: a publisher. doi.org/some-doi'
     end
+
+    it 'handles nil doi value in array gracefully' do
+      article_no_doi = Article.new(title: ['new article title'],
+                                   creators_attributes: { '0' => { 'name' => 'a depositor'} },
+                                   date_issued: '2019-10-11',
+                                   publisher: ['a publisher'],
+                                   place_of_publication: ['NC'])
+      presenter_no_doi = Hyrax::WorkShowPresenter.new(SolrDocument.new(article_no_doi.to_solr), :no_ability)
+
+      expect { formatter.format(presenter_no_doi) }.not_to raise_error
+    end
   end
 
   describe '#format_authors' do
