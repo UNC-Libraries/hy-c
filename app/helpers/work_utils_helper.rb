@@ -20,16 +20,20 @@ module WorkUtilsHelper
   end
 
   def self.fetch_work_data_by_doi(doi, admin_set_title: nil)
-    # Step 1: Exact match on doi_tesim
-    query = "doi_tesim:\"#{doi}\""
+    # Normalize input to canonical format (https://doi.org/10.xxxx/xxxxx)
+    normalized_doi = normalize_doi_to_canonical(doi)
+
+    return nil if normalized_doi.blank?
+
+    # Search using canonical format
+    query = "doi_tesim:\"#{normalized_doi}\""
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first
 
-    # Step 2: If that fails, normalize DOI and search identifier_tesim with wildcard
+    # If that fails, normalize DOI and search identifier_tesim with wildcard
     if work_data.blank?
-      normalized_doi = normalize_doi(doi)
-      if normalized_doi
-        fallback_value = "DOI: https://dx.doi.org/#{normalized_doi}"
-        fallback_query = "identifier_tesim:\"#{fallback_value}\" NOT has_model_ssim:(\"FileSet\")"
+      bare_doi = normalize_doi(doi)
+      if bare_doi
+        fallback_query = "identifier_tesim:*#{bare_doi}* NOT has_model_ssim:(\"FileSet\")"
         work_data = ActiveFedora::SolrService.get(fallback_query, rows: 1)['response']['docs'].first
       else
         Rails.logger.warn("Identifier does not appear to be a valid DOI: #{doi}. Ending search.")
@@ -181,6 +185,17 @@ module WorkUtilsHelper
     else
       return nil
     end
+  end
+
+  # Normalize DOI to match the canonical form used in our Solr index (https://doi.org/10.xxxx/xxxxx).
+  def self.normalize_doi_to_canonical(doi)
+    return nil if doi.blank?
+
+    # Strip DOI down to its bare form (remove URL prefix if present)
+    bare = normalize_doi(doi)
+    return nil if bare.blank?
+
+    "https://doi.org/#{bare}"
   end
 
   # Wrapper to find best work match by trying each alternate identifier in order
