@@ -13,14 +13,14 @@ RSpec.describe WorkUtilsHelper, type: :module do
     'id' =>  '1z40m031g',
     'title_tesim' => ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
     'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters'],
-    'doi_tesim' => ['test-doi']
+    'doi_tesim' => ['10.1234/test-doi']
   }],
   [{
     'has_model_ssim' => ['Article'],
     'id' =>  '1z40m031g-2',
     'title_tesim' => ['Placeholder Title'],
     'admin_set_tesim' => [],
-    'doi_tesim' => ['test-doi']
+    'doi_tesim' => ['10.5678/another-doi']
   }],
   [{
     'has_model_ssim' => ['Article'],
@@ -28,7 +28,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
     'title_tesim' => ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
     'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters'],
     'file_set_ids_ssim' => ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3'],
-    'doi_tesim' => ['test-doi']
+    'doi_tesim' => ['10.1234/test-doi']
   }
   ]
   ]
@@ -291,7 +291,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
   describe '#fetch_work_data_by_doi' do
     it 'fetches the work data correctly' do
       mock_record_doi = mock_records[0][0]['doi_tesim'].first
-      allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
+      allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
       allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")",  {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => mock_admin_set })
       result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
       expect(result).to eq(expected_work_data[0])
@@ -300,9 +300,12 @@ RSpec.describe WorkUtilsHelper, type: :module do
     it 'logs appropriate messages for missing values' do
       # Mock the solr response to simulate a work with missing values, if it somehow makes it past the initial nil check
       mock_record_doi = mock_records[0][0]['doi_tesim'].first
-      allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+      allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+      allow(ActiveFedora::SolrService).to receive(:get).with(/identifier_tesim:\*.*\* NOT has_model_ssim/, rows: 1).and_return('response' => { 'docs' => [] })
+
       allow(Rails.logger).to receive(:warn)
       result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
+      expect(Rails.logger).to have_received(:warn).with("No work found associated with doi: #{mock_record_doi}")
       expect(result).to be_nil
     end
 
@@ -310,7 +313,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       it 'logs an appropriate message if the work doesnt have an admin set title' do
         mock_record_doi = mock_records[0][0]['doi_tesim'].first
         # Using the mock record without an admin set title
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[1] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[1] })
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
         expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with doi: #{mock_record_doi} has no admin set name.")
