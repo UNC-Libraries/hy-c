@@ -104,20 +104,26 @@ RSpec.describe Article do
       expect(subject.doi).to eq('https://doi.org/10.1234/test')
     end
 
-    it 'sets invalid DOI to nil' do
+    it 'sets invalid DOI to nil and logs warning' do
       subject.title = ['Test Article']
       subject.doi = 'not-a-doi'
+
+      allow(Rails.logger).to receive(:warn)
       subject.save!
 
       expect(subject.doi).to be_nil
+      expect(Rails.logger).to have_received(:warn).with(/Invalid DOI format 'not-a-doi'.*setting to nil/)
     end
 
-    it 'sets empty string DOI to nil' do
+    it 'sets empty string DOI to nil without logging' do
       subject.title = ['Test Article']
       subject.doi = ''
+
+      allow(Rails.logger).to receive(:warn)
       subject.save!
 
       expect(subject.doi).to be_nil
+      expect(Rails.logger).not_to have_received(:warn)
     end
   end
 end
