@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work Dissertation`
 class Dissertation < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = DissertationIndexer
   # Change this to restrict which works can be added as a child.

@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work ScholarlyWork`
 class ScholarlyWork < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = ScholarlyWorkIndexer
   # Change this to restrict which works can be added as a child.

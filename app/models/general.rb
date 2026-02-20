@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work General`
 class General < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = GeneralIndexer
   # Change this to restrict which works can be added as a child.

@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work HonorsThesis`
 class HonorsThesis < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = HonorsThesisIndexer
   # Change this to restrict which works can be added as a child.

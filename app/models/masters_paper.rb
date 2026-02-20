@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work MastersPaper`
 class MastersPaper < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = MastersPaperIndexer
   # Change this to restrict which works can be added as a child.
