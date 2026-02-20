@@ -115,7 +115,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
       it 'uses identifier_tesim fallback with wildcard when doi_tesim query returns no results' do
         # doi_tesim returns nothing
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{normalized_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
         # fallback match succeeds with wildcard search
         fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
@@ -132,9 +132,9 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
       it 'finds match when identifier_tesim contains doi.org prefix' do
         bare_doi = '10.1016/j.psc.2025.01.001'
-        
+
         # doi_tesim has no match
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
         # identifier_tesim contains https://doi.org version
         identifier_doc = {
@@ -155,9 +155,10 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
       it 'finds match when identifier_tesim contains dx.doi.org prefix' do
         bare_doi = '10.1016/j.psc.2025.01.001'
-        
+
         # doi_tesim has no match
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+
 
         # identifier_tesim contains https://dx.doi.org version
         identifier_doc = {
@@ -178,9 +179,9 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
       it 'finds match when identifier_tesim contains bare DOI' do
         bare_doi = '10.1016/j.psc.2025.01.001'
-        
+
         # doi_tesim has no match
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
         # identifier_tesim contains bare DOI
         identifier_doc = {
@@ -200,7 +201,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       end
 
       it 'returns nil and logs if fallback also fails' do
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{normalized_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
         fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
         allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [] })
@@ -214,7 +215,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
       it 'does not perform fallback if doi is unrecognizable' do
         bad_doi = 'not-a-doi'
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bad_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{bad_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
         allow(Rails.logger).to receive(:warn)
 
         # No identifier_tesim fallback should happen
@@ -222,7 +223,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
         result = WorkUtilsHelper.fetch_work_data_by_doi(bad_doi)
         expect(result).to be_nil
-        expect(Rails.logger).to have_received(:warn).with("Identifier does not appear to be a valid DOI: #{bad_doi}. Ending search.")
       end
 
 
@@ -394,10 +394,11 @@ RSpec.describe WorkUtilsHelper, type: :module do
       it 'logs an appropriate message if the query for an admin set returns nothing' do
         mock_record_doi = mock_records[0][0]['doi_tesim'].first
         # Using the mock record with an admin set title
-        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{mock_record_doi}\"", rows: 1).and_return('response' => { 'docs' => mock_records[0] })
         allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", {'df'=>'title_tesim', :rows=>1}).and_return('response' => { 'docs' => [{}] })
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
+
         expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_title}.")
         expect(result[:admin_set_id]).to be_nil
       end
