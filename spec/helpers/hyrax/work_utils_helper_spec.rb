@@ -113,12 +113,12 @@ RSpec.describe WorkUtilsHelper, type: :module do
       let(:raw_doi) { 'https://dx.doi.org/10.1016/j.psc.2025.01.001' }
       let(:normalized_doi) { '10.1016/j.psc.2025.01.001' }
 
-      it 'uses identifier_tesim fallback when doi_tesim query returns no results' do
+      it 'uses identifier_tesim fallback with wildcard when doi_tesim query returns no results' do
         # doi_tesim returns nothing
         allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
-        # fallback match succeeds
-        fallback_query = "identifier_tesim:\"DOI: https://dx.doi.org/#{normalized_doi}\" NOT has_model_ssim:(\"FileSet\")"
+        # fallback match succeeds with wildcard search
+        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
         allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => mock_records[0] })
 
         allow(ActiveFedora::SolrService).to receive(:get).with(
@@ -130,10 +130,79 @@ RSpec.describe WorkUtilsHelper, type: :module do
         expect(result).to eq(expected_work_data[0])
       end
 
+      it 'finds match when identifier_tesim contains doi.org prefix' do
+        bare_doi = '10.1016/j.psc.2025.01.001'
+        
+        # doi_tesim has no match
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+
+        # identifier_tesim contains https://doi.org version
+        identifier_doc = {
+          'id' => 'work-456',
+          'has_model_ssim' => ['Article'],
+          'title_tesim' => ['Test Work'],
+          'identifier_tesim' => ['DOI: https://doi.org/10.1016/j.psc.2025.01.001'],
+          'admin_set_tesim' => [admin_set_title]
+        }
+
+        fallback_query = "identifier_tesim:*#{bare_doi}* NOT has_model_ssim:(\"FileSet\")"
+        allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [identifier_doc] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", { 'df' => 'title_tesim', :rows => 1 }).and_return('response' => { 'docs' => mock_admin_set })
+
+        result = WorkUtilsHelper.fetch_work_data_by_doi(bare_doi)
+        expect(result[:work_id]).to eq('work-456')
+      end
+
+      it 'finds match when identifier_tesim contains dx.doi.org prefix' do
+        bare_doi = '10.1016/j.psc.2025.01.001'
+        
+        # doi_tesim has no match
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+
+        # identifier_tesim contains https://dx.doi.org version
+        identifier_doc = {
+          'id' => 'work-789',
+          'has_model_ssim' => ['Article'],
+          'title_tesim' => ['Another Work'],
+          'identifier_tesim' => ['DOI: https://dx.doi.org/10.1016/j.psc.2025.01.001'],
+          'admin_set_tesim' => [admin_set_title]
+        }
+
+        fallback_query = "identifier_tesim:*#{bare_doi}* NOT has_model_ssim:(\"FileSet\")"
+        allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [identifier_doc] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", { 'df' => 'title_tesim', :rows => 1 }).and_return('response' => { 'docs' => mock_admin_set })
+
+        result = WorkUtilsHelper.fetch_work_data_by_doi(bare_doi)
+        expect(result[:work_id]).to eq('work-789')
+      end
+
+      it 'finds match when identifier_tesim contains bare DOI' do
+        bare_doi = '10.1016/j.psc.2025.01.001'
+        
+        # doi_tesim has no match
+        allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{bare_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+
+        # identifier_tesim contains bare DOI
+        identifier_doc = {
+          'id' => 'work-101',
+          'has_model_ssim' => ['Article'],
+          'title_tesim' => ['Bare DOI Work'],
+          'identifier_tesim' => ['DOI: 10.1016/j.psc.2025.01.001'],
+          'admin_set_tesim' => [admin_set_title]
+        }
+
+        fallback_query = "identifier_tesim:*#{bare_doi}* NOT has_model_ssim:(\"FileSet\")"
+        allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [identifier_doc] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title} AND has_model_ssim:(\"AdminSet\")", { 'df' => 'title_tesim', :rows => 1 }).and_return('response' => { 'docs' => mock_admin_set })
+
+        result = WorkUtilsHelper.fetch_work_data_by_doi(bare_doi)
+        expect(result[:work_id]).to eq('work-101')
+      end
+
       it 'returns nil and logs if fallback also fails' do
         allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
-        fallback_query = "identifier_tesim:\"DOI: https://dx.doi.org/#{normalized_doi}\" NOT has_model_ssim:(\"FileSet\")"
+        fallback_query = "identifier_tesim:*#{normalized_doi}* NOT has_model_ssim:(\"FileSet\")"
         allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [] })
 
         allow(Rails.logger).to receive(:warn)
@@ -155,13 +224,15 @@ RSpec.describe WorkUtilsHelper, type: :module do
         expect(result).to be_nil
         expect(Rails.logger).to have_received(:warn).with("Identifier does not appear to be a valid DOI: #{bad_doi}. Ending search.")
       end
+
+
     end
 
     it 'matches raw DOI input against full DOI URL stored in identifier_tesim' do
       raw_doi = '10.1016/j.psc.2025.01.001'
 
       # doi_tesim has no match
-      allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
+      allow(ActiveFedora::SolrService).to receive(:get).with("doi_tesim:\"https://doi.org/#{raw_doi}\"", rows: 1).and_return('response' => { 'docs' => [] })
 
       # identifier_tesim contains full URL
       identifier_doc = {
@@ -178,7 +249,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
         'title_tesim' => ['Sample Admin Set']
       }
 
-      fallback_query = "identifier_tesim:\"DOI: https://dx.doi.org/#{raw_doi}\" NOT has_model_ssim:(\"FileSet\")"
+      fallback_query = "identifier_tesim:*#{raw_doi}* NOT has_model_ssim:(\"FileSet\")"
       allow(ActiveFedora::SolrService).to receive(:get).with(fallback_query, rows: 1).and_return('response' => { 'docs' => [identifier_doc] })
       allow(ActiveFedora::SolrService).to receive(:get).with('title_tesim:Sample Admin Set AND has_model_ssim:("AdminSet")', { 'df' => 'title_tesim', :rows => 1 }).and_return('response' => { 'docs' => [admin_set_doc] })
 
