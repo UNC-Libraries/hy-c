@@ -88,7 +88,7 @@ RSpec.describe Multimed do
       expect(subject.doi).to eq('https://doi.org/10.1234/test')
     end
 
-     it 'sets invalid DOI to nil and logs warning' do
+    it 'sets invalid DOI to nil and logs warning' do
       subject.title = ['Test Article']
       subject.doi = 'not-a-doi'
 
