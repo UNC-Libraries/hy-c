@@ -179,7 +179,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # extra fields
       select 'Biostatistics', from: 'Academic Concentration'
       fill_in 'Access Right', with: 'some access'
-      fill_in 'DOI', with: 'some-doi'
+      fill_in 'DOI', with: '10.1234/test'
       fill_in 'Extent', with: 'some extent'
       find('#honors_thesis_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -226,7 +226,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'DOI some-doi'
+      expect(page).to have_content 'DOI https://doi.org/10.1234/test'
       expect(page).to have_content 'Honors level Honors'
       expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
       expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')

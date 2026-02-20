@@ -158,7 +158,7 @@ RSpec.feature 'Create a Multimed', js: false do
       # extra fields
       select 'Interactive Resource', from: 'Dcmi type'
       fill_in 'Digital collection', with: 'my collection'
-      fill_in 'DOI', with: 'some-doi'
+      fill_in 'DOI', with: '10.1234/test'
       fill_in 'Extent', with: 'some extent'
       find('#multimed_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -205,7 +205,7 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Digital collection my collection'
-      expect(page).to have_content 'DOI some-doi'
+      expect(page).to have_content 'DOI https://doi.org/10.1234/test'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Keyword Test Default Keyword'
