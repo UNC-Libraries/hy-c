@@ -90,12 +90,20 @@ RSpec.describe Journal do
       expect(subject.doi).to eq('https://doi.org/10.1234/test')
     end
 
-    it 'handles invalid DOI gracefully' do
+    it 'sets invalid DOI to nil' do
       subject.title = ['Test Article']
       subject.doi = 'not-a-doi'
       subject.save!
 
-      expect(subject.doi).to eq('not-a-doi')
+      expect(subject.doi).to be_nil
+    end
+
+    it 'sets empty string DOI to nil' do
+      subject.title = ['Test Article']
+      subject.doi = ''
+      subject.save!
+
+      expect(subject.doi).to be_nil
     end
   end
 end

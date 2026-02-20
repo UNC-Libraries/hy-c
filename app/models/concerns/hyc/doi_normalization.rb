@@ -7,12 +7,13 @@ module Hyc
       before_save :normalize_doi_field
     end
 
-  private
+    private
 
     def normalize_doi_field
-      return unless doi.present?
+      normalized = WorkUtilsHelper.normalize_doi_to_canonical(doi)
 
-      normalized = WorkUtilsHelper.normalize_doi_to_canonical(doi) || doi
+      # Set to nil if normalization fails (invalid format) or if empty string
+      normalized = nil if normalized.blank?
 
       self.doi = normalized if normalized != doi
     end
