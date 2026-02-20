@@ -3,13 +3,12 @@
 namespace :doi do
   desc 'Normalize DOI values in doi_tesim to canonical https://doi.org/ format'
   task normalize_doi_tesim: :environment do
-    require 'progressbar'
+    require 'ruby-progressbar'
 
     service = DoiTesimRemediationService.new
 
     # Get count first for progress bar
-    query = 'doi_tesim:[* TO *] AND -doi_tesim:"https://*"'
-    response = ActiveFedora::SolrService.get(query, rows: 0)
+    response = service.find_works_with_bare_dois_response
     total = response['response']['numFound']
 
     puts "Found #{total} works with non-canonical DOI format"
@@ -18,7 +17,8 @@ namespace :doi do
     progress = ProgressBar.create(
       title: 'Normalizing DOIs',
       total: total,
-      format: '%a %e %P% Processed: %c from %C'
+      format: '%a %e %P% Processed: %c from %C',
+      starting_at: 0
     )
 
     # Monkey-patch the service to update progress bar

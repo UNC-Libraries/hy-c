@@ -39,13 +39,15 @@ class DoiTesimRemediationService
     @error_count += 1
   end
 
+  def find_works_with_bare_dois_response
+    query = 'doi_tesim:[* TO *] AND -doi_tesim:"https://*"'
+    ActiveFedora::SolrService.get(query, rows: 10000, fl: 'id,doi_tesim')
+  end
+
   private
 
   def find_works_with_bare_dois
-    # Find all works with DOIs that don't start with https://
-    query = 'doi_tesim:[* TO *] AND -doi_tesim:"https://*"'
-    response = ActiveFedora::SolrService.get(query, rows: 10000, fl: 'id,doi_tesim')
-    response['response']['docs']
+    find_works_with_bare_dois_response['response']['docs']
   end
 
   def update_work_doi(work_id, normalized_doi)
