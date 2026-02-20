@@ -30,7 +30,7 @@ class DoiTesimRemediationService
 
     normalized_doi = WorkUtilsHelper.normalize_doi_to_canonical(current_doi)
 
-    if normalized_doi == current_doi
+    if normalized_doi == current_doi || normalized_doi.nil?
       increment_skip
       return
     end
