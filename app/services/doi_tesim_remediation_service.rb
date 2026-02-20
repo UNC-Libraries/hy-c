@@ -26,8 +26,6 @@ class DoiTesimRemediationService
     work_id = doc['id']
     current_doi = doc['doi_tesim']&.first
 
-    return increment_skip unless current_doi.present?
-
     normalized_doi = WorkUtilsHelper.normalize_doi_to_canonical(current_doi)
 
     if normalized_doi == current_doi || normalized_doi.nil?

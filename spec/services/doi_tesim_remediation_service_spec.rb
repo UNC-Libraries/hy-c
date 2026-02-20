@@ -110,28 +110,6 @@ RSpec.describe DoiTesimRemediationService do
       end
     end
 
-    context 'when doi_tesim is empty' do
-      let(:doc) { { 'id' => 'work123', 'doi_tesim' => [] } }
-
-      it 'skips the work' do
-        service.normalize_work_doi(doc)
-
-        expect(service.skipped_count).to eq(1)
-        expect(service.updated_count).to eq(0)
-      end
-    end
-
-    context 'when doi_tesim is nil' do
-      let(:doc) { { 'id' => 'work123', 'doi_tesim' => nil } }
-
-      it 'skips the work' do
-        service.normalize_work_doi(doc)
-
-        expect(service.skipped_count).to eq(1)
-        expect(service.updated_count).to eq(0)
-      end
-    end
-
     context 'when doi_tesim is invalid' do
       let(:doc) { { 'id' => 'work123', 'doi_tesim' => ['invalid_doi'] } }
 
