@@ -64,4 +64,38 @@ RSpec.describe Journal do
       expect(subject).to respond_to(:rights_statement_label)
     end
   end
+
+  describe 'DOI normalization' do
+    it 'normalizes bare DOI to canonical format on save' do
+      subject.title = ['Test Article']
+      subject.doi = '10.1234/test'
+      subject.save!
+
+      expect(subject.doi).to eq('https://doi.org/10.1234/test')
+    end
+
+    it 'normalizes dx.doi.org to doi.org on save' do
+      subject.title = ['Test Article']
+      subject.doi = 'https://dx.doi.org/10.1234/test'
+      subject.save!
+
+      expect(subject.doi).to eq('https://doi.org/10.1234/test')
+    end
+
+    it 'leaves already canonical DOI unchanged' do
+      subject.title = ['Test Article']
+      subject.doi = 'https://doi.org/10.1234/test'
+      subject.save!
+
+      expect(subject.doi).to eq('https://doi.org/10.1234/test')
+    end
+
+    it 'handles invalid DOI gracefully' do
+      subject.title = ['Test Article']
+      subject.doi = 'not-a-doi'
+      subject.save!
+
+      expect(subject.doi).to eq('not-a-doi')
+    end
+  end
 end
