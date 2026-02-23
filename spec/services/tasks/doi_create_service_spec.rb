@@ -21,7 +21,6 @@ RSpec.describe Tasks::DoiCreateService do
         expect(doi_create.as_json['rows']).to eq 1000
         expect(doi_create.as_json['doi_prefix']).to eq'10.5077'
         expect(doi_create.as_json['doi_creation_url']).to eq'https://api.test.datacite.org/dois'
-        expect(doi_create.as_json['doi_url_base']).to eq'https://handle.test.datacite.org'
         expect(doi_create.as_json['doi_user']).not_to be_nil
         expect(doi_create.as_json['doi_password']).not_to be_nil
       end
@@ -34,7 +33,6 @@ RSpec.describe Tasks::DoiCreateService do
         expect(doi_create.as_json['rows']).to eq 10
         expect(doi_create.as_json['doi_prefix']).to eq'10.5077'
         expect(doi_create.as_json['doi_creation_url']).to eq'https://api.test.datacite.org/dois'
-        expect(doi_create.as_json['doi_url_base']).to eq'https://handle.test.datacite.org'
         expect(doi_create.as_json['doi_user']).not_to be_nil
         expect(doi_create.as_json['doi_password']).not_to be_nil
       end
@@ -255,7 +253,7 @@ RSpec.describe Tasks::DoiCreateService do
 
       described_class.new.create_doi({ 'id' => general_work.id })
       general_work.reload
-      expect(general_work.doi).to eq 'https://handle.test.datacite.org/10.5077/0001'
+      expect(general_work.doi).to eq 'https://doi.org/10.5077/0001'
     end
   end
 
