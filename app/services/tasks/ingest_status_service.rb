@@ -53,7 +53,8 @@ module Tasks
       return unless File.exist?(@status_path)
 
       File.open(@status_path, 'r') do |file|
-        @statuses = JSON.parse(file.read)
+        content = file.read
+        @statuses = JSON.parse(content) if content.present?
       end
     end
 
