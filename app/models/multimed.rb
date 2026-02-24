@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work Multimed`
 class Multimed < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = MultimedIndexer
   # Change this to restrict which works can be added as a child.

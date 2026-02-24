@@ -170,7 +170,7 @@ RSpec.feature 'Create a Journal', js: false do
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation'
       fill_in 'Digital collection', with: 'my collection'
-      fill_in 'DOI', with: 'some-doi'
+      fill_in 'DOI', with: '10.1234/test'
       fill_in 'Extent', with: 'some extent'
       find('#journal_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISBN', with: 'some isbn'
@@ -223,7 +223,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Digital collection my collection'
-      expect(page).to have_content 'DOI some-doi'
+      expect(page).to have_content 'DOI https://doi.org/10.1234/test'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'ISBN some isbn'

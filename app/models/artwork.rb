@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work Artwork`
 class Artwork < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = ArtworkIndexer
   # Change this to restrict which works can be added as a child.

@@ -181,7 +181,9 @@ module Tasks
       if response.success?
         doi = JSON.parse(response.body)['data']['id']
         full_doi = "#{@doi_url_base}/#{doi}"
-        work.update!(doi: full_doi)
+        work.instance_variable_set(:@skip_doi_normalization, true)
+        work.doi = full_doi
+        work.save!
 
         puts "#{get_time} DOI created for record #{record['id']}: #{full_doi}"
       else

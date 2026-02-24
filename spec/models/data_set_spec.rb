@@ -64,4 +64,52 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:rights_statement_label)
     end
   end
+
+  describe 'DOI normalization' do
+    it 'normalizes bare DOI to canonical format on save' do
+      subject.title = ['Test Article']
+      subject.doi = '10.1234/test'
+      subject.save!
+
+      expect(subject.doi).to eq('https://doi.org/10.1234/test')
+    end
+
+    it 'normalizes dx.doi.org to doi.org on save' do
+      subject.title = ['Test Article']
+      subject.doi = 'https://dx.doi.org/10.1234/test'
+      subject.save!
+
+      expect(subject.doi).to eq('https://doi.org/10.1234/test')
+    end
+
+    it 'leaves already canonical DOI unchanged' do
+      subject.title = ['Test Article']
+      subject.doi = 'https://doi.org/10.1234/test'
+      subject.save!
+
+      expect(subject.doi).to eq('https://doi.org/10.1234/test')
+    end
+
+    it 'sets invalid DOI to nil and logs warning' do
+      subject.title = ['Test Article']
+      subject.doi = 'not-a-doi'
+
+      allow(Rails.logger).to receive(:warn)
+      subject.save!
+
+      expect(subject.doi).to be_nil
+      expect(Rails.logger).to have_received(:warn).with(/Invalid DOI format 'not-a-doi'.*setting to nil/)
+    end
+
+    it 'sets empty string DOI to nil without logging' do
+      subject.title = ['Test Article']
+      subject.doi = ''
+
+      allow(Rails.logger).to receive(:warn)
+      subject.save!
+
+      expect(subject.doi).to be_nil
+      expect(Rails.logger).not_to have_received(:warn)
+    end
+  end
 end

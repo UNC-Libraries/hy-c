@@ -3,6 +3,7 @@
 #  `rails generate hyrax:work Journal`
 class Journal < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  include ::Hyc::DoiNormalization
 
   self.indexer = JournalIndexer
   # Change this to restrict which works can be added as a child.
