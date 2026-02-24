@@ -10,6 +10,9 @@ module Hyc
     private
 
     def normalize_doi_field
+      # Skip normalization in development and test environments to allow for easier testing and development with non-canonical DOIs
+      return if Rails.env&.development? || Rails.env&.test?
+
       normalized = WorkUtilsHelper.normalize_doi_to_canonical(doi)
 
       # Set to nil if normalization fails (invalid format) or if empty string

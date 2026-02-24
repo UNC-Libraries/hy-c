@@ -58,8 +58,10 @@ module Tasks
       @doi_prefix = ENV['DATACITE_PREFIX']
       if use_test_api
         @doi_creation_url = 'https://api.test.datacite.org/dois'
+        @doi_url_base = 'https://handle.test.datacite.org'
       else
         @doi_creation_url = 'https://api.datacite.org/dois'
+        @doi_url_base = 'https://doi.org'
       end
       @doi_user = ENV['DATACITE_USER']
       @doi_password = ENV['DATACITE_PASSWORD']
@@ -178,7 +180,7 @@ module Tasks
 
       if response.success?
         doi = JSON.parse(response.body)['data']['id']
-        full_doi = "https://doi.org/#{doi}"
+        full_doi = "#{@doi_url_base}/#{doi}"
         work.update!(doi: full_doi)
 
         puts "#{get_time} DOI created for record #{record['id']}: #{full_doi}"
