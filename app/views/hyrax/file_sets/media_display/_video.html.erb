@@ -4,7 +4,7 @@
   file_size_bytes = file_set.solr_document['file_size_lts'].to_i    
   file_size_mb    = (file_size_bytes / 1.megabyte.to_f).round(2)
   # [hyc-override] Show video only if file size is less than or equal to 500MB, since that's our max upload size
-  show_video = file_size_bytes =< 500.megabytes
+  show_video = file_size_bytes <= 500.megabytes
 %>
 
 <% if display_media_download_link?(file_set: file_set) %>
