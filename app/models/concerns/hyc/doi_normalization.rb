@@ -10,8 +10,9 @@ module Hyc
     private
 
     def normalize_doi_field
-      # Skip normalization in development and test environments to allow for easier testing and development with non-canonical DOIs
-      return if Rails.env&.development? || Rails.env&.test?
+      # Skip normalization if the @skip_doi_normalization instance variable is set to true.
+      # Allows bypassing normalization when setting DOI directly (e.g. from DOI creation service) without triggering the normalization logic.
+      return if @skip_doi_normalization
 
       normalized = WorkUtilsHelper.normalize_doi_to_canonical(doi)
 
