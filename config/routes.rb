@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   get 'suggest', to: 'errors#not_found'
 
   mount Blacklight::Engine => '/'
-  mount BlacklightAdvancedSearch::Engine => '/'
+  # mount BlacklightAdvancedSearch::Engine => '/'
   mount BlacklightDynamicSitemap::Engine => '/'
 
   concern :searchable, Blacklight::Routes::Searchable.new

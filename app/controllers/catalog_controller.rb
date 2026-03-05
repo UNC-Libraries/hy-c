@@ -5,7 +5,7 @@ class CatalogController < ApplicationController
   end
   before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
 
-  include BlacklightAdvancedSearch::Controller
+  # include BlacklightAdvancedSearch::Controller
   include BlacklightRangeLimit::ControllerOverride
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
@@ -262,6 +262,16 @@ class CatalogController < ApplicationController
     config.add_search_field('all_fields', label: 'All Fields', advanced_parse: false, include_in_advanced_search: true) do |field|
       all_names = config.show_fields.values.map(&:field).join(' ')
       title_name = 'title_tesim'
+      
+      # Add clause_params for JSON Query DSL (used by built-in advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: "#{all_names} file_format_tesim all_text_timv",
+          pf: title_name.to_s
+        }
+      }
+      
+      # Keep solr_parameters for backwards compatibility with basic search
       field.solr_parameters = {
         qf: "#{all_names} file_format_tesim all_text_timv",
         pf: title_name.to_s

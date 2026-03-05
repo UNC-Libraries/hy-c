@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Hyc
   class CatalogSearchBuilder < Hyrax::CatalogSearchBuilder
-    include BlacklightAdvancedSearch::AdvancedSearchBuilder
+    # include BlacklightAdvancedSearch::AdvancedSearchBuilder
     include BlacklightRangeLimit::RangeLimitBuilder
 
     self.default_processor_chain += [
