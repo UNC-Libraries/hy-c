@@ -11,7 +11,7 @@ gem 'browser', '~> 5.3', '>= 5.3.1'
 gem 'active-fedora', '~> 14.0'
 gem 'base64', '0.1.0' # Downgrade from 0.2 so that it will match the version being used by passenger on the server
 gem 'blacklight', '~> 7.40'
-gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
+# gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
 gem 'blacklight_dynamic_sitemap', '~> 1.0'
 gem 'blacklight_oai_provider', '7.0.2'
 gem 'blacklight_range_limit', '~> 8.3.0'
@@ -94,6 +94,7 @@ group :development do
   gem 'listen', '~> 3.7.0'
   gem 'puma'
   gem 'web-console', '~> 3.7.0'
+  # gem 'irb', '~> 1.4.1'
 end
 
 group :test do
