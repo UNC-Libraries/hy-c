@@ -35,7 +35,7 @@ gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyr
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
-gem 'jquery-rails', '~> 4.5.0'
+gem 'jquery-rails', '~> 4.6.0'
 gem 'json-canonicalization', '0.3.1'
 gem 'json-ld', '~> 3.2'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
