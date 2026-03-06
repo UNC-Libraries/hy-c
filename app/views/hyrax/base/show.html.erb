@@ -29,7 +29,8 @@
             <%= render 'representative_media', presenter: @presenter, viewer: false %>
             <%# [hyc-override] Changes end here %>
             <%= render 'citations', presenter: @presenter %>
-            <%= render 'social_media' %>
+            <%#= [hyc-override] Remove social media sharing buttons %>
+            <%#= render 'social_media' %>
           </div>
           <div class="col-sm-8">
             <%# [hyc-override] Comment out description, so it can be displayed interleaved in the metadata instead %>

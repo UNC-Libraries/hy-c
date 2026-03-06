@@ -1,4 +1,5 @@
 <%# [hyc-override] Overriding to make only admins able to delete a fileset %>
+<%# [hyc-override] Overriding to remove social media buttons %>
 <%# https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/_show_actions.html.erb %>
 <div class="form-actions">
   <%# [hyc-override] Removed link to analytics page since it does not work with anything other than GA3 %>
@@ -18,6 +19,6 @@
                   method: :delete %>
     <% end %>
   <% end %>
-
-  <%= render 'social_media' %>
+<%# [hyc-override] Overriding to remove social media buttons %>
+  <%#= render 'social_media' %>
 </div>

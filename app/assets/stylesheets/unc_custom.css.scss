@@ -406,21 +406,6 @@ form .nav-link:not(.active),
   font-size: 1.9rem;
 }
 
-.social {
-  width: 100%;
-  margin-top: 25px;
-  flex-flow: row;
-
-  ul.navbar-nav {
-    padding: 0 40%;
-
-    li {
-      display: inline-block;
-      margin-right: 15px;
-    }
-  }
-}
-
 div.person {
   margin-bottom: 2em;
 }
@@ -434,12 +419,9 @@ div.person {
   font-size: 2rem;
 }
 
-.site-footer, .social {
-  height: auto;
-}
-
 #unc-footer {
   background-color: $carolina-blue-dark !important;
+  margin-top: 0;
   position: relative;
 
   .navbar-text {
@@ -807,12 +789,6 @@ table p.name span {
   }
 }
 
-.social-media {
-  .sr-only {
-    color: $carolina-blue;
-  }
-}
-
 .person {
   p.help-block {
     color: darkslategray;
@@ -951,10 +927,6 @@ Hide it entirely until the issue is resolved upstreeam
     p {
       font-size: .9em;
     }
-  }
-
-  .social {
-    margin-bottom: 15px;
   }
 
   /* Hyrax overrides */
@@ -1119,15 +1091,6 @@ Hide it entirely until the issue is resolved upstreeam
   #unc-text {
     p {
       font-size: .8em;
-    }
-  }
-
-  .social {
-    height: auto;
-    padding-bottom: 25px;
-
-    li {
-      display: block;
     }
   }
 
