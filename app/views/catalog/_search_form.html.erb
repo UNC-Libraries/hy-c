@@ -50,4 +50,4 @@
 <% else %>
   <% search_info = search_state.to_h %>
 <% end %>
-<%= link_to 'Advanced search', '/catalog/advanced', class: 'advanced_search'%>
+<%= link_to 'Advanced search', "/catalog/advanced?#{search_state.params_for_search.to_query}", class: 'advanced_search'%>
