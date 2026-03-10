@@ -16,11 +16,11 @@ module Hyc
 
       # When doing full-text search, remove the JSON query entirely
       solr_parameters.delete(:json)
-      
+
       # Remove the top-level qf since we're using a nested query
       solr_parameters.delete(:qf)
       solr_parameters.delete(:pf)
-      
+
       # Use lucene parser for nested queries
       solr_parameters[:defType] = 'lucene'
 
@@ -37,12 +37,12 @@ module Hyc
           end
         end
       end
-      
+
       # Basic search uses q param directly when search_field is all_fields
       if blacklight_params[:search_field] == 'all_fields' && blacklight_params[:q].present?
         return QueryParserHelper.sanitize_query(blacklight_params[:q])
       end
-      
+
       return nil
     end
 
