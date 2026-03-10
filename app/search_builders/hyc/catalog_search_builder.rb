@@ -14,19 +14,35 @@ module Hyc
       all_fields_value = retrieve_all_fields_query
       return if all_fields_value.blank?
 
-      if solr_parameters[:q].present?
-        solr_parameters[:q] += all_fields_query(all_fields_value)
-      else
-        solr_parameters[:q] = all_fields_query(all_fields_value)
-      end
+      # When doing full-text search, remove the JSON query entirely
+      solr_parameters.delete(:json)
+      
+      # Remove the top-level qf since we're using a nested query
+      solr_parameters.delete(:qf)
+      solr_parameters.delete(:pf)
+      
+      # Use lucene parser for nested queries
+      solr_parameters[:defType] = 'lucene'
+
+      # Set the join query
+      solr_parameters[:q] = all_fields_query(all_fields_value)
     end
 
     def retrieve_all_fields_query
-      blacklight_params['clause']&.each do |_, entry|
-        if entry['field'] == 'all_fields'
-          return QueryParserHelper.sanitize_query(entry['query'])
+      # Advanced search uses clause params
+      if blacklight_params['clause'].present?
+        blacklight_params['clause']&.each do |_, entry|
+          if entry['field'] == 'all_fields'
+            return QueryParserHelper.sanitize_query(entry['query'])
+          end
         end
       end
+      
+      # Basic search uses q param directly when search_field is all_fields
+      if blacklight_params[:search_field] == 'all_fields' && blacklight_params[:q].present?
+        return QueryParserHelper.sanitize_query(blacklight_params[:q])
+      end
+      
       return nil
     end
 
