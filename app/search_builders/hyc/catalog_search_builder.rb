@@ -14,18 +14,25 @@ module Hyc
       all_fields_value = retrieve_all_fields_query
       return if all_fields_value.blank?
 
-      # When doing full-text search, remove the JSON query entirely
-      solr_parameters.delete(:json)
+      # Build the join query for file text
+      join_query = all_fields_query(all_fields_value)
 
-      # Remove the top-level qf since we're using a nested query
-      solr_parameters.delete(:qf)
-      solr_parameters.delete(:pf)
+      # Check if this is an advanced search (has clause params)
+      is_advanced_search = blacklight_params['clause'].present?
 
-      # Use lucene parser for nested queries
-      solr_parameters[:defType] = 'lucene'
-
-      # Set the join query
-      solr_parameters[:q] = all_fields_query(all_fields_value)
+      if is_advanced_search
+        # Advanced search - remove JSON query and use join query only
+        # (can't easily OR them with JSON Query DSL)
+        solr_parameters.delete(:json)
+        solr_parameters.delete(:qf)
+        solr_parameters.delete(:pf)
+        solr_parameters[:defType] = 'lucene'
+        solr_parameters[:q] = join_query
+      else
+        # Basic search - skip join query, just let JSON query search metadata
+        # File text search only works in advanced search
+        Rails.logger.info 'Basic search - skipping join query, using metadata search only'
+      end
     end
 
     def retrieve_all_fields_query
