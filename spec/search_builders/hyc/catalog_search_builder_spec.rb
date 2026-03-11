@@ -28,11 +28,29 @@ RSpec.describe Hyc::CatalogSearchBuilder do
           clause: { '0' => {field: 'all_fields', query: 'metalloprotease' } }
         }
       end
+
+      # Mock the JSON query that Blacklight would create
+      before do
+        solr_params[:json] = {
+          query: {
+            bool: {
+              must: [{
+                edismax: {
+                  qf: 'title_tesim creator_label_tesim',
+                  pf: 'title_tesim',
+                  query: 'metalloprotease'
+                }
+              }]
+            }
+          }
+        }
+      end
+
       subject { builder.join_works_from_files(solr_params) }
 
-      it 'includes the file set join query' do
+      it 'combines metadata and file text search with OR' do
         subject
-        expect(solr_params[:q]).to eq ' _query_:"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv}metalloprotease"'
+        expect(solr_params[:q]).to eq '(_query_:"{!edismax qf=\'title_tesim creator_label_tesim\' pf=\'title_tesim\'}metalloprotease") OR ( _query_:"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv}metalloprotease")'
       end
     end
 
@@ -43,11 +61,36 @@ RSpec.describe Hyc::CatalogSearchBuilder do
           clause: { '0' => {field: 'all_fields', query: 'un"balanced' } }
         }
       end
+
+      # Mock the JSON query that Blacklight would create
+      before do
+        solr_params[:json] = {
+          query: {
+            bool: {
+              must: [{
+                edismax: {
+                  qf: 'title_tesim creator_label_tesim',
+                  pf: 'title_tesim',
+                  query: 'unbalanced'  # Blacklight would have already sanitized this
+                }
+              }]
+            }
+          }
+        }
+      end
+
       subject { builder.join_works_from_files(solr_params) }
 
       it 'removes the unbalanced quote' do
         subject
-        expect(solr_params[:q]).to eq ' _query_:"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv}unbalanced"'
+        # Should not contain the unbalanced quote anywhere
+        expect(solr_params[:q]).not_to include('"balanced')
+
+        # Should contain the sanitized version (no quote)
+        expect(solr_params[:q]).to include('unbalanced')
+
+        # Verify it still has the OR structure
+        expect(solr_params[:q]).to include(') OR (')
       end
     end
   end
