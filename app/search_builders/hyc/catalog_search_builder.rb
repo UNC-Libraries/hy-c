@@ -37,7 +37,7 @@ module Hyc
           # Combine metadata and file text queries with OR
           combined_query = "(#{metadata_query}) OR (#{join_query})"
 
-          # JSON query and q parameters are AND-ed together by the edismax parser, so we need to remove the JSON query and replace with combined query to achieve OR behavior
+          # JSON query and q parameters are AND-ed together by solr, so we need to remove the JSON query and replace it with the combined query to achieve the desired OR behavior
           solr_parameters.delete(:json)
           solr_parameters[:defType] = 'lucene'
           solr_parameters[:q] = combined_query
