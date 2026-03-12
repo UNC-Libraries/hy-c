@@ -14,39 +14,25 @@ module Hyc
       all_fields_value = retrieve_all_fields_query
       return if all_fields_value.blank?
 
-      # Build the join query for file text
-      join_query = all_fields_query(all_fields_value)
+      # JSON query and q parameters are AND-ed together by solr, so we need to remove the JSON query and replace it with a custom combined query to achieve the desired OR behavior
+      # Retrieve the JSON query for metadata search
+      json_query = solr_parameters.dig(:json, :query, :bool, :must, 0)
+      return if json_query.nil? || json_query[:edismax].nil?
 
-      # Check if this is an advanced search (has clause params)
-      is_advanced_search = blacklight_params['clause'].present?
+      # Extract the metadata search parameters
+      qf = json_query[:edismax][:qf]
+      pf = json_query[:edismax][:pf]
+      query_term = json_query[:edismax][:query]
 
-      if is_advanced_search
-        # Build combined query that includes both metadata search (from JSON query) and file text search (from join query)
-        # Retrieve the JSON query for metadata search
-        json_query = solr_parameters.dig(:json, :query, :bool, :must, 0)
+      # Build metadata query using edismax
+      metadata_query = "_query_:\"{!edismax qf='#{qf}' pf='#{pf}'}#{query_term}\""
 
-        if json_query && json_query[:edismax]
-          # Extract the metadata search parameters
-          qf = json_query[:edismax][:qf]
-          pf = json_query[:edismax][:pf]
-          query_term = json_query[:edismax][:query]
-
-          # Build metadata query using edismax
-          metadata_query = "_query_:\"{!edismax qf='#{qf}' pf='#{pf}'}#{query_term}\""
-
-          # Combine metadata and file text queries with OR
-          combined_query = "(#{metadata_query}) OR (#{join_query})"
-
-          # JSON query and q parameters are AND-ed together by solr, so we need to remove the JSON query and replace it with the combined query to achieve the desired OR behavior
-          solr_parameters.delete(:json)
-          solr_parameters[:defType] = 'lucene'
-          solr_parameters[:q] = combined_query
-        end
-      else
-        # Basic search - skip join query, just let JSON query search metadata
-        # File text search only works in advanced search
-        Rails.logger.info 'Basic search - skipping join query, using metadata search only'
-      end
+      # Build combined query that includes both metadata search (from JSON query) and file text search
+      combined_query = "(#{metadata_query}) OR (#{all_fields_query(all_fields_value)})"
+      solr_parameters.delete(:json)
+      # Use lucene defType to allow for the OR operator in the combined query
+      solr_parameters[:defType] = 'lucene'
+      solr_parameters[:q] = combined_query
     end
 
     def retrieve_all_fields_query
