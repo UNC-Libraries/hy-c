@@ -56,8 +56,8 @@ module Blacklight
 
     def initialize_search_filter_controls
       fields = blacklight_config.facet_fields.select { |_k, v| v.include_in_advanced_search || v.include_in_advanced_search.nil? }
-      # [hyc-override] Exclude generic_type_sim from advanced search facets to avoid redundancy with human_readable_type_sim
-      fields = fields.reject { |k, _v| k == 'generic_type_sim' }
+      # [hyc-override] Exclude human_readable_type_sim from advanced search facets to avoid redundancy with resource_type_sim
+      fields = fields.reject { |k, _v| k == 'human_readable_type_sim' }
 
       fields.each do |_k, config|
         display_facet = @response.aggregations[config.field]
