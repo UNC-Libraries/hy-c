@@ -24,6 +24,9 @@ module Hyc
       pf = json_query[:edismax][:pf]
       query_term = json_query[:edismax][:query]
 
+      # Sanitize the query term from JSON (handles unbalanced quotes)
+      query_term = QueryParserHelper.sanitize_query(query_term)
+
       # Build metadata query using edismax
       metadata_query = "_query_:\"{!edismax qf='#{qf}' pf='#{pf}'}#{query_term}\""
 

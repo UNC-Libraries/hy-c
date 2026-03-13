@@ -71,7 +71,7 @@ RSpec.describe Hyc::CatalogSearchBuilder do
                 edismax: {
                   qf: 'title_tesim creator_label_tesim',
                   pf: 'title_tesim',
-                  query: 'unbalanced'  # Blacklight would have already sanitized this
+                  query: 'un"balanced'
                 }
               }]
             }
