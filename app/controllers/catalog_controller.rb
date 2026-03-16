@@ -87,10 +87,9 @@ class CatalogController < ApplicationController
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
     config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        %w[member_of_collections_ssim date_issued_isim human_readable_type_sim affiliation_label_sim edition_sim]
+        %w[member_of_collections_ssim date_issued_isim affiliation_label_sim edition_sim]
     config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.human_readable_type_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
 
@@ -153,7 +152,6 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('edition', :facetable), label: 'Version', limit: 5
     config.add_facet_field solr_name('language', :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
-    config.add_facet_field solr_name('human_readable_type', :facetable), label: 'Type', show: false
     # Advanced search version of the date_issued facet
     config.add_facet_field 'date_issued_adv_search', show: false, field: 'date_issued_isim', label: 'Date', range: true, advanced_search_component: AdvancedSearchRangeLimitComponent
 
