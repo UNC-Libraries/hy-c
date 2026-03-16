@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
-ruby '~> 3.0.2'
+ruby '~> 3.3.0'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -54,7 +54,7 @@ gem 'passenger', '6.0.22', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0'
+gem 'rails', '~> 6.1'
 gem 'rdf', '~> 3.3.4'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
@@ -94,6 +94,7 @@ group :development do
   gem 'listen', '~> 3.7.0'
   gem 'puma'
   gem 'web-console', '~> 3.7.0'
+  gem 'irb', '~> 1.4.1'
 end
 
 group :test do

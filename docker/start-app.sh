@@ -7,7 +7,6 @@ echo "#### Performing config steps"
 # The bundle config and package are needed for the odd way we manage gems in production
 bundle config --local cache_path /hyc-gems
 bundle config build.nokogiri --use-system-libraries
-bundle config build.sassc --use-system-libraries
 bundle config set force_ruby_platform true
 
 # Clear any existing bundle cache that might have incompatible binaries
@@ -22,8 +21,6 @@ if ! bundle check; then
   rm -f /hyc-gems/* || true
   bundle install
   bundle package
-  echo "#### Creating symlink for libsass otherwise bundle cannot find it"
-  [ ! -L /usr/share/gems/gems/sassc-2.4.0/lib/sassc/libsass.so ] && ln -s /usr/lib64/gems/ruby/sassc-2.4.0/sassc/libsass.so /usr/share/gems/gems/sassc-2.4.0/lib/sassc/libsass.so
 else
  echo "#### Gems already installed, skipping bundle install"
 fi
