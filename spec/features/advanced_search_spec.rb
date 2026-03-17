@@ -18,7 +18,7 @@ RSpec.describe 'Advanced search', type: :feature, js: false do
   end
 
   it 'date range field returns expected results and retains values' do
-    visit '/advanced'
+    visit '/catalog/advanced'
     fill_in('range_date_issued_isim_begin', with: '1990')
     fill_in('range_date_issued_isim_end', with: '2020')
     click_button('Search')

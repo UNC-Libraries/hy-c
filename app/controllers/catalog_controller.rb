@@ -5,7 +5,6 @@ class CatalogController < ApplicationController
   end
   before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
 
-  include BlacklightAdvancedSearch::Controller
   include BlacklightRangeLimit::ControllerOverride
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
@@ -88,10 +87,9 @@ class CatalogController < ApplicationController
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
     config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        %w[member_of_collections_ssim date_issued_isim human_readable_type_sim affiliation_label_sim edition_sim]
+        %w[member_of_collections_ssim date_issued_isim affiliation_label_sim edition_sim]
     config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.human_readable_type_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
 
@@ -154,7 +152,6 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('edition', :facetable), label: 'Version', limit: 5
     config.add_facet_field solr_name('language', :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
-    config.add_facet_field solr_name('human_readable_type', :facetable), label: 'Type', show: false
     # Advanced search version of the date_issued facet
     config.add_facet_field 'date_issued_adv_search', show: false, field: 'date_issued_isim', label: 'Date', range: true, advanced_search_component: AdvancedSearchRangeLimitComponent
 
@@ -262,6 +259,16 @@ class CatalogController < ApplicationController
     config.add_search_field('all_fields', label: 'All Fields', advanced_parse: false, include_in_advanced_search: true) do |field|
       all_names = config.show_fields.values.map(&:field).join(' ')
       title_name = 'title_tesim'
+
+      # Add clause_params for JSON Query DSL (used by built-in advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: "#{all_names} file_format_tesim all_text_timv",
+          pf: title_name.to_s
+        }
+      }
+
+      # Keep solr_parameters for backwards compatibility with basic search
       field.solr_parameters = {
         qf: "#{all_names} file_format_tesim all_text_timv",
         pf: title_name.to_s
@@ -281,6 +288,14 @@ class CatalogController < ApplicationController
       # Solr parameter de-referencing like $title_qf.
       # See: http://wiki.apache.org/solr/LocalParams
       solr_name = solr_name('contributor_label', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -290,6 +305,14 @@ class CatalogController < ApplicationController
     config.add_search_field('advisor') do |field|
       solr_name = solr_name('advisor_label', :stored_searchable)
       field.label = 'Advisor'
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -299,6 +322,14 @@ class CatalogController < ApplicationController
     config.add_search_field('creator') do |field|
       solr_name = solr_name('creator_label', :stored_searchable)
       field.label = 'Creator'
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -307,6 +338,14 @@ class CatalogController < ApplicationController
 
     config.add_search_field('title') do |field|
       solr_name = solr_name('title', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -315,6 +354,14 @@ class CatalogController < ApplicationController
 
     config.add_search_field('description') do |field|
       solr_name = solr_name('description', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -323,6 +370,14 @@ class CatalogController < ApplicationController
 
     config.add_search_field('publisher') do |field|
       solr_name = solr_name('publisher', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -341,6 +396,14 @@ class CatalogController < ApplicationController
     config.add_search_field('date_issued') do |field|
       solr_name = solr_name('date_issued', :stored_searchable)
       field.label = 'Date of Publication'
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -349,6 +412,14 @@ class CatalogController < ApplicationController
 
     config.add_search_field('subject') do |field|
       solr_name = solr_name('subject', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -357,6 +428,14 @@ class CatalogController < ApplicationController
 
     config.add_search_field('language') do |field|
       solr_name = solr_name('language_label', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -393,6 +472,14 @@ class CatalogController < ApplicationController
     config.add_search_field('based_near') do |field|
       field.label = 'Location'
       solr_name = solr_name('based_near_label', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -401,6 +488,14 @@ class CatalogController < ApplicationController
 
     config.add_search_field('keyword') do |field|
       solr_name = solr_name('keyword', :stored_searchable)
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -418,6 +513,14 @@ class CatalogController < ApplicationController
 
     config.add_search_field('rights_statement') do |field|
       solr_name = 'rights_statement_search'
+      # Add clause_params for JSON Query DSL (used by advanced search)
+      field.clause_params = {
+        edismax: {
+          qf: solr_name,
+          pf: solr_name
+        }
+      }
+      # Keep solr_local_parameters for basic search
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
