@@ -335,12 +335,15 @@ Hydra::Derivatives::Processors::Image.timeout = 5.minutes
 # set bulkrax default work type to first curation_concern if it isn't already set
 Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
 
-# Load our local schema.org config instead of the default
-local_schema_file = Rails.root.join('config', 'schema_org.yml')
-local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
-Hyrax::Microdata.load_paths = local_filename
+# Hyrax::Microdata and Hyrax::DashboardController are autoloaded — defer until after_initialize
+Rails.application.config.after_initialize do
+  # Load our local schema.org config instead of the default
+  local_schema_file = Rails.root.join('config', 'schema_org.yml')
+  local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
+  Hyrax::Microdata.load_paths = local_filename
 
-# Dashboard menu extensions
-Hyrax::DashboardController.sidebar_partials[:activity] << 'hyrax/dashboard/sidebar/custom_activity'
-Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
-Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
+  # Dashboard menu extensions
+  Hyrax::DashboardController.sidebar_partials[:activity] << 'hyrax/dashboard/sidebar/custom_activity'
+  Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
+  Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
+end

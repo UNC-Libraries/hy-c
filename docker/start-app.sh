@@ -4,12 +4,12 @@ echo "#### Running start-app.sh"
 mkdir -p /opt/hyrax/log/
 
 echo "#### Performing config steps"
+# Delete stale bundle config from previous container runs - unset commands are unreliable since
+# old keys persist in the file and can override them (e.g. force_ruby_platform, build.sassc)
+rm -f /hyrax/.bundle/config
 # The bundle config and package are needed for the odd way we manage gems in production
 bundle config --local cache_path /hyc-gems
 bundle config build.nokogiri --use-system-libraries
-bundle config set force_ruby_platform true
-
-# Clear any existing bundle cache that might have incompatible binaries
 bundle config --local clean --force
 
 echo "#### Ensure rubygems system is up to date before bundle installing"

@@ -12,8 +12,7 @@ Bulkrax.setup do |config|
   # Default is the first returned by Hyrax.config.curation_concerns, stringified
   # config.default_work_type = MyWork
 
-  # Factory Class to use when generating and saving objects
-  config.object_factory = Bulkrax::ObjectFactory
+  # Factory Class configured below in after_initialize (constants not yet available here)
 
   # Path to store pending imports
   config.import_path = "#{ENV['TEMP_STORAGE']}/hyrax/imports"
@@ -207,11 +206,16 @@ Bulkrax.setup do |config|
   # Overriding removed_image_path which by default refers to a file in the spec folder
   config.removed_image_path = Rails.root.join('app', 'assets', 'images', 'bulkrax', 'removed.png')
 
-  # Cleanup blank values during import
-  Bulkrax::ObjectFactory.transformation_removes_blank_hash_values = true
 end
 
-# Sidebar for hyrax 3+ support
-if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)
-  Hyrax::DashboardController.sidebar_partials[:repository_content] << 'hyrax/dashboard/sidebar/bulkrax_sidebar_additions'
+# Rails 7 / Zeitwerk can't resolve engine app/ constants during initializers.
+# Defer anything referencing autoloaded constants to after_initialize.
+Rails.application.config.after_initialize do
+  Bulkrax.config.object_factory = Bulkrax::ValkyrieObjectFactory
+  Bulkrax::ValkyrieObjectFactory.transformation_removes_blank_hash_values = true
+
+  # Sidebar for hyrax 3+ support
+  if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)
+    Hyrax::DashboardController.sidebar_partials[:repository_content] << 'hyrax/dashboard/sidebar/bulkrax_sidebar_additions'
+  end
 end

@@ -19,17 +19,17 @@ module ActionDispatch
       ActionController::UnknownFormat,
       ActionDispatch::Http::MimeNegotiation::InvalidType,
       ActionDispatch::Http::Parameters::ParseError,
-      ActiveFedora::ObjectNotFoundError,
+      (ActiveFedora::ObjectNotFoundError if defined?(ActiveFedora::ObjectNotFoundError)),
       ArgumentError,
       Blacklight::Exceptions::RecordNotFound,
       BlacklightRangeLimit::InvalidRange,
       Faraday::TimeoutError,
       Hyrax::ObjectNotFoundError,
-      Ldp::Gone,
+      (Ldp::Gone if defined?(Ldp::Gone)),
       Riiif::ConversionError,
       Riiif::ImageNotFoundError,
       URI::InvalidURIError
-    ].to_set
+    ].compact.to_set
 
     def should_reduce_log_level?(wrapper)
       return true if DEFATALIZED_CLASSES.include?(wrapper.exception.class)

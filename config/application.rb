@@ -43,11 +43,10 @@ module Hyrax
     # Prepend all log lines with the following tags.
     config.log_tags = [:request_id]
 
-    # Load override files
     overrides = "#{Rails.root}/app/overrides"
     config.to_prepare do
       Dir.glob("#{overrides}/**/*_override.rb").sort.each do |c|
-        Rails.configuration.cache_classes ? require(c) : require_dependency(c)
+        load c
       end
     end
 
