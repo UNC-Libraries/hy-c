@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/centos for details on the first stage of this build
-FROM almalinux:8 AS systemd-enabled
+FROM almalinux:9 AS systemd-enabled
 ENV container docker
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -24,13 +24,13 @@ FROM systemd-enabled
 # TODO: are we using httpd?
 RUN dnf -y update \
 && dnf -y install epel-release \
-&& dnf config-manager --set-enabled powertools \
+&& dnf config-manager --set-enabled crb \
 && dnf -y install gcc gcc-c++ make git \
 && dnf -y install libyaml libyaml-devel libxml2-devel libxslt-devel zlib-devel \
-&& dnf -y install libsass libsass-devel \
-&& dnf -y module enable ruby:3.0 nodejs:14 \
+# AlmaLinux 9 ships NodeJS 18 or 20. Ruby 3.2 not available in AlmaLinux 9, so using Ruby 3.3
+&& dnf -y module enable ruby:3.3 nodejs:18 \
 && dnf -y install ruby ruby-devel \
-&& dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-aarch64/pgdg-redhat-repo-latest.noarch.rpm \
+&& dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-aarch64/pgdg-redhat-repo-latest.noarch.rpm \
 && dnf -qy module disable postgresql \
 && dnf install -y python3 python3-devel \
 && dnf -y install nodejs-devel npm \
@@ -38,7 +38,8 @@ RUN dnf -y update \
 # Create symlinks for standard paths so bundler can find postgres config
 && ln -s /usr/pgsql-14 /usr/pgsql \
 && ln -s /usr/pgsql-14/bin/pg_config /usr/local/bin/pg_config \
-&& dnf -y install git libreoffice-core clamav-devel clamav clamav-update clamd redhat-lsb-core libXScrnSaver wget unzip \
+# redhat-lsb-core was removed in RHEL 9 / AlmaLinux 9 and is no longer available
+&& dnf -y install git libreoffice-core clamav-devel clamav clamav-update clamd libXScrnSaver wget unzip \
 && dnf -y install ghostscript GraphicsMagick \
 && dnf -y install chromium \
 && dnf clean all && rm -rf /var/cache/yum \
