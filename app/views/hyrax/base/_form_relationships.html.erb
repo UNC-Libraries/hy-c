@@ -8,7 +8,8 @@
     %>
   <% else %>
     <% if f.object.model.admin_set_id.blank? %>
-      <% admin_set_id = (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first || AdminSet.first).id %>
+      <%# Use pre-computed admin_set_options instead of a direct AdminSet query (Hyrax 5 / Wings compatibility) %>
+      <% admin_set_id = admin_set_options.first&.second %>
     <% else %>
       <% admin_set_id = f.object.model.admin_set_id %>
     <% end %>

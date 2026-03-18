@@ -18,7 +18,8 @@ class AdminSetSelectService
     if select_options.find { |o| o.second.casecmp(admin_set_id).zero? }
       admin_set_id
     else
-      (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first || AdminSet.first).id
+      # Fall back to first available option using pre-computed select_options (Hyrax 5 / Wings compatibility)
+      select_options.first&.second
     end
   end
 end
