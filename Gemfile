@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 ruby '~> 3.3.0'
 
 # Stub out GA4 gem to avoid grpc compilation issues (we don't use GA4)
-# See: https://github.com/UNC-Libraries/hy-c/issues/HYC-2162
 gem 'google-analytics-data', path: 'vendor/gems/google-analytics-data'
 
 git_source(:github) do |repo_name|
