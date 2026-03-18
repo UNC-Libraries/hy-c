@@ -23,7 +23,7 @@ if ! bundle check; then
   bundle install
   bundle package
   echo "#### Creating symlink for libsass otherwise bundle cannot find it"
-  [ ! -L /usr/share/gems/gems/sassc-2.4.0/lib/sassc/libsass.so ] && ln -s /usr/lib64/gems/ruby/sassc-2.4.0/sassc/libsass.so /usr/share/gems/gems/sassc-2.4.0/lib/sassc/libsass.so
+  [ ! -L /usr/local/share/gems/gems/sassc-2.4.0/lib/sassc/libsass.so ] && ln -s /usr/local/lib64/gems/ruby/sassc-2.4.0/sassc/libsass.so /usr/local/share/gems/gems/sassc-2.4.0/lib/sassc/libsass.so
 else
  echo "#### Gems already installed, skipping bundle install"
 fi
