@@ -25,7 +25,8 @@ module WorkUtilsHelper
 
     return nil if normalized_doi.blank?
 
-    # Search using canonical format
+    # Search using canonical format. No escaping needed here: the double quotes make this a
+    # Solr phrase query, which treats special characters (e.g. parentheses) as literals.
     query = "doi_tesim:\"#{normalized_doi}\""
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first
 
@@ -33,7 +34,9 @@ module WorkUtilsHelper
     if work_data.blank?
       bare_doi = normalize_doi(doi)
       if bare_doi
-        fallback_query = "identifier_tesim:*#{bare_doi}* NOT has_model_ssim:(\"FileSet\")"
+        # Escape Solr special characters so they're treated as literals in the unquoted wildcard query.
+        escaped_doi = bare_doi.gsub(/([+\-&|!(){}\[\]^"~?:\\\/])/, '\\\\\1')
+        fallback_query = "identifier_tesim:*#{escaped_doi}* NOT has_model_ssim:(\"FileSet\")"
         work_data = ActiveFedora::SolrService.get(fallback_query, rows: 1)['response']['docs'].first
       else
         Rails.logger.warn("Identifier does not appear to be a valid DOI: #{doi}. Ending search.")
