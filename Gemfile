@@ -8,7 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'browser', '~> 5.3', '>= 5.3.1'
-gem 'active-fedora', '~> 14.0'
+gem 'active-fedora', '~> 15.0'
 gem 'base64', '0.1.0' # Downgrade from 0.2 so that it will match the version being used by passenger on the server
 gem 'blacklight', '~> 7.40'
 gem 'blacklight_dynamic_sitemap', '~> 1.0'
@@ -26,11 +26,11 @@ gem 'edtf-humanize', '~> 2.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.21.0'
-gem 'hydra-editor', '~> 6.2.0'
-gem 'hydra-pcdm', '~> 1.3.0'
+gem 'hydra-editor', '~> 7.0.0'
+gem 'hydra-pcdm', '~> 1.4.0'
 gem 'hydra-role-management', '~> 1.1.0'
-gem 'hydra-works', '~> 2.1.0'
-gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyrax-4-development'
+gem 'hydra-works', '~> 2.3.0'
+gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'hyc-2162'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
@@ -63,6 +63,7 @@ gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0.0'
+gem 'sassc'
 gem 'sidekiq', '~> 6.5'
 gem 'sidekiq-status', '~> 3.0.0'
 gem 'sprockets', '3.7.2'
@@ -90,7 +91,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'listen', '~> 3.7.0'
+  gem 'listen', '~> 3.9.0'
   gem 'puma'
   gem 'web-console', '~> 3.7.0'
 end
