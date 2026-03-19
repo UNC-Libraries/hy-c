@@ -22,10 +22,20 @@ if ! bundle check; then
   rm -f /hyc-gems/* || true
   bundle install
   bundle package
-  echo "#### Creating symlink for libsass otherwise bundle cannot find it"
-  LIBSASS_SRC=$(find /hyc-gems/ruby/3.3.0/extensions -name "libsass.so" 2>/dev/null | head -1)
-  LIBSASS_DST=/hyc-gems/ruby/3.3.0/gems/sassc-2.4.0/lib/sassc/libsass.so
-  [ -n "$LIBSASS_SRC" ] && [ ! -L "$LIBSASS_DST" ] && ln -s "$LIBSASS_SRC" "$LIBSASS_DST"
+  echo "#### Symlinking native extensions into gem lib directories"
+  EXTENSIONS_BASE="/hyc-gems/ruby/3.3.0/extensions"
+  GEMS_BASE="/hyc-gems/ruby/3.3.0/gems"
+  find "$EXTENSIONS_BASE" -name "*.so" 2>/dev/null | while read so_path; do
+    rel=$(echo "$so_path" | sed "s|$EXTENSIONS_BASE/[^/]*/[^/]*/||")
+    gem_ver=$(echo "$rel" | cut -d'/' -f1)
+    so_rel=$(echo "$rel" | cut -d'/' -f2-)
+    target="$GEMS_BASE/$gem_ver/lib/$so_rel"
+    target_dir=$(dirname "$target")
+    if [ ! -e "$target" ] && [ -d "$GEMS_BASE/$gem_ver/lib" ]; then
+      mkdir -p "$target_dir"
+      ln -s "$so_path" "$target"
+    fi
+  done
 else
  echo "#### Gems already installed, skipping bundle install"
 fi

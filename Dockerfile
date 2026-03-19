@@ -42,6 +42,8 @@ RUN dnf -y update \
 && dnf -y install git libreoffice-core clamav-devel clamav clamav-update clamd libXScrnSaver wget unzip \
 && dnf -y install ghostscript GraphicsMagick \
 && dnf -y install chromium \
+# Install libvips build dependencies (libvips is not packaged for aarch64 in EPEL 9)
+&& dnf -y install glib2-devel expat-devel meson ninja-build \
 && dnf clean all && rm -rf /var/cache/yum \
 && wget -q -P /tmp "https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip" \
 && mkdir /fits \
@@ -50,6 +52,16 @@ RUN dnf -y update \
 && npm install yarn -g \
 && yarn \
 && dnf -y update ca-certificates
+
+# Build libvips 8.15.x from source — provides libvips.so.42 required by the ruby-vips gem
+RUN wget -q -O /tmp/vips.tar.xz "https://github.com/libvips/libvips/releases/download/v8.15.3/vips-8.15.3.tar.xz" \
+&& tar xf /tmp/vips.tar.xz -C /tmp \
+&& cd /tmp/vips-8.15.3 && meson setup build --prefix=/usr/local \
+&& ninja -C build \
+&& ninja -C build install \
+&& echo "/usr/local/lib64" > /etc/ld.so.conf.d/local-lib64.conf \
+&& ldconfig \
+&& rm -rf /tmp/vips*
 
 ENV PATH "/fits:$PATH"
 COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
