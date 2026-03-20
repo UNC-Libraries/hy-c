@@ -8,6 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'browser', '~> 5.3', '>= 5.3.1'
+gem 'net-ftp'
 gem 'active-fedora', '~> 15.0'
 gem 'base64', '0.1.0' # Downgrade from 0.2 so that it will match the version being used by passenger on the server
 gem 'blacklight', '~> 7.40'

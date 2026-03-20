@@ -654,6 +654,9 @@ GEM
     mutex_m (0.3.0)
     nest (3.2.0)
       redic
+    net-ftp (0.3.9)
+      net-protocol
+      time
     net-http (0.9.1)
       uri (>= 0.11.1)
     net-http-persistent (4.0.8)
@@ -1058,6 +1061,8 @@ GEM
       execjs (>= 0.3.0, < 3)
     thor (1.5.0)
     tilt (2.7.0)
+    time (0.4.2)
+      date
     timeout (0.6.1)
     tinymce-rails (5.10.9)
       railties (>= 3.1.1)
@@ -1169,6 +1174,7 @@ DEPENDENCIES
   logger (= 1.5.3)
   loofah (~> 2.19.1)
   mini_magick (~> 4.12.0)
+  net-ftp
   nokogiri (~> 1.14.2)
   omniauth (~> 2.0)
   omniauth-rails_csrf_protection
