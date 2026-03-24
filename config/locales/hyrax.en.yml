@@ -66,6 +66,12 @@ en:
         local_upload_browse_everything_html: "<p>Fill out the form below to deposit your work.</p>
         <p>If you do not know what to put in a field, please leave it blank.
         If you have questions, feel free to <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us\">contact us</a> for help.</p>"
+        local_upload_html: |
+          <p>You can add one or more files to associate with this work.</p>
+          <p>Uploads are limited to %{upload_file_limit} files, %{upload_size_limit} MB each.</p>
+          <div class="alert alert-success upload-accessibility" role="alert">All files must be accessible to persons with disabilities per the Americans with Disabilities Act Title II. 
+          Visit <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/">UNC's Digital Accessibility Office</a> for 
+          <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/document-accessibility/">guidance</a>.</div>
       items:
         empty_artwork: This Artwork has no files associated with it. Click "Attach Artwork" to add more files.
     directory:
