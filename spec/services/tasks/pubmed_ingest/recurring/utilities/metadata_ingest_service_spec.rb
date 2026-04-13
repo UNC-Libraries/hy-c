@@ -222,7 +222,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
         service.batch_retrieve_and_process_metadata(batch_size: 2, db: 'pubmed')
 
         expect(HTTParty).to have_received(:get).with(
-          'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=123456,234567&retmode=xml&tool=CDR&email=cdr@unc.edu'
+          'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=123456,234567&retmode=xml&tool=CDR&email=cdr@unc.edu',
+          hash_including(timeout: 60)
         )
         expect(service).to have_received(:process_batch)
       end
@@ -239,7 +240,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
         service.batch_retrieve_and_process_metadata(batch_size: 2, db: 'pmc')
 
         expect(HTTParty).to have_received(:get).with(
-          'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=789012,890123&retmode=xml&tool=CDR&email=cdr@unc.edu'
+          'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=789012,890123&retmode=xml&tool=CDR&email=cdr@unc.edu',
+          hash_including(timeout: 60)
         )
       end
     end
@@ -589,6 +591,61 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
           tag: 'MetadataIngestService'
         )
       end
+    end
+  end
+
+  describe '#fetch_with_retry' do
+    let(:url) { 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=123456' }
+    let(:batch_ids) { ['123456', '234567'] }
+    let(:mock_response) { double('response', code: 200, body: sample_pubmed_xml) }
+
+    before do
+      allow(service).to receive(:sleep)
+    end
+
+    it 'returns response on successful request' do
+      allow(HTTParty).to receive(:get).and_return(mock_response)
+
+      result = service.send(:fetch_with_retry, url, batch_ids)
+
+      expect(result).to eq(mock_response)
+      expect(HTTParty).to have_received(:get).once
+    end
+
+    [EOFError, Timeout::Error, SocketError, Errno::ECONNRESET].each do |error_class|
+      it "retries on #{error_class} and returns response if subsequent attempt succeeds" do
+        call_count = 0
+        allow(HTTParty).to receive(:get) do
+          call_count += 1
+          raise error_class if call_count == 1
+          mock_response
+        end
+
+        result = service.send(:fetch_with_retry, url, batch_ids)
+
+        expect(result).to eq(mock_response)
+        expect(HTTParty).to have_received(:get).twice
+        expect(Rails.logger).to have_received(:warn).with(/Retrying in 2s \(attempt 1\/3\)/)
+      end
+    end
+
+    it 'raises after exhausting all retries' do
+      allow(HTTParty).to receive(:get).and_raise(EOFError)
+
+      expect { service.send(:fetch_with_retry, url, batch_ids) }.to raise_error(EOFError)
+      expect(HTTParty).to have_received(:get).exactly(4).times  # 1 initial + 3 retries
+      expect(service).to have_received(:sleep).with(2).once  # 2^1
+      expect(service).to have_received(:sleep).with(4).once  # 2^2
+      expect(service).to have_received(:sleep).with(8).once  # 2^3
+      expect(Rails.logger).to have_received(:error).with(/Failed to fetch IDs after 3 retries/)
+    end
+
+    it 'does not retry on unexpected errors' do
+      allow(HTTParty).to receive(:get).and_raise(ArgumentError.new('bad request'))
+
+      expect { service.send(:fetch_with_retry, url, batch_ids) }.to raise_error(ArgumentError)
+      expect(HTTParty).to have_received(:get).once
+      expect(Rails.logger).to have_received(:error).with(/Unexpected error fetching batch/)
     end
   end
 
