@@ -66,7 +66,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       query_params = "?db=#{db}&id=#{batch_ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
       LogUtilsHelper.double_log("Processing batch #{batch_count}/#{number_of_batches}", :info, tag: 'MetadataIngestService')
       Rails.logger.info("[MetadataIngestService] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}...")
-      res = HTTParty.get("#{base_url}#{query_params}")
+
+      res = fetch_with_retry("#{base_url}#{query_params}", batch_ids)
 
       if res.code != 200
         Rails.logger.error("[batch_retrieve_and_process_metadata] Failed to fetch for IDs: #{batch_ids.first(25).join(', ')}:" \
@@ -93,6 +94,29 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   private
+
+  # Fetches URL with retry logic to handle connection errors (EOFError, timeouts, etc.)
+  def fetch_with_retry(url, batch_ids, max_retries: 3)
+    retry_count = 0
+    begin
+      HTTParty.get(url, timeout: 60, read_timeout: 60, open_timeout: 20)
+    rescue EOFError, SocketError, Timeout::Error, Errno::ECONNRESET => e
+      retry_count += 1
+      if retry_count <= max_retries
+        wait_time = (2 ** retry_count)  # exponential backoff: 2, 4, 8 seconds
+        Rails.logger.warn("[MetadataIngestService] Connection error on batch #{batch_ids.first(5).join(', ')}...: #{e.class} - #{e.message}. " \
+                          "Retrying in #{wait_time}s (attempt #{retry_count}/#{max_retries})...")
+        sleep(wait_time)
+        retry
+      else
+        Rails.logger.error("[MetadataIngestService] Failed to fetch IDs after #{max_retries} retries: #{batch_ids.first(5).join(', ')}... Error: #{e.message}")
+        raise
+      end
+    rescue => e
+      Rails.logger.error("[MetadataIngestService] Unexpected error fetching batch: #{e.class} - #{e.message}")
+      raise
+    end
+  end
 
   # Handles PMC errors by logging them and moving the alternate IDs to a file to retry later.
   def handle_pmc_errors(xml_doc)
