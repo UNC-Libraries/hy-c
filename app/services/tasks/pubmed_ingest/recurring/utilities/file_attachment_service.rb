@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-require 'aws-sdk-s3'
 
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
   PMC_S3_BUCKET = 'pmc-oa-opendata'
+  PMC_S3_BASE_URL = "https://#{PMC_S3_BUCKET}.s3.amazonaws.com"
 
   def initialize(config:, tracker:, log_file_path:, full_text_path:, metadata_ingest_result_path:)
     super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
@@ -41,13 +41,18 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
       end
 
       version_id = version_prefix.chomp('/')
-      pdf_key = "#{version_prefix}#{version_id}.pdf"
+      pdf_url = "#{PMC_S3_BASE_URL}/#{version_prefix}#{version_id}.pdf"
 
       filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
       file_path = File.join(@full_text_path, filename)
 
-      LogUtilsHelper.double_log("Downloading s3://#{PMC_S3_BUCKET}/#{pdf_key}", :info, tag: 'S3')
-      s3_client.get_object(bucket: PMC_S3_BUCKET, key: pdf_key, response_target: file_path)
+      status = fetch_s3_file(pdf_url, local_file_path: file_path)
+
+      if status == 404
+        log_attachment_outcome(record, category: category_for_skipped_file_attachment(record),
+                               message: 'No PDF found in S3 for PMCID', file_name: 'NONE')
+        return
+      end
 
       file_set = attach_pdf_to_work_with_file_path!(record: record,
                                                     file_path: file_path,
@@ -59,9 +64,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
                   file_name: filename)
       end
 
-    rescue Aws::S3::Errors::NoSuchKey
-      log_attachment_outcome(record, category: category_for_skipped_file_attachment(record),
-                             message: 'No PDF found in S3 for PMCID', file_name: 'NONE')
     rescue => e
       retries += 1
       if retries <= RETRY_LIMIT
@@ -78,20 +80,24 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
   end
 
   def latest_version_prefix(pmcid)
-    resp = s3_client.list_objects_v2(
-      bucket: PMC_S3_BUCKET,
-      prefix: "#{pmcid}.",
-      delimiter: '/'
-    )
-    prefixes = resp.common_prefixes.map(&:prefix)
+    url = "#{PMC_S3_BASE_URL}/?list-type=2&prefix=#{pmcid}.&delimiter=/"
+    response = HTTParty.get(url, timeout: 10)
+    raise "S3 listing failed: #{response.code}" unless response.code == 200
+
+    doc = Nokogiri::XML(response.body)
+    doc.remove_namespaces!
+    prefixes = doc.xpath('//CommonPrefixes/Prefix').map(&:text)
     return nil if prefixes.empty?
+
     prefixes.sort.last
   end
 
-  def s3_client
-    @s3_client ||= Aws::S3::Client.new(
-      region: 'us-east-1',
-      credentials: Aws::AnonymousCredentials.new
-    )
+  def fetch_s3_file(url, local_file_path:)
+    LogUtilsHelper.double_log("Downloading #{url}", :info, tag: 'S3')
+    response = HTTParty.get(url, timeout: 60)
+    return response.code unless response.code == 200
+
+    File.binwrite(local_file_path, response.body)
+    response.code
   end
 end

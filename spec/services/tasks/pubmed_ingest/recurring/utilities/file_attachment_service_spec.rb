@@ -156,46 +156,31 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
   end
 
   describe '#process_record' do
-    let(:mock_s3_client) { double('s3_client') }
-    let(:mock_list_response) do
-      double('list_response', common_prefixes: [double('prefix', prefix: 'PMC123456.1/')])
-    end
-
     before do
-      allow(service).to receive(:s3_client).and_return(mock_s3_client)
-      allow(mock_s3_client).to receive(:list_objects_v2).and_return(mock_list_response)
-      allow(mock_s3_client).to receive(:get_object)
-      allow(service).to receive(:attach_pdf_to_work_with_file_path!)
+      allow(service).to receive(:latest_version_prefix).and_return('PMC123456.1/')
+      allow(service).to receive(:fetch_s3_file).and_return(200)
       allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
+      allow(service).to receive(:attach_pdf_to_work_with_file_path!)
+        .and_return([double('fileset'), 'PMC123456_001.pdf'])
+      allow(service).to receive(:log_attachment_outcome)
       allow(service).to receive(:sleep)
     end
 
     context 'when record has no PMCID' do
-      it 'returns early without calling S3' do
-        expect(mock_s3_client).not_to receive(:list_objects_v2)
+      it 'returns early without fetching from S3' do
+        expect(service).not_to receive(:latest_version_prefix)
         service.process_record(sample_record_without_pmcid)
       end
     end
 
     context 'when PDF is found in S3' do
-      before do
-        allow(service).to receive(:attach_pdf_to_work_with_file_path!)
-          .and_return([double('fileset'), 'PMC123456_001.pdf'])
-        allow(service).to receive(:log_attachment_outcome)
-      end
-
-      it 'lists S3 versions, downloads the PDF, and attaches it' do
+      it 'fetches the latest version, downloads the PDF, and attaches it' do
         service.process_record(sample_record)
 
-        expect(mock_s3_client).to have_received(:list_objects_v2).with(
-          bucket: Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService::PMC_S3_BUCKET,
-          prefix: 'PMC123456.',
-          delimiter: '/'
-        )
-        expect(mock_s3_client).to have_received(:get_object).with(
-          bucket: Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService::PMC_S3_BUCKET,
-          key: 'PMC123456.1/PMC123456.1.pdf',
-          response_target: anything
+        expect(service).to have_received(:latest_version_prefix).with('PMC123456')
+        expect(service).to have_received(:fetch_s3_file).with(
+          'https://pmc-oa-opendata.s3.amazonaws.com/PMC123456.1/PMC123456.1.pdf',
+          local_file_path: anything
         )
         expect(service).to have_received(:attach_pdf_to_work_with_file_path!)
       end
@@ -224,12 +209,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
     end
 
-    context 'when no PDF is found in S3' do
-      before do
-        allow(mock_s3_client).to receive(:get_object)
-          .and_raise(Aws::S3::Errors::NoSuchKey.new(nil, 'The specified key does not exist.'))
-        allow(service).to receive(:log_attachment_outcome)
-      end
+    context 'when no PDF is found in S3 (404)' do
+      before { allow(service).to receive(:fetch_s3_file).and_return(404) }
 
       it 'logs successfully_ingested_metadata_only by default' do
         service.process_record(sample_record)
@@ -256,12 +237,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     end
 
     context 'when no versions are found in S3' do
-      let(:empty_list_response) { double('empty_response', common_prefixes: []) }
-
-      before do
-        allow(mock_s3_client).to receive(:list_objects_v2).and_return(empty_list_response)
-        allow(service).to receive(:log_attachment_outcome)
-      end
+      before { allow(service).to receive(:latest_version_prefix).and_return(nil) }
 
       it 'logs successfully_ingested_metadata_only by default' do
         service.process_record(sample_record)
@@ -275,12 +251,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
     end
 
-    context 'when S3 request fails with a retryable error' do
+    context 'when a retryable error occurs' do
       before do
         stub_const('Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService::RETRY_LIMIT', 0)
-        allow(mock_s3_client).to receive(:list_objects_v2)
-          .and_raise(StandardError.new('Service unavailable'))
-        allow(service).to receive(:log_attachment_outcome)
+        allow(service).to receive(:latest_version_prefix).and_raise(StandardError.new('Service unavailable'))
       end
 
       it 'retries and eventually logs failure' do
@@ -293,6 +267,83 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
           file_name: 'NONE'
         )
       end
+    end
+  end
+
+  describe '#latest_version_prefix' do
+    let(:list_xml) do
+      <<~XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+          <CommonPrefixes><Prefix>PMC123456.1/</Prefix></CommonPrefixes>
+          <CommonPrefixes><Prefix>PMC123456.2/</Prefix></CommonPrefixes>
+        </ListBucketResult>
+      XML
+    end
+
+    before do
+      allow(HTTParty).to receive(:get)
+        .with(a_string_including('PMC123456.'), anything)
+        .and_return(double('response', code: 200, body: list_xml))
+    end
+
+    it 'returns the latest (sorted) version prefix' do
+      expect(service.latest_version_prefix('PMC123456')).to eq('PMC123456.2/')
+    end
+
+    context 'when no versions exist' do
+      let(:empty_xml) do
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+          </ListBucketResult>
+        XML
+      end
+
+      before do
+        allow(HTTParty).to receive(:get)
+          .and_return(double('response', code: 200, body: empty_xml))
+      end
+
+      it 'returns nil' do
+        expect(service.latest_version_prefix('PMC123456')).to be_nil
+      end
+    end
+
+    context 'when the S3 listing request fails' do
+      before do
+        allow(HTTParty).to receive(:get)
+          .and_return(double('response', code: 500, body: ''))
+      end
+
+      it 'raises an error' do
+        expect { service.latest_version_prefix('PMC123456') }.to raise_error(/S3 listing failed/)
+      end
+    end
+  end
+
+  describe '#fetch_s3_file' do
+    let(:url) { 'https://pmc-oa-opendata.s3.amazonaws.com/PMC123456.1/PMC123456.1.pdf' }
+    let(:local_path) { '/tmp/test_fulltext/PMC123456_001.pdf' }
+
+    before { allow(File).to receive(:binwrite) }
+
+    it 'writes the body to disk and returns 200 on success' do
+      allow(HTTParty).to receive(:get).and_return(double('response', code: 200, body: 'pdf_content'))
+
+      result = service.fetch_s3_file(url, local_file_path: local_path)
+
+      expect(result).to eq(200)
+      expect(File).to have_received(:binwrite).with(local_path, 'pdf_content')
+    end
+
+    it 'returns 404 without writing a file when not found' do
+      allow(HTTParty).to receive(:get).and_return(double('response', code: 404, body: ''))
+
+      result = service.fetch_s3_file(url, local_file_path: local_path)
+
+      expect(result).to eq(404)
+      expect(File).not_to have_received(:binwrite)
     end
   end
 end
