@@ -156,63 +156,32 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
   end
 
   describe '#process_record' do
-    let(:oa_response_body) do
-      <<~XML
-        <?xml version="1.0"?>
-        <oa>
-          <record>
-            <link format="pdf" href="ftp://example.com/path/file.pdf"/>
-          </record>
-        </oa>
-      XML
-    end
-
-    let(:mock_response) { double('response', code: 200, body: oa_response_body) }
-    let(:mock_article) do
-      double(
-        'article',
-        id: 'work_123',
-        to_global_id: 'gid://hyrax/Article/work_123',
-        admin_set_id: 'admin_set_123',
-        title: ['Dummy Title'],
-        human_readable_type: 'Article',
-        reload: true,
-        update_index: true
-      )
-    end
-
     before do
-      allow(HTTParty).to receive(:get).and_return(mock_response)
-      allow(service).to receive(:fetch_ftp_binary).and_return('pdf_binary_data')
+      allow(service).to receive(:latest_version_prefix).and_return('PMC123456.1/')
+      allow(service).to receive(:fetch_s3_file).and_return(200)
+      allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
       allow(service).to receive(:attach_pdf_to_work_with_file_path!)
+        .and_return([double('fileset'), 'PMC123456_001.pdf'])
+      allow(service).to receive(:log_attachment_outcome)
       allow(service).to receive(:sleep)
-      allow(Article).to receive(:find).with('work_123').and_return(mock_article)
-      # RSpec::Mocks.space.proxy_for(service).reset
     end
 
     context 'when record has no PMCID' do
-      it 'returns early' do
-        expect(HTTParty).not_to receive(:get)
+      it 'returns early without fetching from S3' do
+        expect(service).not_to receive(:latest_version_prefix)
         service.process_record(sample_record_without_pmcid)
       end
     end
 
-    context 'when PDF URL is found' do
-      before do
-        stub_const('Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService::RETRY_LIMIT', 0)
-        allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
-        allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return([double('fileset'), 'PMC123456_001.pdf'])
-        allow(service).to receive(:log_attachment_outcome) # stub to observe
-      end
-
-      it 'fetches and processes PDF' do
+    context 'when PDF is found in S3' do
+      it 'fetches the latest version, downloads the PDF, and attaches it' do
         service.process_record(sample_record)
 
-        expect(HTTParty).to have_received(:get).with(
-          'https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=PMC123456',
-          timeout: 10
+        expect(service).to have_received(:latest_version_prefix).with('PMC123456')
+        expect(service).to have_received(:fetch_s3_file).with(
+          'https://pmc-oa-opendata.s3.amazonaws.com/PMC123456.1/PMC123456.1.pdf',
+          local_file_path: anything
         )
-        expect(service).to have_received(:fetch_ftp_binary)
         expect(service).to have_received(:attach_pdf_to_work_with_file_path!)
       end
 
@@ -240,289 +209,141 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       end
     end
 
-    context 'when TGZ URL is found' do
-      let(:oa_response_body) do
-        <<~XML
-          <?xml version="1.0"?>
-          <oa>
-            <record>
-              <link format="tgz" href="ftp://example.com/path/file.tgz"/>
-            </record>
-          </oa>
-        XML
-      end
+    context 'when no PDF is found in S3 (404)' do
+      before { allow(service).to receive(:fetch_s3_file).and_return(404) }
 
-      it 'fetches and processes TGZ' do
-        expect(service).to receive(:fetch_ftp_binary).and_return('tgz_binary_data')
-        expect(service).to receive(:process_and_attach_tgz_file)
-
+      it 'logs successfully_ingested_metadata_only by default' do
         service.process_record(sample_record)
-      end
-    end
 
-    context 'when no PDF or TGZ link is found' do
-      let(:oa_response_body) do
-        <<~XML
-          <?xml version="1.0"?>
-          <oa>
-            <record>
-            </record>
-          </oa>
-        XML
-      end
-
-      it 'logs successful ingestion with no attachment' do
-        expect(service).to receive(:log_attachment_outcome).with(
+        expect(service).to have_received(:log_attachment_outcome).with(
           sample_record,
           category: :successfully_ingested_metadata_only,
-          message: 'No PDF or TGZ link found, skipping attachment',
+          message: 'No PDF found in S3 for PMCID',
           file_name: 'NONE'
         )
-
-        service.process_record(sample_record)
       end
 
       it 'logs skipped_file_attachment if record.category is skipped' do
         sample_record['category'] = 'skipped'
-        expect(service).to receive(:log_attachment_outcome).with(
+        service.process_record(sample_record)
+
+        expect(service).to have_received(:log_attachment_outcome).with(
           sample_record,
           category: :skipped_file_attachment,
-          message: 'No PDF or TGZ link found, skipping attachment',
+          message: 'No PDF found in S3 for PMCID',
           file_name: 'NONE'
         )
-        service.process_record(sample_record)
       end
     end
 
-    context 'when API request fails' do
-      let(:mock_response) { double('response', code: 500, body: '') }
+    context 'when no versions are found in S3' do
+      before { allow(service).to receive(:latest_version_prefix).and_return(nil) }
+
+      it 'logs successfully_ingested_metadata_only by default' do
+        service.process_record(sample_record)
+
+        expect(service).to have_received(:log_attachment_outcome).with(
+          sample_record,
+          category: :successfully_ingested_metadata_only,
+          message: 'No versions found in S3 for PMCID',
+          file_name: 'NONE'
+        )
+      end
+    end
+
+    context 'when a retryable error occurs' do
+      before do
+        stub_const('Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService::RETRY_LIMIT', 0)
+        allow(service).to receive(:latest_version_prefix).and_raise(StandardError.new('Service unavailable'))
+      end
 
       it 'retries and eventually logs failure' do
-        expect(service).to receive(:log_attachment_outcome).with(
+        service.process_record(sample_record)
+
+        expect(service).to have_received(:log_attachment_outcome).with(
           sample_record,
           category: :failed,
-          message: /File attachment failed -- Bad response: 500/,
+          message: 'File attachment failed -- Service unavailable',
           file_name: 'NONE'
         )
-
-        service.process_record(sample_record)
       end
     end
+  end
 
-    context 'when Open Access API Error returns an error node' do
-      let(:oa_response_body) do
+  describe '#latest_version_prefix' do
+    let(:list_xml) do
+      <<~XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+          <CommonPrefixes><Prefix>PMC123456.1/</Prefix></CommonPrefixes>
+          <CommonPrefixes><Prefix>PMC123456.2/</Prefix></CommonPrefixes>
+        </ListBucketResult>
+      XML
+    end
+
+    before do
+      allow(HTTParty).to receive(:get)
+        .with(a_string_including('PMC123456.'), anything)
+        .and_return(double('response', code: 200, body: list_xml))
+    end
+
+    it 'returns the latest (sorted) version prefix' do
+      expect(service.latest_version_prefix('PMC123456')).to eq('PMC123456.2/')
+    end
+
+    context 'when no versions exist' do
+      let(:empty_xml) do
         <<~XML
-          <?xml version="1.0"?>
-          <oa>
-            <error code="idDoesNotExist">identifier 'PMC99999999' does not exist</error>
-          </oa>
+          <?xml version="1.0" encoding="UTF-8"?>
+          <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+          </ListBucketResult>
         XML
       end
 
-      it 'logs skipped_file_attachment with the error code as message' do
-        expect(service).to receive(:log_attachment_outcome).with(
-          sample_record,
-          category: :skipped_file_attachment,
-          message: 'Open Access API Error - idDoesNotExist',
-          file_name: 'NONE'
-        )
-
-        service.process_record(sample_record)
-      end
-    end
-  end
-
-  describe '#fetch_ftp_binary' do
-    let(:uri) { URI.parse('ftp://example.com/path/file.pdf') }
-    let(:mock_ftp) { double('ftp') }
-    let(:local_path) { '/tmp/test_fulltext/file.pdf' }
-
-    before do
-      allow(Net::FTP).to receive(:open).with('example.com').and_yield(mock_ftp)
-      allow(mock_ftp).to receive(:login)
-      allow(mock_ftp).to receive(:passive=)
-      allow(mock_ftp).to receive(:getbinaryfile)
-    end
-
-    it 'connects to FTP and downloads to the given path' do
-      result = service.fetch_ftp_binary(uri, local_file_path: local_path)
-
-      expect(Net::FTP).to have_received(:open).with('example.com')
-      expect(mock_ftp).to have_received(:getbinaryfile).with('/path/file.pdf', local_path)
-      expect(result).to eq(local_path)
-    end
-  end
-
-  describe '#safe_gzip_reader' do
-    before do
-      allow(File).to receive(:open).and_call_original
-    end
-
-    let(:temp_file) { Tempfile.new('test_gzip') }
-    let(:gzipped_content) do
-      # Create actual gzipped content
-      string_io = StringIO.new
-      gzip_writer = Zlib::GzipWriter.new(string_io)
-      gzip_writer.write('test content')
-      gzip_writer.close
-      string_io.string
-    end
-
-    before do
-      temp_file.binmode
-      temp_file.write('prefix_data')
-      temp_file.write(gzipped_content)
-      temp_file.close
-    end
-
-    after do
-      temp_file.unlink
-    end
-
-    it 'finds gzip header and creates reader' do
-      reader = service.safe_gzip_reader(temp_file.path)
-      expect(reader).to be_a(Zlib::GzipReader)
-      content = reader.read
-      expect(content).to eq('test content')
-      reader.close
-    end
-
-    context 'when no gzip header is found' do
-      let(:temp_file_no_gzip) { Tempfile.new('no_gzip') }
-
       before do
-        temp_file_no_gzip.write('no gzip header here')
-        temp_file_no_gzip.close
+        allow(HTTParty).to receive(:get)
+          .and_return(double('response', code: 200, body: empty_xml))
       end
 
-      after do
-        temp_file_no_gzip.unlink
+      it 'returns nil' do
+        expect(service.latest_version_prefix('PMC123456')).to be_nil
+      end
+    end
+
+    context 'when the S3 listing request fails' do
+      before do
+        allow(HTTParty).to receive(:get)
+          .and_return(double('response', code: 500, body: ''))
       end
 
       it 'raises an error' do
-        expect {
-          service.safe_gzip_reader(temp_file_no_gzip.path)
-        }.to raise_error('No GZIP header found in file')
+        expect { service.latest_version_prefix('PMC123456') }.to raise_error(/S3 listing failed/)
       end
     end
   end
 
-  describe '#process_and_attach_tgz_file' do
-    let(:tgz_path) { '/full/path/PMC123456.tar.gz' }
-    let(:mock_user) { double('user', uid: 'admin') }
-    let(:mock_gz_reader) { double('gz_reader', close: true) }
-    let(:mock_tar_reader) { double('tar_reader') }
-    let(:mock_pdf_entry) { double('entry', file?: true, full_name: 'article.pdf', read: 'pdf_binary') }
-    let(:article) { double('article', id: 'work_123', reload: true, update_index: true) }
+  describe '#fetch_s3_file' do
+    let(:url) { 'https://pmc-oa-opendata.s3.amazonaws.com/PMC123456.1/PMC123456.1.pdf' }
+    let(:local_path) { '/tmp/test_fulltext/PMC123456_001.pdf' }
 
-    before do
-      allow(User).to receive(:find_by).with(uid: 'admin').and_return(mock_user)
-      allow(Article).to receive(:find).with('work_123').and_return(article)
-      allow(File).to receive(:expand_path).and_call_original
-      allow(File).to receive(:expand_path).with(tgz_path).and_return(tgz_path)
-      allow(service).to receive(:safe_gzip_reader).and_return(mock_gz_reader)
-      allow(Gem::Package::TarReader).to receive(:new).with(mock_gz_reader).and_yield(mock_tar_reader)
-      allow(service).to receive(:generate_filename_for_work).and_return('PMC123456_001.pdf')
-      allow(service).to receive(:attach_pdf_to_work_with_file_path!).and_return([double('fileset'), 'PMC123456_001.pdf'])
-      allow(File).to receive(:exist?).with(tgz_path).and_return(true)
+    before { allow(File).to receive(:binwrite) }
+
+    it 'writes the body to disk and returns 200 on success' do
+      allow(HTTParty).to receive(:get).and_return(double('response', code: 200, body: 'pdf_content'))
+
+      result = service.fetch_s3_file(url, local_file_path: local_path)
+
+      expect(result).to eq(200)
+      expect(File).to have_received(:binwrite).with(local_path, 'pdf_content')
     end
 
-    context 'when work ID is present' do
-      before do
-        allow(mock_tar_reader).to receive(:each).and_yield(mock_pdf_entry)
-        allow(File).to receive(:binwrite)
-          .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
-          .and_return(11)
-      end
+    it 'returns 404 without writing a file when not found' do
+      allow(HTTParty).to receive(:get).and_return(double('response', code: 404, body: ''))
 
-      it 'processes TGZ file and attaches PDFs' do
-        expect(service).to receive(:log_attachment_outcome).with(
-          sample_record,
-          category: :successfully_attached,
-          message: 'PDF successfully attached from TGZ.',
-          file_name: 'PMC123456_001.pdf'
-        )
+      result = service.fetch_s3_file(url, local_file_path: local_path)
 
-        service.process_and_attach_tgz_file(sample_record, tgz_path)
-
-        expect(article).to have_received(:reload)
-        expect(article).to have_received(:update_index)
-      end
-    end
-
-    context 'when TGZ contains a nested PDF file' do
-      let(:nested_pdf_entry) { double('entry', file?: true, full_name: 'nested/article.pdf', read: 'pdf_binary') }
-
-      before do
-        allow(mock_tar_reader).to receive(:each).and_yield(nested_pdf_entry)
-        allow(File).to receive(:binwrite)
-          .with(%r{/tmp/test_fulltext/PMC123456_001\.pdf}, 'pdf_binary')
-          .and_return(11)
-      end
-
-      it 'still attaches the PDF' do
-        expect(service).to receive(:log_attachment_outcome).with(
-          sample_record,
-          category: :successfully_attached,
-          message: 'PDF successfully attached from TGZ.',
-          file_name: 'PMC123456_001.pdf'
-        )
-
-        service.process_and_attach_tgz_file(sample_record, tgz_path)
-      end
-    end
-
-    context 'when work ID is blank' do
-      let(:record_without_work_id) do
-        { 'ids' => { 'pmcid' => 'PMC123456' } }
-      end
-
-      it 'logs metadata only message and returns early' do
-        expect(service).to receive(:log_attachment_outcome).with(
-          record_without_work_id,
-          category: :successfully_ingested_metadata_only,
-          message: 'No article ID found to attach TGZ',
-          file_name: 'NONE'
-        )
-
-        service.process_and_attach_tgz_file(record_without_work_id, tgz_path)
-      end
-    end
-
-    context 'when no PDF files found in TGZ' do
-      let(:mock_non_pdf_entry) { double('entry', file?: true, full_name: 'data.xml', read: 'xml_content') }
-
-      before do
-        allow(mock_tar_reader).to receive(:each).and_yield(mock_non_pdf_entry)
-      end
-
-      it 'logs failure message' do
-        expect(service).to receive(:log_attachment_outcome).with(
-          sample_record,
-          category: :failed,
-          message: /No PDF files found in TGZ archive/,
-          file_name: 'NONE'
-        )
-
-        service.process_and_attach_tgz_file(sample_record, tgz_path)
-      end
-    end
-
-    context 'when processing fails' do
-      before do
-        allow(Article).to receive(:find).and_raise(ActiveFedora::ObjectNotFoundError.new("Couldn't find Article with 'id'=work_123"))
-      end
-
-      it 'logs failure and error details' do
-        expect(service).to receive(:log_attachment_outcome).with(
-          sample_record,
-          category: :failed,
-          message: "TGZ PDF processing failed: Couldn't find Article with 'id'=work_123",
-          file_name: 'NONE'
-        )
-
-        service.process_and_attach_tgz_file(sample_record, tgz_path)
-      end
+      expect(result).to eq(404)
+      expect(File).not_to have_received(:binwrite)
     end
   end
 end
