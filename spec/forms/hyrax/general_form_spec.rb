@@ -10,7 +10,7 @@ RSpec.describe Hyrax::GeneralForm do
   describe '#required_fields' do
     subject { form.required_fields }
 
-    it { is_expected.to eq [:title, :dcmi_type] }
+    it { is_expected.to eq [:title, :dcmi_type, :date_issued] }
   end
 
   describe '#primary_terms' do
