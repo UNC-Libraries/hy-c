@@ -34,8 +34,6 @@ module VersionService
     end
   end
 
-  # When using mutagen, it does not sync the git directory (see https://mutagen.io/documentation/synchronization/version-control-systems)
-  # Only run git commands when the project includes a git directory
   def self.git_directory?
     File.directory?('.git')
   end

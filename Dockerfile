@@ -17,8 +17,6 @@ FROM systemd-enabled
 
 # Install dependencies
 # Install compilers for gems & more dependencies - this section is > 1 GB so might see if we can shrink it down some
-# Should we remove git, since the mutagen files can't see the git directory?
-# See https://mutagen.io/documentation/synchronization/version-control-systems
 # devtoolset-8 installed due to newer mini_racer requirement of newer g++
 # Also install ChromeDriver
 # TODO: are we using httpd?
