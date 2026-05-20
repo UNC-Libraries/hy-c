@@ -16,7 +16,7 @@ RSpec.describe Hyrax::GeneralForm do
   describe '#primary_terms' do
     subject { form.primary_terms }
 
-    it { is_expected.to eq [:title, :dcmi_type] }
+    it { is_expected.to eq [:title, :dcmi_type, :date_issued] }
   end
 
   describe '#secondary_terms' do
@@ -27,7 +27,7 @@ RSpec.describe Hyrax::GeneralForm do
                                   :keyword, :identifier, :language, :license, :publisher, :related_url,
                                   :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                   :academic_concentration, :advisor, :alternative_title, :arranger, :award,
-                                  :composer, :conference_name, :copyright_date, :date_captured, :date_issued,
+                                  :composer, :conference_name, :copyright_date, :date_captured,
                                   :date_other, :degree, :degree_granting_institution, :digital_collection,
                                   :doi, :edition, :extent, :funder, :graduation_year, :isbn, :issn,
                                   :journal_issue, :journal_title, :journal_volume, :kind_of_data, :last_modified_date,
