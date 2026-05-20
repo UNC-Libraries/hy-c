@@ -14,7 +14,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - mount-code:/hyrax
+      - .:/hyrax
       - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
@@ -37,7 +37,7 @@ services:
     env_file:
       - docker/.env
     volumes:
-      - mount-code:/hyrax
+      - .:/hyrax
       - mount-sidekiq-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
@@ -51,7 +51,7 @@ services:
     volumes:
       - clam:/var/lib/clamav
       - hyrax_data:/opt/hyrax
-      - mount-code:/hyrax
+      - .:/hyrax
     networks:
       - hycdev
   db:
@@ -110,7 +110,6 @@ services:
     networks:
       - hycdev
 volumes:
-  mount-code:
   mount-gems:
   mount-sidekiq-gems:
   solr-data:
@@ -127,18 +126,3 @@ networks:
     driver_opts:
       com.docker.network.bridge.name: br-hycdev
 
-x-mutagen:
-  sync:
-    defaults:
-      mode: "two-way-resolved"
-      ignore:
-        vcs: true
-        paths:
-          - ".DS_Store"
-    mount-code:
-      alpha: '.'
-      beta: "volume://mount-code"
-      configurationBeta:
-        permissions:
-          defaultFileMode: 0644
-          defaultDirectoryMode: 0755
