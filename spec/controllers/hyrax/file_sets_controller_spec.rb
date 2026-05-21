@@ -10,6 +10,14 @@ RSpec.describe Hyrax::FileSetsController do
   describe '#destroy' do
     let(:file_set) { FactoryBot.create(:file_set, :public, :with_original_file, user: user) }
     let(:work) { FactoryBot.create(:work, title: ['test title'], user: user) }
+    let(:longleaf_api_url) { 'https://longleaf.api.com' }
+    let(:body) do
+      {'event' => 'deregister',
+       'success' => ['fedora_file_path'],
+       'failure' => []
+      }
+    end
+    let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
 
     before do
       allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -35,6 +43,7 @@ RSpec.describe Hyrax::FileSetsController do
         file_set
         sign_in admin_user
         expect(controller).to receive(:guard_for_workflow_restriction_on!).and_return(true)
+        allow(HTTParty).to receive(:delete).and_return(longleaf_response)
       end
 
       it 'is successful' do
