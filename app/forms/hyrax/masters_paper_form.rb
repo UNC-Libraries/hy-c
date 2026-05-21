@@ -8,14 +8,14 @@ module Hyrax
     self.model_class = ::MastersPaper
     self.terms += [:academic_concentration, :admin_note, :advisor, :reviewer, :date_issued, :dcmi_type, :degree,
                    :degree_granting_institution, :doi, :extent, :graduation_year, :note,
-                   :resource_type, :deposit_agreement, :agreement]
+                   :resource_type, :deposit_agreement, :agreement, :wcag_compliance]
 
     self.terms -= [:bibliographic_citation, :contributor, :publisher, :identifier, :related_url, :source, :description, :date_created]
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :date_issued, :degree,
                             :graduation_year, :resource_type]
 
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:degree_granting_institution, :extent]
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],

@@ -35,7 +35,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
                                   :rights_statement, :subject, :keyword, :related_url, :language_label,
                                   :license_label, :rights_statement_label, :degree_granting_institution,
                                   :deposit_agreement, :agreement, :admin_note, :access_right,
-                                  :alternative_title, :rights_notes]
+                                  :alternative_title, :rights_notes, :wcag_compliance]
     }
   end
 

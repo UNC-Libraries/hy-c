@@ -8,11 +8,11 @@ module Hyrax
     self.model_class = ::Dissertation
     self.terms += [:admin_note, :advisor, :reviewer, :date_issued,
                    :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
-                   :place_of_publication, :resource_type, :deposit_agreement, :agreement]
+                   :place_of_publication, :resource_type, :deposit_agreement, :agreement, :wcag_compliance]
 
     self.terms -= [:bibliographic_citation, :date_created, :description, :source, :related_url]
     self.required_fields = [:title, :creator, :date_issued]
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:degree_granting_institution]
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],

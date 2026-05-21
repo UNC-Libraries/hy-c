@@ -8,13 +8,14 @@ module Hyrax
     self.model_class = ::Journal
 
     self.terms += [:admin_note, :date_issued, :dcmi_type, :digital_collection, :doi, :edition, :extent, :isbn,
-                   :issn, :note, :place_of_publication, :publisher, :series, :resource_type, :deposit_agreement, :agreement]
+                   :issn, :note, :place_of_publication, :publisher, :series, :resource_type, :deposit_agreement, :agreement,
+                   :wcag_compliance]
 
     self.terms -= [:bibliographic_citation, :description, :identifier, :contributor, :source, :date_created]
 
     self.required_fields = [:title, :date_issued, :publisher]
 
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:alternative_title, :digital_collection]
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],

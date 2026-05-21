@@ -9,14 +9,14 @@ module Hyrax
 
     self.terms += [:academic_concentration, :admin_note, :advisor, :award, :date_issued, :dcmi_type, :degree,
                    :degree_granting_institution, :doi, :extent, :graduation_year, :note, :resource_type,
-                   :deposit_agreement, :agreement]
+                   :deposit_agreement, :agreement, :wcag_compliance]
 
     self.terms -= [:bibliographic_citation, :contributor, :description, :identifier, :publisher, :source, :date_created]
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :degree, :date_issued,
                             :graduation_year]
 
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:academic_concentration, :award, :degree_granting_institution, :extent]
 

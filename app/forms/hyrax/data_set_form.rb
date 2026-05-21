@@ -9,13 +9,13 @@ module Hyrax
 
     self.terms += [:resource_type, :admin_note, :copyright_date, :date_issued, :dcmi_type, :doi, :extent, :funder,
                    :kind_of_data, :last_modified_date, :methodology, :note, :project_director, :researcher, :rights_holder,
-                   :sponsor, :deposit_agreement, :agreement]
+                   :sponsor, :deposit_agreement, :agreement, :wcag_compliance]
 
     self.terms -= [:bibliographic_citation, :description, :publisher, :source, :identifier, :date_created]
 
     self.required_fields = [:title, :creator, :date_issued, :abstract, :methodology, :kind_of_data, :resource_type]
 
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:extent, :rights_holder, :rights_statement, :copyright_date]
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Dataset'],

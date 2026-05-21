@@ -12,13 +12,13 @@ module Hyrax
                    :date_captured, :date_issued, :date_other, :dcmi_type, :digital_collection, :doi, :edition, :extent,
                    :funder, :issn, :journal_title, :journal_volume, :journal_issue, :note, :page_start, :page_end,
                    :peer_review_status, :place_of_publication, :rights_holder, :translator, :deposit_agreement,
-                   :agreement]
+                   :agreement, :wcag_compliance]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 
     self.terms -= [:contributor, :source, :description, :date_created]
 
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:bibliographic_citation, :copyright_date, :date_captured, :date_other,
                              :digital_collection, :extent, :identifier, :rights_holder, :translator]
