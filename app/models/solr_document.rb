@@ -335,4 +335,8 @@ class SolrDocument
   def url
     self['url_tesim']
   end
+
+  def wcag_compliance
+    self['wcag_compliance_tesim']
+  end
 end

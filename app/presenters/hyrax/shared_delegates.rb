@@ -9,7 +9,7 @@ module Hyrax
              :lease_expiration_date, :license, :license_label, :member_ids, :member_of_collection_ids, :methodology, :note, :orcid_label,
              :other_affiliation_label, :place_of_publication, :project_director_display, :publisher, :related_url, :rendering_ids, :representative_id, :researcher_display,
              :resource_type, :rights_holder, :rights_notes, :rights_statement, :rights_statement_label, :sponsor, :source, :subject,
-             :thumbnail_id, :title, to: :solr_document
+             :thumbnail_id, :title, :wcag_compliance, to: :solr_document
 
       delegate :export_as_oai_dc_xml, to: :solr_document
     end
