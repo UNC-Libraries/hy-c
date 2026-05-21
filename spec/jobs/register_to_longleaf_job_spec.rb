@@ -4,59 +4,117 @@ require 'fileutils'
 require 'tmpdir'
 
 RSpec.describe RegisterToLongleafJob, type: :job do
-  let(:admin_user) { FactoryBot.create(:admin) }
-
-  let(:binary_dir) { File.join(Rails.root, 'tmp/fcrepo4-test-data/fcrepo.binary.directory/') }
-
-  let(:ll_home_dir) { Dir.mktmpdir('ll_home') }
-
-  let(:repository_file) do
-    Hydra::PCDM::File.new.tap do |f|
-      f.content = File.open(File.join(fixture_path, 'hyrax/hyrax_test4.pdf'))
-      f.original_name = 'test.pdf'
-      f.mime_type = 'application/pdf'
-      f.save!
+  describe ".perform" do
+    let(:job) { RegisterToLongleafJob.new }
+    let(:longleaf_api_url) { "https://longleaf.api.com" }
+    let(:filepath) { File.join(fixture_path, 'hyrax/hyrax_test4.pdf') }
+    let(:repository_file) do
+      Hydra::PCDM::File.new.tap do |f|
+        f.content = File.open(filepath)
+        f.original_name = 'test.pdf'
+        f.mime_type = 'application/pdf'
+        f.save!
+      end
     end
-  end
+    let(:checksum) { repository_file.checksum.value }
+    let(:fedora_file_path) {
+      File.join(fixture_path, checksum.scan(/.{2}/)[0..2].join('/'), checksum)
+    }
 
-  let(:job) { RegisterToLongleafJob.new }
-
-  after do
-    FileUtils.rm_rf([ll_home_dir, binary_dir])
-  end
-
-  context 'With minimal config' do
-    let(:output_path) { File.join(ll_home_dir, 'output.txt') }
-
-    let(:longleaf_script) do
-      path = File.join(ll_home_dir, 'llcommand.sh')
-      File.write(path, "#!/usr/bin/env bash\necho $@ > #{output_path}")
-      path
+    around do |example|
+      cached_api_host_path = ENV['LONGLEAF_API_HOST_PATH']
+      cached_storage_path = ENV['LONGLEAF_STORAGE_PATH']
+      ENV['LONGLEAF_API_HOST_PATH'] = longleaf_api_url
+      ENV['LONGLEAF_STORAGE_PATH'] = fixture_path
+      example.run
+      ENV['LONGLEAF_API_HOST_PATH'] = cached_api_host_path
+      ENV['LONGLEAF_STORAGE_PATH'] = cached_storage_path
     end
 
-    before do
-      FileUtils.chmod('u+x', longleaf_script)
-      ENV['LONGLEAF_STORAGE_PATH'] = binary_dir
-      ENV['LONGLEAF_BASE_COMMAND'] = longleaf_script
+    context 'registration is successful' do
+
+      let(:body) do
+        {"event" => "register",
+         "success" => [fedora_file_path],
+         "failure" => []
+        }
+      end
+      let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
+
+      it 'hits the Longleaf api' do
+        allow(HTTParty).to receive(:post).and_return(longleaf_response)
+
+        job.perform(repository_file.checksum.value)
+        expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
+                                                      headers: { "Content-Type": "application/json" },
+                                                      body:  { file: fedora_file_path }.to_json,
+                                                      format: :json)
+      end
+      it 'logs the success' do
+        allow(HTTParty).to receive(:post).and_return(longleaf_response)
+        allow(Rails.logger).to receive(:info)
+
+        job.perform(repository_file.checksum.value)
+        expect(Rails.logger).to have_received(:info).with("Successfully registered #{fedora_file_path}")
+      end
+
     end
 
-    after do
-      ENV.delete('LONGLEAF_STORAGE_PATH')
-      ENV.delete('LONGLEAF_BASE_COMMAND')
+    context 'registration failed' do
+      let(:body) do
+        {"event": "register",
+         "success": [],
+         "failure": [fedora_file_path]
+        }
+      end
+      let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
+
+
+      it 'hits the Longleaf api' do
+        allow(HTTParty).to receive(:post).and_return(longleaf_response)
+
+        expect { job.perform(checksum) }.to raise_error(
+          "Failed to register #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+        expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
+                                                      headers: { "Content-Type": "application/json" },
+                                                      body:  { file: fedora_file_path }.to_json,
+                                                      format: :json)
+      end
+
+      it "raises error" do
+        allow(HTTParty).to receive(:post).and_return(longleaf_response)
+        allow(Rails.logger).to receive(:error)
+
+        expect { job.perform(checksum) }.to raise_error(
+          "Failed to register #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+        expect(Rails.logger).to have_received(:error).with(
+          "Failed to register #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+      end
     end
 
-    it 'calls registration script with the expected parameters' do
-      job.perform(repository_file.checksum.value)
+    context 'registration API returned error' do
+      let(:longleaf_response) { double('response', code: 500, body: nil) }
 
-      arguments = File.read(output_path)
+      it 'hits the Longleaf api and raises an error' do
+        allow(HTTParty).to receive(:post).and_return(longleaf_response)
 
-      sha1 = '12e5f2da18960dc085ca27bec1ae9e3245389cb1'
-      binary_path = File.join(binary_dir, '12/e5/f2', sha1)
+        expect { job.perform(checksum) }
+          .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}")
+        expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
+                                                      headers: { "Content-Type": "application/json" },
+                                                      body:  { file: fedora_file_path }.to_json,
+                                                      format: :json)
+      end
 
-      expect(arguments).to match('^register')
-      expect(arguments).to include("-f #{binary_path}")
-      expect(arguments).to include("--checksums sha1:#{sha1}")
-      expect(arguments).to include('--force')
+      it "logs the error" do
+        allow(HTTParty).to receive(:post).and_return(longleaf_response)
+        allow(Rails.logger).to receive(:error)
+
+        expect { job.perform(checksum) }
+          .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}")
+        expect(Rails.logger).to have_received(:error)
+                                  .with("Longleaf register API returned status 500 for #{fedora_file_path}")
+      end
     end
   end
 end

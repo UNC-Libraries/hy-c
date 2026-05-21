@@ -1,30 +1,40 @@
 # frozen_string_literal: true
-require 'open3'
 
 # Job which causes deregistration of files to longleaf
 class DeregisterLongleafJob < Hyrax::ApplicationJob
   queue_as Hyrax.config.ingest_queue_name
 
   def perform(checksum)
-    if ENV['LONGLEAF_BASE_COMMAND'].blank?
-      Rails.logger.error('LONGLEAF_BASE_COMMAND is not set, skipping deregistration of file to Longleaf.')
-      return
-    end
-
+    base_path = ENV['LONGLEAF_API_HOST_PATH']
     # Calculate the path to the file in fedora, assuming modeshape behavior of hashing based on sha1
-    binary_path = File.join(ENV['LONGLEAF_STORAGE_PATH'], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
-
-    deregister_cmd = "#{ENV["LONGLEAF_BASE_COMMAND"]} deregister -f #{binary_path}"
-
-    Rails.logger.info("Deregistering with longleaf: #{deregister_cmd}")
+    path_to_file = File.join(ENV['LONGLEAF_STORAGE_PATH'], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
 
     start = Time.now
-    stdout, stderr, status = Open3.capture3(deregister_cmd)
+    Rails.logger.debug("Deregistering with longleaf: #{path_to_file}")
 
-    if status.success?
-      Rails.logger.info("Successfully deregistered from Longleaf: #{binary_path}")
+    response = HTTParty.delete(
+      "#{base_path}/api/deregister",
+      headers: { "Content-Type": "application/json" },
+      body:  { file: path_to_file }.to_json,
+      format: :json
+    )
+
+    if response.code == 200
+      body = JSON.parse(response.body)
+      success = body['success']
+      failure = body['failure']
+      unless success.empty?
+        Rails.logger.info("Successfully deregistered #{path_to_file}")
+      end
+      unless failure.empty?
+        error_message = "Failed to deregister #{path_to_file} from Longleaf. Status code #{response.code}, response body: #{response.body}"
+        Rails.logger.error(error_message)
+        raise error_message
+      end
     else
-      Rails.logger.error("Failed to deregister #{binary_path} to Longleaf: #{stdout} #{stderr}")
+      error_message = "Longleaf deregister API returned status #{response.code} for #{path_to_file}"
+      Rails.logger.error(error_message)
+      raise error_message
     end
 
     Rails.logger.info("Longleaf deregistration completed in #{Time.now - start}")

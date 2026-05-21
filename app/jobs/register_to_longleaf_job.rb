@@ -1,31 +1,40 @@
 # frozen_string_literal: true
-require 'open3'
 
 # Job which causes registration of files to longleaf
 class RegisterToLongleafJob < Hyrax::ApplicationJob
   queue_as Hyrax.config.ingest_queue_name
 
   def perform(checksum)
-    if ENV['LONGLEAF_BASE_COMMAND'].blank?
-      Rails.logger.error('LONGLEAF_BASE_COMMAND is not set, skipping registration of file to Longleaf.')
-      return
-    end
-
+    base_path = ENV['LONGLEAF_API_HOST_PATH']
     # Calculate the path to the file in fedora, assuming modeshape behavior of hashing based on sha1
-    binary_path = File.join(ENV['LONGLEAF_STORAGE_PATH'], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
-
-    register_cmd = "#{ENV["LONGLEAF_BASE_COMMAND"]} register -f #{binary_path} --checksums 'sha1:#{checksum}' --force"
-
-    Rails.logger.debug("Registering with longleaf: #{register_cmd}")
+    path_to_file = File.join(ENV['LONGLEAF_STORAGE_PATH'], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
 
     start = Time.now
-    stdout, stderr, status = Open3.capture3(register_cmd)
+    Rails.logger.debug("Registering with longleaf: #{path_to_file}")
 
-    if status.success?
-      Rails.logger.info("Successfully registered #{binary_path}")
+    response = HTTParty.post(
+      "#{base_path}/api/register",
+      headers: { "Content-Type": "application/json" },
+      body:  { file: path_to_file }.to_json,
+      format: :json
+    )
+
+    if response.code == 200
+      body = JSON.parse(response.body)
+      success = body['success']
+      failure = body['failure']
+      unless success.empty?
+        Rails.logger.info("Successfully registered #{path_to_file}")
+      end
+      unless failure.empty?
+        error_message = "Failed to register #{path_to_file} to Longleaf. Status code #{response.code}, response body: #{response.body}"
+        Rails.logger.error(error_message)
+        raise error_message
+      end
     else
-      Rails.logger.error("Failed to register #{binary_path} to Longleaf: #{stdout} #{stderr}")
-      raise "#{stdout} #{stderr}"
+      error_message = "Longleaf register API returned status #{response.code} for #{path_to_file}"
+      Rails.logger.error(error_message)
+      raise error_message
     end
 
     Rails.logger.debug("Longleaf registration completed in #{Time.now - start}")
