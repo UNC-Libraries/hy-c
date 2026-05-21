@@ -96,6 +96,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'data_set_wcag_compliance'
 
       expect(page).not_to have_field('data_set_date_access')
       expect(page).not_to have_field('data_set_date_created')
@@ -152,6 +153,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Researcher researcher ORCID: researcher orcid'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
 
@@ -206,6 +208,7 @@ RSpec.feature 'Create a DataSet', js: false do
       select 'In Copyright', from: 'data_set_rights_statement'
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'data_set_wcag_compliance'
 
       expect(page).to have_selector('#data_set_language_label', visible: false)
       expect(page).to have_selector('#data_set_license_label', visible: false)
@@ -263,6 +266,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

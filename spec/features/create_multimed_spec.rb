@@ -79,6 +79,7 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Note', with: 'a note'
       select 'In Copyright', from: 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'multimed_wcag_compliance'
 
       expect(page).not_to have_field('multimed_access')
       expect(page).not_to have_field('multimed_date_created')
@@ -127,6 +128,7 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Resource type Video'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -167,6 +169,7 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Note', with: 'a note'
       select 'In Copyright', from: 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'multimed_wcag_compliance'
 
       expect(page).to have_selector('#multimed_language_label', visible: false)
       expect(page).to have_selector('#multimed_license_label', visible: false)
@@ -216,6 +219,7 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Resource type Video'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

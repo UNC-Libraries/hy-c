@@ -118,6 +118,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Additional affiliation', with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation'
       select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'masters_paper_wcag_compliance'
 
       expect(page).not_to have_field('masters_paper_access')
       expect(page).not_to have_field('honors_thesis_degree_granting_institution')
@@ -172,6 +173,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -228,6 +230,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Rights notes', with: 'some rights notes'
+      select 'WCAG 2.1 Level AA', from: 'masters_paper_wcag_compliance'
 
       expect(page).to have_selector('#masters_paper_language_label', visible: false)
       expect(page).to have_selector('#masters_paper_license_label', visible: false)
@@ -283,6 +286,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Rights notes some rights notes'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

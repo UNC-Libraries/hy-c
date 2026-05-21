@@ -86,6 +86,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', from: 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'honors_thesis_wcag_compliance'
 
       expect(page).not_to have_field('honors_thesis_access')
       expect(page).not_to have_field('honors_thesis_date_created')
@@ -141,6 +142,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -190,6 +192,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select 'In Copyright', from: 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Rights notes', with: 'some rights notes'
+      select 'WCAG 2.1 Level AA', from: 'honors_thesis_wcag_compliance'
 
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
@@ -245,6 +248,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

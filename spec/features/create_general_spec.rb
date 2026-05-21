@@ -157,6 +157,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Department of Biology', from: 'general_translators_attributes_0_affiliation'
       fill_in 'Additional affiliation', with: 'UNC', id: 'general_translators_attributes_0_other_affiliation'
       fill_in 'Rights notes', with: 'some rights notes'
+      select 'WCAG 2.1 Level AA', from: 'general_wcag_compliance'
 
       expect(page).to have_selector('#general_language_label', visible: false)
       expect(page).to have_selector('#general_license_label', visible: false)
@@ -247,6 +248,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Table of contents contents'
       expect(page).to have_content 'Translator translator ORCID: translator orcid'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
