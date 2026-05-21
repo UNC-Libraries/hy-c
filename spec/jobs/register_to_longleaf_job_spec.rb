@@ -32,7 +32,6 @@ RSpec.describe RegisterToLongleafJob, type: :job do
     end
 
     context 'registration is successful' do
-
       let(:body) do
         {"event" => "register",
          "success" => [fedora_file_path],

@@ -2,25 +2,20 @@
 require 'rails_helper'
 require 'fileutils'
 require 'tmpdir'
-require 'tempfile'
-require 'fileutils'
 
 RSpec.describe DeregisterLongleafJob, type: :job do
   describe ".perform" do
-    let(:repository_file) do
-      Hydra::PCDM::File.new do |f|
-        tmp_file = Tempfile.new
-        FileUtils.rm(tmp_file.path)
-        FileUtils.cp(File.join(fixture_path, 'hyrax/hyrax_test4.pdf'), tmp_file.path)
-        f.content = File.open(tmp_file.path)
-        f.original_name = 'test.pdf'
-        f.mime_type = 'application/pdf'
-      end
-    end
     let(:job) { DeregisterLongleafJob.new }
     let(:longleaf_api_url) { "https://longleaf.api.com" }
     let(:filepath) { File.join(fixture_path, 'hyrax/hyrax_test4.pdf') }
-
+    let(:repository_file) do
+      Hydra::PCDM::File.new.tap do |f|
+        f.content = File.open(filepath)
+        f.original_name = 'test.pdf'
+        f.mime_type = 'application/pdf'
+        f.save!
+      end
+    end
     let(:checksum) { repository_file.checksum.value }
     let(:fedora_file_path) {
       File.join(fixture_path, checksum.scan(/.{2}/)[0..2].join('/'), checksum)
@@ -35,42 +30,90 @@ RSpec.describe DeregisterLongleafJob, type: :job do
       ENV['LONGLEAF_API_HOST_PATH'] = cached_api_host_path
       ENV['LONGLEAF_STORAGE_PATH'] = cached_storage_path
     end
-  end
 
+    context 'deregistration is successful' do
+      let(:body) do
+        {"event" => "deregister",
+         "success" => [fedora_file_path],
+         "failure" => []
+        }
+      end
+      let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
 
+      it 'hits the Longleaf api' do
+        allow(HTTParty).to receive(:delete).and_return(longleaf_response)
 
+        job.perform(repository_file.checksum.value)
+        expect(HTTParty).to have_received(:delete).with(longleaf_api_url + '/api/deregister',
+                                                      headers: { "Content-Type": "application/json" },
+                                                      body:  { file: fedora_file_path }.to_json,
+                                                      format: :json)
+      end
 
+      it 'logs the success' do
+        allow(HTTParty).to receive(:delete).and_return(longleaf_response)
+        allow(Rails.logger).to receive(:info)
 
-  context 'With minimal config' do
+        job.perform(repository_file.checksum.value)
+        expect(Rails.logger).to have_received(:info).with("Successfully deregistered #{fedora_file_path}")
+      end
 
-    before do
-      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
-      FileUtils.chmod('u+x', longleaf_script)
-
-      file_set.apply_depositor_metadata admin_user.user_key
-      file_set.save!
-      file_set.original_file = repository_file
-      file_set.save!
     end
 
-    around do |example|
-      cached_storage_path = ENV['LONGLEAF_STORAGE_PATH']
-      cached_base_command = ENV['LONGLEAF_BASE_COMMAND']
-      ENV['LONGLEAF_STORAGE_PATH'] = binary_dir
-      ENV['LONGLEAF_BASE_COMMAND'] = longleaf_script
-      example.run
-      ENV['LONGLEAF_STORAGE_PATH'] = cached_storage_path
-      ENV['LONGLEAF_BASE_COMMAND'] = cached_base_command
+    context 'deregistration failed' do
+      let(:body) do
+        {"event": "deregister",
+         "success": [],
+         "failure": [fedora_file_path]
+        }
+      end
+      let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
+
+      it 'hits the Longleaf api' do
+        allow(HTTParty).to receive(:delete).and_return(longleaf_response)
+
+        expect { job.perform(checksum) }.to raise_error(
+          "Failed to deregister #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+        expect(HTTParty).to have_received(:delete).with(longleaf_api_url + '/api/deregister',
+                                                      headers: { "Content-Type": "application/json" },
+                                                      body:  { file: fedora_file_path }.to_json,
+                                                      format: :json)
+      end
+
+      it "raises error" do
+        allow(HTTParty).to receive(:delete).and_return(longleaf_response)
+        allow(Rails.logger).to receive(:error)
+
+        expect { job.perform(checksum) }.to raise_error(
+          "Failed to deregister #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+        expect(Rails.logger).to have_received(:error).with(
+          "Failed to deregister #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+      end
     end
 
-    it 'calls deregistration script with the expected parameters' do
-      job.perform(file_set.original_file.checksum.value)
+    context 'deregistration API returned error' do
+      let(:longleaf_response) { double('response', code: 500, body: nil) }
 
-      arguments = File.read(output_path)
+      it 'hits the Longleaf api and raises an error' do
+        allow(HTTParty).to receive(:delete).and_return(longleaf_response)
 
-      binary_path = File.join(binary_dir, '12/e5/f2/12e5f2da18960dc085ca27bec1ae9e3245389cb1')
+        expect { job.perform(checksum) }
+          .to raise_error("Longleaf deregister API returned status 500 for #{fedora_file_path}")
+        expect(HTTParty).to have_received(:delete).with(longleaf_api_url + '/api/deregister',
+                                                      headers: { "Content-Type": "application/json" },
+                                                      body:  { file: fedora_file_path }.to_json,
+                                                      format: :json)
+      end
 
-      expect(arguments).to match(Regexp.new(".*deregister -f #{binary_path}"))
+      it "logs the error" do
+        allow(HTTParty).to receive(:delete).and_return(longleaf_response)
+        allow(Rails.logger).to receive(:error)
+
+        expect { job.perform(checksum) }
+          .to raise_error("Longleaf deregister API returned status 500 for #{fedora_file_path}")
+        expect(Rails.logger).to have_received(:error)
+                                  .with("Longleaf deregister API returned status 500 for #{fedora_file_path}")
+      end
     end
   end
 end
