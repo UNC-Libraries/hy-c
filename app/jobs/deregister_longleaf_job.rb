@@ -14,7 +14,7 @@ class DeregisterLongleafJob < Hyrax::ApplicationJob
 
     response = HTTParty.delete(
       "#{base_path}/api/deregister",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": 'application/json' },
       body:  { file: path_to_file }.to_json,
       format: :json
     )

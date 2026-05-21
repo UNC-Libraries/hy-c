@@ -14,8 +14,12 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
 
     response = HTTParty.post(
       "#{base_path}/api/register",
-      headers: { "Content-Type": "application/json" },
-      body:  { file: path_to_file }.to_json,
+      headers: { "Content-Type": 'application/json' },
+      body:  {
+        file: path_to_file,
+        checksum: checksum,
+        force: true
+      }.to_json,
       format: :json
     )
 

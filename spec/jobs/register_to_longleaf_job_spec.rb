@@ -4,9 +4,9 @@ require 'fileutils'
 require 'tmpdir'
 
 RSpec.describe RegisterToLongleafJob, type: :job do
-  describe ".perform" do
+  describe '.perform' do
     let(:job) { RegisterToLongleafJob.new }
-    let(:longleaf_api_url) { "https://longleaf.api.com" }
+    let(:longleaf_api_url) { 'https://longleaf.api.com' }
     let(:filepath) { File.join(fixture_path, 'hyrax/hyrax_test4.pdf') }
     let(:repository_file) do
       Hydra::PCDM::File.new.tap do |f|
@@ -33,9 +33,9 @@ RSpec.describe RegisterToLongleafJob, type: :job do
 
     context 'registration is successful' do
       let(:body) do
-        {"event" => "register",
-         "success" => [fedora_file_path],
-         "failure" => []
+        {'event' => 'register',
+         'success' => [fedora_file_path],
+         'failure' => []
         }
       end
       let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
@@ -45,8 +45,12 @@ RSpec.describe RegisterToLongleafJob, type: :job do
 
         job.perform(repository_file.checksum.value)
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
-                                                      headers: { "Content-Type": "application/json" },
-                                                      body:  { file: fedora_file_path }.to_json,
+                                                      headers: { "Content-Type": 'application/json' },
+                                                      body:  {
+                                                        file: fedora_file_path,
+                                                        checksum: checksum,
+                                                        force: true
+                                                      }.to_json,
                                                       format: :json)
       end
       it 'logs the success' do
@@ -61,9 +65,9 @@ RSpec.describe RegisterToLongleafJob, type: :job do
 
     context 'registration failed' do
       let(:body) do
-        {"event": "register",
-         "success": [],
-         "failure": [fedora_file_path]
+        {'event': 'register',
+         'success': [],
+         'failure': [fedora_file_path]
         }
       end
       let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
@@ -75,12 +79,16 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         expect { job.perform(checksum) }.to raise_error(
           "Failed to register #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
-                                                      headers: { "Content-Type": "application/json" },
-                                                      body:  { file: fedora_file_path }.to_json,
+                                                      headers: { "Content-Type": 'application/json' },
+                                                      body:  {
+                                                        file: fedora_file_path,
+                                                        checksum: checksum,
+                                                        force: true
+                                                      }.to_json,
                                                       format: :json)
       end
 
-      it "raises error" do
+      it 'raises error' do
         allow(HTTParty).to receive(:post).and_return(longleaf_response)
         allow(Rails.logger).to receive(:error)
 
@@ -100,12 +108,16 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         expect { job.perform(checksum) }
           .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
-                                                      headers: { "Content-Type": "application/json" },
-                                                      body:  { file: fedora_file_path }.to_json,
+                                                      headers: { "Content-Type": 'application/json' },
+                                                      body:  {
+                                                        file: fedora_file_path,
+                                                        checksum: checksum,
+                                                        force: true
+                                                      }.to_json,
                                                       format: :json)
       end
 
-      it "logs the error" do
+      it 'logs the error' do
         allow(HTTParty).to receive(:post).and_return(longleaf_response)
         allow(Rails.logger).to receive(:error)
 
