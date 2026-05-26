@@ -26,6 +26,16 @@ RSpec.describe Bulkrax::FileFactory do
   end
   let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
 
+  around do |example|
+    cached_api_host_path = ENV['LONGLEAF_API_HOST_PATH']
+    cached_storage_path = ENV['LONGLEAF_STORAGE_PATH']
+    ENV['LONGLEAF_API_HOST_PATH'] = longleaf_api_url
+    ENV['LONGLEAF_STORAGE_PATH'] = fixture_path
+    example.run
+    ENV['LONGLEAF_API_HOST_PATH'] = cached_api_host_path
+    ENV['LONGLEAF_STORAGE_PATH'] = cached_storage_path
+  end
+
   let(:file) do
     Hydra::PCDM::File.new do |f|
       f.content = File.open(temp_pdf_path)

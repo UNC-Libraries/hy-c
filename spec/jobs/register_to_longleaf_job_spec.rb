@@ -31,6 +31,22 @@ RSpec.describe RegisterToLongleafJob, type: :job do
       ENV['LONGLEAF_STORAGE_PATH'] = cached_storage_path
     end
 
+    context 'LONGLEAF_API_HOST_PATH is not set' do
+      around do |example|
+        cached_api_host_path = ENV['LONGLEAF_API_HOST_PATH']
+        ENV['LONGLEAF_API_HOST_PATH'] = ''
+        example.run
+        ENV['LONGLEAF_API_HOST_PATH'] = cached_api_host_path
+      end
+      it 'logs the error' do
+        allow(Rails.logger).to receive(:error)
+
+        job.perform(checksum)
+        expect(Rails.logger).to have_received(:error)
+                                  .with('LONGLEAF_API_HOST_PATH is not set, skipping registration of file to Longleaf.')
+      end
+    end
+
     context 'registration is successful' do
       let(:body) do
         {'event' => 'register',

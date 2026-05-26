@@ -6,6 +6,10 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
 
   def perform(checksum)
     base_path = ENV['LONGLEAF_API_HOST_PATH']
+    if base_path.blank?
+      Rails.logger.error('LONGLEAF_API_HOST_PATH is not set, skipping registration of file to Longleaf.')
+      return
+    end
     # Calculate the path to the file in fedora, assuming modeshape behavior of hashing based on sha1
     path_to_file = File.join(ENV['LONGLEAF_STORAGE_PATH'], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
 
