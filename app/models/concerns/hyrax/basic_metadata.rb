@@ -53,6 +53,10 @@ module Hyrax
       # Store deposit agreement details
       property :deposit_agreement, predicate: ::RDF::URI('http://www.loc.gov/premis/rdf/v3/note')
 
+      property :wcag_compliance, predicate: ::RDF::URI('https://schema.org/accessibilitySummary') do |index|
+        index.as :stored_searchable
+      end
+
       id_blank = proc { |attributes| attributes[:id].blank? }
 
       class_attribute :controlled_properties

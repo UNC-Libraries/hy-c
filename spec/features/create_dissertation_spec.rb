@@ -107,6 +107,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       select 'In Copyright', from: 'dissertation_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Rights notes', with: 'some rights notes'
+      select 'WCAG 2.1 Level AA', from: 'dissertation_wcag_compliance'
 
       expect(page).to have_selector('#dissertation_language_label', visible: false)
       expect(page).to have_selector('#dissertation_license_label', visible: false)
@@ -166,6 +167,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Rights notes some rights notes'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

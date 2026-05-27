@@ -8,13 +8,13 @@ module Hyrax
     self.model_class = ::ScholarlyWork
 
     self.terms += [:resource_type, :admin_note, :advisor, :conference_name, :date_issued, :dcmi_type,
-                   :digital_collection, :doi, :deposit_agreement, :agreement, :note]
+                   :digital_collection, :doi, :deposit_agreement, :agreement, :note, :wcag_compliance]
 
     self.terms -= [:bibliographic_citation, :contributor, :publisher, :related_url, :source, :date_created]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:description, :digital_collection]
 

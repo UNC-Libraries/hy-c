@@ -37,3 +37,5 @@ rspec_examples.txt
 build_log.txt
 
 /node_modules
+
+.github/copilot-instructions.md

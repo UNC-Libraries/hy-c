@@ -7,13 +7,13 @@ module Hyrax
 
     self.model_class = ::Multimed
     self.terms += [:dcmi_type, :admin_note, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
-                   :resource_type, :deposit_agreement, :agreement]
+                   :resource_type, :deposit_agreement, :agreement, :wcag_compliance]
 
     self.terms -= [:bibliographic_citation, :contributor, :description, :identifier, :publisher, :related_url, :source, :date_created]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued, :resource_type]
 
-    self.single_value_fields = [:title, :license]
+    self.single_value_fields = [:title, :license, :wcag_compliance]
 
     self.admin_only_terms += [:digital_collection, :medium]
 

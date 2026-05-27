@@ -73,6 +73,7 @@ RSpec.feature 'Create an Artwork', js: false do
       fill_in 'Note', with: 'my note'
       select 'Attribution 4.0 International', from: 'artwork_license'
       select 'In Copyright', from: 'artwork_rights_statement'
+      select 'WCAG 2.1 Level AA', from: 'artwork_wcag_compliance'
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
@@ -115,6 +116,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Note my note'
       expect(page).to have_content 'Resource type Art'
       expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
@@ -149,6 +151,7 @@ RSpec.feature 'Create an Artwork', js: false do
       fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation'
+      select 'WCAG 2.1 Level AA', from: 'artwork_wcag_compliance'
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
@@ -192,6 +195,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Note my note'
       expect(page).to have_content 'Resource type Art'
       expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 

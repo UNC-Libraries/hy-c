@@ -86,6 +86,7 @@ RSpec.feature 'Create a Journal', js: false do
       select 'In Copyright', from: 'journal_rights_statement'
       fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'journal_wcag_compliance'
 
       expect(page).to have_selector('#journal_language_label', visible: false)
       expect(page).to have_selector('#journal_license_label', visible: false)
@@ -139,6 +140,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Series series1'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -185,6 +187,7 @@ RSpec.feature 'Create a Journal', js: false do
       select 'In Copyright', from: 'journal_rights_statement'
       fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
+      select 'WCAG 2.1 Level AA', from: 'journal_wcag_compliance'
 
       expect(page).to have_selector('#journal_language_label', visible: false)
       expect(page).to have_selector('#journal_license_label', visible: false)
@@ -240,6 +243,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Series series1'
       expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

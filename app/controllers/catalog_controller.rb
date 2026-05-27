@@ -238,6 +238,7 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name('subject', :stored_searchable), label: 'Subject'
     config.add_show_field solr_name('table_of_contents', :stored_searchable), label: 'Table of Contents'
     config.add_show_field solr_name('url', :stored_searchable), label: 'Url'
+    config.add_show_field solr_name('wcag_compliance', :stored_searchable), label: 'WCAG Compliance'
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields

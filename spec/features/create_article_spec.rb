@@ -91,6 +91,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Page start', with: '30'
       select 'Yes', from: 'article_peer_review_status'
       fill_in 'Place of publication', with: 'UNC'
+      select 'WCAG 2.1 Level AA', from: 'article_wcag_compliance'
 
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)
@@ -159,6 +160,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Page start 30'
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Place of publication UNC'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -222,6 +224,7 @@ RSpec.feature 'Create a Article', js: false do
       select 'Department of Biology', from: 'article_translators_attributes_0_affiliation'
       fill_in 'Additional affiliation', with: 'UNC', id: 'article_translators_attributes_0_other_affiliation'
       fill_in 'Rights notes', with: 'some rights notes'
+      select 'WCAG 2.1 Level AA', from: 'article_wcag_compliance'
 
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)
@@ -291,6 +294,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Translator translator ORCID: translator orcid'
       expect(page).to have_content 'Rights notes some rights notes'
+      expect(page).to have_content 'WCAG compliance WCAG 2.1 Level AA'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
