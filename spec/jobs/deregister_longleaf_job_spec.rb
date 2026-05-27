@@ -88,7 +88,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
         allow(HTTParty).to receive(:delete).and_return(longleaf_response)
 
         expect { job.perform(checksum) }.to raise_error(
-          "Failed to deregister #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+          "Failed to deregister #{fedora_file_path} from Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
         expect(HTTParty).to have_received(:delete).with(longleaf_api_url + '/api/deregister',
                                                       headers: { "Content-Type": 'application/json' },
                                                       body:  { file: fedora_file_path }.to_json,
@@ -100,9 +100,9 @@ RSpec.describe DeregisterLongleafJob, type: :job do
         allow(Rails.logger).to receive(:error)
 
         expect { job.perform(checksum) }.to raise_error(
-          "Failed to deregister #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+          "Failed to deregister #{fedora_file_path} from Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
         expect(Rails.logger).to have_received(:error).with(
-          "Failed to deregister #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+          "Failed to deregister #{fedora_file_path} from Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
       end
     end
 

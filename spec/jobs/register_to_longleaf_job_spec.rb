@@ -88,7 +88,6 @@ RSpec.describe RegisterToLongleafJob, type: :job do
       end
       let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
 
-
       it 'hits the Longleaf api' do
         allow(HTTParty).to receive(:post).and_return(longleaf_response)
 
