@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/controllers/hyrax/admin/analytics/work_reports_controller.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/admin/analytics/work_reports_controller.rb
 require 'benchmark'
 
 Hyrax::Admin::Analytics::WorkReportsController.class_eval do
   def index
-    return unless Hyrax.config.analytics? && Hyrax.config.analytics_provider != 'ga4'
+    return unless Hyrax.config.analytics_reporting? && Hyrax.config.analytics_provider != 'ga4'
 
     time = Benchmark.measure do
       @accessible_works ||= accessible_works
@@ -51,7 +51,7 @@ Hyrax::Admin::Analytics::WorkReportsController.class_eval do
     @pageviews = Hyrax::Analytics.monthly_events_for_id(@document.id, 'work-view')
     @uniques = Hyrax::Analytics.unique_visitors_for_id(@document.id)
     @downloads = Hyrax::Analytics.monthly_events_for_id(@document.id, 'file-set-in-work-download')
-    @files = paginate(@document._source['file_set_ids_ssim'], rows: 5)
+    @files = paginate(@document._source['member_ids_ssim'], rows: 5)
     respond_to do |format|
       format.html
       format.csv { export_data }

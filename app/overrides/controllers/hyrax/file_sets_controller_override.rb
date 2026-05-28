@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/controllers/hyrax/file_sets_controller.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/file_sets_controller.rb
 
 Hyrax::FileSetsController.class_eval do
   # [hyc-override] Only allow deletions by admins

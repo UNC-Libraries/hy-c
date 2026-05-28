@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/services/hyrax/analytics/matomo.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/services/hyrax/analytics/matomo.rb
 Hyrax::Analytics::Matomo.module_eval do
   class_methods do
     # [hyc-override] added method for getting monthly stats by id

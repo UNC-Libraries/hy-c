@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # [hyc-override] Overriding to add index fields to sort date_created as date_issued (to match works sorting) and title
-# https://github.com/samvera/hyrax/blob/v2.9.6/spec/indexers/hyrax/collection_indexer_spec.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/spec/indexers/hyrax/collection_indexer_spec.rb
 require 'rails_helper'
 # Load the override being tested
 require Rails.root.join('app/overrides/indexers/hyrax/collection_indexer_override.rb')
 
-RSpec.describe Hyrax::CollectionIndexer do
+RSpec.describe Hyrax::CollectionIndexer, :active_fedora do
   describe '#generate_solr_document' do
     let(:col1title) { 'col1 title' }
     let(:col1created) { '1942-07-08' }
