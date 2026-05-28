@@ -10,7 +10,7 @@ RSpec.describe Hyrax::FileSetsController do
   describe '#destroy' do
     let(:file_set) { FactoryBot.create(:file_set, :public, :with_original_file, user: user) }
     let(:work) { FactoryBot.create(:work, title: ['test title'], user: user) }
-    let(:longleaf_api_url) { 'https://longleaf.api.com' }
+    let(:longleaf_api_url) { 'https://longleaf.example.com' }
     let(:body) do
       {'event' => 'deregister',
        'success' => ['fedora_file_path'],

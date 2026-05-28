@@ -16,7 +16,7 @@ class DeregisterLongleafJob < Hyrax::ApplicationJob
     start = Time.now
     Rails.logger.debug("Deregistering with longleaf: #{path_to_file}")
 
-    response = HTTParty.delete(
+    response = HTTParty.post(
       "#{base_path}/api/deregister",
       headers: { "Content-Type": 'application/json' },
       body:  { file: path_to_file }.to_json,
@@ -31,12 +31,12 @@ class DeregisterLongleafJob < Hyrax::ApplicationJob
         Rails.logger.info("Successfully deregistered #{path_to_file}")
       end
       unless failure.empty?
-        error_message = "Failed to deregister #{path_to_file} from Longleaf. Status code #{response.code}, response body: #{response.body}"
+        error_message = "Failed to deregister #{path_to_file} from Longleaf"
         Rails.logger.error(error_message)
         raise error_message
       end
     else
-      error_message = "Longleaf deregister API returned status #{response.code} for #{path_to_file}"
+      error_message = "Longleaf deregister API returned status #{response.code} for #{path_to_file}, response body: #{response.body}"
       Rails.logger.error(error_message)
       raise error_message
     end

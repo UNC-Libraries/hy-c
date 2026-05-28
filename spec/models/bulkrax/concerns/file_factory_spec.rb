@@ -17,7 +17,7 @@ RSpec.describe Bulkrax::FileFactory do
   let(:object) { {} }
   let(:file_set) { FileSet.new }
   let(:temp_pdf_path) { File.join(fixture_path, 'tmp', 'hyrax_test4.pdf') }
-  let(:longleaf_api_url) { 'https://longleaf.api.com' }
+  let(:longleaf_api_url) { 'https://longleaf.example.com' }
   let(:body) do
     {'event' => 'deregister',
      'success' => ['fedora_file_path'],

@@ -6,7 +6,7 @@ require 'tmpdir'
 RSpec.describe RegisterToLongleafJob, type: :job do
   describe '.perform' do
     let(:job) { RegisterToLongleafJob.new }
-    let(:longleaf_api_url) { 'https://longleaf.api.com' }
+    let(:longleaf_api_url) { 'https://longleaf.example.com' }
     let(:filepath) { File.join(fixture_path, 'hyrax/hyrax_test4.pdf') }
     let(:repository_file) do
       Hydra::PCDM::File.new.tap do |f|
@@ -92,7 +92,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         allow(HTTParty).to receive(:post).and_return(longleaf_response)
 
         expect { job.perform(checksum) }.to raise_error(
-          "Failed to register #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+          "Failed to register #{fedora_file_path} to Longleaf")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
                                                       headers: { "Content-Type": 'application/json' },
                                                       body:  {
@@ -108,14 +108,14 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         allow(Rails.logger).to receive(:error)
 
         expect { job.perform(checksum) }.to raise_error(
-          "Failed to register #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+          "Failed to register #{fedora_file_path} to Longleaf")
         expect(Rails.logger).to have_received(:error).with(
-          "Failed to register #{fedora_file_path} to Longleaf. Status code #{longleaf_response.code}, response body: #{longleaf_response.body}")
+          "Failed to register #{fedora_file_path} to Longleaf")
       end
     end
 
     context 'registration API returned error' do
-      let(:longleaf_response) { double('response', code: 500, body: nil) }
+      let(:longleaf_response) { double('response', code: 500, body: 'body') }
 
       it 'hits the Longleaf api and raises an error' do
         allow(HTTParty).to receive(:post).and_return(longleaf_response)
@@ -137,9 +137,9 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         allow(Rails.logger).to receive(:error)
 
         expect { job.perform(checksum) }
-          .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}")
+          .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}, response body: body")
         expect(Rails.logger).to have_received(:error)
-                                  .with("Longleaf register API returned status 500 for #{fedora_file_path}")
+          .with("Longleaf register API returned status 500 for #{fedora_file_path}, response body: body")
       end
     end
   end
