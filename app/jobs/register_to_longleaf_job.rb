@@ -35,7 +35,7 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
         Rails.logger.info("Successfully registered #{path_to_file}")
       end
       unless failure.empty?
-        error_message = "Failed to register #{path_to_file} to Longleaf}"
+        error_message = "Failed to register #{path_to_file} to Longleaf"
         Rails.logger.error(error_message)
         raise error_message
       end

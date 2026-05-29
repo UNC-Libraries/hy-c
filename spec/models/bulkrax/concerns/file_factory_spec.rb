@@ -17,24 +17,6 @@ RSpec.describe Bulkrax::FileFactory do
   let(:object) { {} }
   let(:file_set) { FileSet.new }
   let(:temp_pdf_path) { File.join(fixture_path, 'tmp', 'hyrax_test4.pdf') }
-  let(:longleaf_api_url) { 'https://longleaf.example.com' }
-  let(:body) do
-    {'event' => 'deregister',
-     'success' => ['fedora_file_path'],
-     'failure' => []
-    }
-  end
-  let(:longleaf_response) { double('response', code: 200, body: body.to_json.to_s) }
-
-  around do |example|
-    cached_api_host_path = ENV['LONGLEAF_API_HOST_PATH']
-    cached_storage_path = ENV['LONGLEAF_STORAGE_PATH']
-    ENV['LONGLEAF_API_HOST_PATH'] = longleaf_api_url
-    ENV['LONGLEAF_STORAGE_PATH'] = fixture_path
-    example.run
-    ENV['LONGLEAF_API_HOST_PATH'] = cached_api_host_path
-    ENV['LONGLEAF_STORAGE_PATH'] = cached_storage_path
-  end
 
   let(:file) do
     Hydra::PCDM::File.new do |f|
@@ -58,21 +40,10 @@ RSpec.describe Bulkrax::FileFactory do
     allow(new_remote_files).to receive(:present?).and_return(false)
     allow(::CreateDerivativesJob).to receive(:set).with(wait: 1.minute).and_return(::CreateDerivativesJob)
     allow(::CreateDerivativesJob).to receive(:perform_later).with(file_set, file.id).and_return(file_set)
-    allow(HTTParty).to receive(:delete).and_return(longleaf_response)
   end
 
   after do
     file_set.destroy!
-  end
-
-  around do |example|
-    cached_api_host_path = ENV['LONGLEAF_API_HOST_PATH']
-    cached_storage_path = ENV['LONGLEAF_STORAGE_PATH']
-    ENV['LONGLEAF_API_HOST_PATH'] = longleaf_api_url
-    ENV['LONGLEAF_STORAGE_PATH'] = fixture_path
-    example.run
-    ENV['LONGLEAF_API_HOST_PATH'] = cached_api_host_path
-    ENV['LONGLEAF_STORAGE_PATH'] = cached_storage_path
   end
 
   let(:local_file_sets) { [file_set] }

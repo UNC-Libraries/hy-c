@@ -121,7 +121,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         allow(HTTParty).to receive(:post).and_return(longleaf_response)
 
         expect { job.perform(checksum) }
-          .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}")
+          .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}, response body: body")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
                                                       headers: { "Content-Type": 'application/json' },
                                                       body:  {
