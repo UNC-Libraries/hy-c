@@ -4,44 +4,20 @@ echo "#### Running start-app.sh"
 mkdir -p /opt/hyrax/log/
 
 echo "#### Performing config steps"
-# The bundle config and package are needed for the odd way we manage gems in production
-bundle config --local cache_path /hyc-gems
 bundle config build.nokogiri --use-system-libraries
-# bundle config build.sassc --use-system-libraries
 bundle config set force_ruby_platform true
-
-# Clear any existing bundle cache that might have incompatible binaries
-bundle config --local clean --force
 
 echo "#### Ensure rubygems system is up to date before bundle installing"
 gem install rubygems-update -v 3.4.20
 update_rubygems >> /dev/null
 
-if ! bundle check; then
-  echo "#### Bundle install required"
-  rm -f /hyc-gems/* || true
-  bundle install
-  # Recompile any gems whose FFI-loaded .so files live directly in lib/ (e.g. sassc)
-  # and may be missing after a fresh container start from a warm gem cache.
-  gem pristine sassc
-  bundle package
-  echo "#### Symlinking native extensions into gem lib directories"
-  EXTENSIONS_BASE="/hyc-gems/ruby/3.3.0/extensions"
-  GEMS_BASE="/hyc-gems/ruby/3.3.0/gems"
-  find "$EXTENSIONS_BASE" -name "*.so" 2>/dev/null | while read so_path; do
-    rel=$(echo "$so_path" | sed "s|$EXTENSIONS_BASE/[^/]*/[^/]*/||")
-    gem_ver=$(echo "$rel" | cut -d'/' -f1)
-    so_rel=$(echo "$rel" | cut -d'/' -f2-)
-    target="$GEMS_BASE/$gem_ver/lib/$so_rel"
-    target_dir=$(dirname "$target")
-    if [ ! -e "$target" ] && [ -d "$GEMS_BASE/$gem_ver/lib" ]; then
-      mkdir -p "$target_dir"
-      ln -s "$so_path" "$target"
-    fi
-  done
-else
- echo "#### Gems already installed, skipping bundle install"
-fi
+echo "#### Bundle install"
+bundle install
+# sassc's native.rb looks for libsass.so inside its own gem directory, but
+# rubygems places compiled extensions under lib64/gems/ruby/. Symlink so sassc
+# can find its library at the path it expects.
+ln -sf /usr/local/lib64/gems/ruby/sassc-2.4.0/sassc/libsass.so \
+       /usr/local/share/gems/gems/sassc-2.4.0/lib/sassc/libsass.so
 
 find . -name *.pid -delete
 bundle exec rake tmp:cache:clear

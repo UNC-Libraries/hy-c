@@ -15,7 +15,6 @@ services:
       - 3000:3000
     volumes:
       - .:/hyrax
-      - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
       - ftp_data:/opt/data/ftp
@@ -38,7 +37,6 @@ services:
       - docker/.env
     volumes:
       - .:/hyrax
-      - mount-sidekiq-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
       - ftp_data:/opt/data/ftp
@@ -110,8 +108,6 @@ services:
     networks:
       - hycdev
 volumes:
-  mount-gems:
-  mount-sidekiq-gems:
   solr-data:
   clam:
   pg_data:
