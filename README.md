@@ -168,7 +168,7 @@ If tests fail with an error like `FATAL:  database "hyrax_test" does not exist` 
 
 ```
 docker compose exec web bash
-rails db:create RAILS_ENV=test
+bundle exec rails db:create RAILS_ENV=test
 ```
 
 #### Debugging Capybara feature and javascript tests

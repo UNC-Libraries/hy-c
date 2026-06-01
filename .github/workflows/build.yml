@@ -110,7 +110,7 @@ jobs:
     - name: Update rubygems
       run: |
         gem update --system 3.5.22
-        gem install bundler:4.0.8
+        gem install bundler:4.0.12
 
     # Run Rubocop as soon as gems are installed, so we fail early if there are issues
     - name: Run RuboCop

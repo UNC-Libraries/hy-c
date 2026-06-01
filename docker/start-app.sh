@@ -12,7 +12,9 @@ gem install rubygems-update -v 3.5.22
 update_rubygems >> /dev/null
 
 echo "#### Bundle install"
-bundle install
+BUNDLER_VERSION=4.0.12
+gem install bundler:"$BUNDLER_VERSION"
+bundle _${BUNDLER_VERSION}_ install
 # sassc's native.rb looks for libsass.so inside its own gem directory, but
 # rubygems places compiled extensions under lib64/gems/ruby/. Symlink so sassc
 # can find its library at the path it expects.

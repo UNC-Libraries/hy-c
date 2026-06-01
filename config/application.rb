@@ -53,5 +53,10 @@ module Hyrax
 
     require_relative '../app/middleware/decode_query_string'
     config.middleware.insert_before Rack::Runtime, DecodeQueryString
+
+    # active-fedora's railtie uses `<<` to append to autoload_paths, but in
+    # Rails 6.1 + Ruby 3.x the array is frozen by the time initializers run.
+    # Replacing it with an unfrozen duplicate allows the railtie to succeed.
+    config.autoload_paths = config.autoload_paths.dup
   end
 end

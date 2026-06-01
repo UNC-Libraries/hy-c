@@ -1223,7 +1223,7 @@ DEPENDENCIES
   webrick
 
 RUBY VERSION
-   ruby 3.3.10p183
+  ruby 3.3.10p183
 
 BUNDLED WITH
-   2.5.23
+  4.0.12
