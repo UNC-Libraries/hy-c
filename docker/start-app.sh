@@ -8,7 +8,7 @@ bundle config build.nokogiri --use-system-libraries
 bundle config set force_ruby_platform true
 
 echo "#### Ensure rubygems system is up to date before bundle installing"
-gem install rubygems-update -v 3.4.20
+gem install rubygems-update -v 3.5.22
 update_rubygems >> /dev/null
 
 echo "#### Bundle install"

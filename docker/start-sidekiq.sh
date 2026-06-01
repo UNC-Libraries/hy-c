@@ -2,7 +2,7 @@
 echo "#### Running start-sidekiq.sh"
 
 echo "#### Ensure rubygems system is up to date before bundle installing"
-gem install rubygems-update -v 3.4.20
+gem install rubygems-update -v 3.5.22
 update_rubygems >> /dev/null
 
 bundle config build.nokogiri --use-system-libraries

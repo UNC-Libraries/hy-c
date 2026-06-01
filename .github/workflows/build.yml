@@ -92,7 +92,7 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: ['3.0.4']
+        ruby-version: ['3.3.10']
 
     steps:
     - uses: actions/checkout@v4
@@ -105,8 +105,8 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Update rubygems
       run: |
-        gem update --system 3.3.25
-        gem install bundler:2.3.27
+        gem update --system 3.5.22
+        gem install bundler:4.0.8
 
     # Run Rubocop as soon as gems are installed, so we fail early if there are issues
     - name: Run RuboCop
