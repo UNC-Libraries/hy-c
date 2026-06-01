@@ -14,6 +14,29 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
   let(:article_node) { metadata.xpath('//article').first }
   let(:article) { Article.new }
   let(:builder) { described_class.new(article_node, admin_set, depositor.uid) }
+  let(:json_metadata) do
+    {
+      'pmcid' => 'PMC11435997',
+      'version' => 1,
+      'pmid' => 39_338_762,
+      'doi' => '10.3390/s24186017',
+      'mid' => nil,
+      'title' => 'Harnessing the Heart\'s Magnetic Field for Advanced Diagnostic Techniques',
+      'citation' => 'Sensors (Basel). 2024 Sep 18;24(18):6017. doi: 10.3390/s24186017',
+      'is_pmc_openaccess' => true,
+      'is_manuscript' => true,
+      'is_historical_ocr' => false,
+      'is_retracted' => false,
+      'license_code' => 'CC BY',
+      'text_url' => 's3://pmc-oa-opendata/PMC11435997.1/PMC11435997.1.txt?md5=72e1bcfda57e8f60d7d826308220a289',
+      'pdf_url' => 's3://pmc-oa-opendata/PMC11435997.1/PMC11435997.1.pdf?md5=eda1c9a66dfa5a7bad9d8836541eacf0',
+      'xml_url' => 's3://pmc-oa-opendata/PMC11435997.1/PMC11435997.1.xml?md5=e7ace4d299c3c5e5bf582253045584a0',
+      'media_urls' => [
+        's3://pmc-oa-opendata/PMC11435997.1/sensors-24-06017-g001.jpg?md5=5ef5ebe10b8e9202f5aa740d5c52e1c4',
+        's3://pmc-oa-opendata/PMC11435997.1/sensors-24-06017-g002.jpg?md5=0485b7c41387644948b0ccc08ad38938'
+      ]
+    }
+  end
 
   describe '#find_skipped_row' do
     it 'matches by pmid' do
@@ -82,7 +105,39 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
     end
   end
 
+  describe '#apply_json_metadata' do
+    before do
+      allow(article_node).to receive(:at_xpath).and_call_original
+      allow(article_node).to receive(:at_xpath)
+        .with('.//article-id[@pub-id-type="pmcid"]')
+        .and_return(double(text: 'PMC11435997'))
+    end
+
+    it 'sets license and edition from fetched json_metadata' do
+      allow(builder).to receive(:fetch_json_metadata).with('PMC11435997').and_return(json_metadata)
+
+      builder.send(:apply_json_metadata, article)
+
+      expect(article.license).to eq(['CC BY'])
+      expect(article.edition).to eq('Postprint')
+    end
+
+    it 'skips license and edition for TDM and non-manuscript metadata' do
+      allow(builder).to receive(:fetch_json_metadata).with('PMC11435997')
+        .and_return(json_metadata.merge('license_code' => 'TDM', 'is_manuscript' => false))
+
+      builder.send(:apply_json_metadata, article)
+
+      expect(article.license).to be_empty
+      expect(article.edition).to be_nil
+    end
+  end
+
   describe '#apply_additional_basic_attributes' do
+    before do
+      allow(builder).to receive(:fetch_json_metadata).and_return(nil)
+    end
+
     it 'sets title, abstract, date_issued, publisher, keyword, and funder' do
       builder.send(:apply_additional_basic_attributes, article)
       expect(article.title).to be_present
@@ -100,6 +155,19 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
         .and_return(double('Nokogiri::XML::Node', text: ''))
       builder.send(:apply_additional_basic_attributes, article)
       expect(article.abstract).to eq(['N/A'])
+    end
+
+    it 'applies json metadata enrichment through the basic attributes flow' do
+      allow(article_node).to receive(:at_xpath).and_call_original
+      allow(article_node).to receive(:at_xpath)
+        .with('.//article-id[@pub-id-type="pmcid"]')
+        .and_return(double(text: 'PMC11435997'))
+      allow(builder).to receive(:fetch_json_metadata).with('PMC11435997').and_return(json_metadata)
+
+      builder.send(:apply_additional_basic_attributes, article)
+
+      expect(article.license).to eq(['CC BY'])
+      expect(article.edition).to eq('Postprint')
     end
   end
 end

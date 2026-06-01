@@ -62,6 +62,46 @@ module Tasks
             article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
             article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)
             article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
+
+            apply_json_metadata(article)
+          end
+
+          def apply_json_metadata(article)
+            pmcid = metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
+            return article unless pmcid.present?
+
+            json_metadata = fetch_json_metadata(pmcid)
+            return article unless json_metadata.present?
+
+            # Add license_code if present
+            if json_metadata['license_code'].present? && json_metadata['license_code'] != 'TDM'
+              article.license = [json_metadata['license_code']]
+            end
+
+            # Add edition as Postprint if is_manuscript is true
+            if json_metadata['is_manuscript'] == true
+              article.edition = 'Postprint'
+            end
+
+            article
+          rescue => e
+            Rails.logger.warn("[PMC] Failed to fetch or process JSON metadata for PMCID #{pmcid}: #{e.message}")
+          end
+
+          def fetch_json_metadata(pmcid)
+            version_prefix = latest_version_prefix(pmcid)
+            return nil unless version_prefix.present?
+
+            version_id = version_prefix.chomp('/')
+            json_url = "#{PMC_S3_BASE_URL}/#{version_prefix}#{version_id}.json"
+
+            response = HTTParty.get(json_url, timeout: 30)
+            return nil unless response.code == 200
+
+            JSON.parse(response.body)
+          rescue => e
+            Rails.logger.warn("[PMC] Error fetching JSON from S3: #{e.message}")
+            nil
           end
 
           def set_identifiers(article)
