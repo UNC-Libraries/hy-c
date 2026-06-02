@@ -56,7 +56,11 @@ module Hyrax
 
     # active-fedora's railtie uses `<<` to append to autoload_paths, but in
     # Rails 6.1 + Ruby 3.x the array is frozen by the time initializers run.
-    # Replacing it with an unfrozen duplicate allows the railtie to succeed.
-    config.autoload_paths = config.autoload_paths.dup
+    # This must be an initializer (not bare class-body code) so that `app.config`
+    # returns the Engine::Configuration instance whose @autoload_paths attr_writer
+    # is what the active_fedora.autoload initializer actually reads.
+    initializer 'hy_c.unfreeze_autoload_paths', before: 'active_fedora.autoload' do |app|
+      app.config.autoload_paths = app.config.autoload_paths.dup
+    end
   end
 end
