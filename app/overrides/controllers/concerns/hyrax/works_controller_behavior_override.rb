@@ -48,22 +48,4 @@ Hyrax::WorksControllerBehavior.module_eval do
     original_permissions_changed? || @original_embargo_state != curation_concern.under_embargo?
   end
 
-  # [hyc-override] Special permissions for admins indicating they aren't constrained by the admin set
-  class AdminPermissionTemplate < Hyrax::PermissionTemplate
-    def release_no_delay?
-      false
-    end
-
-    def release_before_date?
-      false
-    end
-
-    def release_date
-      nil
-    end
-
-    def visibility
-      nil
-    end
-  end
 end
