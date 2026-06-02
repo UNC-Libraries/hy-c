@@ -645,7 +645,7 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2026.0414)
-    mini_magick (4.12.0)
+    mini_magick (4.13.2)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitar (0.12.1)
@@ -1181,7 +1181,7 @@ DEPENDENCIES
   listen (~> 3.9.0)
   logger (= 1.5.3)
   loofah (~> 2.19.1)
-  mini_magick (~> 4.12.0)
+  mini_magick (~> 4.13.0)
   net-ftp
   nokogiri (~> 1.14.2)
   omniauth (~> 2.0)
