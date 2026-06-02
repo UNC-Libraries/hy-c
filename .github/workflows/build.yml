@@ -43,7 +43,7 @@ jobs:
       RACK_ENV: test
       RAILS_ENV: test
       REDIS_HOST: localhost
-      REDIS_URL: redis://redis
+      REDIS_URL: redis://localhost:6379
       SOLR_TEST_URL: http://127.0.0.1:8983/solr/hydra-test
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
@@ -145,7 +145,7 @@ jobs:
     - name: Run rspec tests
       run: bundle exec rspec
       env:
-        REDIS_URL: redis://redis
+        REDIS_URL: redis://localhost:6379
         POSTGRES_USER: hyrax
         POSTGRES_PASSWORD: password
         TMPDIR: /tmp
