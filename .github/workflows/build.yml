@@ -99,7 +99,7 @@ jobs:
     - name: Install OS packages
       run: |
         sudo apt-get update
-        sudo apt-get install unzip ghostscript libpq-dev graphicsmagick libreoffice libxml2-dev libxslt1-dev
+        sudo apt-get install unzip ghostscript libpq-dev graphicsmagick libreoffice libxml2-dev libxslt1-dev libvips-dev
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
