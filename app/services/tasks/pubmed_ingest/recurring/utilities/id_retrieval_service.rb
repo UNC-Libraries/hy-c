@@ -11,24 +11,24 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   def retrieve_ids(output_path:, db:)
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} -
       #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids')
-    date_ranges = chunkify_date_range(@start_date, @end_date)
-    date_ranges.each do |date_range|
-      retrieve_ids_within_date_range(output_path, db, date_range[0], date_range[1])
+    dates = chunkify_date_range(@start_date, @end_date)
+    dates.each do |date|
+      retrieve_ids_for_one_day(output_path, db, date)
     end
   end
 
-  def retrieve_ids_within_date_range(output_path, db, start_date, end_date, retmax: 200, extras: nil)
-    LogUtilsHelper.double_log("Fetching IDs within chunked date range: #{start_date.strftime('%Y-%m-%d')} -
-      #{end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
+  def retrieve_ids_for_one_day(output_path, db, date, retmax: 200, extras: nil)
+    LogUtilsHelper.double_log("Fetching IDs for date: #{date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
-    # Initialize cursor from tracker and set to 0
+    # Initialize cursor from tracker or set to 0
     job_progress = @tracker['progress']['retrieve_ids_within_date_range'][db]
-    cursor = job_progress['cursor']
+    cursor = 0
+    job_progress['cursor'] = cursor
     term_str = build_search_terms(
       db: db,
-      start_date: start_date,
-      end_date:   end_date,
+      start_date: date,
+      end_date:   date,
       extras: extras
     )
     params = {
@@ -270,7 +270,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     dates = []
     start_date = date_from
     loop do
-      dates << [start_date, start_date]
+      dates << start_date
       start_date += 1.day
       break if start_date > date_to
     end
