@@ -69,9 +69,13 @@ Hyrax.config do |config|
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
   # config.analytic_start_date = DateTime.new(2019, 6, 5)
 
+  config.iiif_image_server = true
+  config.work_requires_files = false
   # Enables a link to the citations page for a work
   # Default is false
   config.citations = true
+
+  config.characterization_options = { ch12n_tool: ENV.fetch('CH12N_TOOL', 'fits').to_sym }
 
   # Where to store tempfiles, leave blank for the system temp directory (e.g. /tmp)
   # config.temp_file_base = '/home/developer1'
@@ -318,6 +322,25 @@ Hyrax.config do |config|
   # end
 
   config.browse_everything = nil
+
+  ##
+  # NOTE: To Valkyrie works, use Monograph which is_a Hyrax::Work is_a Valkyrie::Resource
+  # To use Valkyrie models, uncomment the following lines.
+  # config.collection_model = 'Hyrax::PcdmCollection' # collection without basic metadata
+  # config.collection_model = 'CollectionResource'    # collection with basic metadata
+  # config.admin_set_model = 'Hyrax::AdministrativeSet'
+
+  # If using Frayja/Frigg then use the resource they provide
+  if Hyrax.config.valkyrie_transition?
+    config.collection_model = 'CollectionResource'
+    config.admin_set_model = 'AdminSetResource'
+    config.file_set_model = 'Hyrax::FileSet'
+  else
+    # dassie needs legacy AF models
+    config.collection_model = '::Collection'
+    config.admin_set_model = 'AdminSet'
+    config.file_set_model = '::FileSet'
+  end
 end
 
 Date::DATE_FORMATS[:standard] = '%Y-%m-%d'
