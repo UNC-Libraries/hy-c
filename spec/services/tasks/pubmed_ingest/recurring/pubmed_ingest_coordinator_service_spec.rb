@@ -109,7 +109,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
   )
 
     # Mock service methods
-    allow(mock_id_retrieval_service).to receive(:retrieve_ids)
+    allow(mock_id_retrieval_service).to receive(:retrieve_ids_within_date_range)
     allow(mock_id_retrieval_service).to receive(:stream_and_write_alternate_ids)
     allow(mock_id_retrieval_service).to receive(:adjust_id_lists)
     allow(mock_metadata_ingest_service).to receive(:load_alternate_ids_from_file)
@@ -247,11 +247,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'retrieves IDs for both pubmed and pmc databases' do
       service.send(:build_id_lists)
 
-      expect(mock_id_retrieval_service).to have_received(:retrieve_ids).with(
+      expect(mock_id_retrieval_service).to have_received(:retrieve_ids_within_date_range).with(
         output_path: '/tmp/test_output/01_build_id_lists/pubmed_ids.jsonl',
         db: 'pubmed'
       )
-      expect(mock_id_retrieval_service).to have_received(:retrieve_ids).with(
+      expect(mock_id_retrieval_service).to have_received(:retrieve_ids_within_date_range).with(
         output_path: '/tmp/test_output/01_build_id_lists/pmc_ids.jsonl',
         db: 'pmc'
       )
@@ -290,7 +290,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       it 'skips ID retrieval step' do
         service.send(:build_id_lists)
 
-        expect(mock_id_retrieval_service).not_to have_received(:retrieve_ids)
+        expect(mock_id_retrieval_service).not_to have_received(:retrieve_ids_within_date_range)
         expect(LogUtilsHelper).to have_received(:double_log).with(
           'Skipping ID retrieval for pubmed as it is already completed.',
           :info,

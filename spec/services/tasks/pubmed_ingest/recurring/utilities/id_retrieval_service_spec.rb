@@ -102,7 +102,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
     context 'with pubmed database' do
       it 'retrieves and writes IDs correctly' do
-        service.retrieve_ids(output_path: output_path, db: 'pubmed')
+        service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
 
         temp_file.rewind
         lines = temp_file.readlines
@@ -119,7 +119,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       end
 
       it 'makes correct API call' do
-        service.retrieve_ids(output_path: output_path, db: 'pubmed')
+        service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
 
         expect(HTTParty).to have_received(:get).with(
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
@@ -165,7 +165,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
     context 'with pmc database' do
       it 'prefixes PMC IDs correctly' do
-        service.retrieve_ids(output_path: output_path, db: 'pmc')
+        service.retrieve_ids_within_date_range(output_path: output_path, db: 'pmc')
 
         temp_file.rewind
         lines = temp_file.readlines
@@ -187,7 +187,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       end
 
       it 'logs error and breaks loop' do
-        service.retrieve_ids(output_path: output_path, db: 'pubmed')
+        service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
 
         expect(Rails.logger).to have_received(:error).with(
           'Failed to retrieve IDs: 500 - Internal Server Error'
@@ -230,7 +230,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       end
 
       it 'advances cursor and writes all IDs sequentially' do
-        service.retrieve_ids(output_path: output_path, db: 'pubmed')
+        service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
 
         expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor']).to eq(4)
 

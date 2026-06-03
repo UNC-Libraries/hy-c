@@ -8,9 +8,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     @end_date = end_date
     @tracker = tracker
   end
-  def retrieve_ids(output_path:, db:)
+
+  # retrieve IDs for date range by requesting IDs per day
+  def retrieve_ids_within_date_range(output_path:, db:)
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} -
-      #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids')
+      #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     dates = chunkify_date_range(@start_date, @end_date)
     dates.each do |date|
       retrieve_ids_for_one_day(output_path, db, date)
@@ -18,7 +20,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
   def retrieve_ids_for_one_day(output_path, db, date, retmax: 200, extras: nil)
-    LogUtilsHelper.double_log("Fetching IDs for date: #{date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
+    LogUtilsHelper.double_log("Fetching IDs for date: #{date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_for_one_day')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
     # Initialize cursor from tracker or set to 0
