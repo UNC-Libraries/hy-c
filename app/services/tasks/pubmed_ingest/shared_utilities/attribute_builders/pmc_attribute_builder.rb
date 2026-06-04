@@ -4,6 +4,8 @@ module Tasks
     module SharedUtilities
       module AttributeBuilders
         class PmcAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
+          include Tasks::PubmedIngest::SharedUtilities::PmcS3VersionLookup
+
           PMC_LICENSE_CODE_TO_URI = {
             'CC BY' => 'http://creativecommons.org/licenses/by/4.0/',
             'CC BY-SA' => 'http://creativecommons.org/licenses/by-sa/4.0/',
@@ -117,6 +119,9 @@ module Tasks
             Rails.logger.warn("[PMC] Error fetching JSON from S3: #{e.message}")
             nil
           end
+
+          # Keep version lookup internal to this builder even though it comes from a shared module.
+          private :latest_version_prefix
 
           def license_uri_for_code(license_code)
             PMC_LICENSE_CODE_TO_URI[license_code]

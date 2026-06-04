@@ -41,11 +41,11 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
   describe '#find_skipped_row' do
     it 'matches by pmid' do
       allow(article_node).to receive(:at_xpath)
-        .with('.//article-id[@pub-id-type="pmid"]')
-        .and_return(double(text: '12345678'))
+                               .with('.//article-id[@pub-id-type="pmid"]')
+                               .and_return(double(text: '12345678'))
       allow(article_node).to receive(:at_xpath)
-        .with('.//article-id[@pub-id-type="pmcid"]')
-        .and_return(nil)
+                               .with('.//article-id[@pub-id-type="pmcid"]')
+                               .and_return(nil)
 
       result = builder.find_skipped_row(skipped_rows, article)
       expect(result['pmid']).to eq('12345678')
@@ -53,11 +53,11 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
 
     it 'matches by pmcid' do
       allow(article_node).to receive(:at_xpath)
-        .with('.//article-id[@pub-id-type="pmid"]')
-        .and_return(nil)
+                               .with('.//article-id[@pub-id-type="pmid"]')
+                               .and_return(nil)
       allow(article_node).to receive(:at_xpath)
-        .with('.//article-id[@pub-id-type="pmcid"]')
-        .and_return(double(text: 'PMC87654321'))
+                               .with('.//article-id[@pub-id-type="pmcid"]')
+                               .and_return(double(text: 'PMC87654321'))
 
       result = builder.find_skipped_row(skipped_rows, article)
       expect(result['pmcid']).to eq('PMC87654321')
@@ -109,8 +109,8 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
     before do
       allow(article_node).to receive(:at_xpath).and_call_original
       allow(article_node).to receive(:at_xpath)
-        .with('.//article-id[@pub-id-type="pmcid"]')
-        .and_return(double(text: 'PMC11435997'))
+                               .with('.//article-id[@pub-id-type="pmcid"]')
+                               .and_return(double(text: 'PMC11435997'))
     end
 
     it 'sets license and edition from fetched json_metadata' do
@@ -124,7 +124,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
 
     it 'skips license and edition for TDM and non-manuscript metadata' do
       allow(builder).to receive(:fetch_json_metadata).with('PMC11435997')
-        .and_return(json_metadata.merge('license_code' => 'TDM', 'is_manuscript' => false))
+                                                     .and_return(json_metadata.merge('license_code' => 'TDM', 'is_manuscript' => false))
 
       builder.send(:apply_json_metadata, article)
 
@@ -134,7 +134,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
 
     it 'warns and skips license when license_code is not mapped' do
       allow(builder).to receive(:fetch_json_metadata).with('PMC11435997')
-        .and_return(json_metadata.merge('license_code' => 'CC BY-XYZ'))
+                                                     .and_return(json_metadata.merge('license_code' => 'CC BY-XYZ'))
       allow(Rails.logger).to receive(:warn)
 
       builder.send(:apply_json_metadata, article)
@@ -163,8 +163,8 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
     it 'handles missing abstract gracefully' do
       allow(article_node).to receive(:xpath).and_call_original
       allow(article_node).to receive(:xpath)
-        .with('front/article-meta/abstract')
-        .and_return(double('Nokogiri::XML::Node', text: ''))
+                               .with('front/article-meta/abstract')
+                               .and_return(double('Nokogiri::XML::Node', text: ''))
       builder.send(:apply_additional_basic_attributes, article)
       expect(article.abstract).to eq(['N/A'])
     end
@@ -172,8 +172,8 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
     it 'applies json metadata enrichment through the basic attributes flow' do
       allow(article_node).to receive(:at_xpath).and_call_original
       allow(article_node).to receive(:at_xpath)
-        .with('.//article-id[@pub-id-type="pmcid"]')
-        .and_return(double(text: 'PMC11435997'))
+                               .with('.//article-id[@pub-id-type="pmcid"]')
+                               .and_return(double(text: 'PMC11435997'))
       allow(builder).to receive(:fetch_json_metadata).with('PMC11435997').and_return(json_metadata)
 
       builder.send(:apply_additional_basic_attributes, article)
