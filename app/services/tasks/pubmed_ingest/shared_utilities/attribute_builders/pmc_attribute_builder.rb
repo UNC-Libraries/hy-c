@@ -4,6 +4,14 @@ module Tasks
     module SharedUtilities
       module AttributeBuilders
         class PmcAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
+          PMC_LICENSE_CODE_TO_URI = {
+            'CC BY' => 'http://creativecommons.org/licenses/by/4.0/',
+            'CC BY-SA' => 'http://creativecommons.org/licenses/by-sa/4.0/',
+            'CC BY-ND' => 'http://creativecommons.org/licenses/by-nd/4.0/',
+            'CC BY-NC' => 'http://creativecommons.org/licenses/by-nc/4.0/',
+            'CC BY-NC-SA' => 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
+            'CC BY-NC-ND' => 'http://creativecommons.org/licenses/by-nc-nd/4.0/'
+          }.freeze
 
           def find_skipped_row(new_pubmed_works, article)
             pmid = metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text
@@ -73,9 +81,15 @@ module Tasks
             json_metadata = fetch_json_metadata(pmcid)
             return article unless json_metadata.present?
 
-            # Add license_code if present
-            if json_metadata['license_code'].present? && json_metadata['license_code'] != 'TDM'
-              article.license = [json_metadata['license_code']]
+            # Map PMC license codes to repository-controlled license URIs.
+            license_code = json_metadata['license_code']
+            if license_code.present? && license_code != 'TDM'
+              license_uri = license_uri_for_code(license_code)
+              if license_uri.present?
+                article.license = [license_uri]
+              else
+                Rails.logger.warn("[PMC] Unmapped license code '#{license_code}' for PMCID #{pmcid}")
+              end
             end
 
             # Add edition as Postprint if is_manuscript is true
@@ -102,6 +116,10 @@ module Tasks
           rescue => e
             Rails.logger.warn("[PMC] Error fetching JSON from S3: #{e.message}")
             nil
+          end
+
+          def license_uri_for_code(license_code)
+            PMC_LICENSE_CODE_TO_URI[license_code]
           end
 
           def set_identifiers(article)

@@ -118,7 +118,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
 
       builder.send(:apply_json_metadata, article)
 
-      expect(article.license).to eq(['CC BY'])
+      expect(article.license).to eq(['http://creativecommons.org/licenses/by/4.0/'])
       expect(article.edition).to eq('Postprint')
     end
 
@@ -130,6 +130,18 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
 
       expect(article.license).to be_empty
       expect(article.edition).to be_nil
+    end
+
+    it 'warns and skips license when license_code is not mapped' do
+      allow(builder).to receive(:fetch_json_metadata).with('PMC11435997')
+        .and_return(json_metadata.merge('license_code' => 'CC BY-XYZ'))
+      allow(Rails.logger).to receive(:warn)
+
+      builder.send(:apply_json_metadata, article)
+
+      expect(article.license).to be_empty
+      expect(Rails.logger).to have_received(:warn)
+        .with("[PMC] Unmapped license code 'CC BY-XYZ' for PMCID PMC11435997")
     end
   end
 
@@ -166,8 +178,23 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
 
       builder.send(:apply_additional_basic_attributes, article)
 
-      expect(article.license).to eq(['CC BY'])
+      expect(article.license).to eq(['http://creativecommons.org/licenses/by/4.0/'])
       expect(article.edition).to eq('Postprint')
+    end
+  end
+
+  describe '#license_uri_for_code' do
+    {
+      'CC BY' => 'http://creativecommons.org/licenses/by/4.0/',
+      'CC BY-SA' => 'http://creativecommons.org/licenses/by-sa/4.0/',
+      'CC BY-ND' => 'http://creativecommons.org/licenses/by-nd/4.0/',
+      'CC BY-NC' => 'http://creativecommons.org/licenses/by-nc/4.0/',
+      'CC BY-NC-SA' => 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
+      'CC BY-NC-ND' => 'http://creativecommons.org/licenses/by-nc-nd/4.0/'
+    }.each do |code, expected_uri|
+      it "maps #{code} to #{expected_uri}" do
+        expect(builder.send(:license_uri_for_code, code)).to eq(expected_uri)
+      end
     end
   end
 end
