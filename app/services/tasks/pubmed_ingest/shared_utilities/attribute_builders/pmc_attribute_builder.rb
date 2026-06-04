@@ -85,14 +85,7 @@ module Tasks
 
             # Map PMC license codes to repository-controlled license URIs.
             license_code = json_metadata['license_code']
-            if license_code.present? && license_code != 'TDM'
-              license_uri = license_uri_for_code(license_code)
-              if license_uri.present?
-                article.license = [license_uri]
-              else
-                Rails.logger.warn("[PMC] Unmapped license code '#{license_code}' for PMCID #{pmcid}")
-              end
-            end
+            apply_license_from_code(article, license_code, pmcid)
 
             # Add edition as Postprint if is_manuscript is true
             if json_metadata['is_manuscript'] == true
@@ -125,6 +118,18 @@ module Tasks
 
           def license_uri_for_code(license_code)
             PMC_LICENSE_CODE_TO_URI[license_code]
+          end
+
+          def apply_license_from_code(article, license_code, pmcid)
+            return if license_code.blank? || license_code == 'TDM'
+
+            license_uri = license_uri_for_code(license_code)
+            if license_uri.present?
+              article.license = [license_uri]
+              article.license_label = [CdrLicenseService.label(license_uri)]
+            else
+              Rails.logger.warn("[PMC] Unmapped license code '#{license_code}' for PMCID #{pmcid}")
+            end
           end
 
           def set_identifiers(article)

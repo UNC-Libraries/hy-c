@@ -119,6 +119,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
       builder.send(:apply_json_metadata, article)
 
       expect(article.license).to eq(['http://creativecommons.org/licenses/by/4.0/'])
+      expect(article.license_label).to eq(['Attribution 4.0 International'])
       expect(article.edition).to eq('Postprint')
     end
 
@@ -129,6 +130,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
       builder.send(:apply_json_metadata, article)
 
       expect(article.license).to be_empty
+      expect(article.license_label).to be_empty
       expect(article.edition).to be_nil
     end
 
@@ -140,6 +142,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
       builder.send(:apply_json_metadata, article)
 
       expect(article.license).to be_empty
+      expect(article.license_label).to be_empty
       expect(Rails.logger).to have_received(:warn)
         .with("[PMC] Unmapped license code 'CC BY-XYZ' for PMCID PMC11435997")
     end
@@ -179,6 +182,7 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
       builder.send(:apply_additional_basic_attributes, article)
 
       expect(article.license).to eq(['http://creativecommons.org/licenses/by/4.0/'])
+      expect(article.license_label).to eq(['Attribution 4.0 International'])
       expect(article.edition).to eq('Postprint')
     end
   end
@@ -195,6 +199,33 @@ RSpec.describe Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttri
       it "maps #{code} to #{expected_uri}" do
         expect(builder.send(:license_uri_for_code, code)).to eq(expected_uri)
       end
+    end
+  end
+
+  describe '#apply_license_from_code' do
+    it 'sets both license and license_label for mapped codes' do
+      builder.send(:apply_license_from_code, article, 'CC BY-SA', 'PMC11435997')
+
+      expect(article.license).to eq(['http://creativecommons.org/licenses/by-sa/4.0/'])
+      expect(article.license_label).to eq(['Attribution-ShareAlike 4.0 International'])
+    end
+
+    it 'does nothing for TDM' do
+      builder.send(:apply_license_from_code, article, 'TDM', 'PMC11435997')
+
+      expect(article.license).to be_empty
+      expect(article.license_label).to be_empty
+    end
+
+    it 'warns and does not set fields for unmapped codes' do
+      allow(Rails.logger).to receive(:warn)
+
+      builder.send(:apply_license_from_code, article, 'CC BY-XYZ', 'PMC11435997')
+
+      expect(article.license).to be_empty
+      expect(article.license_label).to be_empty
+      expect(Rails.logger).to have_received(:warn)
+        .with("[PMC] Unmapped license code 'CC BY-XYZ' for PMCID PMC11435997")
     end
   end
 end
