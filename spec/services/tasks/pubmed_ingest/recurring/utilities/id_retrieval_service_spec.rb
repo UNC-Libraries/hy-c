@@ -114,8 +114,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
         second_entry = JSON.parse(lines[1])
         expect(second_entry).to eq({ 'id' => '789012' })
-        #three days with 2 IDs each
-        expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor']).to eq(2)
       end
 
       it 'makes correct API call' do
@@ -175,7 +173,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
         second_entry = JSON.parse(lines[1])
         expect(second_entry['id']).to eq('PMC789012')
-        expect(tracker['progress']['retrieve_ids_within_date_range']['pmc']['cursor']).to eq(2)
       end
     end
 
@@ -229,10 +226,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
                       double(code: 200, body: xml_response_page2, message: 'OK'))
       end
 
-      it 'advances cursor and writes all IDs sequentially' do
+      it 'writes all IDs sequentially' do
         service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
-
-        expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor']).to eq(4)
 
         temp_file.rewind
         ids = temp_file.readlines.map { |l| JSON.parse(l)['id'] }

@@ -23,10 +23,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     LogUtilsHelper.double_log("Fetching IDs for date: #{date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_for_one_day')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
-    # Initialize cursor from tracker or set to 0
-    job_progress = @tracker['progress']['retrieve_ids_within_date_range'][db]
     cursor = 0
-    job_progress['cursor'] = cursor
     term_str = build_search_terms(
       db: db,
       start_date: date,
@@ -65,8 +62,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
           end
           count += ids.size
           cursor += ids.size
-          job_progress['cursor'] = cursor
-          @tracker.save
         rescue => e
           Rails.logger.error("Failed to write or save tracker: #{e.message}")
           raise e
