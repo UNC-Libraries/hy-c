@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::IngestHelperUtils::BaseFileAttachmentService
-  PMC_S3_BUCKET = 'pmc-oa-opendata'
-  PMC_S3_BASE_URL = "https://#{PMC_S3_BUCKET}.s3.amazonaws.com"
+  include Tasks::PubmedIngest::SharedUtilities::PmcS3VersionLookup
 
   def initialize(config:, tracker:, log_file_path:, full_text_path:, metadata_ingest_result_path:)
     super(config: config, tracker: tracker, log_file_path: log_file_path, metadata_ingest_result_path: metadata_ingest_result_path)
@@ -77,19 +76,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService < Tasks::
     ensure
       sleep(SLEEP_BETWEEN_REQUESTS)
     end
-  end
-
-  def latest_version_prefix(pmcid)
-    url = "#{PMC_S3_BASE_URL}/?list-type=2&prefix=#{pmcid}.&delimiter=/"
-    response = HTTParty.get(url, timeout: 10)
-    raise "S3 listing failed: #{response.code}" unless response.code == 200
-
-    doc = Nokogiri::XML(response.body)
-    doc.remove_namespaces!
-    prefixes = doc.xpath('//CommonPrefixes/Prefix').map(&:text)
-    return nil if prefixes.empty?
-
-    prefixes.sort.last
   end
 
   def fetch_s3_file(url, local_file_path:)
