@@ -58,7 +58,7 @@ RSpec.describe NSFReportMailer, type: :mailer do
         }
       end
 
-       let(:mail) { described_class.new.nsf_report_email(report: report_hash, zip_path: zip_path) }
+      let(:mail) { described_class.new.nsf_report_email(report: report_hash, zip_path: zip_path) }
 
       it 'renders depositor and total file count in the body' do
         expect(mail.body.encoded).to include('<strong>Depositor: </strong>nsf_user')
