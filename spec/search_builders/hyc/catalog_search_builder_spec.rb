@@ -17,7 +17,7 @@ RSpec.describe Hyc::CatalogSearchBuilder do
       it 'creates a valid solr join for works and files' do
         subject
         expect(solr_params[:user_query]).to eq user_query
-        expect(solr_params[:q]).to eq '{!lucene}_query_:"{!dismax v=$user_query}" _query_:"{!join from=id to=file_set_ids_ssim}{!dismax v=$user_query}"'
+        expect(solr_params[:q]).to eq '{!lucene}_query_:\"{!dismax v=$user_query}\" _query_:\"{!join from=id to=member_ids_ssim}{!lucene q.op=AND}has_model_ssim:*FileSet{!dismax v=$user_query}\"'
       end
     end
 
