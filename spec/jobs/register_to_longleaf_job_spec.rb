@@ -61,7 +61,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
 
         job.perform(repository_file.checksum.value)
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
-                                                      headers: { "Content-Type": 'application/json' },
+                                                      headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
                                                         checksum: checksum,
@@ -94,7 +94,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         expect { job.perform(checksum) }.to raise_error(
           "Failed to register #{fedora_file_path} to Longleaf")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
-                                                      headers: { "Content-Type": 'application/json' },
+                                                      headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
                                                         checksum: checksum,
@@ -123,7 +123,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
         expect { job.perform(checksum) }
           .to raise_error("Longleaf register API returned status 500 for #{fedora_file_path}, response body: body")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/register',
-                                                      headers: { "Content-Type": 'application/json' },
+                                                      headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
                                                         checksum: checksum,

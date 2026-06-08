@@ -60,7 +60,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
 
         job.perform(repository_file.checksum.value)
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/deregister',
-                                                      headers: { "Content-Type": 'application/json' },
+                                                      headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  { file: fedora_file_path }.to_json,
                                                       format: :json)
       end
@@ -90,7 +90,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
         expect { job.perform(checksum) }.to raise_error(
           "Failed to deregister #{fedora_file_path} from Longleaf")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/deregister',
-                                                      headers: { "Content-Type": 'application/json' },
+                                                      headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  { file: fedora_file_path }.to_json,
                                                       format: :json)
       end
@@ -115,7 +115,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
         expect { job.perform(checksum) }
           .to raise_error("Longleaf deregister API returned status 500 for #{fedora_file_path}, response body: body")
         expect(HTTParty).to have_received(:post).with(longleaf_api_url + '/api/deregister',
-                                                      headers: { "Content-Type": 'application/json' },
+                                                      headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  { file: fedora_file_path }.to_json,
                                                       format: :json)
       end
