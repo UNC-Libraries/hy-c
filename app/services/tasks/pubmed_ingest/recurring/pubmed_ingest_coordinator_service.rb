@@ -114,6 +114,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
       LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
       record_id_path = File.join(@id_list_output_directory, "#{db}_ids.jsonl")
+      # if the record ID file exists but the run isn't complete, delete the file so there are no duplicates
+      if File.exist?(record_id_path)
+        File.delete(record_id_path)
+      end
       id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db)
       @tracker['progress']['retrieve_ids_within_date_range'][db]['completed'] = true
       @tracker.save
