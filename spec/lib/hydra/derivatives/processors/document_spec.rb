@@ -14,7 +14,8 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
       let(:directives)     { {
           format: 'png',
           url: 'file:///path/to/hyrax-webapp/derivatives/test_file_set_id-png.png'
-        } }
+        }
+      }
       let(:expected_tmp_dir) { File.join(Hydra::Derivatives.temp_file_base, '160974000') }
       let(:expected_tmp_file) { File.join(expected_tmp_dir, 'test.png') }
       let(:mock_content)   { 'mocked png content' }
