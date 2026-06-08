@@ -18,7 +18,7 @@ class DeregisterLongleafJob < Hyrax::ApplicationJob
 
     response = HTTParty.post(
       "#{base_path}/api/deregister",
-      headers: { "Content-Type" => 'application/json', 'X-Api-Key' => ENV['LONGLEAF_API_KEY'] },
+      headers: { 'Content-Type' => 'application/json', 'X-Api-Key' => ENV['LONGLEAF_API_KEY'] },
       body:  { file: path_to_file }.to_json,
       format: :json
     )
