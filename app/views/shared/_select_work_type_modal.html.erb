@@ -7,6 +7,14 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="<%= t('hyrax.dashboard.heading_actions.close') %>"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
+        <% if Flipflop.assign_admin_set? %>
+          <div class="select-work-admin-set">
+            <div class="admin-set-title">
+              <%= t('hyrax.dashboard.heading_actions.select_admin_set') %>
+            </div>
+            <%= select_tag(:admin_set_id, options_for_select(@admin_sets_for_select), class: 'form-control') if @admin_sets_for_select %>
+          </div>
+        <% end %>
         <fieldset>
           <% create_unrestricted_work_presenter.each do |row_presenter| %>
              <% if row_presenter.concern.to_s != 'Artwork' &&
@@ -16,11 +24,13 @@
                   <% if row_presenter.concern.to_s == 'MastersPaper' %>
                   <input type="radio" name="payload_concern" value="<%= row_presenter.concern %>"
                          data-single="<%= main_app.masters_papers_department_path(params: { add_works_to_collection: params[:add_works_to_collection]}) %>"
-                         data-batch="<%= row_presenter.switch_to_batch_upload_path(route_set: hyrax, params: params) %>">
+                         data-batch="<%= row_presenter.switch_to_batch_upload_path(route_set: hyrax, params: params) %>"
+                         required />
                   <% else %>
                   <input type="radio" name="payload_concern" value="<%= row_presenter.concern %>"
                          data-single="<%= row_presenter.switch_to_new_work_path(route_set: main_app, params: params) %>"
-                         data-batch="<%= row_presenter.switch_to_batch_upload_path(route_set: hyrax, params: params) %>" />
+                         data-batch="<%= row_presenter.switch_to_batch_upload_path(route_set: hyrax, params: params) %>"
+                         required />
                   <% end %>
                   <div class="select-work-icon">
                     <span class="<%= row_presenter.icon_class %>"></span>
@@ -42,3 +52,4 @@
     </form>
   </div>
 </div>
+

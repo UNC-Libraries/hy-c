@@ -15,7 +15,6 @@ services:
       - 3000:3000
     volumes:
       - .:/hyrax
-      - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
       - ftp_data:/opt/data/ftp
@@ -38,22 +37,24 @@ services:
       - docker/.env
     volumes:
       - .:/hyrax
-      - mount-sidekiq-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
       - ftp_data:/opt/data/ftp
     networks:
       - hycdev
   clamav:
-    image: tiredofit/clamav:2.5.3
+    image: nfrastack/clamav:latest
     ports:
       - "3310:3310"
     volumes:
-      - clam:/var/lib/clamav
+      - clam:/data
       - hyrax_data:/opt/hyrax
       - .:/hyrax
     networks:
       - hycdev
+    environment:
+      - DEFINITIONS_MIRROR=database.clamav.net
+      - CONFIG_PATH=/config/
   db:
     image: postgres:14-alpine
     volumes:
@@ -110,8 +111,6 @@ services:
     networks:
       - hycdev
 volumes:
-  mount-gems:
-  mount-sidekiq-gems:
   solr-data:
   clam:
   pg_data:

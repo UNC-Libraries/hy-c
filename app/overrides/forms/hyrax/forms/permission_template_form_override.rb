@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # [hyc-override] Uncomment line in roles_for_agent
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/forms/hyrax/forms/permission_template_form.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/forms/hyrax/forms/permission_template_form.rb
 Hyrax::Forms::PermissionTemplateForm.class_eval do
   def roles_for_agent
     roles = []

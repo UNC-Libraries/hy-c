@@ -1,4 +1,4 @@
-<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/_actions.html.erb %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v5.2.0/app/views/hyrax/file_sets/_actions.html.erb %>
 <% if (can?(:download, file_set.id) || can?(:destroy, file_set.id) || can?(:edit, file_set.id)) && !workflow_restriction?(@parent) %>
   <% if can?(:download, file_set.id) && !(can?(:edit, file_set.id) || can?(:destroy, file_set.id)) %>
   <%= link_to t('.download'),
@@ -47,6 +47,15 @@
                     class: "download",
                     data: { label: file_set.id, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids } %>
       </li>
+
+      <% file_set.extensions_and_mime_types&.each do |hash| %>
+        <% next unless hash[:name] %>
+        <li class ="dropdown-item" role="menuitem" tabindex="-1">
+          <a href="<%= download_url(id: file_set.id, locale: 'en', file: hash[:name], mime_type: hash[:mime_type]) %>" download>
+            Download <em>(as <%= hash[:name] %>)</em>
+          </a>
+        </li>
+      <% end %>
     <% end %>
 
     </ul>

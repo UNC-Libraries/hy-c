@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/controllers/hyrax/downloads_controller.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/downloads_controller.rb
 Hyrax::DownloadsController.class_eval do
   # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
   include Hyc::DownloadAnalyticsBehavior

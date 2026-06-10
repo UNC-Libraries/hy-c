@@ -9,14 +9,14 @@ RSpec.describe Hyrax::Admin::Analytics::WorkReportsController, type: :controller
     ActiveFedora::Cleaner.clean!
     Blacklight.default_index.connection.delete_by_query('*:*')
     Blacklight.default_index.connection.commit
-    original_analytics = Hyrax.config.analytics?
+    original_analytics = Hyrax.config.analytics_reporting?
     original_provider = Hyrax.config.analytics_provider
     original_start_date = Hyrax.config.analytics_start_date
     Hyrax.config.analytics_start_date = '2018-01-01'
-    Hyrax.config.analytics = true
+    Hyrax.config.analytics_reporting = true
     Hyrax.config.analytics_provider = 'matomo'
     example.run
-    Hyrax.config.analytics = original_analytics
+    Hyrax.config.analytics_reporting = original_analytics
     Hyrax.config.analytics_provider = original_provider
     Hyrax.config.analytics_start_date = original_start_date
   end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/presenters/hyrax/file_set_presenter.rb
+# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/presenters/hyrax/file_set_presenter.rb
 Hyrax::FileSetPresenter.class_eval do
   def fetch_parent_presenter
     ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field, rows: 1)

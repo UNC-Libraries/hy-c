@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main, hyrax-4 ]
+    branches: [ main, '*-development' ]
 
 permissions:
   contents: read
@@ -43,7 +43,7 @@ jobs:
       RACK_ENV: test
       RAILS_ENV: test
       REDIS_HOST: localhost
-      REDIS_URL: redis://redis
+      REDIS_URL: redis://localhost:6379
       SOLR_TEST_URL: http://127.0.0.1:8983/solr/hydra-test
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
@@ -92,10 +92,14 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: ['3.0.4']
+        ruby-version: ['3.3.10']
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install OS packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install unzip ghostscript libpq-dev graphicsmagick libreoffice libxml2-dev libxslt1-dev libvips-dev
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
@@ -105,8 +109,8 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Update rubygems
       run: |
-        gem update --system 3.3.25
-        gem install bundler:2.3.27
+        gem update --system 3.5.22
+        gem install bundler:4.0.12
 
     # Run Rubocop as soon as gems are installed, so we fail early if there are issues
     - name: Run RuboCop
@@ -117,11 +121,6 @@ jobs:
       with:
         java-version: 11
         distribution: 'temurin'
-
-    - name: Install OS packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install unzip ghostscript libpq-dev graphicsmagick libreoffice
 
     - name: Setup test database
       env:
@@ -146,7 +145,7 @@ jobs:
     - name: Run rspec tests
       run: bundle exec rspec
       env:
-        REDIS_URL: redis://redis
+        REDIS_URL: redis://localhost:6379
         POSTGRES_USER: hyrax
         POSTGRES_PASSWORD: password
         TMPDIR: /tmp

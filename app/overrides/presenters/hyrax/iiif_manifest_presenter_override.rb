@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # app/presenters/hyrax/iiif_manifest_presenter.rb
-# https://github.com/samvera/hyrax/blob/main/app/presenters/hyrax/iiif_manifest_presenter.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/presenters/hyrax/iiif_manifest_presenter.rb
 Hyrax::IiifManifestPresenter.class_eval do
   ##
   # [hyc-override] Overriding iiif manifest metadata to check that field exists on a presenter

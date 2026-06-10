@@ -3,7 +3,6 @@
 #  `rails generate hyrax:work DataSet`
 module Hyrax
   class DataSetPresenter < Hyrax::WorkShowPresenter
-    include Hyrax::SharedDelegates
     # See: WorkShowPresenter.scholarly?
     def scholarly?
       true

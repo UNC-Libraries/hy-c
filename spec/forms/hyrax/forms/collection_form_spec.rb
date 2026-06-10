@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # [hyc-override] Tests removal of :based_near (location) from form
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/spec/forms/hyrax/forms/collection_form_spec.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/spec/forms/hyrax/forms/collection_form_spec.rb
 require 'rails_helper'
 
 RSpec.describe Hyrax::Forms::CollectionForm do

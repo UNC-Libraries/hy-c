@@ -1,4 +1,4 @@
-<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v5.2.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
 <%
   # [hyc-override] Pull size from Solr/document metadata
   file_size_bytes = file_set.solr_document['file_size_lts'].to_i    
@@ -12,15 +12,15 @@
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <% if show_video %>
           <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
-            <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
-            <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
+            <source src="<%= hyrax.download_path(file_set, file: 'webm', mime_type: 'video/webm') %>" type="video/webm" />
+            <source src="<%= hyrax.download_path(file_set, file: 'mp4', mime_type: 'video/mp4') %>" type="video/mp4" />
             <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
           </video>
         <% end %>
       <%# [hyc-override] Style download link %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                   hyrax.download_path(file_set),
-                  data: { label: file_set.id, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids },
+                  data: { label: file_set.id.to_s, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids },
                   target: :_blank,
                   class: "btn btn-info",
                   id: "file_download" %>

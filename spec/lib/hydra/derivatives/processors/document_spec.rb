@@ -7,17 +7,23 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
   PID = 991234
 
   let(:source_path)    { File.join(fixture_path, 'test.doc') }
-  let(:output_service) { Hyrax::PersistDerivatives }
+  let(:output_service) { Hyrax::ValkyriePersistDerivatives }
 
   describe '#encode_file' do
     context 'when converting to another format' do
-      let(:directives)     { { format: 'png' } }
+      let(:directives)     { {
+          format: 'png',
+          url: 'file:///path/to/hyrax-webapp/derivatives/test_file_set_id-png.png'
+        }
+      }
       let(:expected_tmp_dir) { File.join(Hydra::Derivatives.temp_file_base, '160974000') }
       let(:expected_tmp_file) { File.join(expected_tmp_dir, 'test.png') }
       let(:mock_content)   { 'mocked png content' }
 
       before do
         allow(File).to receive(:open).with(expected_tmp_file, 'rb').and_return(mock_content)
+        # Prevent actual soffice/Redis calls from the override's encode class method
+        allow(described_class).to receive(:encode)
       end
 
       it 'creates a thumbnail of the document' do
