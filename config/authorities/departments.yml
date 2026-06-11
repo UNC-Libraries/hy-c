@@ -1400,10 +1400,10 @@ terms:
   term: School of Civic Life and Leadership
   active: true
   short_label: School of Civic Life and Leadership
-- id: School of Data Science and Information Sciences
-  term: School of Data Science and Information Sciences
+- id: School of Data and Information Sciences
+  term: School of Data and Information Sciences
   active: true
-  short_label: School of Data Science and Information Sciences
+  short_label: School of Data and Information Sciences
 - id: School of Data Science and Society
   term: School of Data Science and Society
   active: true
@@ -1522,7 +1522,7 @@ terms:
   short_label: UNC Center for Functional GI and Motility Disorders
 - id: UNC Center for Health Equity Research
   term: School of Medicine; UNC Center for Health Equity Research
-  active: true
+  active: false
   short_label: UNC Center for Health Equity Research
 - id: UNC Center for Health Promotion and Disease Prevention
   term: UNC Center for Health Promotion and Disease Prevention
