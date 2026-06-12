@@ -35,6 +35,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       'digital_collection_tesim' => ['a collection'],
       'doi_tesim' => '12345',
       'edition_tesim' => 'new edition',
+      'embargo_history_ssim' => ['Embargo created 2017-01-22'],
       'extent_tesim' => ['1993'],
       'funder_tesim' => ['dean'],
       'based_near_tesim' => ['California'],
@@ -142,6 +143,20 @@ RSpec.describe Hyrax::GeneralPresenter do
     subject { presenter.model_name }
 
     it { is_expected.to be_kind_of ActiveModel::Name }
+  end
+
+  describe '#embargo_history' do
+    it 'returns embargo history from the solr document' do
+      expect(presenter.embargo_history).to eq(['Embargo created 2017-01-22'])
+    end
+
+    context 'when embargo history is not present' do
+      let(:attributes) { super().except('embargo_history_ssim') }
+
+      it 'returns an empty array' do
+        expect(presenter.embargo_history).to eq([])
+      end
+    end
   end
 
   describe '#attribute_to_html' do

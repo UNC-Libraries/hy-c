@@ -45,7 +45,7 @@ services:
     networks:
       - hycdev
   clamav:
-    image: tiredofit/clamav:2.5.3
+    image: nfrastack/clamav:latest
     ports:
       - "3310:3310"
     volumes:

@@ -3,6 +3,8 @@
 #  `rails generate hyrax:work HonorsThesis`
 module Hyrax
   class HonorsThesisPresenter < Hyrax::WorkShowPresenter
+    include EmbargoHistoryPresenter
+
     delegate :abstract, :academic_concentration, :admin_note, :advisor_display, :alternative_title, :award,
              :creator_display, :date_issued, :dcmi_type, :degree, :degree_granting_institution, :deposit_record, :doi,
              :extent, :graduation_year, :language_label, :license_label, :note,

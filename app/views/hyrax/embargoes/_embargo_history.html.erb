@@ -1,0 +1,13 @@
+<%# To render this view pass `embargo_history` (e.g. `object: curation_concern.embargo_history`) %>
+<%# [hyc-override] Add display text for no embargo history %>
+<% if embargo_history.length == 0 %>
+  <p><%= t('hyrax.base.show.no_embargo_history') %></p>
+<% else %>
+  <ul>
+    <% embargo_history.each do |entry| %>
+      <% unless entry.empty? %>
+        <li><%= entry %></li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>

@@ -1,0 +1,11 @@
+<% if current_user&.admin? %>
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title"><%= t('hyrax.base.show.embargo_history') %></h2>
+    </div>
+    <div class="card-body">
+      <%= render 'hyrax/embargoes/embargo_history',
+                 embargo_history: @presenter.embargo_history %>
+    </div>
+  </div>
+<% end %>
