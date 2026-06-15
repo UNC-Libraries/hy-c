@@ -46,15 +46,14 @@ gem 'json-ld', '~> 3.2'
 gem 'sparql', '3.2.5'
 gem 'ldp', '~> 1.1'
 gem 'linkeddata'
-gem 'logger', '1.5.3'
+gem 'logger', '~>1.5'
 gem 'loofah', '~>2.19.1'
 gem 'mini_magick', '~>4.13.0'
 gem 'nokogiri', '~>1.14.2', platforms: :ruby
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-# Cannot use 6.0.23 because it adds rackup as a dependency, which leads to conflicts for now
-gem 'passenger', '6.0.22', require: 'phusion_passenger/rack_handler'
+gem 'passenger', '6.1.4', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
