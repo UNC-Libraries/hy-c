@@ -1,5 +1,5 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_progress.html.erb %>
-<%# [hyc-override] Switch ordering of form completion requirements. Change agreement checkbox %>
+<%# [hyc-override] Switch ordering of form completion requirements. Change agreement checkbox. Add WCAG compliance note %>
 <aside id="form-progress" class="form-progress card">
   <div class="card-header">
     <h3 class="card-title"><%= t("hyrax.works.progress.header") %></h3>
@@ -40,6 +40,7 @@
         <% if !current_user.admin? || (current_user.admin? && params[:action] == 'new') %>
           <label>
             <%# [hyc-override] Changing agreement button to submit the onyen of the depositor %>
+            <%# [hyc-override] Add notice about WCAG compliance %>
             <%= f.input :agreement,
                         as: :boolean,
                         label: t('hyrax.active_consent_to_agreement'),
@@ -49,7 +50,8 @@
                         unchecked_value: '0' %>
             <%= link_to t('hyrax.pages.tabs.agreement_page'),
                         hyrax.agreement_path,
-                        target: '_blank' %>
+                        target: '_blank' %>.
+            <%= t('hyrax.pages.tabs.wcag_notice') %>
           </label>
         <% else %>
           <label class="d-none">
