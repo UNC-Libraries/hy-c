@@ -69,7 +69,7 @@ en:
         local_upload_html: |
           <p>You can add one or more files to associate with this work.</p>
           <p>Uploads are limited to %{upload_file_limit} files, %{upload_size_limit} MB each.</p>
-          <div class="alert alert-success upload-accessibility" role="alert">All files must be accessible to persons with disabilities per the Americans with Disabilities Act Title II. 
+          <div class="alert alert-success upload-accessibility" role="alert">All files must be accessible to persons with disabilities per the Americans with Disabilities Act (ADA) Title II. 
           Visit <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/">UNC's Digital Accessibility Office</a> for 
           <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/document-accessibility/">guidance</a>.</div>
       items:
@@ -112,6 +112,9 @@ en:
       unc_libraries_logo: UNC libraries logo
       accessible: accessible and discoverable
       access: you decide who gets access
+    pages:
+      tabs:
+        wcag_notice: "I have ensured that my files are compliant with ADA Title II digital accessibility requirements."
     relationships_parent_rows:
       empty_text: "This work has no parents."
       label: "Parents:"

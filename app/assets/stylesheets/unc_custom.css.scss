@@ -533,7 +533,9 @@ div.unc-modal {
 
   h1 {
     margin-bottom: 25px;
+    margin-top: 25px;
     text-align: center;
+    width: 100%;
   }
 }
 
@@ -1148,15 +1150,12 @@ Hide it entirely until the issue is resolved upstreeam
     }
 
     label {
+      font-weight: bold;
       width: 100%;
     }
 
     #agreement {
       margin-right: 5px;
-    }
-
-    a {
-      font-weight: bold;
     }
   }
 }
