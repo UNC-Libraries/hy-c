@@ -10,6 +10,7 @@ Hyrax::FileSetPresenter.class_eval do
     fetch_parent_presenter&.solr_document&.fetch('embargo_history_ssim', []) || []
   end
 
+  # Get parent embargo history, as the file set doesn't have this field.
   def fetch_parent_presenter
     ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field, rows: 1)
                             .map { |x| x.fetch(Hyrax.config.id_field) }
