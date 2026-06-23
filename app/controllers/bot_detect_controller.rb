@@ -167,7 +167,11 @@ class BotDetectController < ApplicationController
   end
 
   def self.env_challenge_downloads_enabled?
-    ENV.fetch('CF_CHALLENGE_DOWNLOADS', 'false').casecmp?('true')
+    env_flag_enabled?('CF_CHALLENGE_DOWNLOADS')
+  end
+
+  def self.env_flag_enabled?(key)
+    ENV.fetch(key, 'false').casecmp?('true')
   end
 
   def self.downloads_controller?(controller)
@@ -179,6 +183,6 @@ class BotDetectController < ApplicationController
   end
 
   def self.not_googlebot?(request)
-    !request.user_agent.to_s.downcase.include?('googlebot')
+    !request.user_agent.to_s.downcase.include?('googleother')
   end
 end

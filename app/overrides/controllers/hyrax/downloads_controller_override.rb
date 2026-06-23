@@ -9,12 +9,8 @@ Hyrax::DownloadsController.class_eval do
   end
 
   def self.cf_challenge_downloads_enabled?
-    env_flag_enabled?('CF_TURNSTILE_ENABLED') &&
-      (Flipflop.challenge_downloads? || env_flag_enabled?('CF_CHALLENGE_DOWNLOADS'))
-  end
-
-  def env_flag_enabled?(key)
-    ENV.fetch(key, 'false').casecmp?('true')
+    BotDetectController.env_flag_enabled?('CF_TURNSTILE_ENABLED') &&
+      (Flipflop.challenge_downloads? || BotDetectController.env_flag_enabled?('CF_CHALLENGE_DOWNLOADS'))
   end
 
   before_action :enforce_bot_detection, if: :cf_challenge_downloads_enabled?

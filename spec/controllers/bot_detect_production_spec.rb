@@ -101,8 +101,8 @@ describe Hyrax::DownloadsController, type: :controller do
     )
   end
 
-  it 'does not redirect Googlebot download requests' do
-    request.headers['User-Agent'] = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+  it 'does not redirect GoogleOther download requests' do
+    request.headers['User-Agent'] = 'Mozilla/5.0 (compatible; GoogleOther/2.1; +http://www.google.com/bot.html)'
     get :show, params: { id: 'test_file_set_id' }
     expect(response).not_to redirect_to(
       Rails.application.routes.url_helpers.bot_detect_challenge_path(dest: '/downloads/test_file_set_id')

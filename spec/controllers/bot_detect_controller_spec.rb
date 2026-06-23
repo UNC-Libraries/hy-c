@@ -31,8 +31,8 @@ RSpec.describe BotDetectController, type: :controller do
       expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
     end
 
-    it 'returns false for Googlebot requests' do
-      allow(mock_request).to receive(:user_agent).and_return('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
+    it 'returns false for GoogleOther requests' do
+      allow(mock_request).to receive(:user_agent).and_return('Mozilla/5.0 (compatible; GoogleOther/2.1; +http://www.google.com/bot.html)')
       expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
     end
 
@@ -71,6 +71,23 @@ RSpec.describe BotDetectController, type: :controller do
     end
   end
 
+  describe '.env_flag_enabled?' do
+    it 'returns true when the env var value is true (case-insensitive)' do
+      original = ENV['CF_CHALLENGE_DOWNLOADS']
+      ENV['CF_CHALLENGE_DOWNLOADS'] = 'TrUe'
+      expect(BotDetectController.send(:env_flag_enabled?, 'CF_CHALLENGE_DOWNLOADS')).to be true
+    ensure
+      ENV['CF_CHALLENGE_DOWNLOADS'] = original
+    end
+
+    it 'returns false when the env var is missing' do
+      original = ENV.delete('CF_CHALLENGE_DOWNLOADS')
+      expect(BotDetectController.send(:env_flag_enabled?, 'CF_CHALLENGE_DOWNLOADS')).to be false
+    ensure
+      ENV['CF_CHALLENGE_DOWNLOADS'] = original if original
+    end
+  end
+
   describe '.not_thumbnail?' do
     it 'returns false when file param is thumbnail' do
       request = instance_double(ActionDispatch::Request, query_parameters: { 'file' => 'thumbnail' })
@@ -89,8 +106,8 @@ RSpec.describe BotDetectController, type: :controller do
       expect(BotDetectController.send(:not_googlebot?, request)).to be true
     end
 
-    it 'returns false for a Googlebot user agent' do
-      request = instance_double(ActionDispatch::Request, user_agent: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
+    it 'returns false for a GoogleOther user agent' do
+      request = instance_double(ActionDispatch::Request, user_agent: 'Mozilla/5.0 (compatible; GoogleOther/2.1; +http://www.google.com/bot.html)')
       expect(BotDetectController.send(:not_googlebot?, request)).to be false
     end
 
