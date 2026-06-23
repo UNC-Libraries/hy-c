@@ -71,3 +71,63 @@ describe CatalogController, type: :controller do
     expect(response).to have_http_status(:success) # not a redirect
   end
 end
+
+describe Hyrax::DownloadsController, type: :controller do
+  # Stub the instance-level guard that gates :enforce_bot_detection before_action
+  before do
+    allow(controller).to receive(:cf_challenge_downloads_enabled?).and_return(true)
+    allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(true)
+    # Prevent auth/file-serving before_actions from interfering with bot detection tests
+    allow(controller).to receive(:authenticate_user!).and_return(nil)
+    allow(controller).to receive(:authorize_download!).and_return(nil)
+    allow(controller).to receive(:set_record_admin_set).and_return(nil)
+    # Stub the show action itself so that tests where bot detection passes don't fail on file serving
+    allow(controller).to receive(:show) { controller.head :ok }
+  end
+
+  it 'redirects a normal download request to the challenge page' do
+    get :show, params: { id: 'test_file_set_id' }
+    expect(response).to redirect_to(
+      Rails.application.routes.url_helpers.bot_detect_challenge_path(dest: '/downloads/test_file_set_id')
+    )
+  end
+
+  it 'does not redirect thumbnail download requests' do
+    get :show, params: { id: 'test_file_set_id', file: 'thumbnail' }
+    expect(response).not_to redirect_to(
+      Rails.application.routes.url_helpers.bot_detect_challenge_path(
+        dest: '/downloads/test_file_set_id?file=thumbnail'
+      )
+    )
+  end
+
+  it 'does not redirect Googlebot download requests' do
+    request.headers['User-Agent'] = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+    get :show, params: { id: 'test_file_set_id' }
+    expect(response).not_to redirect_to(
+      Rails.application.routes.url_helpers.bot_detect_challenge_path(dest: '/downloads/test_file_set_id')
+    )
+  end
+
+  it 'does not redirect when challenge downloads is not enabled' do
+    allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(false)
+    allow(controller).to receive(:cf_challenge_downloads_enabled?).and_return(false)
+    get :show, params: { id: 'test_file_set_id' }
+    expect(response).not_to redirect_to(
+      Rails.application.routes.url_helpers.bot_detect_challenge_path(dest: '/downloads/test_file_set_id')
+    )
+  end
+
+  it 'does not redirect with a valid session' do
+    session = {
+      'bot_detection-passed': {
+        'SESSION_DATETIME_KEY' => (Time.now + 12.hours).to_i,
+        'SESSION_IP_KEY' => '0.0.0.0'
+      }
+    }
+    get :show, session: session, params: { id: 'test_file_set_id' }
+    expect(response).not_to redirect_to(
+      Rails.application.routes.url_helpers.bot_detect_challenge_path(dest: '/downloads/test_file_set_id')
+    )
+  end
+end
