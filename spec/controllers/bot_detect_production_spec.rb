@@ -73,10 +73,9 @@ describe CatalogController, type: :controller do
 end
 
 describe Hyrax::DownloadsController, type: :controller do
-  # Stub the instance-level guard that gates :enforce_bot_detection before_action
+  # Stub the BotDetect guard that gates :enforce_bot_detection before_action
   before do
-    allow(controller).to receive(:cf_challenge_downloads_enabled?).and_return(true)
-    allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(true)
+    allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(true)
     # Prevent auth/file-serving before_actions from interfering with bot detection tests
     allow(controller).to receive(:authenticate_user!).and_return(nil)
     allow(controller).to receive(:authorize_download!).and_return(nil)
@@ -110,8 +109,7 @@ describe Hyrax::DownloadsController, type: :controller do
   end
 
   it 'does not redirect when challenge downloads is not enabled' do
-    allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(false)
-    allow(controller).to receive(:cf_challenge_downloads_enabled?).and_return(false)
+    allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(false)
     get :show, params: { id: 'test_file_set_id' }
     expect(response).not_to redirect_to(
       Rails.application.routes.url_helpers.bot_detect_challenge_path(dest: '/downloads/test_file_set_id')

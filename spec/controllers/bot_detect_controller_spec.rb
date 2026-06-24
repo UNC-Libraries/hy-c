@@ -18,7 +18,7 @@ RSpec.describe BotDetectController, type: :controller do
     let(:mock_controller) { instance_double(Hyrax::DownloadsController, request: mock_request) }
 
     before do
-      allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(true)
+      allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(true)
       allow(mock_controller).to receive(:is_a?).with(Hyrax::DownloadsController).and_return(true)
     end
 
@@ -37,7 +37,7 @@ RSpec.describe BotDetectController, type: :controller do
     end
 
     it 'returns false when challenge downloads is not enabled' do
-      allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(false)
+      allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(false)
       expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
     end
 
@@ -47,26 +47,45 @@ RSpec.describe BotDetectController, type: :controller do
     end
   end
 
-  describe '.challenge_downloads_enabled?' do
-    it 'returns true when the Flipflop feature is enabled' do
+  describe '.cf_challenge_downloads_enabled?' do
+    it 'returns true when turnstile is enabled and the Flipflop feature is enabled' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'true'
       allow(Flipflop).to receive(:challenge_downloads?).and_return(true)
-      expect(BotDetectController.send(:challenge_downloads_enabled?)).to be true
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be true
+    ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
     end
 
-    it 'returns true when the CF_CHALLENGE_DOWNLOADS env var is true' do
+    it 'returns true when turnstile is enabled and the CF_CHALLENGE_DOWNLOADS env var is true' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'true'
       allow(Flipflop).to receive(:challenge_downloads?).and_return(false)
       around_env = ENV['CF_CHALLENGE_DOWNLOADS']
       ENV['CF_CHALLENGE_DOWNLOADS'] = 'true'
-      expect(BotDetectController.send(:challenge_downloads_enabled?)).to be true
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be true
     ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
       ENV['CF_CHALLENGE_DOWNLOADS'] = around_env
     end
 
-    it 'returns false when neither Flipflop nor env var is enabled' do
+    it 'returns false when turnstile is disabled' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'false'
+      allow(Flipflop).to receive(:challenge_downloads?).and_return(true)
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be false
+    ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
+    end
+
+    it 'returns false when turnstile is enabled but neither Flipflop nor env var is enabled' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'true'
       allow(Flipflop).to receive(:challenge_downloads?).and_return(false)
       old = ENV.delete('CF_CHALLENGE_DOWNLOADS')
-      expect(BotDetectController.send(:challenge_downloads_enabled?)).to be false
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be false
     ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
       ENV['CF_CHALLENGE_DOWNLOADS'] = old if old
     end
   end

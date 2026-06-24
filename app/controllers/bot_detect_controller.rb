@@ -156,10 +156,15 @@ class BotDetectController < ApplicationController
   end
 
   def self.challenge_download_request?(controller, request)
-    challenge_downloads_enabled? &&
+    cf_challenge_downloads_enabled? &&
       downloads_controller?(controller) &&
       not_thumbnail?(request) &&
       not_googlebot?(request)
+  end
+
+  def self.cf_challenge_downloads_enabled?
+    env_flag_enabled?('CF_TURNSTILE_ENABLED') &&
+      challenge_downloads_enabled?
   end
 
   def self.challenge_downloads_enabled?
