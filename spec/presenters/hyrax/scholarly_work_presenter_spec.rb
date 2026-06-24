@@ -24,6 +24,7 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       'deposit_record_tesim' => 'a deposit record',
       'digital_collection_tesim' => ['my collection'],
       'doi_tesim' => '12345',
+      'embargo_history_ssim' => ['Embargo created 2017-01-22'],
       'based_near_tesim' => ['a geographic subject'],
       'language_label_tesim' => ['language'],
       'license_label_tesim' => ['license'],
@@ -68,6 +69,20 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
     subject { presenter.model_name }
 
     it { is_expected.to be_kind_of ActiveModel::Name }
+  end
+
+  describe '#embargo_history' do
+    it 'returns embargo history from the solr document' do
+      expect(presenter.embargo_history).to eq(['Embargo created 2017-01-22'])
+    end
+
+    context 'when embargo history is not present' do
+      let(:attributes) { super().except('embargo_history_ssim') }
+
+      it 'returns an empty array' do
+        expect(presenter.embargo_history).to eq([])
+      end
+    end
   end
 
   describe '#attribute_to_html' do
