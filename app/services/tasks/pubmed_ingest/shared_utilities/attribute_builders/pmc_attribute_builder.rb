@@ -4,6 +4,16 @@ module Tasks
     module SharedUtilities
       module AttributeBuilders
         class PmcAttributeBuilder < Tasks::IngestHelperUtils::BaseAttributeBuilder
+          include Tasks::PubmedIngest::SharedUtilities::PmcS3VersionLookup
+
+          PMC_LICENSE_CODE_TO_URI = {
+            'CC BY' => 'http://creativecommons.org/licenses/by/4.0/',
+            'CC BY-SA' => 'http://creativecommons.org/licenses/by-sa/4.0/',
+            'CC BY-ND' => 'http://creativecommons.org/licenses/by-nd/4.0/',
+            'CC BY-NC' => 'http://creativecommons.org/licenses/by-nc/4.0/',
+            'CC BY-NC-SA' => 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
+            'CC BY-NC-ND' => 'http://creativecommons.org/licenses/by-nc-nd/4.0/'
+          }.freeze
 
           def find_skipped_row(new_pubmed_works, article)
             pmid = metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text
@@ -62,6 +72,64 @@ module Tasks
             article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
             article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)
             article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
+
+            apply_json_metadata(article)
+          end
+
+          def apply_json_metadata(article)
+            pmcid = metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
+            return article unless pmcid.present?
+
+            json_metadata = fetch_json_metadata(pmcid)
+            return article unless json_metadata.present?
+
+            # Map PMC license codes to repository-controlled license URIs.
+            license_code = json_metadata['license_code']
+            apply_license_from_code(article, license_code, pmcid)
+
+            # Add edition as Postprint if is_manuscript is true
+            if json_metadata['is_manuscript'] == true
+              article.edition = 'Postprint'
+            end
+
+            article
+          rescue => e
+            Rails.logger.warn("[PMC] Failed to fetch or process JSON metadata for PMCID #{pmcid}: #{e.message}")
+          end
+
+          def fetch_json_metadata(pmcid)
+            version_prefix = latest_version_prefix(pmcid)
+            return nil unless version_prefix.present?
+
+            version_id = version_prefix.chomp('/')
+            json_url = "#{PMC_S3_BASE_URL}/#{version_prefix}#{version_id}.json"
+
+            response = HTTParty.get(json_url, timeout: 30)
+            return nil unless response.code == 200
+
+            JSON.parse(response.body)
+          rescue => e
+            Rails.logger.warn("[PMC] Error fetching JSON from S3: #{e.message}")
+            nil
+          end
+
+          # Keep version lookup internal to this builder even though it comes from a shared module.
+          private :latest_version_prefix
+
+          def license_uri_for_code(license_code)
+            PMC_LICENSE_CODE_TO_URI[license_code]
+          end
+
+          def apply_license_from_code(article, license_code, pmcid)
+            return if license_code.blank? || license_code == 'TDM'
+
+            license_uri = license_uri_for_code(license_code)
+            if license_uri.present?
+              article.license = [license_uri]
+              article.license_label = [CdrLicenseService.label(license_uri)]
+            else
+              Rails.logger.warn("[PMC] Unmapped license code '#{license_code}' for PMCID #{pmcid}")
+            end
           end
 
           def set_identifiers(article)

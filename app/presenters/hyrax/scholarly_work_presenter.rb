@@ -3,6 +3,8 @@
 #  `rails generate hyrax:work ScholarlyWork`
 module Hyrax
   class ScholarlyWorkPresenter < Hyrax::WorkShowPresenter
+    include EmbargoHistoryPresenter
+
     # See: WorkShowPresenter.scholarly?
     def scholarly?
       true

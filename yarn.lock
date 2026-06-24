@@ -167,9 +167,9 @@
   integrity sha512-6hQbBiw7F+p2GOBDyTIUeYQb5ByYEWpjj++TpP4k4He6jMxGx7UK1W1104R8LbLjfZEUF3lzdfXYuGGeXansbA==
 
 "@tootallnate/once@2":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
-  integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.1.tgz#35adc6222e3662fa2222ce123b961476a746b9ea"
+  integrity sha512-HqmEUIGRJ5fSXchkVgR5F7qn48bDBzv0kWj/Kfu5e6uci4UlEeng4331LnBkWffb++Ei3FOVLxo8JJWMFBDMeQ==
 
 "@types/concat-stream@^1.6.0":
   version "1.6.1"
@@ -3421,9 +3421,9 @@ wrappy@1:
   integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
 
 ws@^8.9.0:
-  version "8.20.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.20.1.tgz#91a9ae2b312ccf98e0a85ec499b48cef45ab0ddb"
-  integrity sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==
+  version "8.21.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.21.0.tgz#012e413fc07429945121b0c153158c4343086951"
+  integrity sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==
 
 xml-name-validator@^4.0.0:
   version "4.0.0"

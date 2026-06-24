@@ -281,6 +281,24 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       )
     end
 
+    context 'when ID retrieval is not complete but record_id_path file exists' do
+      before do
+        allow(File).to receive(:exist?).and_return(true)
+        allow(File).to receive(:delete).and_return(1)
+      end
+
+      it 'checks whether the ID lists exist' do
+        service.send(:build_id_lists)
+        expect(File).to have_received(:exist?).with('/tmp/test_output/01_build_id_lists/pubmed_ids.jsonl')
+      end
+
+      it 'deletes ID lists' do
+        service.send(:build_id_lists)
+        expect(File).to have_received(:delete).with('/tmp/test_output/01_build_id_lists/pubmed_ids.jsonl')
+      end
+
+    end
+
     context 'when ID retrieval is already completed' do
       before do
         tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed'] = true
@@ -589,6 +607,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'maintains proper tracker state throughout workflow' do
       # Stub all file operations comprehensively
       allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:delete).and_return(1)
       allow(File).to receive(:open).and_yield(double('file', :puts => true, :<< => true))
       allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
       allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))

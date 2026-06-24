@@ -24,6 +24,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       'copyright_date_tesim' => '2018',
       'deposit_record_tesim' => 'a deposit record',
       'doi_tesim' => '12345',
+      'embargo_history_ssim' => ['Embargo created 2017-01-22'],
       'extent_tesim' => ['1993'],
       'funder_tesim' => ['unc'],
       'note_tesim' => ['my note'],
@@ -60,6 +61,20 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     it { is_expected.to be_kind_of ActiveModel::Name }
     it { expect(subject.human).to eq 'Data set' }
+  end
+
+  describe '#embargo_history' do
+    it 'returns embargo history from the solr document' do
+      expect(presenter.embargo_history).to eq(['Embargo created 2017-01-22'])
+    end
+
+    context 'when embargo history is not present' do
+      let(:attributes) { super().except('embargo_history_ssim') }
+
+      it 'returns an empty array' do
+        expect(presenter.embargo_history).to eq([])
+      end
+    end
   end
 
   describe '#attribute_to_html' do
