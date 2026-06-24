@@ -1,3 +1,5 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/hyrax/file_sets/show.html.erb %>
+
 <% provide :page_title, @presenter.page_title %>
 <div class="container-fluid">
   <div class="row">
@@ -11,9 +13,8 @@
         <%= render 'file_set_title', presenter: @presenter %>
       </header>
 
-      <% @presenter.show_partials.each do |partial_path| %>
-        <%= render partial_path %>
-      <% end %>
+      <%# TODO: render 'show_descriptions' See https://github.com/samvera/hyrax/issues/1481 %>
+      <%= render 'show_details' %>
 
       <%# [hyc-override] Show embargo history to admin users %>
       <%= render 'hyrax/base/hyc_embargo_history', presenter: @presenter %>

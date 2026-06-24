@@ -1,6 +1,7 @@
 <%# To render this view pass `embargo_history` (e.g. `object: curation_concern.embargo_history`) %>
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/hyrax/embargoes/_embargo_history.html.erb %>
 <%# [hyc-override] Add display text for no embargo history %>
-<% if embargo_history.length == 0 %>
+<% if embargo_history.blank? %>
   <p><%= t('hyrax.base.show.no_embargo_history') %></p>
 <% else %>
   <ul>
