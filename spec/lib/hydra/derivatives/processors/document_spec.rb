@@ -29,8 +29,7 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
       it 'creates a thumbnail of the document' do
         allow(output_service).to receive(:call).with(mock_content, directives)
         expect(File).to receive(:unlink).with(expected_tmp_file)
-        allow(Time).to receive_message_chain(:now, :nsec).and_return(160974000)
-        expect(FileUtils).to receive(:mkdir).with(expected_tmp_dir)
+        expect(Dir).to receive(:mktmpdir).with(nil, Hydra::Derivatives.temp_file_base).and_return(expected_tmp_dir)
         expect(FileUtils).to receive(:rmdir).with(expected_tmp_dir)
         subject.encode_file('png')
       end

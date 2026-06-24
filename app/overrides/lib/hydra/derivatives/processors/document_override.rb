@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hydra-derivatives/blob/v3.8.0/lib/hydra/derivatives/processors/document.rb
 require 'redlock'
+require 'tmpdir'
 
 class SofficeTimeoutError < Hydra::Derivatives::TimeoutError; end
 
@@ -68,8 +69,7 @@ Hydra::Derivatives::Processors::Document.class_eval do
     # [hyc-override] create temp subdir for output to avoid repeat filename conflicts
     Rails.logger.debug("Converting document to #{format} from source path: #{source_path} to destination file: #{directives[:url]}")
 
-    temp_dir = File.join(Hydra::Derivatives.temp_file_base, Time.now.nsec.to_s)
-    FileUtils.mkdir(temp_dir)
+    temp_dir = Dir.mktmpdir(nil, Hydra::Derivatives.temp_file_base)
     Rails.logger.debug("Temp directory created for derivatives: #{temp_dir}")
 
     self.class.encode(source_path, format, temp_dir)
