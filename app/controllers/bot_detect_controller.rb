@@ -156,7 +156,7 @@ class BotDetectController < ApplicationController
   end
 
   def self.challenge_download_request?(controller, request)
-    cf_challenge_downloads_enabled? &&
+    challenge_downloads_enabled? &&
       downloads_controller?(controller) &&
       not_thumbnail?(request) &&
       not_googlebot?(request)

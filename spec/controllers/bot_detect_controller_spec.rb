@@ -18,7 +18,7 @@ RSpec.describe BotDetectController, type: :controller do
     let(:mock_controller) { instance_double(Hyrax::DownloadsController, request: mock_request) }
 
     before do
-      allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(true)
+      allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(true)
       allow(mock_controller).to receive(:is_a?).with(Hyrax::DownloadsController).and_return(true)
     end
 
@@ -37,7 +37,7 @@ RSpec.describe BotDetectController, type: :controller do
     end
 
     it 'returns false when challenge downloads is not enabled' do
-      allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(false)
+      allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(false)
       expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
     end
 
