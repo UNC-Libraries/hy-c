@@ -46,7 +46,7 @@ module EnsureEnvironmentService
        HYRAX_HOST
        IMAGE_PROCESSOR
        LOG_LEVEL
-       LONGLEAF_BASE_COMMAND
+       LONGLEAF_API_HOST_PATH
        LONGLEAF_STORAGE_PATH
        SECRET_KEY_BASE
        SOLR_PRODUCTION_URL
