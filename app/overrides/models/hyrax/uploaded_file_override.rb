@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+# [hyc-override] backporting from hyrax main. Remove this once on hyrax 5.3.0
+# https://github.com/samvera/hyrax/blob/0fb875578d05fa2494a17c4d3b4243b513b0ceb7/app/models/hyrax/uploaded_file.rb
+module Hyrax
+  ##
+  # Store a file uploaded by a user.
+  #
+  # Eventually these files get attached to {FileSet}s and pushed into Fedora.
+  class UploadedFile < ActiveRecord::Base
+    self.table_name = 'uploaded_files'
+    mount_uploader :file, UploadedFileUploader
+    alias uploader file
+    has_many :job_io_wrappers,
+             inverse_of: 'uploaded_file',
+             class_name: 'JobIoWrapper',
+             dependent: :destroy
+    belongs_to :user, class_name: '::User'
+
+    validate :virus_scan
+
+    ##
+    # Associate a {FileSet} with this uploaded file.
+    #
+    # @param [Hyrax::Resource, ActiveFedora::Base] file_set
+    # @return [void]
+    def add_file_set!(file_set)
+      uri = case file_set
+            when ActiveFedora::Base
+              file_set.uri
+            when Hyrax::Resource
+              file_set.id
+            end
+      update!(file_set_uri: uri)
+    end
+
+    private
+
+    def virus_scan
+      errors.add(:file, I18n.t('hyrax.virus_scanner.virus_detected', filename: file.path)) if
+        file.path && Hyrax::VirusScanner.infected?(file.path)
+    end
+  end
+end

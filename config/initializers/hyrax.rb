@@ -215,6 +215,10 @@ Hyrax.config do |config|
   # Username for connecting to geonames
   config.geonames_username = ENV['GEONAMES_USER']
 
+  ##
+  # Set the system-wide virus scanner
+  config.virus_scanner = Hyrax::VirusScanner
+
   # Should the acceptance of the licence agreement be active (checkbox), or
   # implied when the save button is pressed? Set to true for active
   # The default is true.
