@@ -7,6 +7,6 @@ MiniMagick.configure do |config|
 end
 
 Rails.application.config.after_initialize do
-  Rails.logger.debug('[ImageProcessor] calling ImageService.processor from MiniMagick initializer')
+  Rails.logger.debug('[ImageProcessor] calling ImageService.cli from MiniMagick initializer')
   MiniMagick.configure { |config| config.cli = ImageService.cli }
 end
