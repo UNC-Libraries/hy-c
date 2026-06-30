@@ -2,6 +2,7 @@
 
 # Job which causes registration of files to longleaf
 class RegisterToLongleafJob < Hyrax::ApplicationJob
+  CHECKSUM_PREFIX = 'sha1:'
   queue_as Hyrax.config.ingest_queue_name
 
   def perform(checksum)
@@ -21,7 +22,7 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': ENV['LONGLEAF_API_KEY'] },
       body:  {
         file: path_to_file,
-        checksums: checksum,
+        checksums: CHECKSUM_PREFIX + checksum,
         force: true
       }.to_json,
       format: :json

@@ -8,6 +8,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
     let(:job) { RegisterToLongleafJob.new }
     let(:longleaf_api_url) { 'https://longleaf.example.com' }
     let(:filepath) { File.join(fixture_path, 'hyrax/hyrax_test4.pdf') }
+    let(:prefix) { RegisterToLongleafJob::CHECKSUM_PREFIX }
     let(:repository_file) do
       Hydra::PCDM::File.new.tap do |f|
         f.content = File.open(filepath)
@@ -64,7 +65,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
                                                       headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
-                                                        checksums: checksum,
+                                                        checksums: prefix + checksum,
                                                         force: true
                                                       }.to_json,
                                                       format: :json)
@@ -97,7 +98,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
                                                       headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
-                                                        checksums: checksum,
+                                                        checksums: prefix + checksum,
                                                         force: true
                                                       }.to_json,
                                                       format: :json)
@@ -126,7 +127,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
                                                       headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
-                                                        checksums: checksum,
+                                                        checksums: prefix + checksum,
                                                         force: true
                                                       }.to_json,
                                                       format: :json)
