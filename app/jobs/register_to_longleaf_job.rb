@@ -21,7 +21,7 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': ENV['LONGLEAF_API_KEY'] },
       body:  {
         file: path_to_file,
-        checksum: checksum,
+        checksums: checksum,
         force: true
       }.to_json,
       format: :json
