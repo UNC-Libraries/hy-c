@@ -64,7 +64,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
                                                       headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
-                                                        checksum: checksum,
+                                                        checksums: checksum,
                                                         force: true
                                                       }.to_json,
                                                       format: :json)
@@ -97,7 +97,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
                                                       headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
-                                                        checksum: checksum,
+                                                        checksums: checksum,
                                                         force: true
                                                       }.to_json,
                                                       format: :json)
@@ -126,7 +126,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
                                                       headers: { "Content-Type": 'application/json', "X-Api-Key": nil },
                                                       body:  {
                                                         file: fedora_file_path,
-                                                        checksum: checksum,
+                                                        checksums: checksum,
                                                         force: true
                                                       }.to_json,
                                                       format: :json)
