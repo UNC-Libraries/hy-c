@@ -9,6 +9,7 @@ content_block:
     - table
     - fullscreen
     - image
+    - wordcount
 rich_text:
   menubar: false
   toolbar:
@@ -50,6 +51,16 @@ rich_text:
         tinymce.triggerSave();
         if (window.saveWorkControlInstance) {
           window.saveWorkControlInstance.validateMetadata();
+        }
+      });
+
+      const maxLength = 10000; // Define your character limit here
+      editor.on('input keyup paste', function() {
+        let currentLength = editor.plugins.wordcount.body.getCharacterCount();
+        if (currentLength >= maxLength) {
+          // Prevent further typing if limit is reached
+          let trimmedContent = editor.getContent({format: 'text'}).substring(0, maxLength);
+          editor.setContent(trimmedContent);
         }
       });
     }
