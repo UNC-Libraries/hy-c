@@ -1,5 +1,9 @@
 // [hyc-override] Override to allow form to be submitted with hidden, empty, cloning fields
 // [hyc-override] Override to check for malformed date created and date issued fields
+// [hyc-override] Override to check for text/textarea fields exceeding the character limit
+
+const CHARACTER_LIMIT = 10000;
+
 export class RequiredFields {
     // Monitors the form and runs the callback if any of the required fields change
     constructor(form, callback) {
@@ -10,6 +14,34 @@ export class RequiredFields {
 
     get areComplete() {
         return this.requiredFields.filter((n, elem) => { return this.isValuePresent(elem) } ).length === 0
+            && this.areUnderCharacterLimit
+    }
+
+    // Returns true when no text/textarea field exceeds the character limit
+    get areUnderCharacterLimit() {
+        return this.textFields.filter((n, elem) => { return this.isOverCharacterLimit(elem) }).length === 0
+    }
+
+    // Returns the visible text value of an element, handling TinyMCE editors
+    getFieldValue(elem) {
+        if (typeof tinymce !== 'undefined' && elem.id && tinymce.get(elem.id)) {
+            return tinymce.get(elem.id).getContent({ format: 'text' });
+        }
+        let val = $(elem).val();
+        if (typeof val !== 'string') return '';
+        // Strip any residual HTML tags for non-TinyMCE textareas that may contain markup
+        return val.replace(/<[^>]*>/g, '');
+    }
+
+    // Returns true if the field's value (whitespace removed) exceeds the character limit
+    isOverCharacterLimit(elem) {
+        let selector = $(elem);
+        // Skip hidden/cloning fields
+        let parentHidden = selector.parent().closest('div.cloning');
+        if (parentHidden.hasClass('d-none')) return false;
+
+        let value = this.getFieldValue(elem);
+        return value.replace(/\s/g, '').length > CHARACTER_LIMIT;
     }
 
     // Allow form to be submitted with hidden, empty, cloning fields
@@ -59,5 +91,8 @@ export class RequiredFields {
         // ":input" matches all input, select or textarea fields.
         this.requiredFields = this.form.find(':input[required], input[name*="date_issued"]');
         this.requiredFields.change(this.callback)
+        // Track all text inputs and textareas for the character limit check
+        this.textFields = this.form.find('input[type="text"], textarea');
+        this.textFields.change(this.callback)
     }
 }

@@ -1,5 +1,60 @@
 default: &default
-  setup: tinymce_nav_safety # onChange event init
+  setup: |
+    function (editor) {
+      if (typeof tinymce_nav_safety === 'function') tinymce_nav_safety(editor);
+
+      const maxLength = 10000;
+
+      function normalizeText(value) {
+        return (value || '')
+          .replace(/\r\n?|\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function getCharacterCount() {
+        const text = editor.getContent({ format: 'text' }) || '';
+        return normalizeText(text).length;
+      }
+
+      function updateCounter() {
+        const counter = document.getElementById(`character-counter-${editor.id}`);
+        if (counter) {
+          const remaining = maxLength - getCharacterCount();
+          counter.textContent = `${remaining} characters remaining`;
+        }
+      }
+
+      function updateValidation() {
+        tinymce.triggerSave();
+        if (window.saveWorkControlInstance) {
+          window.saveWorkControlInstance.validateMetadata();
+        }
+        updateCounter();
+      }
+
+      editor.on('init', function () {
+        updateCounter();
+      });
+
+      editor.on('change keyup input undo redo setcontent', function () {
+        updateValidation();
+      });
+
+      editor.on('keydown', function (event) {
+        const allowedKeys = [
+          'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+          'Tab', 'Enter', 'Escape', 'Shift', 'Control', 'Alt', 'Meta'
+        ];
+
+        if (allowedKeys.includes(event.key)) return;
+
+        if (getCharacterCount() >= maxLength) {
+          event.preventDefault();
+        }
+      });
+    }
+
 content_block:
   <<: *default
   menubar: false
@@ -9,13 +64,31 @@ content_block:
     - table
     - fullscreen
     - image
+
 rich_text:
+  <<: *default
   menubar: false
   toolbar:
     - "undo redo | bold italic underline | alignleft aligncenter alignright | link | numlist bullist outdent indent | blockquote | code"
   plugins:
     - "link lists code paste"
   invalid_styles: "color font-family"
+  paste_preprocess: |
+    function (plugin, args) {
+      const maxLength = 10000;
+
+      function normalizeText(value) {
+        return (value || '')
+          .replace(/\r\n?|\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      const text = normalizeText(args.content);
+      if (text.length > maxLength) {
+        args.content = text.slice(0, maxLength);
+      }
+    }
   style_formats:
     - title: "Inline"
       items:
@@ -44,15 +117,6 @@ rich_text:
         - title: "Right"
           block: ""
           classes: "align-right"
-  setup: |
-    function (editor) {
-      editor.on('change', function () {
-        tinymce.triggerSave();
-        if (window.saveWorkControlInstance) {
-          window.saveWorkControlInstance.validateMetadata();
-        }
-      });
-    }
 
 custom:
   <<: *default
