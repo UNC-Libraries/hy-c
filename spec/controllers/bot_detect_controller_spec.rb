@@ -8,6 +8,134 @@ RSpec.describe BotDetectController, type: :controller do
     example.run
   end
 
+  describe '.challenge_download_request?' do
+    let(:mock_request) do
+      instance_double(ActionDispatch::Request,
+                      query_parameters: {},
+                      user_agent: 'Mozilla/5.0 (compatible; regular browser)'
+      )
+    end
+    let(:mock_controller) { instance_double(Hyrax::DownloadsController, request: mock_request) }
+
+    before do
+      allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(true)
+      allow(mock_controller).to receive(:is_a?).with(Hyrax::DownloadsController).and_return(true)
+    end
+
+    it 'returns true for a normal download request' do
+      expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be true
+    end
+
+    it 'returns false for thumbnail requests' do
+      allow(mock_request).to receive(:query_parameters).and_return({ 'file' => 'thumbnail' })
+      expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
+    end
+
+    it 'returns false for GoogleOther requests' do
+      allow(mock_request).to receive(:user_agent).and_return('Mozilla/5.0 (compatible; GoogleOther/2.1; +http://www.google.com/bot.html)')
+      expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
+    end
+
+    it 'returns false when challenge downloads is not enabled' do
+      allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(false)
+      expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
+    end
+
+    it 'returns false for non-downloads controllers' do
+      allow(mock_controller).to receive(:is_a?).with(Hyrax::DownloadsController).and_return(false)
+      expect(BotDetectController.send(:challenge_download_request?, mock_controller, mock_request)).to be false
+    end
+  end
+
+  describe '.cf_challenge_downloads_enabled?' do
+    it 'returns true when turnstile is enabled and the Flipflop feature is enabled' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'true'
+      allow(Flipflop).to receive(:challenge_downloads?).and_return(true)
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be true
+    ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
+    end
+
+    it 'returns true when turnstile is enabled and the CF_CHALLENGE_DOWNLOADS env var is true' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'true'
+      allow(Flipflop).to receive(:challenge_downloads?).and_return(false)
+      around_env = ENV['CF_CHALLENGE_DOWNLOADS']
+      ENV['CF_CHALLENGE_DOWNLOADS'] = 'true'
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be true
+    ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
+      ENV['CF_CHALLENGE_DOWNLOADS'] = around_env
+    end
+
+    it 'returns false when turnstile is disabled' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'false'
+      allow(Flipflop).to receive(:challenge_downloads?).and_return(true)
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be false
+    ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
+    end
+
+    it 'returns false when turnstile is enabled but neither Flipflop nor env var is enabled' do
+      around_turnstile = ENV['CF_TURNSTILE_ENABLED']
+      ENV['CF_TURNSTILE_ENABLED'] = 'true'
+      allow(Flipflop).to receive(:challenge_downloads?).and_return(false)
+      old = ENV.delete('CF_CHALLENGE_DOWNLOADS')
+      expect(BotDetectController.send(:cf_challenge_downloads_enabled?)).to be false
+    ensure
+      ENV['CF_TURNSTILE_ENABLED'] = around_turnstile
+      ENV['CF_CHALLENGE_DOWNLOADS'] = old if old
+    end
+  end
+
+  describe '.env_flag_enabled?' do
+    it 'returns true when the env var value is true (case-insensitive)' do
+      original = ENV['CF_CHALLENGE_DOWNLOADS']
+      ENV['CF_CHALLENGE_DOWNLOADS'] = 'TrUe'
+      expect(BotDetectController.send(:env_flag_enabled?, 'CF_CHALLENGE_DOWNLOADS')).to be true
+    ensure
+      ENV['CF_CHALLENGE_DOWNLOADS'] = original
+    end
+
+    it 'returns false when the env var is missing' do
+      original = ENV.delete('CF_CHALLENGE_DOWNLOADS')
+      expect(BotDetectController.send(:env_flag_enabled?, 'CF_CHALLENGE_DOWNLOADS')).to be false
+    ensure
+      ENV['CF_CHALLENGE_DOWNLOADS'] = original if original
+    end
+  end
+
+  describe '.not_thumbnail?' do
+    it 'returns false when file param is thumbnail' do
+      request = instance_double(ActionDispatch::Request, query_parameters: { 'file' => 'thumbnail' })
+      expect(BotDetectController.send(:not_thumbnail?, request)).to be false
+    end
+
+    it 'returns true when file param is absent' do
+      request = instance_double(ActionDispatch::Request, query_parameters: {})
+      expect(BotDetectController.send(:not_thumbnail?, request)).to be true
+    end
+  end
+
+  describe '.not_googlebot?' do
+    it 'returns true for a regular browser user agent' do
+      request = instance_double(ActionDispatch::Request, user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
+      expect(BotDetectController.send(:not_googlebot?, request)).to be true
+    end
+
+    it 'returns false for a GoogleOther user agent' do
+      request = instance_double(ActionDispatch::Request, user_agent: 'Mozilla/5.0 (compatible; GoogleOther/2.1; +http://www.google.com/bot.html)')
+      expect(BotDetectController.send(:not_googlebot?, request)).to be false
+    end
+
+    it 'returns true when user agent is nil' do
+      request = instance_double(ActionDispatch::Request, user_agent: nil)
+      expect(BotDetectController.send(:not_googlebot?, request)).to be true
+    end
+  end
+
   describe '#verify_challenge' do
     it 'handles turnstile success' do
       turnstile_response = stub_turnstile_success

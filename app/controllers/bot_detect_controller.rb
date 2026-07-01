@@ -142,10 +142,52 @@ class BotDetectController < ApplicationController
   end
 
   def self.issue_challenge?(controller)
-    query_parameters = controller.request.query_parameters
-    user_agent = controller.request.user_agent.to_s.downcase
-    controller.is_a?(Hyrax::StatsController) \
-        || query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') \
-        || query_parameters.key?('range') || query_parameters.key?('page')
+    request = controller.request
+    query_parameters = request.query_parameters
+
+    return true if challenge_download_request?(controller, request)
+
+    controller.is_a?(Hyrax::StatsController) ||
+      query_parameters.key?('f') ||
+      query_parameters.key?('f_inclusive') ||
+      query_parameters.key?('clause') ||
+      query_parameters.key?('range') ||
+      query_parameters.key?('page')
+  end
+
+  def self.challenge_download_request?(controller, request)
+    challenge_downloads_enabled? &&
+      downloads_controller?(controller) &&
+      not_thumbnail?(request) &&
+      not_googlebot?(request)
+  end
+
+  def self.cf_challenge_downloads_enabled?
+    env_flag_enabled?('CF_TURNSTILE_ENABLED') &&
+      challenge_downloads_enabled?
+  end
+
+  def self.challenge_downloads_enabled?
+    Flipflop.challenge_downloads? || env_challenge_downloads_enabled?
+  end
+
+  def self.env_challenge_downloads_enabled?
+    env_flag_enabled?('CF_CHALLENGE_DOWNLOADS')
+  end
+
+  def self.env_flag_enabled?(key)
+    ENV.fetch(key, 'false').casecmp?('true')
+  end
+
+  def self.downloads_controller?(controller)
+    controller.is_a?(Hyrax::DownloadsController)
+  end
+
+  def self.not_thumbnail?(request)
+    request.query_parameters['file'] != 'thumbnail'
+  end
+
+  def self.not_googlebot?(request)
+    !request.user_agent.to_s.downcase.include?('googleother')
   end
 end

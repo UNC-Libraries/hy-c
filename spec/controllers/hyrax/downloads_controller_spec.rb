@@ -59,6 +59,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
   before do
     ActiveFedora::Cleaner.clean!
+    # Keep this spec focused on analytics/download behavior, not bot challenge redirects.
+    allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(false)
+    allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(false)
     allow(stub_matomo)
     @user = user
     sign_in @user
