@@ -4,7 +4,9 @@ require 'rails_helper'
 # We spec that the BotDetect filter is actually applying protection, as well as exempting what we want
 describe CatalogController, type: :controller do
   before do
+    allow(CatalogController).to receive(:turnstile_enabled?).and_return(true)
     allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(true)
+    request.env['REMOTE_ADDR'] = '0.0.0.0'
   end
 
   it 'redirects when requested for facet queries' do
@@ -90,9 +92,12 @@ describe CatalogController, type: :controller do
 end
 
 describe Hyrax::DownloadsController, type: :controller do
+  routes { Hyrax::Engine.routes }
+
   before do
     allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(true)
     allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(true)
+    request.env['REMOTE_ADDR'] = '0.0.0.0'
 
     allow(controller).to receive(:authenticate_user!).and_return(nil)
     allow(controller).to receive(:authorize_download!).and_return(nil)
