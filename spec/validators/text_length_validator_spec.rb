@@ -20,10 +20,16 @@ RSpec.describe TextLengthValidator do
       validator.validate_each(record, attribute, ['', nil, ' '])
     end
 
-    it 'does not add an error for text within the limit' do
+    it 'does not add an error for single-value text within the limit' do
       expect(errors).not_to receive(:add)
 
       validator.validate_each(record, attribute, '<p>hello</p>')
+    end
+
+    it 'does not add an error for multi-value text within the limit' do
+      expect(errors).not_to receive(:add)
+
+      validator.validate_each(record, attribute, ['hello', 'world'])
     end
 
     it 'adds the default error message when text is too long' do
