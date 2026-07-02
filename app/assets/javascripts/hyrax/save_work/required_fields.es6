@@ -3,6 +3,8 @@
 // [hyc-override] Override to check for text/textarea fields exceeding the character limit
 
 const CHARACTER_LIMIT = 10000;
+const CHARACTER_LIMIT_MESSAGE = 'One or more fields exceed the 10,000 character limit (whitespace is not counted).';
+const CHARACTER_LIMIT_MESSAGE_ID = 'metadata-character-limit-error';
 
 export class RequiredFields {
     // Monitors the form and runs the callback if any of the required fields change
@@ -19,7 +21,35 @@ export class RequiredFields {
 
     // Returns true when no text/textarea field exceeds the character limit
     get areUnderCharacterLimit() {
-        return this.textFields.filter((n, elem) => { return this.isOverCharacterLimit(elem) }).length === 0
+        let overLimitFields = this.textFields.filter((n, elem) => { return this.isOverCharacterLimit(elem) });
+        this.updateOverLimitFieldStyles(overLimitFields);
+        this.toggleCharacterLimitMessage(overLimitFields.length > 0);
+        return overLimitFields.length === 0
+    }
+
+    // Adds/removes a small inline error in the form-progress metadata requirement row
+    toggleCharacterLimitMessage(showMessage) {
+        let metadataRequirement = $('#required-metadata');
+        if (metadataRequirement.length === 0) return;
+
+        let errorMessage = $('#' + CHARACTER_LIMIT_MESSAGE_ID);
+
+        if (showMessage) {
+            if (errorMessage.length === 0) {
+                metadataRequirement.append(
+                    `<div id="${CHARACTER_LIMIT_MESSAGE_ID}" class="text-danger small mt-1">${CHARACTER_LIMIT_MESSAGE}</div>`
+                );
+            }
+            return;
+        }
+
+        errorMessage.remove();
+    }
+
+    // Marks fields that exceed the limit to make the validation failure easy to locate
+    updateOverLimitFieldStyles(overLimitFields) {
+        this.textFields.removeClass('is-invalid');
+        overLimitFields.addClass('is-invalid');
     }
 
     // Returns the visible text value of an element, handling TinyMCE editors
@@ -93,6 +123,6 @@ export class RequiredFields {
         this.requiredFields.change(this.callback)
         // Track all text inputs and textareas for the character limit check
         this.textFields = this.form.find('input[type="text"], textarea');
-        this.textFields.change(this.callback)
+        this.textFields.on('change input', this.callback)
     }
 }
