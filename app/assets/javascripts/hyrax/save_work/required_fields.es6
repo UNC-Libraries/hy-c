@@ -54,13 +54,17 @@ export class RequiredFields {
 
     // Returns the visible text value of an element, handling TinyMCE editors
     getFieldValue(elem) {
+        let text;
+
         if (typeof tinymce !== 'undefined' && elem.id && tinymce.get(elem.id)) {
-            return tinymce.get(elem.id).getContent({ format: 'text' });
+            text = tinymce.get(elem.id).getContent({ format: 'text' });
+        } else {
+            let val = $(elem).val();
+            if (typeof val !== 'string') return '';
+            text = val.replace(/<[^>]*>/g, '');
         }
-        let val = $(elem).val();
-        if (typeof val !== 'string') return '';
-        // Strip any residual HTML tags for non-TinyMCE textareas that may contain markup
-        return val.replace(/<[^>]*>/g, '');
+
+        return text.replace(/\s+/g, '');
     }
 
     // Returns true if the field's value (whitespace removed) exceeds the character limit
@@ -70,8 +74,8 @@ export class RequiredFields {
         let parentHidden = selector.parent().closest('div.cloning');
         if (parentHidden.hasClass('d-none')) return false;
 
-        let value = this.getFieldValue(elem);
-        return value.replace(/\s/g, '').length > CHARACTER_LIMIT;
+        // getFieldValue already strips whitespace before returning
+        return this.getFieldValue(elem).length > CHARACTER_LIMIT;
     }
 
     // Allow form to be submitted with hidden, empty, cloning fields
