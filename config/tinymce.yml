@@ -1,5 +1,40 @@
 default: &default
-  setup: tinymce_nav_safety # onChange event init
+  setup: |
+    function (editor) {
+      if (typeof tinymce_nav_safety === 'function') tinymce_nav_safety(editor);
+
+      const maxLength = 10000;
+
+      function getCharacterCount() {
+        const text = editor.getContent({ format: 'text' }) || '';
+        return text.replace(/\s/g, '').length;
+      }
+
+      function updateValidation() {
+        tinymce.triggerSave();
+        if (window.saveWorkControlInstance) {
+          window.saveWorkControlInstance.validateMetadata();
+        }
+      }
+
+      editor.on('change keyup input undo redo setcontent', function () {
+        updateValidation();
+      });
+
+      editor.on('keydown', function (event) {
+        const allowedKeys = [
+          'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+          'Tab', 'Enter', 'Escape', 'Shift', 'Control', 'Alt', 'Meta'
+        ];
+
+        if (allowedKeys.includes(event.key)) return;
+
+        if (getCharacterCount() >= maxLength) {
+          event.preventDefault();
+        }
+      });
+    }
+
 content_block:
   <<: *default
   menubar: false
@@ -9,13 +44,46 @@ content_block:
     - table
     - fullscreen
     - image
+
 rich_text:
+  <<: *default
   menubar: false
   toolbar:
     - "undo redo | bold italic underline | alignleft aligncenter alignright | link | numlist bullist outdent indent | blockquote | code"
   plugins:
     - "link lists code paste"
   invalid_styles: "color font-family"
+  paste_preprocess: |
+    function (plugin, args) {
+      const maxLength = 10000;
+
+      function truncateIgnoringWhitespace(value, limit) {
+        let count = 0;
+        let result = '';
+
+        for (let i = 0; i < value.length; i += 1) {
+          const char = value.charAt(i);
+          if (!/\s/.test(char)) {
+            if (count >= limit) break;
+            count += 1;
+          }
+          result += char;
+        }
+
+        return result;
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = args.content || '';
+      const plainText = wrapper.textContent || wrapper.innerText || '';
+
+      if (plainText.replace(/\s/g, '').length > maxLength) {
+        const truncated = truncateIgnoringWhitespace(plainText, maxLength);
+        const escaped = document.createElement('div');
+        escaped.textContent = truncated;
+        args.content = escaped.innerHTML;
+      }
+    }
   style_formats:
     - title: "Inline"
       items:
@@ -44,15 +112,6 @@ rich_text:
         - title: "Right"
           block: ""
           classes: "align-right"
-  setup: |
-    function (editor) {
-      editor.on('change', function () {
-        tinymce.triggerSave();
-        if (window.saveWorkControlInstance) {
-          window.saveWorkControlInstance.validateMetadata();
-        }
-      });
-    }
 
 custom:
   <<: *default
