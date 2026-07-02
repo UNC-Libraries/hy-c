@@ -22,8 +22,8 @@ class TextLengthValidator < ActiveModel::EachValidator
   def normalized_text(value)
     text = Array(value).join(' ')
     text = ActionView::Base.full_sanitizer.sanitize(text)
-    text = text.gsub(/\r\n?|\n/, ' ')
-    text.squeeze(' ').strip
+    # Count only non-whitespace characters to match client-side validation
+    text.gsub(/\s+/, '')
   end
 
   def maximum_length

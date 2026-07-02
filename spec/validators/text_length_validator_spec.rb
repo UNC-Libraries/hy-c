@@ -65,5 +65,13 @@ RSpec.describe TextLengthValidator do
 
       validator_without_message.validate_each(record, attribute, '<b>hi</b>')
     end
+
+    it 'does not count whitespace toward the maximum length' do
+      validator_without_message = described_class.new(attributes: [:body], maximum: 3)
+
+      expect(errors).not_to receive(:add)
+
+      validator_without_message.validate_each(record, attribute, 'a b c')
+    end
   end
 end
