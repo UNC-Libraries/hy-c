@@ -1,5 +1,88 @@
 default: &default
-  setup: tinymce_nav_safety # onChange event init
+  setup: |
+    function (editor) {
+      if (typeof tinymce_nav_safety === 'function') tinymce_nav_safety(editor);
+
+      const maxLength = 10000;
+
+      function normalizeText(value) {
+        return (value || '')
+          .replace(/\s+/g, '');  // remove all whitespace to match server
+      }
+
+      function getCharacterCount() {
+        const text = editor.getContent({ format: 'text' }) || '';
+        return normalizeText(text).length;
+      }
+
+      function updateCounter() {
+        const counter = document.getElementById(`character-counter-${editor.id}`);
+        if (!counter) return;
+
+        const remaining = maxLength - getCharacterCount();
+        counter.textContent = `${remaining} characters remaining`;
+        counter.classList.toggle('character-counter--over', remaining < 0);
+      }
+
+      function updateValidation() {
+        tinymce.triggerSave();
+        if (window.saveWorkControlInstance) {
+          window.saveWorkControlInstance.validateMetadata();
+        }
+        updateCounter();
+      }
+
+      editor.on('init', function () {
+        updateCounter();
+      });
+
+      editor.on('change keyup input undo redo setcontent', function () {
+        updateValidation();
+      });
+
+      editor.on('keydown', function (event) {
+        const allowedKeys = [
+          'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+          'Tab', 'Enter', 'Escape', 'Shift', 'Control', 'Alt', 'Meta'
+        ];
+
+        if (allowedKeys.includes(event.key)) return;
+
+        if (getCharacterCount() >= maxLength) {
+          event.preventDefault();
+        }
+      });
+    }
+
+  paste_preprocess: |
+    function (plugin, args) {
+      const editor = plugin.editor;
+      const maxLength = 10000;
+
+      function normalizeText(value) {
+        return (value || '')
+          .replace(/\s+/g, '');  // remove all whitespace to match server
+      }
+
+      function getCurrentLength() {
+        const text = editor.getContent({ format: 'text' }) || '';
+        return normalizeText(text).length;
+      }
+
+      const currentLength = getCurrentLength();
+      const available = maxLength - currentLength;
+
+      if (available <= 0) {
+        args.content = '';
+        return;
+      }
+
+      const normalized = normalizeText(args.content);
+      if (normalized.length > available) {
+        args.content = normalized.slice(0, available);
+      }
+    }
+
 content_block:
   <<: *default
   menubar: false
@@ -9,7 +92,9 @@ content_block:
     - table
     - fullscreen
     - image
+
 rich_text:
+  <<: *default
   menubar: false
   toolbar:
     - "undo redo | bold italic underline | alignleft aligncenter alignright | link | numlist bullist outdent indent | blockquote | code"
@@ -44,15 +129,6 @@ rich_text:
         - title: "Right"
           block: ""
           classes: "align-right"
-  setup: |
-    function (editor) {
-      editor.on('change', function () {
-        tinymce.triggerSave();
-        if (window.saveWorkControlInstance) {
-          window.saveWorkControlInstance.validateMetadata();
-        }
-      });
-    }
 
 custom:
   <<: *default

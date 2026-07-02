@@ -9,6 +9,8 @@ class General < ActiveFedora::Base
   # Change this to restrict which works can be added as a child.
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
+  validates :abstract, text_length: { maximum: 10_000, message: 'Abstract fields cannot exceed 10000 characters.' }
+  validates :methodology, text_length: { maximum: 10_000, message: 'Methodology fields cannot exceed 10000 characters.' }
 
   property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
     index.as :stored_searchable
