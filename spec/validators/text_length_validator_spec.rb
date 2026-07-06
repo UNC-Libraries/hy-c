@@ -52,13 +52,13 @@ RSpec.describe TextLengthValidator do
 
         # "hello\nworld" normalizes to "hello world" which is 11 chars
         # but maximum is 10 so this should fail — use a short enough string
-        validator.validate_each(record, attribute, "hi\nthere")
+        validator.validate_each(record, attribute, "hi\nthere") # rubocop:disable Style/StringLiterals
       end
 
       it 'collapses whitespace before checking length' do
         expect(errors).not_to receive(:add)
 
-        validator.validate_each(record, attribute, "hi   there")
+        validator.validate_each(record, attribute, 'hi   there')
       end
 
       it 'adds the default error message when text is too long' do
