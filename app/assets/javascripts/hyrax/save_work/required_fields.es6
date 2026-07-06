@@ -103,12 +103,7 @@ export class RequiredFields {
         }
 
         let overLimitFields = this.getOverLimitFields();
-
-        if (overLimitFields.length > 0 && !submitBtn.prop('disabled')) {
-            submitBtn.prop('disabled', true);
-        } else if (overLimitFields.length === 0 && submitBtn.prop('disabled')) {
-            submitBtn.prop('disabled', false);
-        }
+        submitBtn.prop('disabled', overLimitFields.length > 0);
     }
 
     // Allow form to be submitted with hidden, empty, cloning fields
@@ -172,11 +167,11 @@ export class RequiredFields {
         this.form.off('submit.characterLimit').on('submit.characterLimit', function(e) {
             const overLimitFields = self.getOverLimitFields();
             self.updateCharacterLimitAlert(overLimitFields);
+            self.updateSubmitButton();
 
             if (overLimitFields.length > 0) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
-                self.updateSubmitButton();
                 return false;
             }
         });
