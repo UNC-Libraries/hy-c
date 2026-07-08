@@ -38,7 +38,7 @@ Rails.application.reloader.to_prepare do
   Riiif.unauthorized_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg')
 
   # [hyc-override] longer cache period
-  Riiif::Engine.config.cache_duration = 365.day
+  Riiif::Engine.config.cache_duration = 365.days
 end
 
 module Hyrax
@@ -51,7 +51,7 @@ module Hyrax
       attr_reader :id
       def initialize(input_path, tempfile = nil, id:)
         super(input_path, tempfile)
-        raise(ArgumentError, "must specify id") if id.blank?
+        raise(ArgumentError, 'must specify id') if id.blank?
         @id = id
       end
 
@@ -98,7 +98,9 @@ module Hyrax
     private
 
     def build_path(id, force: false)
-      Riiif::Image.cache.fetch("riiif:" + Digest::MD5.hexdigest("path:#{id}"),
+      # MD5 used only to generate a cache key, not for security purposes
+      # rubocop:disable GitHub/InsecureHashAlgorithm
+      Riiif::Image.cache.fetch('riiif:' + Digest::MD5.hexdigest("path:#{id}"),
                                expires_in: Riiif::Image.expires_in,
                                force: force) do
         load_file(id)

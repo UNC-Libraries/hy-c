@@ -6,6 +6,7 @@ module Hyrax
   # Store a file uploaded by a user.
   #
   # Eventually these files get attached to {FileSet}s and pushed into Fedora.
+  # rubocop:disable Rails/ApplicationRecord
   class UploadedFile < ActiveRecord::Base
     self.table_name = 'uploaded_files'
     mount_uploader :file, UploadedFileUploader
