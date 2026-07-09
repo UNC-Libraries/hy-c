@@ -7,7 +7,7 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
   PID = 991234
 
   let(:source_path)    { File.join(fixture_path, 'test.doc') }
-  let(:output_service) { Hyrax::ValkyriePersistDerivatives }
+  let(:output_service) { Hyrax::PersistDerivatives }
 
   describe '#encode_file' do
     context 'when converting to another format' do
