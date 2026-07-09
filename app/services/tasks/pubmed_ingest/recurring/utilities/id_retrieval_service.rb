@@ -9,17 +9,25 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     @tracker = tracker
   end
 
-  def retrieve_ids_within_date_range(output_path:, db:, retmax: 200, extras: nil)
-    LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
+  # retrieve IDs for date range by requesting IDs per day
+  def retrieve_ids_within_date_range(output_path:, db:)
+    LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} -
+      #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
+    dates = chunkify_date_range(@start_date, @end_date)
+    dates.each do |date|
+      retrieve_ids_for_one_day(output_path, db, date)
+    end
+  end
+
+  def retrieve_ids_for_one_day(output_path, db, date, retmax: 200, extras: nil)
+    LogUtilsHelper.double_log("Fetching IDs for date: #{date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_for_one_day')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
-    # Initialize cursor from tracker or set to 0
-    job_progress = @tracker['progress']['retrieve_ids_within_date_range'][db]
-    cursor = job_progress['cursor']
+    cursor = 0
     term_str = build_search_terms(
       db: db,
-      start_date: @start_date,
-      end_date:   @end_date,
+      start_date: date,
+      end_date:   date,
       extras: extras
     )
     params = {
@@ -54,8 +62,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
           end
           count += ids.size
           cursor += ids.size
-          job_progress['cursor'] = cursor
-          @tracker.save
         rescue => e
           Rails.logger.error("Failed to write or save tracker: #{e.message}")
           raise e
@@ -254,5 +260,17 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     aff = '(' + UNC_AFFILIATION_TERMS.map { |t| %Q{"#{t}"[AD]} }.join(' OR ') + ')'
 
     [aff, date, extras].compact.join(' AND ')
+  end
+
+  # split date range into one day chunks
+  def chunkify_date_range(date_from, date_to)
+    dates = []
+    start_date = date_from
+    loop do
+      dates << start_date
+      start_date += 1.day
+      break if start_date > date_to
+    end
+    dates
   end
 end

@@ -29,6 +29,7 @@ RSpec.describe Hyrax::DissertationPresenter do
       'degree_granting_institution_tesim' => ['an institution'],
       'deposit_record_tesim' => 'a deposit record',
       'doi_tesim' => ['a doi'],
+      'embargo_history_ssim' => ['Embargo created 2017-01-22'],
       'based_near_tesim' => ['a geographic subject'],
       'graduation_year_tesim' => ['a year'],
       'note_tesim' => ['a note'],
@@ -61,6 +62,20 @@ RSpec.describe Hyrax::DissertationPresenter do
 
     it { is_expected.to be_kind_of ActiveModel::Name }
     it { expect(subject.human).to eq 'Dissertation' }
+  end
+
+  describe '#embargo_history' do
+    it 'returns embargo history from the solr document' do
+      expect(presenter.embargo_history).to eq(['Embargo created 2017-01-22'])
+    end
+
+    context 'when embargo history is not present' do
+      let(:attributes) { super().except('embargo_history_ssim') }
+
+      it 'returns an empty array' do
+        expect(presenter.embargo_history).to eq([])
+      end
+    end
   end
 
   describe '#attribute_to_html' do

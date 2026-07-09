@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
   let(:start_date) { Date.parse('2024-01-01') }
-  let(:end_date) { Date.parse('2024-01-31') }
+  let(:end_date) { Date.parse('2024-01-03') }
   let(:progress_hash) do
     {
         'retrieve_ids_within_date_range' => {
@@ -52,11 +52,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       double('response',
         code: 200,
         message: 'OK',
-        body: xml_response_body
+        body: xml_response_body1
       )
     end
 
-    let(:xml_response_body) do
+    let(:xml_response_body1) do
       <<~XML
         <?xml version="1.0"?>
         <eSearchResult>
@@ -69,8 +69,34 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       XML
     end
 
+    let(:xml_response_body2) do
+      <<~XML
+          <eSearchResult>
+            <Count>2</Count>
+            <IdList>
+              <Id>555</Id><Id>666</Id>
+            </IdList>
+          </eSearchResult>
+        XML
+    end
+
+    let(:xml_response_body3) do
+      <<~XML
+          <eSearchResult>
+            <Count>2</Count>
+            <IdList>
+              <Id>777</Id><Id>888</Id>
+            </IdList>
+          </eSearchResult>
+        XML
+    end
+
     before do
       allow(HTTParty).to receive(:get).and_return(mock_response)
+      allow(HTTParty).to receive(:get)
+         .and_return(double(code: 200, body: xml_response_body1, message: 'OK'),
+                     double(code: 200, body: xml_response_body2, message: 'OK'),
+                     double(code: 200, body: xml_response_body3, message: 'OK'))
       allow(File).to receive(:open).with(output_path, 'a').and_yield(temp_file)
     end
 
@@ -81,13 +107,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
         temp_file.rewind
         lines = temp_file.readlines
 
-        expect(lines.size).to eq(2)
+        # three days with 2 IDs each
+        expect(lines.size).to eq(6)
         first_entry = JSON.parse(lines[0])
         expect(first_entry).to eq({ 'id' => '123456' })
 
         second_entry = JSON.parse(lines[1])
         expect(second_entry).to eq({ 'id' => '789012' })
-        expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor']).to eq(2)
       end
 
       it 'makes correct API call' do
@@ -103,9 +129,35 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
             email: 'cdr@unc.edu',
             retstart: 0,
             # Contains AD affiliation OR-clause and date range
-            term: a_string_matching(/\(.*\[AD\].*OR.*\[AD\].*\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]/)
+            term: a_string_matching(/\(.*\[AD\].*OR.*\[AD\].*\)\s+AND\s+2024\/01\/01:2024\/01\/01\[PDAT\]/)
           )
-        )
+        ).exactly(1).time
+        expect(HTTParty).to have_received(:get).with(
+          'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
+          query: hash_including(
+            db: 'pubmed',
+            retmax: 200,
+            retmode: 'xml',
+            tool: 'CDR',
+            email: 'cdr@unc.edu',
+            retstart: 0,
+            # Contains AD affiliation OR-clause and date range
+            term: a_string_matching(/\(.*\[AD\].*OR.*\[AD\].*\)\s+AND\s+2024\/01\/02:2024\/01\/02\[PDAT\]/)
+          )
+        ).exactly(1).time
+        expect(HTTParty).to have_received(:get).with(
+          'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
+          query: hash_including(
+            db: 'pubmed',
+            retmax: 200,
+            retmode: 'xml',
+            tool: 'CDR',
+            email: 'cdr@unc.edu',
+            retstart: 0,
+            # Contains AD affiliation OR-clause and date range
+            term: a_string_matching(/\(.*\[AD\].*OR.*\[AD\].*\)\s+AND\s+2024\/01\/03:2024\/01\/03\[PDAT\]/)
+          )
+        ).exactly(1).time
       end
     end
 
@@ -121,7 +173,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
         second_entry = JSON.parse(lines[1])
         expect(second_entry['id']).to eq('PMC789012')
-        expect(tracker['progress']['retrieve_ids_within_date_range']['pmc']['cursor']).to eq(2)
       end
     end
 
@@ -137,36 +188,16 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
         expect(Rails.logger).to have_received(:error).with(
           'Failed to retrieve IDs: 500 - Internal Server Error'
-        )
+        ).exactly(3).times
       end
     end
-
-    context 'with cursor tracking' do
-      before do
-        tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor'] = 1000
-      end
-
-      it 'starts from cursor position' do
-        service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
-
-        expect(HTTParty).to have_received(:get).with(
-          'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
-          query: hash_including(
-            db: 'pubmed',
-            retmax: 200,
-            retmode: 'xml',
-            tool: 'CDR',
-            email: 'cdr@unc.edu',
-            retstart: 1000,
-            # now expects UNC [AD] OR-clause AND date range
-            term: a_string_matching(/\(.*\[AD\].*OR.*\[AD\].*\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]/)
-          )
-        )
-      end
-    end
-
 
     context 'when multiple pages of results' do
+      # use period of 1 day to test paging
+      let(:start_date) { Date.parse('2024-01-01') }
+      let(:end_date) { Date.parse('2024-01-01') }
+      let(:service) { described_class.new(start_date: start_date, end_date: end_date, tracker: tracker) }
+
       let(:xml_response_page1) do
         <<~XML
           <eSearchResult>
@@ -195,10 +226,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
                       double(code: 200, body: xml_response_page2, message: 'OK'))
       end
 
-      it 'advances cursor and writes all IDs sequentially' do
+      it 'writes all IDs sequentially' do
         service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
-
-        expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['cursor']).to eq(4)
 
         temp_file.rewind
         ids = temp_file.readlines.map { |l| JSON.parse(l)['id'] }
@@ -434,7 +463,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
         end_date: end_date,
         extras: nil
       )
-      expect(term).to match(/^\("UNC Chapel Hill"\[AD\]\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]$/)
+      expect(term).to match(/^\("UNC Chapel Hill"\[AD\]\)\s+AND\s+2024\/01\/01:2024\/01\/03\[PDAT\]$/)
     end
 
     it 'appends extras with AND' do
@@ -444,7 +473,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
         end_date: end_date,
         extras: 'open access[filter]'
       )
-      expect(term).to match(/\("UNCCH"\[AD\]\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]\s+AND\s+open access\[filter\]$/)
+      expect(term).to match(/\("UNCCH"\[AD\]\)\s+AND\s+2024\/01\/01:2024\/01\/03\[PDAT\]\s+AND\s+open access\[filter\]$/)
     end
   end
 
@@ -453,15 +482,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill'])
       term = service.send(:build_search_terms, db: 'pubmed', start_date: start_date, end_date: end_date, extras: nil)
       expect(term).to include('"UNC Chapel Hill"[AD]')
-      expect(term).to include('2024/01/01:2024/01/31[PDAT]')
+      expect(term).to include('2024/01/01:2024/01/03[PDAT]')
     end
 
     it 'uses date-only term for pmc' do
       term = service.send(:build_search_terms, db: 'pmc', start_date: start_date, end_date: end_date, extras: 'ignored')
-      expect(term).to eq('2024/01/01:2024/01/31[PDAT]')
+      expect(term).to eq('2024/01/01:2024/01/03[PDAT]')
     end
   end
-
 
   describe 'private methods' do
     describe '#dedup_key' do

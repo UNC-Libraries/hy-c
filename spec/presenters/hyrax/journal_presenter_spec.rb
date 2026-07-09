@@ -24,6 +24,7 @@ RSpec.describe Hyrax::JournalPresenter do
       'digital_collection_tesim' => ['my collection'],
       'doi_tesim' => '12345',
       'edition_tesim' => 'First Edition',
+      'embargo_history_ssim' => ['Embargo created 2017-01-22'],
       'extent_tesim' => ['1993'],
       'based_near_tesim' => ['California'],
       'isbn_tesim' => ['123456'],
@@ -58,6 +59,20 @@ RSpec.describe Hyrax::JournalPresenter do
 
     it { is_expected.to be_kind_of ActiveModel::Name }
     it { expect(subject.human).to eq 'Journal' }
+  end
+
+  describe '#embargo_history' do
+    it 'returns embargo history from the solr document' do
+      expect(presenter.embargo_history).to eq(['Embargo created 2017-01-22'])
+    end
+
+    context 'when embargo history is not present' do
+      let(:attributes) { super().except('embargo_history_ssim') }
+
+      it 'returns an empty array' do
+        expect(presenter.embargo_history).to eq([])
+      end
+    end
   end
 
   describe '#attribute_to_html' do

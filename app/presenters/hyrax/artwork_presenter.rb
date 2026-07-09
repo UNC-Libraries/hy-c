@@ -3,5 +3,6 @@
 #  `rails generate hyrax:work Artwork`
 module Hyrax
   class ArtworkPresenter < Hyrax::WorkShowPresenter
+    include EmbargoHistoryPresenter
   end
 end

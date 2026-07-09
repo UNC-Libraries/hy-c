@@ -10,14 +10,13 @@ end
 gem 'browser', '~> 5.3', '>= 5.3.1'
 gem 'net-ftp'
 gem 'active-fedora', '~> 15.0'
-gem 'base64', '0.1.0' # Downgrade from 0.2 so that it will match the version being used by passenger on the server
 gem 'blacklight', '~> 7.40'
 gem 'blacklight_dynamic_sitemap', '~> 1.0'
 gem 'blacklight_oai_provider', '7.0.2'
 gem 'blacklight_range_limit', '~> 8.3.0'
 gem 'bootstrap', '~> 4.0'
 gem 'bulkrax', '6.0.1'
-gem 'clamav-client', require: 'clamav/client'
+gem 'clamby', '~> 1.6', require: 'clamby'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0.0'
 gem 'concurrent-ruby', '1.3.4'
@@ -46,15 +45,14 @@ gem 'json-ld', '~> 3.2'
 gem 'sparql', '3.2.5'
 gem 'ldp', '~> 1.1'
 gem 'linkeddata'
-gem 'logger', '1.5.3'
+gem 'logger', '~>1.5'
 gem 'loofah', '~>2.19.1'
 gem 'mini_magick', '~>4.13.0'
 gem 'nokogiri', '~>1.14.2', platforms: :ruby
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-# Cannot use 6.0.23 because it adds rackup as a dependency, which leads to conflicts for now
-gem 'passenger', '6.0.22', require: 'phusion_passenger/rack_handler'
+gem 'passenger', '6.1.4', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

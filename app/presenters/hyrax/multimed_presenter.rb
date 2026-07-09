@@ -3,5 +3,6 @@
 #  `rails generate hyrax:work Multimed`
 module Hyrax
   class MultimedPresenter < Hyrax::WorkShowPresenter
+    include EmbargoHistoryPresenter
   end
 end

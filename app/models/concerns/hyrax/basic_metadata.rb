@@ -54,7 +54,7 @@ module Hyrax
       property :deposit_agreement, predicate: ::RDF::URI('http://www.loc.gov/premis/rdf/v3/note')
 
       property :wcag_compliance, predicate: ::RDF::URI('https://schema.org/accessibilitySummary') do |index|
-        index.as :stored_searchable
+        index.as :stored_searchable, :facetable
       end
 
       id_blank = proc { |attributes| attributes[:id].blank? }

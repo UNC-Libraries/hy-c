@@ -41,6 +41,9 @@
       </div>
     </div><!-- /card -->
 
+    <%# [hyc-override] Show embargo history to admin users %>
+    <%= render 'hyrax/base/hyc_embargo_history', presenter: @presenter %>
+
     <div class="card">
       <div class="card-header">
         <h2 class="card-title"><%= t('hyrax.base.show.relationships') %></h2>

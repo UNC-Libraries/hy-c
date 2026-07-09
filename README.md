@@ -49,17 +49,15 @@ To do so, log in as an admin, navigate to the Dashboard and then Collections, Ad
 * Pre-requisites (for Mac):
   * Docker Desktop - https://docs.docker.com/desktop/mac/install/
   * Homebrew (package manager for Mac) - https://brew.sh/
-  * (optional) If you use Atom, get the Dockerfile specific grammar (may need to restart Atom to see effect) `apm install language-docker`
 
 ##### First-time setup, or if you've cleaned up Docker images or volumes
-* If on an M1 Mac: check "Use the new Virtualization framework" and "Enable VirtioFS accelerated directory sharing" in the Docker Desktop "Experimental Features" settings
 * Clone the repository `git clone git@github.com:UNC-Libraries/hy-c.git`
 * In the same parent directory, either
   * create a directory called `hyc-gems`, or
   * clone the private repository `git@gitlab.lib.unc.edu:cdr/hyc-gems.git` (*NOTE*: Must be on UNC VPN)
 * cd into the hy-c repository `cd hy-c`
 
-* Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, use the `dev/local_env.yml` file from https://gitlab.lib.unc.edu/cdr/vagrant-rails/, or copy the sample file and fill in the appropriate values
+* Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, use the `dev/local_env.yml` file from https://gitlab.lib.unc.edu/cdr/hyc-ansible/, or copy the sample file and fill in the appropriate values
 ```bash
 cp config/local_env_sample.yml config/local_env.yml
   ```

@@ -47,14 +47,17 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     @auth_token = ENV['MATOMO_AUTH_TOKEN']
     @site_id = ENV['MATOMO_SITE_ID']
     @matomo_base_url = ENV['MATOMO_BASE_URL']
+    @analytics = ENV['HYRAX_ANALYTICS']
     ENV['MATOMO_AUTH_TOKEN'] = spec_auth_token
     ENV['MATOMO_SITE_ID'] = spec_site_id
     ENV['MATOMO_BASE_URL'] = spec_base_analytics_url
+    ENV['HYRAX_ANALYTICS'] = 'true'
     example.run
     # Reset the environment variables
     ENV['MATOMO_AUTH_TOKEN'] = @auth_token
     ENV['MATOMO_SITE_ID'] = @site_id
     ENV['MATOMO_BASE_URL'] = @matomo_base_url
+    ENV['HYRAX_ANALYTICS'] = @analytics
   end
 
   before do
@@ -63,7 +66,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     @user = user
     sign_in @user
     allow(WorkUtilsHelper).to receive(:fetch_work_data_by_fileset_id).and_return(mock_work_data)
-    allow(Hyrax::Analytics.config).to receive(:site_id).and_return(spec_site_id)
     allow(SecureRandom).to receive(:uuid).and_return('555')
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
