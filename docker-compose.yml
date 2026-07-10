@@ -67,13 +67,20 @@ services:
     networks:
       - hycdev
   fedora:
-    image: cazzerson/fcrepo4:4.7.5
+    image: ghcr.io/samvera/fcrepo4:4.7.5
     ports:
       - "8984:8080"
     volumes:
       - fcrepo_data:/usr/local/tomcat/fcrepo4-data/
     environment:
-      CATALINA_OPTS: "-Djava.awt.headless=true -server -Xms1G -Xmx2G -XX:MaxNewSize=1G -XX:+HeapDumpOnOutOfMemoryError -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
+      CATALINA_OPTS: >-
+        -Djava.awt.headless=true
+        -server
+        -Xms1G
+        -Xmx2G
+        -XX:MaxNewSize=1G
+        -XX:+HeapDumpOnOutOfMemoryError
+        -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json
     stdin_open: true
     tty: true
     networks:
