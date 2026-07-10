@@ -57,7 +57,7 @@ export class RequiredFields {
     // Reassign requiredFields because fields may have been added or removed.
     reload() {
         // ":input" matches all input, select or textarea fields.
-        this.requiredFields = this.form.find(':input[required], input[name*="date_issued"]');
-        this.requiredFields.change(this.callback)
+        this.requiredFields = this.form.find(':input[required], input[name*="date_issued"]')
+        this.requiredFields.on('change', this.callback)
     }
 }
