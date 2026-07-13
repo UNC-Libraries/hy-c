@@ -5,10 +5,14 @@ services:
     build:
       context: .
     depends_on:
-      - clamav
-      - db
-      - fedora
-      - solr
+      clamav:
+        condition: service_started
+      db:
+        condition: service_started
+      fedora:
+        condition: service_healthy
+      solr:
+        condition: service_started
     env_file:
       - docker/.env
     ports:
@@ -26,12 +30,18 @@ services:
     build:
       context: .
     depends_on:
-      - clamav
-      - db
-      - fedora
-      - redis
-      - solr
-      - web
+      clamav:
+        condition: service_started
+      db:
+        condition: service_started
+      fedora:
+        condition: service_healthy
+      solr:
+        condition: service_started
+      redis:
+        condition: service_started
+      web:
+        condition: service_started
     command: sh /hyrax/docker/start-sidekiq.sh
     env_file:
       - docker/.env
@@ -72,15 +82,11 @@ services:
       - "8984:8080"
     volumes:
       - fcrepo_data:/usr/local/tomcat/fcrepo4-data/
-    environment:
-      CATALINA_OPTS: >-
-        -Djava.awt.headless=true
-        -server
-        -Xms1G
-        -Xmx2G
-        -XX:MaxNewSize=1G
-        -XX:+HeapDumpOnOutOfMemoryError
-        -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/rest/ || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
     stdin_open: true
     tty: true
     networks:
