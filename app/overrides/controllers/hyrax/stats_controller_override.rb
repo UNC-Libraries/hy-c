@@ -14,11 +14,11 @@ Hyrax::StatsController.class_eval do
     # [hyc-override] Execute all of the stats requests in parallel
     threads = []
     threads << Thread.new do
-      @pageviews = Hyrax::Analytics.monthly_events_for_id(@document.id, 'work-view', date = date_range)
+      @pageviews = Hyrax::Analytics::Matomo.monthly_events_for_id(@document.id, 'work-view', date = date_range)
     end
     # [hyc-override] Retrieve download stats from local database
     threads << Thread.new do
-      @downloads = Hyrax::Analytics.monthly_events_for_id(@document.id, 'file-set-in-work-download', date = date_range)
+      @downloads = Hyrax::Analytics::Matomo.monthly_events_for_id(@document.id, 'file-set-in-work-download', date = date_range)
     end
     threads.each(&:join)
   end
