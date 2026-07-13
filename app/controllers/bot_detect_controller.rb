@@ -146,6 +146,6 @@ class BotDetectController < ApplicationController
     user_agent = controller.request.user_agent.to_s.downcase
     controller.is_a?(Hyrax::StatsController) \
         || query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') \
-        || query_parameters.key?('range') || query_parameters.key?('page')
+        || query_parameters.key?('range') || query_parameters.key?('page') || query_parameters.key?('search_field')
   end
 end
