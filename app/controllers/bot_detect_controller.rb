@@ -17,7 +17,7 @@ class BotDetectController < ApplicationController
   class_attribute :cf_turnstile_secret_key, default: '1x0000000000000000000000000000000AA' # a testing key always passes
 
   # how long is a challenge pass good for before re-challenge?
-  class_attribute :session_passed_good_for, default: 24.hours
+  class_attribute :session_passed_good_for, default: 30.minutes
 
   # Executed at the _controller_ filter level, to last minute exempt certain
   # actions from protection.
