@@ -57,7 +57,7 @@ To do so, log in as an admin, navigate to the Dashboard and then Collections, Ad
   * clone the private repository `git@gitlab.lib.unc.edu:cdr/hyc-gems.git` (*NOTE*: Must be on UNC VPN)
 * cd into the hy-c repository `cd hy-c`
 
-* Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, use the `dev/local_env.yml` file from https://gitlab.lib.unc.edu/cdr/hyc-ansible/, or copy the sample file and fill in the appropriate values
+* Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague or copy the sample file and fill in the appropriate values
 ```bash
 cp config/local_env_sample.yml config/local_env.yml
   ```

@@ -42,7 +42,7 @@ RSpec.describe Hyrax::StatsController do
       generate_hyc_stats_for_range(work.id, spec_fileset_ids[0], spec_downloads)
       generate_hyc_stats_for_range(work.id, spec_fileset_ids[1], spec_downloads)
 
-      expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
+      expect(Hyrax::Analytics::Matomo).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
             label: "#{work.id} - work-view"}).and_return(spec_page_views_hash)
       expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
       expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.my.works'), Hyrax::Engine.routes.url_helpers.my_works_path(locale: 'en'))
