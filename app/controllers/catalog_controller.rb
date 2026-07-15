@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 class CatalogController < ApplicationController
+  MAX_SEARCH_PAGE = 20
+
   def self.turnstile_enabled?
     @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
   end
+  prepend_before_action :enforce_search_page_limit, only: :index
   before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
 
   include BlacklightRangeLimit::ControllerOverride
@@ -574,5 +577,19 @@ class CatalogController < ApplicationController
   # this method is not called in that context.
   def render_bookmarks_control?
     false
+  end
+
+  private
+
+  def enforce_search_page_limit
+    return unless requested_search_page.to_i > MAX_SEARCH_PAGE
+
+    head :not_found
+  end
+
+  def requested_search_page
+    Integer(params[:page], 10)
+  rescue ArgumentError, TypeError
+    0
   end
 end
