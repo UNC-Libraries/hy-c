@@ -12,4 +12,74 @@ RSpec.describe CatalogController, type: :controller do
       expect(blacklight_config.max_per_page).to eq(20)
     end
   end
+
+  describe 'dest query parameter handling' do
+    before do
+      request.headers['sec-fetch-dest'] = 'empty'
+      allow(CatalogController).to receive(:turnstile_enabled?).and_return(false)
+    end
+
+    it 'returns not found when the query string includes dest' do
+      get :index, params: { dest: '/catalog?page=2' }
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'search facet count limits' do
+    before do
+      request.headers['sec-fetch-dest'] = 'empty'
+      allow(CatalogController).to receive(:turnstile_enabled?).and_return(false)
+    end
+
+    it 'returns not found when more than five facet fields are selected' do
+      get :index, params: { f: facet_params_for(6) }
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'allows searches with up to five facet fields selected' do
+      get :index, params: { f: facet_params_for(5) }
+
+      expect(response).not_to have_http_status(:not_found)
+    end
+
+    def facet_params_for(count)
+      CatalogController.blacklight_config.facet_fields.keys.first(count).each_with_object({}) do |field, params|
+        params[field] = ['test']
+      end
+    end
+  end
+
+  describe 'facet page limits' do
+    before do
+      request.headers['sec-fetch-dest'] = 'empty'
+      allow(CatalogController).to receive(:turnstile_enabled?).and_return(false)
+    end
+
+    it 'returns not found for facet pages beyond the configured limit' do
+      get :facet, params: { id: CatalogController.blacklight_config.facet_fields.keys.first, 'facet.page': '21' }
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'search page limits' do
+    before do
+      request.headers['sec-fetch-dest'] = 'empty'
+      allow(CatalogController).to receive(:turnstile_enabled?).and_return(false)
+    end
+
+    it 'returns not found for pages beyond the configured limit' do
+      get :index, params: { page: '21' }
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'allows requests within the configured limit' do
+      get :index, params: { page: '20' }
+
+      expect(response).not_to have_http_status(:not_found)
+    end
+  end
 end
