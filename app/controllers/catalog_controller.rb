@@ -619,7 +619,9 @@ class CatalogController < ApplicationController
   def active_facet_field_keys(facet_params)
     return [] unless facet_params.is_a?(ActionController::Parameters) || facet_params.is_a?(Hash)
 
-    facet_params.each_with_object([]) do |(field, values), active_fields|
+    facet_params_enum = facet_params.is_a?(ActionController::Parameters) ? facet_params.each_pair : facet_params.each
+
+    facet_params_enum.each_with_object([]) do |(field, values), active_fields|
       next unless facet_values_present?(values)
 
       active_fields << field.to_s

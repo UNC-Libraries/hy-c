@@ -44,6 +44,12 @@ RSpec.describe CatalogController, type: :controller do
       expect(response).not_to have_http_status(:not_found)
     end
 
+    it 'allows normal browse requests with a single facet field' do
+      get :index, params: { f: { human_readable_type_sim: ['Collection'] } }
+
+      expect(response).not_to have_http_status(:not_found)
+    end
+
     def facet_params_for(count)
       CatalogController.blacklight_config.facet_fields.keys.first(count).each_with_object({}) do |field, params|
         params[field] = ['test']
