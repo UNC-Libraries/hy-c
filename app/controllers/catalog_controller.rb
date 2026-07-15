@@ -7,6 +7,7 @@ class CatalogController < ApplicationController
   def self.turnstile_enabled?
     @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
   end
+  prepend_before_action :reject_dest_query_param
   prepend_before_action :enforce_search_facet_field_limit, only: :index
   prepend_before_action :enforce_search_page_limit, only: :index
   prepend_before_action :enforce_facet_page_limit, only: :facet
@@ -584,6 +585,12 @@ class CatalogController < ApplicationController
   end
 
   private
+
+  def reject_dest_query_param
+    return unless request.query_parameters.key?('dest')
+
+    head :not_found
+  end
 
   def enforce_search_page_limit
     return unless integer_param(:page) > MAX_SEARCH_PAGE
