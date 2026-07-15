@@ -117,6 +117,9 @@ class CatalogController < ApplicationController
       rows: 10,
       qf: 'title_tesim description_tesim creator_label_tesim keyword_tesim all_text_timv identifier_tesim related_url_tesim'
     }
+    config.per_page = [10, 20]
+    config.default_per_page = 10
+    config.max_per_page = 20
 
     # solr field configuration for document/show views
     config.index.title_field = solr_name('title', :stored_searchable)
