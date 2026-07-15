@@ -593,7 +593,8 @@ class CatalogController < ApplicationController
   end
 
   def enforce_search_page_limit
-    return unless integer_param(:page) > MAX_SEARCH_PAGE
+    page = validated_integer_param(:page)
+    return if page.nil? || page <= MAX_SEARCH_PAGE
 
     head :not_found
   end
@@ -605,7 +606,8 @@ class CatalogController < ApplicationController
   end
 
   def enforce_facet_page_limit
-    return unless integer_param(:'facet.page') > MAX_FACET_PAGE
+    page = validated_integer_param(:'facet.page')
+    return if page.nil? || page <= MAX_FACET_PAGE
 
     head :not_found
   end
@@ -639,9 +641,14 @@ class CatalogController < ApplicationController
     flattened_values.flatten.compact_blank.any?
   end
 
-  def integer_param(key)
-    Integer(params[key], 10)
-  rescue ArgumentError, TypeError
-    0
+  def validated_integer_param(key)
+    value = params[key]
+    return if value.blank?
+
+    value = value.to_s
+    return Integer(value, 10) if value.match?(/\A\d+\z/)
+
+    head :bad_request
+    nil
   end
 end

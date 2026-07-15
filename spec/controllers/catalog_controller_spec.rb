@@ -68,6 +68,12 @@ RSpec.describe CatalogController, type: :controller do
 
       expect(response).to have_http_status(:not_found)
     end
+
+    it 'returns bad request for malformed facet page values' do
+      get :facet, params: { id: CatalogController.blacklight_config.facet_fields.keys.first, 'facet.page': '21x' }
+
+      expect(response).to have_http_status(:bad_request)
+    end
   end
 
   describe 'search page limits' do
@@ -86,6 +92,12 @@ RSpec.describe CatalogController, type: :controller do
       get :index, params: { page: '20' }
 
       expect(response).not_to have_http_status(:not_found)
+    end
+
+    it 'returns bad request for malformed page values' do
+      get :index, params: { page: '200x' }
+
+      expect(response).to have_http_status(:bad_request)
     end
   end
 end
