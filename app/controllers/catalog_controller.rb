@@ -2,10 +2,12 @@
 class CatalogController < ApplicationController
   MAX_SEARCH_PAGE = 20
   MAX_FACET_PAGE = 20
+  MAX_SEARCH_FACET_FIELDS = 5
 
   def self.turnstile_enabled?
     @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
   end
+  prepend_before_action :enforce_search_facet_field_limit, only: :index
   prepend_before_action :enforce_search_page_limit, only: :index
   prepend_before_action :enforce_facet_page_limit, only: :facet
   before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
@@ -589,10 +591,43 @@ class CatalogController < ApplicationController
     head :not_found
   end
 
+  def enforce_search_facet_field_limit
+    return unless selected_facet_field_count > MAX_SEARCH_FACET_FIELDS
+
+    head :not_found
+  end
+
   def enforce_facet_page_limit
     return unless integer_param(:'facet.page') > MAX_FACET_PAGE
 
     head :not_found
+  end
+
+  def selected_facet_field_count
+    %i[f f_inclusive].flat_map do |key|
+      active_facet_field_keys(params[key])
+    end.uniq.size
+  end
+
+  def active_facet_field_keys(facet_params)
+    return [] unless facet_params.is_a?(ActionController::Parameters) || facet_params.is_a?(Hash)
+
+    facet_params.each_with_object([]) do |(field, values), active_fields|
+      next unless facet_values_present?(values)
+
+      active_fields << field.to_s
+    end
+  end
+
+  def facet_values_present?(values)
+    flattened_values = case values
+                       when ActionController::Parameters, Hash
+                         values.values
+                       else
+                         Array.wrap(values)
+                       end
+
+    flattened_values.flatten.compact_blank.any?
   end
 
   def integer_param(key)
