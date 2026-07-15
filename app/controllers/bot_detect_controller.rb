@@ -17,7 +17,7 @@ class BotDetectController < ApplicationController
   class_attribute :cf_turnstile_secret_key, default: '1x0000000000000000000000000000000AA' # a testing key always passes
 
   # how long is a challenge pass good for before re-challenge?
-  class_attribute :session_passed_good_for, default: 24.hours
+  class_attribute :session_passed_good_for, default: 30.minutes
 
   # Executed at the _controller_ filter level, to last minute exempt certain
   # actions from protection.
@@ -144,8 +144,10 @@ class BotDetectController < ApplicationController
   def self.issue_challenge?(controller)
     query_parameters = controller.request.query_parameters
     user_agent = controller.request.user_agent.to_s.downcase
+    # Add this clause back into the conditional below to block downloads
+    # || (controller.is_a?(Hyrax::DownloadsController) && query_parameters['file'] != 'thumbnail' && !user_agent.include?('googlebot') && !user_agent.include?('googleother')) \
     controller.is_a?(Hyrax::StatsController) \
         || query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') \
-        || query_parameters.key?('range') || query_parameters.key?('page')
+        || query_parameters.key?('range') || query_parameters.key?('page') || query_parameters.key?('search_field') || query_parameters.key?('q')
   end
 end
