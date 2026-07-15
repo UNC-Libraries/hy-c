@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 class CatalogController < ApplicationController
   MAX_SEARCH_PAGE = 20
+  MAX_FACET_PAGE = 20
 
   def self.turnstile_enabled?
     @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
   end
   prepend_before_action :enforce_search_page_limit, only: :index
+  prepend_before_action :enforce_facet_page_limit, only: :facet
   before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
 
   include BlacklightRangeLimit::ControllerOverride
@@ -582,13 +584,19 @@ class CatalogController < ApplicationController
   private
 
   def enforce_search_page_limit
-    return unless requested_search_page.to_i > MAX_SEARCH_PAGE
+    return unless integer_param(:page) > MAX_SEARCH_PAGE
 
     head :not_found
   end
 
-  def requested_search_page
-    Integer(params[:page], 10)
+  def enforce_facet_page_limit
+    return unless integer_param(:'facet.page') > MAX_FACET_PAGE
+
+    head :not_found
+  end
+
+  def integer_param(key)
+    Integer(params[key], 10)
   rescue ArgumentError, TypeError
     0
   end
