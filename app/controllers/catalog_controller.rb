@@ -3,11 +3,13 @@ class CatalogController < ApplicationController
   MAX_SEARCH_PAGE = 20
   MAX_FACET_PAGE = 20
   MAX_SEARCH_FACET_FIELDS = 5
+  MAX_SEARCH_RESULTS_PER_PAGE = 20
 
   def self.turnstile_enabled?
     @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
   end
   prepend_before_action :reject_dest_query_param
+  prepend_before_action :clamp_search_result_size_params, only: :index
   prepend_before_action :enforce_search_facet_field_limit, only: :index
   prepend_before_action :enforce_search_page_limit, only: :index
   prepend_before_action :enforce_facet_page_limit, only: :facet
@@ -127,7 +129,6 @@ class CatalogController < ApplicationController
     }
     config.per_page = [10, 20]
     config.default_per_page = 10
-    config.max_per_page = 20
 
     # solr field configuration for document/show views
     config.index.title_field = solr_name('title', :stored_searchable)
@@ -592,6 +593,11 @@ class CatalogController < ApplicationController
     head :not_found
   end
 
+  def clamp_search_result_size_params
+    clamp_integer_param(:per_page, max: MAX_SEARCH_RESULTS_PER_PAGE) &&
+      clamp_integer_param(:rows, max: MAX_SEARCH_RESULTS_PER_PAGE)
+  end
+
   def enforce_search_page_limit
     page = validated_integer_param(:page)
     return if page.nil? || page <= MAX_SEARCH_PAGE
@@ -645,10 +651,26 @@ class CatalogController < ApplicationController
     value = params[key]
     return if value.blank?
 
-    value = value.to_s
-    return Integer(value, 10) if value.match?(/\A\d+\z/)
+    return Integer(value.to_s, 10) if numeric_param?(value)
 
     head :bad_request
     nil
+  end
+
+  def clamp_integer_param(key, max:)
+    value = params[key]
+    return true if value.blank?
+
+    unless numeric_param?(value)
+      head :bad_request
+      return false
+    end
+
+    params[key] = [Integer(value.to_s, 10), max].min.to_s
+    true
+  end
+
+  def numeric_param?(value)
+    value.to_s.match?(/\A\d+\z/)
   end
 end
