@@ -6,10 +6,30 @@ RSpec.describe CatalogController, type: :controller do
   describe 'Blacklight search result limits' do
     subject(:blacklight_config) { described_class.blacklight_config }
 
-    it 'limits available search result sizes and clamps direct requests' do
+    it 'limits available search result sizes in the UI' do
       expect(blacklight_config.per_page).to eq([10, 20])
       expect(blacklight_config.default_per_page).to eq(10)
-      expect(blacklight_config.max_per_page).to eq(20)
+    end
+  end
+
+  describe 'search result size parameter limits' do
+    it 'clamps per_page and rows to the configured maximum' do
+      params = ActionController::Parameters.new(per_page: '50', rows: '100')
+      allow(controller).to receive(:params).and_return(params)
+
+      controller.send(:clamp_search_result_size_params)
+
+      expect(params[:per_page]).to eq('20')
+      expect(params[:rows]).to eq('20')
+    end
+
+    it 'returns bad request for malformed result size values' do
+      params = ActionController::Parameters.new(per_page: '20x')
+      allow(controller).to receive(:params).and_return(params)
+
+      controller.send(:clamp_search_result_size_params)
+
+      expect(response).to have_http_status(:bad_request)
     end
   end
 
