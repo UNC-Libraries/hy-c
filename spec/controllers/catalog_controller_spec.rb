@@ -26,10 +26,11 @@ RSpec.describe CatalogController, type: :controller do
     it 'returns bad request for malformed result size values' do
       params = ActionController::Parameters.new(per_page: '20x')
       allow(controller).to receive(:params).and_return(params)
+      allow(controller).to receive(:head)
 
       controller.send(:clamp_search_result_size_params)
 
-      expect(response).to have_http_status(:bad_request)
+      expect(controller).to have_received(:head).with(:bad_request)
     end
   end
 
