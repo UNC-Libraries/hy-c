@@ -46,6 +46,7 @@ Hyrax::DownloadsController.class_eval do
     return if checksum.blank?
 
     path = File.join(fedora_binary_store_path, *checksum.scan(/.{2}/).first(3), checksum)
+    Rails.logger.info("DownloadsController: returning fedora binary from path #{path}")
     path if File.exist?(path)
   end
 
