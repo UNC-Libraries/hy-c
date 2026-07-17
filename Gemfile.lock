@@ -162,6 +162,8 @@ GEM
     blacklight_range_limit (8.3.0)
       blacklight (>= 7.25.2, < 9)
       deprecation
+    bootsnap (1.24.6)
+      msgpack (~> 1.2)
     bootstrap (4.6.2.1)
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 1.16.1, < 2)
@@ -652,6 +654,7 @@ GEM
     mini_portile2 (2.8.9)
     minitar (0.12.1)
     minitest (5.26.0)
+    msgpack (1.8.3)
     multi_json (1.17.0)
     multi_xml (0.6.0)
     multipart-post (2.4.1)
@@ -1156,6 +1159,7 @@ DEPENDENCIES
   blacklight_dynamic_sitemap (~> 1.0)
   blacklight_oai_provider (= 7.0.2)
   blacklight_range_limit (~> 8.3.0)
+  bootsnap (~> 1.24.6)
   bootstrap (~> 4.0)
   browser (~> 5.3, >= 5.3.1)
   bulkrax (= 6.0.1)
@@ -1234,4 +1238,4 @@ RUBY VERSION
   ruby 3.3.10p183
 
 BUNDLED WITH
-  4.0.12
+  4.0.8

@@ -14,6 +14,7 @@ gem 'blacklight', '~> 7.40'
 gem 'blacklight_dynamic_sitemap', '~> 1.0'
 gem 'blacklight_oai_provider', '7.0.2'
 gem 'blacklight_range_limit', '~> 8.3.0'
+gem 'bootsnap', '~> 1.24.6'
 gem 'bootstrap', '~> 4.0'
 gem 'bulkrax', '6.0.1'
 gem 'clamby', '~> 1.6', require: 'clamby'
@@ -52,7 +53,6 @@ gem 'nokogiri', '~>1.14.2', platforms: :ruby
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-gem 'passenger', '6.1.4', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -75,6 +75,10 @@ gem 'turbolinks', '~> 5.2.1'
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 # Use terser as compressor for JavaScript assets
 gem 'terser', '~> 1.1'
+
+group :production do
+  gem 'passenger', '6.1.4', require: 'phusion_passenger/rack_handler'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
