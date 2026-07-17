@@ -15,8 +15,6 @@ services:
         condition: service_started
     env_file:
       - docker/.env
-    environment:
-      FEDORA_BINARY_STORE_PATH: /opt/fedora/binaries
     ports:
       - 3000:3000
     volumes:
@@ -47,8 +45,6 @@ services:
     command: sh /hyrax/docker/start-sidekiq.sh
     env_file:
       - docker/.env
-    environment:
-      FEDORA_BINARY_STORE_PATH: /opt/fedora/binaries
     volumes:
       - .:/hyrax
       - fcrepo_data:/opt/fedora/
