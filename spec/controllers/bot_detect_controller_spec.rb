@@ -130,6 +130,11 @@ RSpec.describe BotDetectController, type: :controller do
       expect(BotDetectController.send(:not_googlebot?, request)).to be false
     end
 
+    it 'returns false for a GoogleBot user agent' do
+      request = instance_double(ActionDispatch::Request, user_agent: 'Mozilla/5.0 (compatible; GoogleBot/2.1; +http://www.google.com/bot.html)')
+      expect(BotDetectController.send(:not_googlebot?, request)).to be false
+    end
+
     it 'returns true when user agent is nil' do
       request = instance_double(ActionDispatch::Request, user_agent: nil)
       expect(BotDetectController.send(:not_googlebot?, request)).to be true

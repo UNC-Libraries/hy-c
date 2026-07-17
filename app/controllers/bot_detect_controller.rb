@@ -17,7 +17,7 @@ class BotDetectController < ApplicationController
   class_attribute :cf_turnstile_secret_key, default: '1x0000000000000000000000000000000AA' # a testing key always passes
 
   # how long is a challenge pass good for before re-challenge?
-  class_attribute :session_passed_good_for, default: 24.hours
+  class_attribute :session_passed_good_for, default: 30.minutes
 
   # Executed at the _controller_ filter level, to last minute exempt certain
   # actions from protection.
@@ -152,7 +152,9 @@ class BotDetectController < ApplicationController
       query_parameters.key?('f_inclusive') ||
       query_parameters.key?('clause') ||
       query_parameters.key?('range') ||
-      query_parameters.key?('page')
+      query_parameters.key?('page')||
+      query_parameters.key?('search_field') ||
+      query_parameters.key?('q')
   end
 
   def self.challenge_download_request?(controller, request)
@@ -188,6 +190,6 @@ class BotDetectController < ApplicationController
   end
 
   def self.not_googlebot?(request)
-    !request.user_agent.to_s.downcase.include?('googleother')
+    !request.user_agent.include?('googlebot') && !request.user_agent.to_s.downcase.include?('googleother')
   end
 end
