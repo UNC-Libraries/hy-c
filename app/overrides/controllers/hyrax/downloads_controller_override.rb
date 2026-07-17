@@ -3,6 +3,7 @@
 Hyrax::DownloadsController.class_eval do
   # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
   include Hyc::DownloadAnalyticsBehavior
+  alias hyc_stream_show_active_fedora show_active_fedora
 
   # [hyc-override] Loading the admin set for record
   before_action :set_record_admin_set
@@ -19,9 +20,54 @@ Hyrax::DownloadsController.class_eval do
 
   private
 
+  def show_active_fedora
+    local_original_path = fedora_binary_path_for(file)
+    return send_fedora_binary_content(local_original_path) if local_original_path.present?
+
+    Rails.logger.info("DownloadsController: falling back to Fedora streaming for FileSet #{params[:id]}")
+    hyc_stream_show_active_fedora
+  end
+
+  def send_fedora_binary_content(local_original_path)
+    response.headers['Accept-Ranges'] = 'bytes'
+    return unless stale?(last_modified: file_last_modified, template: false)
+
+    Rails.logger.info("DownloadsController: using local Fedora binary handoff for FileSet #{params[:id]} from #{local_original_path}")
+    send_file local_original_path,
+              content_options.merge(filename: file_name, type: file.mime_type)
+  end
+
+  def fedora_binary_path_for(repository_file)
+    return unless original_file_request?
+    return unless repository_file.is_a?(ActiveFedora::File)
+    return if fedora_binary_store_path.blank?
+
+    checksum = normalized_sha1_checksum_for(repository_file)
+    return if checksum.blank?
+
+    path = File.join(fedora_binary_store_path, *checksum.scan(/.{2}/).first(3), checksum)
+    path if File.exist?(path)
+  end
+
+  def fedora_binary_store_path
+    ENV['FEDORA_BINARY_STORE_PATH'].presence
+  end
+
+  def normalized_sha1_checksum_for(repository_file)
+    checksum = repository_file.checksum&.value.presence || repository_file.digest&.first.to_s.presence
+    return if checksum.blank?
+
+    normalized_checksum = checksum.sub(/\Aurn:sha1:/, '').sub(/\Asha1:/, '')
+    normalized_checksum if normalized_checksum.match?(/\A\h{40}\z/)
+  end
+
+  def original_file_request?
+    params[:file].blank? || params[:file].to_sym == self.class.default_content_path
+  end
+
   def file_set_parent(file_set_id)
     file_set = if defined?(Wings) && Hyrax.metadata_adapter.is_a?(Wings::Valkyrie::MetadataAdapter)
-                 Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: file_set_id, use_valkyrie: Hyrax.config.use_valkyrie?)
+                  Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: file_set_id, use_valkyrie: Hyrax.config.use_valkyrie?)
                else
                  Hyrax.query_service.find_by(id: file_set_id)
                end

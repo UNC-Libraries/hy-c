@@ -264,6 +264,50 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
+  describe 'original file sendfile handoff' do
+    let(:file_set) do
+      FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))
+    end
+
+    around do |example|
+      previous_binary_store_path = ENV['FEDORA_BINARY_STORE_PATH']
+      ENV['FEDORA_BINARY_STORE_PATH'] = '/opt/fedora/binaries'
+      example.run
+      ENV['FEDORA_BINARY_STORE_PATH'] = previous_binary_store_path
+    end
+
+    before do
+      allow(controller).to receive(:authorize!).and_return(true)
+      allow(controller).to receive(:workflow_restriction?).and_return(false)
+    end
+
+    it 'builds a local Fedora binary-store path from a sha1 checksum' do
+      checksum = 'urn:sha1:0123456789abcdef0123456789abcdef01234567'
+      repository_file = instance_double(ActiveFedora::File)
+      expected_path = '/opt/fedora/binaries/01/23/45/0123456789abcdef0123456789abcdef01234567'
+
+      allow(repository_file).to receive(:is_a?).with(ActiveFedora::File).and_return(true)
+      allow(repository_file).to receive(:checksum).and_return(double(value: checksum))
+      allow(File).to receive(:exist?).with(expected_path).and_return(true)
+
+      expect(controller.send(:fedora_binary_path_for, repository_file)).to eq(expected_path)
+    end
+
+    it 'uses send_file for original files when a local Fedora binary exists' do
+      local_binary_path = "#{fixture_path}/files/image.png"
+
+      allow(controller).to receive(:fedora_binary_path_for).and_return(local_binary_path)
+      expect(controller).to receive(:send_file).with(local_binary_path,
+                                                     hash_including(filename: 'image.png',
+                                                                    disposition: 'attachment',
+                                                                    type: 'image/png')).and_call_original
+
+      get :show, params: { id: file_set.id }
+
+      expect(response).to be_successful
+    end
+  end
+
   describe '#download_file' do
     context 'with file set for download' do
       let(:file_set) do
