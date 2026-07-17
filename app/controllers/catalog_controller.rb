@@ -1,8 +1,18 @@
 # frozen_string_literal: true
 class CatalogController < ApplicationController
+  MAX_SEARCH_PAGE = 20
+  MAX_FACET_PAGE = 20
+  MAX_SEARCH_FACET_FIELDS = 5
+  MAX_SEARCH_RESULTS_PER_PAGE = 20
+
   def self.turnstile_enabled?
     @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
   end
+  prepend_before_action :reject_dest_query_param
+  prepend_before_action :clamp_search_result_size_params, only: :index
+  prepend_before_action :enforce_search_facet_field_limit, only: :index
+  prepend_before_action :enforce_search_page_limit, only: :index
+  prepend_before_action :enforce_facet_page_limit, only: :facet
   before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
 
   include BlacklightRangeLimit::ControllerOverride
@@ -117,6 +127,8 @@ class CatalogController < ApplicationController
       rows: 10,
       qf: 'title_tesim description_tesim creator_label_tesim keyword_tesim all_text_timv identifier_tesim related_url_tesim'
     }
+    config.per_page = [10, 20]
+    config.default_per_page = 10
 
     # solr field configuration for document/show views
     config.index.title_field = solr_name('title', :stored_searchable)
@@ -571,5 +583,94 @@ class CatalogController < ApplicationController
   # this method is not called in that context.
   def render_bookmarks_control?
     false
+  end
+
+  private
+
+  def reject_dest_query_param
+    return unless request.query_parameters.key?('dest')
+
+    head :not_found
+  end
+
+  def clamp_search_result_size_params
+    clamp_integer_param(:per_page, max: MAX_SEARCH_RESULTS_PER_PAGE) &&
+      clamp_integer_param(:rows, max: MAX_SEARCH_RESULTS_PER_PAGE)
+  end
+
+  def enforce_search_page_limit
+    page = validated_integer_param(:page)
+    return if page.nil? || page <= MAX_SEARCH_PAGE
+
+    head :not_found
+  end
+
+  def enforce_search_facet_field_limit
+    return unless selected_facet_field_count > MAX_SEARCH_FACET_FIELDS
+
+    head :not_found
+  end
+
+  def enforce_facet_page_limit
+    page = validated_integer_param(:'facet.page')
+    return if page.nil? || page <= MAX_FACET_PAGE
+
+    head :not_found
+  end
+
+  def selected_facet_field_count
+    %i[f f_inclusive].flat_map do |key|
+      active_facet_field_keys(params[key])
+    end.uniq.size
+  end
+
+  def active_facet_field_keys(facet_params)
+    return [] unless facet_params.is_a?(ActionController::Parameters) || facet_params.is_a?(Hash)
+
+    facet_params_enum = facet_params.is_a?(ActionController::Parameters) ? facet_params.each_pair : facet_params.each
+
+    facet_params_enum.each_with_object([]) do |(field, values), active_fields|
+      next unless facet_values_present?(values)
+
+      active_fields << field.to_s
+    end
+  end
+
+  def facet_values_present?(values)
+    flattened_values = case values
+                       when ActionController::Parameters, Hash
+                         values.values
+                       else
+                         Array.wrap(values)
+                       end
+
+    flattened_values.flatten.compact_blank.any?
+  end
+
+  def validated_integer_param(key)
+    value = params[key]
+    return if value.blank?
+
+    return Integer(value.to_s, 10) if numeric_param?(value)
+
+    head :bad_request
+    nil
+  end
+
+  def clamp_integer_param(key, max:)
+    value = params[key]
+    return true if value.blank?
+
+    unless numeric_param?(value)
+      head :bad_request
+      return false
+    end
+
+    params[key] = [Integer(value.to_s, 10), max].min.to_s
+    true
+  end
+
+  def numeric_param?(value)
+    value.to_s.match?(/\A\d+\z/)
   end
 end

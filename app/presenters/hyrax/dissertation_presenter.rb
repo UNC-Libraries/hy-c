@@ -3,6 +3,8 @@
 #  `rails generate hyrax:work Dissertation`
 module Hyrax
   class DissertationPresenter < Hyrax::WorkShowPresenter
+    include EmbargoHistoryPresenter
+
     delegate :abstract, :admin_note, :advisor_display, :alternative_title, :contributor_display,
              :creator_display, :date_issued, :dcmi_type, :degree, :degree_granting_institution, :deposit_record, :doi,
              :graduation_year, :language_label, :license_label, :note, :place_of_publication,

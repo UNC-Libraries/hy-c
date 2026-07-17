@@ -74,6 +74,9 @@ en:
           <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/document-accessibility/">guidance</a>.</div>
       items:
         empty_artwork: This Artwork has no files associated with it. Click "Attach Artwork" to add more files.
+      show:
+        embargo_history: 'Embargo History'
+        no_embargo_history: 'No embargo history available'
     directory:
       suffix:               "@example.org"
     footer:

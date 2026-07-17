@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/presenters/hyrax/file_set_presenter.rb
 Hyrax::FileSetPresenter.class_eval do
+  include EmbargoHistoryPresenter
+
+  # Get parent embargo history, as the file set doesn't have this field.
+  def embargo_history
+    history = super
+    return history unless history.empty?
+
+    fetch_parent_presenter&.solr_document&.fetch('embargo_history_ssim', []) || []
+  end
+
   def fetch_parent_presenter
     ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field, rows: 1)
                             .map { |x| x.fetch(Hyrax.config.id_field) }

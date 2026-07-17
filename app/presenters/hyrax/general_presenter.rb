@@ -3,6 +3,8 @@
 #  `rails generate hyrax:work General`
 module Hyrax
   class GeneralPresenter < Hyrax::WorkShowPresenter
+    include EmbargoHistoryPresenter
+
     delegate :abstract, :academic_concentration, :admin_note, :advisor_display, :alternative_title, :arranger_display,
              :award, :bibliographic_citation, :composer_display, :conference_name, :contributor_display,
              :copyright_date, :creator_display, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
