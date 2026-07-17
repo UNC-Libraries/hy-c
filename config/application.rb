@@ -18,7 +18,7 @@ module Hyrax
       env_file = File.join(Rails.root, 'config', ENV['LOCAL_ENV_FILE'] || 'local_env.yml')
 
       YAML.load(File.open(env_file)).each do |key, value|
-        ENV[key.to_s] = value
+        ENV[key.to_s] = value unless ENV.key?(key.to_s)
       end if File.exist?(env_file)
     end
 
