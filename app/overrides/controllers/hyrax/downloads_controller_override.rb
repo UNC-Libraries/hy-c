@@ -20,11 +20,12 @@ Hyrax::DownloadsController.class_eval do
 
   private
 
+  # [hyc-override] Overriding fedora file downloads to use send_file directly from fedora when possible
   def show_active_fedora
     local_original_path = fedora_binary_path_for(file)
     return send_fedora_binary_content(local_original_path) if local_original_path.present?
 
-    Rails.logger.info("DownloadsController: falling back to Fedora streaming for FileSet #{params[:id]}")
+    Rails.logger.warn("DownloadsController: falling back to Fedora streaming for FileSet #{params[:id]}")
     hyc_stream_show_active_fedora
   end
 
@@ -32,7 +33,7 @@ Hyrax::DownloadsController.class_eval do
     response.headers['Accept-Ranges'] = 'bytes'
     return unless stale?(last_modified: file_last_modified, template: false)
 
-    Rails.logger.info("DownloadsController: using local Fedora binary handoff for FileSet #{params[:id]} from #{local_original_path}")
+    Rails.logger.debug("DownloadsController: using local Fedora binary handoff for FileSet #{params[:id]} from #{local_original_path}")
     send_file local_original_path,
               content_options.merge(filename: file_name, type: file.mime_type)
   end
@@ -46,7 +47,7 @@ Hyrax::DownloadsController.class_eval do
     return if checksum.blank?
 
     path = File.join(fedora_binary_store_path, *checksum.scan(/.{2}/).first(3), checksum)
-    Rails.logger.info("DownloadsController: returning fedora binary from path #{path}")
+    Rails.logger.debug("DownloadsController: returning fedora binary from path #{path}")
     path if File.exist?(path)
   end
 
