@@ -63,6 +63,8 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     allow(BotDetectController).to receive(:cf_challenge_downloads_enabled?).and_return(false)
     allow(BotDetectController).to receive(:challenge_downloads_enabled?).and_return(false)
     allow(stub_matomo)
+    # Ensure a non-blank, non-bot user agent so track_download is not short-circuited
+    request.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     @user = user
     sign_in @user
     allow(WorkUtilsHelper).to receive(:fetch_work_data_by_fileset_id).and_return(mock_work_data)

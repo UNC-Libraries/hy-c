@@ -190,6 +190,7 @@ class BotDetectController < ApplicationController
   end
 
   def self.not_googlebot?(request)
-    !request.user_agent.include?('googlebot') && !request.user_agent.to_s.downcase.include?('googleother')
+    user_agent = request.user_agent.to_s.downcase
+    !user_agent.include?('googlebot') && !user_agent.include?('googleother')
   end
 end
