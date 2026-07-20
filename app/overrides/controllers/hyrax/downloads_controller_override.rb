@@ -4,10 +4,11 @@ Hyrax::DownloadsController.class_eval do
   # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
   include Hyc::DownloadAnalyticsBehavior
 
-  def self.turnstile_enabled?
-    @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
+  def enforce_bot_detection
+    BotDetectController.bot_detection_enforce_filter(self)
   end
-  before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
+
+  before_action :enforce_bot_detection, if: -> { BotDetectController.cf_challenge_downloads_enabled? }
 
   # [hyc-override] Loading the admin set for record
   before_action :set_record_admin_set
