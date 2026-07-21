@@ -270,10 +270,10 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
 
     around do |example|
-      previous_binary_store_path = ENV['FEDORA_BINARY_STORE_PATH']
-      ENV['FEDORA_BINARY_STORE_PATH'] = '/opt/fedora/binaries'
+      previous_binary_store_path = ENV['FEDORA_BINARY_STORAGE']
+      ENV['FEDORA_BINARY_STORAGE'] = '/opt/fedora/binaries'
       example.run
-      ENV['FEDORA_BINARY_STORE_PATH'] = previous_binary_store_path
+      ENV['FEDORA_BINARY_STORAGE'] = previous_binary_store_path
     end
 
     before do

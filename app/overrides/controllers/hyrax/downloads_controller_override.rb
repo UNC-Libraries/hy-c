@@ -52,7 +52,7 @@ Hyrax::DownloadsController.class_eval do
   end
 
   def fedora_binary_store_path
-    ENV['FEDORA_BINARY_STORE_PATH'].presence
+    ENV['FEDORA_BINARY_STORAGE'].presence
   end
 
   def normalized_sha1_checksum_for(repository_file)
