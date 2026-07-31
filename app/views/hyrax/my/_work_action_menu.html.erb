@@ -30,11 +30,6 @@
     <% end %>
 
     <%# [hyc-override] Remove the option to feature on profile page, as we don't use profiles %>
-    <%# <%= display_trophy_link(current_user, document.id, role: 'menuitem') do |text| %> %>
-    <%#   <li class="dropdown-item" tabindex="-1"> %>
-    <%#     <%= text %> %>
-    <%#   </li> %>
-    <%# <% end %> %>
 
     <% if can? :transfer, document.id %>
       <%= link_to(hyrax.new_work_transfer_path(document.id), id: 'action-transfer-work', role: 'menuitem',
