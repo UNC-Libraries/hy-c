@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/my/works_controller.rb
+# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/my/works_controller.rb
 
 Hyrax::My::WorksController.class_eval do
   private
@@ -11,7 +11,7 @@ Hyrax::My::WorksController.class_eval do
     )
     return [] if source_ids.blank?
 
-    # Avoid Wings `find_many_by_ids`, which resolves each admin set via Fedora one id at a time.
+    # [hyc-override] Avoid Wings `find_many_by_ids`, which resolves each admin set via Fedora one id at a time.
     admin_sets_list = Hyrax::SolrQueryService.new
                         .with_ids(ids: source_ids)
                         .with_field_pairs(
