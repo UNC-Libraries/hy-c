@@ -257,20 +257,20 @@ en:
   simple_form:
     hints:
       defaults:
-        abstract: "A short paragraph describing your work."
+        abstract: "A short paragraph describing your work. (Limit 10,000 characters.)"
         academic_concentration: "Fill out this field only if it is relevant to your program."
         advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
         affiliation: "Primary departmental affiliation"
         alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
         based_near: "A country, city, geographic area or other place. This could be where your data was collected or where your study took place. Select a value from the drop-down menu."
-        bibliographic_citation: "A citation to a related work, or a different version of this work."
+        bibliographic_citation: "A citation to a related work, or a different version of this work. (Limit 10,000 characters.)"
         contributor: "A person or group who had a role in creating the work."
         copyright_date: "The date that the work was copyrighted. This may be different than today's date. If you aren't sure, leave this blank."
         creator: "The person or group responsible for creating the work. If you are depositing a paper, article or book chapter, enter the author's name"
         date_created: "The date on which the work was created."
         date_issued: "The date that the work was published and/or finished."
         degree: "The degree that you are pursing"
-        description: "Notes about your work, if needed. To summarize your work, use the Abstract field instead. If you are depositing a dataset, enter your methodology here."
+        description: "Notes about your work, if needed. To summarize your work, use the Abstract field instead. If you are depositing a dataset, enter your methodology here. (Limit 10,000 characters.)"
         doi: "The DOI assigned by the CDR. (e.g. 10.1234/xxxxxx)"
         edition: "The version of the work. If you have questions about this field, please <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us\">contact the CDR</a>."
         extent: "The size or duration of the work, e.g. \"3 pages\", or \"10 minutes.\""
@@ -286,8 +286,8 @@ en:
         license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         license_label: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
         medium: "The material of the original work."
-        methodology: "Describe the methods used to generate the dataset, or how the dataset may be properly reused."
-        note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
+        methodology: "Describe the methods used to generate the dataset, or how the dataset may be properly reused. (Limit 10,000 characters.)"
+        note: "Additional information about your work. Please be aware that content in this field will be visible to the public. (Limit 10,000 characters.)"
         orcid: "If you have an ORCID, enter it below. To learn more about ORCID and sign up,
                 visit <a target=\"_blank\" href=\"https://guides.lib.unc.edu/orcid\">https://guides.lib.unc.edu/orcid</a>"
         place_of_publication: "The place in which the work was published."
@@ -302,7 +302,7 @@ en:
         series: "The title of the series to which your work belongs, if applicable."
         sponsor: "A person or organization which sponsored some aspect of the work. For funder, use the \"Funder\" field instead. If your work was not sponsored, leave this field blank."
         subject: "Type a descriptive term into the search box and choose from the list provided."
-        table_of_contents: "The table of contents for this issue, proceeding or book."
+        table_of_contents: "The table of contents for this issue, proceeding or book. (Limit 10,000 characters.)"
         title: "The name of the work"
         translator: "If your work that you are depositing is translated, enter the name of the person who translated it."
     labels:
