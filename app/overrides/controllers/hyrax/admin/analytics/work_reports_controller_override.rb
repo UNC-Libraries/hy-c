@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/controllers/hyrax/admin/analytics/work_reports_controller.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/admin/analytics/work_reports_controller.rb
 require 'benchmark'
 
 Hyrax::Admin::Analytics::WorkReportsController.class_eval do
   def index
-    return unless Hyrax.config.analytics? && Hyrax.config.analytics_provider != 'ga4'
+    return unless Hyrax.config.analytics_reporting? && Hyrax.config.analytics_provider != 'ga4'
 
     time = Benchmark.measure do
       @accessible_works ||= accessible_works
@@ -51,7 +51,7 @@ Hyrax::Admin::Analytics::WorkReportsController.class_eval do
     @pageviews = Hyrax::Analytics.monthly_events_for_id(@document.id, 'work-view')
     @uniques = Hyrax::Analytics.unique_visitors_for_id(@document.id)
     @downloads = Hyrax::Analytics.monthly_events_for_id(@document.id, 'file-set-in-work-download')
-    @files = paginate(@document._source['file_set_ids_ssim'], rows: 5)
+    @files = paginate(@document._source['member_ids_ssim'], rows: 5)
     respond_to do |format|
       format.html
       format.csv { export_data }
@@ -59,6 +59,27 @@ Hyrax::Admin::Analytics::WorkReportsController.class_eval do
   end
 
   private
+
+  # [hyc-override] Fix upstream Hyrax 5 bug: accessible_file_sets builds an invalid Solr query
+  # "has_model_ssim:"FileSet" OR "Hyrax::FileSet"" — only the first value gets the field prefix.
+  # Use the same parenthesized form as accessible_works instead.
+  def accessible_file_sets
+    models = Hyrax::ModelRegistry.file_set_rdf_representations.map { |m| "\"#{m}\"" }
+    if current_user.ability.admin?
+      Hyrax::SolrService.query(
+        "has_model_ssim:(#{models.join(' OR ')})",
+        fl: 'title_tesim, id',
+        rows: 50_000
+      )
+    else
+      Hyrax::SolrService.query(
+        "edit_access_person_ssim:#{current_user} AND has_model_ssim:(#{models.join(' OR ')})",
+        fl: 'title_tesim, id',
+        rows: 50_000
+      )
+    end
+  end
+
   # [hyc-override] Builds a hash instead of an array for faster lookups
   def top_analytics_works
     time = Benchmark.measure do

@@ -34,13 +34,14 @@ module Hyrax
     def date_for_analytics
       earliest = Hyrax.config.analytic_start_date
       date_created = string_to_date(model.date_created.to_s)
-      date_analytics = date_created ? date_created : string_to_date(model.create_date.to_s)
+      date_analytics = date_created ? date_created : (string_to_date(model.create_date.to_s) || model.created_at)
       return date_analytics if earliest.blank?
 
       earliest > date_analytics ? earliest : date_analytics
     end
 
     def string_to_date(date_str)
+      return date_str if date_str.is_a?(Date)
       DateTime.parse(date_str)
     rescue ArgumentError, TypeError
       nil

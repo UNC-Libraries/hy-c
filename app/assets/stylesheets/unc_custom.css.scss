@@ -160,6 +160,13 @@ span.institution_name {
   }
 }
 
+// Match the dashboard action menu font size on work-show related file dropdowns.
+.related-files {
+  .dropdown-item {
+    font-size: 16px;
+  }
+}
+
 #unc-search {
   background-color: $carolina-blue;
   height: 45%;

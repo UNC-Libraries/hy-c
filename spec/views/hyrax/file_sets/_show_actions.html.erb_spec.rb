@@ -36,7 +36,8 @@ RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
   context 'as an admin' do
     before do
       allow(ability).to receive(:admin?).and_return(true)
-      view.lookup_context.view_paths.push 'app/views/hyrax/base'
+      # [hyc-override] removed social media options
+      # stub_template '_social_media.html.erb' => 'social_media'
       render
     end
 
@@ -48,7 +49,8 @@ RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
   context 'as a regular user' do
     before do
       allow(ability).to receive(:admin?).and_return(false)
-      view.lookup_context.view_paths.push 'app/views/hyrax/base'
+      # [hyc-override] removed social media options
+      # stub_template '_social_media.html.erb' => 'social_media'
       render
     end
 

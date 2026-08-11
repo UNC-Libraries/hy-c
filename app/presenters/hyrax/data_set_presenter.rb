@@ -4,7 +4,7 @@
 module Hyrax
   class DataSetPresenter < Hyrax::WorkShowPresenter
     include EmbargoHistoryPresenter
-    include Hyrax::SharedDelegates
+
     # See: WorkShowPresenter.scholarly?
     def scholarly?
       true

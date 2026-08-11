@@ -63,15 +63,21 @@ Hyrax.config do |config|
   # Requires a Google Analytics id and OAuth2 keyfile.  See README for more info
   config.analytics = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS', 'false'))
   config.analytics_provider = ENV.fetch('HYRAX_ANALYTICS_PROVIDER', 'matomo')
+  # This value determines whether to show reports on the dashboard, work and collection report pages
+  config.analytics_reporting = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS_REPORTING', 'false'))
 
   # Date you wish to start collecting Google Analytic statistics for
   # Leaving it blank will set the start date to when ever the file was uploaded by
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
   # config.analytic_start_date = DateTime.new(2019, 6, 5)
 
+  config.iiif_image_server = true
+  config.work_requires_files = false
   # Enables a link to the citations page for a work
   # Default is false
   config.citations = true
+
+  config.characterization_options = { ch12n_tool: ENV.fetch('CH12N_TOOL', 'fits').to_sym }
 
   # Where to store tempfiles, leave blank for the system temp directory (e.g. /tmp)
   # config.temp_file_base = '/home/developer1'
@@ -211,6 +217,10 @@ Hyrax.config do |config|
   # Username for connecting to geonames
   config.geonames_username = ENV['GEONAMES_USER']
 
+  ##
+  # Set the system-wide virus scanner
+  config.virus_scanner = Hyrax::VirusScanner
+
   # Should the acceptance of the licence agreement be active (checkbox), or
   # implied when the save button is pressed? Set to true for active
   # The default is true.
@@ -219,7 +229,8 @@ Hyrax.config do |config|
   # Should work creation require file upload, or can a work be created first
   # and a file added at a later time?
   # The default is true.
-  # config.work_requires_files = true
+  # This seems to need to be explicitly set otherwise it doesn't require files
+  config.work_requires_files = true
 
   # Should a button with "Share my work" show on the front page to all users (even those not logged in)?
   # config.display_share_button_when_not_logged_in = true
@@ -318,6 +329,25 @@ Hyrax.config do |config|
   # end
 
   config.browse_everything = nil
+
+  ##
+  # NOTE: To Valkyrie works, use Monograph which is_a Hyrax::Work is_a Valkyrie::Resource
+  # To use Valkyrie models, uncomment the following lines.
+  # config.collection_model = 'Hyrax::PcdmCollection' # collection without basic metadata
+  # config.collection_model = 'CollectionResource'    # collection with basic metadata
+  # config.admin_set_model = 'Hyrax::AdministrativeSet'
+
+  # If using Frayja/Frigg then use the resource they provide
+  if Hyrax.config.valkyrie_transition?
+    config.collection_model = 'CollectionResource'
+    config.admin_set_model = 'AdminSetResource'
+    config.file_set_model = 'Hyrax::FileSet'
+  else
+    # dassie needs legacy AF models
+    config.collection_model = '::Collection'
+    config.admin_set_model = 'AdminSet'
+    config.file_set_model = '::FileSet'
+  end
 end
 
 Date::DATE_FORMATS[:standard] = '%Y-%m-%d'

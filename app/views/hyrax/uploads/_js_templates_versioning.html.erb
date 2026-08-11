@@ -1,7 +1,6 @@
-<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/hyrax/uploads/_js_templates_versioning.html.erb %>
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/views/hyrax/uploads/_js_templates_versioning.html.erb %>
 <!-- The template to display files available for upload -->
-<% fade_class_if_not_test = Rails.env.test? ? 'show' : 'fade show' %>
-Hello World!
+<% fade_class_if_not_test = Rails.env.test? ? '' : 'fade' %>
 <script id="versioning-template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-upload <%= fade_class_if_not_test %>">

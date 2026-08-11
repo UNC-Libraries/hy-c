@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/controllers/concerns/hyrax/works_controller_behavior.rb
+# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/concerns/hyrax/works_controller_behavior.rb
 Hyrax::WorksControllerBehavior.module_eval do
   # [hyc-override] Add in missing xml and dc_xml extensions that are linked in the atom feed but not exposed by hyrax
   alias_method :original_additional_response_formats, :additional_response_formats
@@ -48,22 +48,4 @@ Hyrax::WorksControllerBehavior.module_eval do
     original_permissions_changed? || @original_embargo_state != curation_concern.under_embargo?
   end
 
-  # [hyc-override] Special permissions for admins indicating they aren't constrained by the admin set
-  class AdminPermissionTemplate < Hyrax::PermissionTemplate
-    def release_no_delay?
-      false
-    end
-
-    def release_before_date?
-      false
-    end
-
-    def release_date
-      nil
-    end
-
-    def visibility
-      nil
-    end
-  end
 end

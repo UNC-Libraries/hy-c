@@ -5,17 +5,20 @@ services:
     build:
       context: .
     depends_on:
-      - clamav
-      - db
-      - fedora
-      - solr
+      clamav:
+        condition: service_started
+      db:
+        condition: service_started
+      fedora:
+        condition: service_healthy
+      solr:
+        condition: service_started
     env_file:
       - docker/.env
     ports:
       - 3000:3000
     volumes:
       - .:/hyrax
-      - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
       - ftp_data:/opt/data/ftp
@@ -27,18 +30,23 @@ services:
     build:
       context: .
     depends_on:
-      - clamav
-      - db
-      - fedora
-      - redis
-      - solr
-      - web
+      clamav:
+        condition: service_started
+      db:
+        condition: service_started
+      fedora:
+        condition: service_healthy
+      solr:
+        condition: service_started
+      redis:
+        condition: service_started
+      web:
+        condition: service_started
     command: sh /hyrax/docker/start-sidekiq.sh
     env_file:
       - docker/.env
     volumes:
       - .:/hyrax
-      - mount-sidekiq-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
       - ftp_data:/opt/data/ftp
@@ -49,11 +57,14 @@ services:
     ports:
       - "3310:3310"
     volumes:
-      - clam:/var/lib/clamav
+      - clam:/data
       - hyrax_data:/opt/hyrax
       - .:/hyrax
     networks:
       - hycdev
+    environment:
+      - DEFINITIONS_MIRROR=database.clamav.net
+      - CONFIG_PATH=/config/
   db:
     image: postgres:14-alpine
     volumes:
@@ -66,13 +77,16 @@ services:
     networks:
       - hycdev
   fedora:
-    image: cazzerson/fcrepo4:4.7.5
+    image: ghcr.io/samvera/fcrepo4:4.7.5
     ports:
       - "8984:8080"
     volumes:
       - fcrepo_data:/usr/local/tomcat/fcrepo4-data/
-    environment:
-      CATALINA_OPTS: "-Djava.awt.headless=true -server -Xms1G -Xmx2G -XX:MaxNewSize=1G -XX:+HeapDumpOnOutOfMemoryError -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/rest/ || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
     stdin_open: true
     tty: true
     networks:
@@ -110,8 +124,6 @@ services:
     networks:
       - hycdev
 volumes:
-  mount-gems:
-  mount-sidekiq-gems:
   solr-data:
   clam:
   pg_data:
@@ -125,4 +137,3 @@ networks:
     driver: bridge
     driver_opts:
       com.docker.network.bridge.name: br-hycdev
-

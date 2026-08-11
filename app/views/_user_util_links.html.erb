@@ -1,4 +1,4 @@
-<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/_user_util_links.html.erb %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v5.2.0/app/views/_user_util_links.html.erb %>
 <ul id="user_utility_links" class="nav navbar-nav navbar-right">
   <%# [hyc-override] Disabling locale picker %>
   <%# render 'shared/locale_picker' if available_translations.size > 1 %>
@@ -21,7 +21,8 @@
         <%# <%= link_to "My Profile", hyrax.dashboard_profile_path(current_user), class: 'dropdown-item' %>
         <%= link_to t("hyrax.toolbar.dashboard.menu"), hyrax.dashboard_path, class: "dropdown-item" %>
         <div class="dropdown-divider"></div>
-        <%= link_to t("hyrax.toolbar.profile.logout"), main_app.destroy_user_session_path, class: "dropdown-item" %>
+        <%= button_to t("hyrax.toolbar.profile.logout"), main_app.destroy_user_session_path, class: "dropdown-item",
+                      method: ::Devise.sign_out_via %>
       </div>
     </li>
   <% else %>

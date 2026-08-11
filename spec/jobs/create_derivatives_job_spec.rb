@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'tempfile'
 require 'fileutils'
 
-RSpec.describe CreateDerivativesJob do
+RSpec.describe CreateDerivativesJob, :active_fedora do
   around do |example|
     cached_temp_storage = ENV['TEMP_STORAGE']
     ENV['TEMP_STORAGE'] = temp_storage_path
@@ -175,7 +175,7 @@ RSpec.describe CreateDerivativesJob do
                                        url: String,
                                        layer: 0 }])
       expect(Hydra::Derivatives::FullTextExtract).to receive(:create)
-        .with(/test\.pdf/, outputs: [{ url: RDF::URI, container: 'extracted_text' }])
+        .with(/test\.pdf/, outputs: [{ url: String, container: 'extracted_text' }])
       described_class.perform_now(file_set, file.id)
 
       # Verify that the uploaded file was deleted

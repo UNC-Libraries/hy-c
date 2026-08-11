@@ -69,8 +69,8 @@ en:
         local_upload_html: |
           <p>You can add one or more files to associate with this work.</p>
           <p>Uploads are limited to %{upload_file_limit} files, %{upload_size_limit} MB each.</p>
-          <div class="alert alert-success upload-accessibility" role="alert">All files must be accessible to persons with disabilities per the Americans with Disabilities Act (ADA) Title II. 
-          Visit <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/">UNC's Digital Accessibility Office</a> for 
+          <div class="alert alert-success upload-accessibility" role="alert">All files must be accessible to persons with disabilities per the Americans with Disabilities Act (ADA) Title II.
+          Visit <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/">UNC's Digital Accessibility Office</a> for
           <a class="alert-link" target="_blank" href="https://digitalaccessibility.unc.edu/document-accessibility/">guidance</a>.</div>
       items:
         empty_artwork: This Artwork has no files associated with it. Click "Attach Artwork" to add more files.
@@ -133,6 +133,8 @@ en:
         header: Work Analytics
         pageviews: Pageviews for the Past Year
         downloads: Downloads for the Past Year
+    virus_scanner:
+      virus_detected: Virus detected in %{filename}. The file has not been saved.
     visibility:
       authenticated:
         note_html: "Restrict access to Onyen login"
@@ -196,8 +198,8 @@ en:
           subject: CDR deposit requires changes
           message: "Hello,\r\n\r\n
           %{title} (%{link}) requires the following changes before approval.\r\n\r\n
-          Click on the link above to view and edit the work. You may need to sign into the CDR by clicking on the \"Login\" 
-          link in the upper right. When you are finished, click on the \"Review and Approval\" banner, select 
+          Click on the link above to view and edit the work. You may need to sign into the CDR by clicking on the \"Login\"
+          link in the upper right. When you are finished, click on the \"Review and Approval\" banner, select
           \"Request Review\" and click the \"Submit\" button to resubmit your paper to your designated reviewer.\r\n\r\n
           If you have questions about the review process, email <a href=\"mailto:cdr@unc.edu\">cdr@unc.edu</a>.
           Questions about the reviewer comments should be directed to your reviewer.\r\n\r\n
@@ -251,9 +253,6 @@ en:
         review_advanced:
           message: "%{title} (<a href=\"%{document_path}\">%{work_id}</a>) was advanced in the workflow by
           %{user} and is awaiting approval %{comment}"
-        virus_found:
-          subject: 'Virus found in uploaded file'
-          message: "A virus was found in file %{comment} submitted with %{title} (%{link}) and has been deleted."
   simple_form:
     hints:
       defaults:

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/models/hyrax/statistic.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/models/hyrax/statistic.rb
 Hyrax::Statistic.class_eval do
   class << self
     # [hyc-override]

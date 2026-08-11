@@ -1,4 +1,4 @@
-<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_default.html.erb %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v5.2.0/app/views/hyrax/file_sets/media_display/_default.html.erb %>
 <%# [hyc-override] No thumbnail when not showing download link %>
 <%# [hyc-override] Style download link %>
 <% if display_media_download_link?(file_set: file_set) %>
@@ -7,7 +7,7 @@
       <p /><%= link_to t('hyrax.file_set.show.download'),
         hyrax.download_path(file_set),
         id: "file_download",
-        data: { label: file_set.id, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids },
+        data: { label: file_set.id.to_s, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids },
         class: "btn btn-info",
         target: "_new" %>
   </div>

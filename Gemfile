@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
-ruby '~> 3.0.2'
+ruby '~> 3.3.0'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -8,15 +8,16 @@ git_source(:github) do |repo_name|
 end
 
 gem 'browser', '~> 5.3', '>= 5.3.1'
-gem 'active-fedora', '~> 14.0'
-gem 'base64', '0.1.0' # Downgrade from 0.2 so that it will match the version being used by passenger on the server
+gem 'net-ftp'
+gem 'active-fedora', '~> 15.0'
 gem 'blacklight', '~> 7.40'
 gem 'blacklight_dynamic_sitemap', '~> 1.0'
 gem 'blacklight_oai_provider', '7.0.2'
 gem 'blacklight_range_limit', '~> 8.3.0'
+gem 'bootsnap', '~> 1.24.6'
 gem 'bootstrap', '~> 4.0'
 gem 'bulkrax', '6.0.1'
-gem 'clamav-client', require: 'clamav/client'
+gem 'clamby', '~> 1.6', require: 'clamby'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0.0'
 gem 'concurrent-ruby', '1.3.4'
@@ -26,11 +27,15 @@ gem 'edtf-humanize', '~> 2.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.21.0'
-gem 'hydra-editor', '~> 6.2.0'
-gem 'hydra-pcdm', '~> 1.3.0'
+gem 'hydra-editor', '~> 7.0.0'
+gem 'hydra-pcdm', '~> 1.4.0'
 gem 'hydra-role-management', '~> 1.1.0'
-gem 'hydra-works', '~> 2.1.0'
-gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyrax-4-development'
+gem 'hydra-works', '~> 2.3.0'
+gem 'hyrax', '5.2.0'
+# Stub out the GA4 gem that Hyrax 5 requires as a hard dependency.
+# This project uses Matomo; grpc (a native extension that fails on RHEL 9)
+# is pulled in transitively by google-analytics-data and is not needed.
+gem 'google-analytics-data', path: 'vendor/gems/google-analytics-data'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
@@ -41,19 +46,17 @@ gem 'json-ld', '~> 3.2'
 gem 'sparql', '3.2.5'
 gem 'ldp', '~> 1.1'
 gem 'linkeddata'
-gem 'logger', '1.5.3'
+gem 'logger', '~>1.5'
 gem 'loofah', '~>2.19.1'
-gem 'mini_magick', '~>4.12.0'
+gem 'mini_magick', '~>4.13.0'
 gem 'nokogiri', '~>1.14.2', platforms: :ruby
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-# Cannot use 6.0.23 because it adds rackup as a dependency, which leads to conflicts for now
-gem 'passenger', '6.0.22', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0'
+gem 'rails', '~> 6.1'
 gem 'rdf', '~> 3.3.4'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
@@ -63,6 +66,7 @@ gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0.0'
+gem 'sassc'
 gem 'sidekiq', '~> 6.5'
 gem 'sidekiq-status', '~> 3.0.0'
 gem 'sprockets', '3.7.2'
@@ -71,6 +75,10 @@ gem 'turbolinks', '~> 5.2.1'
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 # Use terser as compressor for JavaScript assets
 gem 'terser', '~> 1.1'
+
+group :production do
+  gem 'passenger', '6.1.4', require: 'phusion_passenger/rack_handler'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -90,7 +98,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'listen', '~> 3.7.0'
+  gem 'listen', '~> 3.9.0'
   gem 'puma'
   gem 'web-console', '~> 3.7.0'
 end

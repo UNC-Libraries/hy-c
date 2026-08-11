@@ -1,4 +1,4 @@
-<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/dashboard/collections/_show_document_list_row.html.erb %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v5.2.0/app/views/hyrax/dashboard/collections/_show_document_list_row.html.erb %>
 <%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
 <% id = document.id %>
 <tr id="document_<%= id %>">
@@ -9,7 +9,7 @@
   </td>
   <td>
     <div class="media">
-      <%= link_to [main_app, document], "class" => "media-left", "aria-hidden" => "true" do %>
+      <%= link_to [main_app, document], "class" => "media-left mr-3" do %>
         <%= document_presenter(document)&.thumbnail&.thumbnail_tag(
           { class: "d-none d-md-block file_listing_thumbnail", alt: document.title_or_label }, { suppress_link: true }
         ) %>

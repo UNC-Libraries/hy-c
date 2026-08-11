@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # [hyc-override] Overriding to allow updated content jobs to run immediately so file reference isn't lost
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/actors/hyrax/actors/base_actor.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/actors/hyrax/actors/base_actor.rb
 Hyrax::Actors::BaseActor.class_eval do
   alias_method :original_update, :update
   def update(env)

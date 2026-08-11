@@ -1,8 +1,9 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/controllers/hyrax/downloads_controller.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/downloads_controller.rb
 Hyrax::DownloadsController.class_eval do
   # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
   include Hyc::DownloadAnalyticsBehavior
+  alias hyc_stream_show_active_fedora show_active_fedora
 
   def enforce_bot_detection
     BotDetectController.bot_detection_enforce_filter(self)
@@ -24,6 +25,53 @@ Hyrax::DownloadsController.class_eval do
   end
 
   private
+
+  # [hyc-override] Overriding fedora file downloads to use send_file directly from fedora when possible
+  def show_active_fedora
+    local_original_path = fedora_binary_path_for(file)
+    return send_fedora_binary_content(local_original_path) if local_original_path.present?
+
+    Rails.logger.warn("DownloadsController: falling back to Fedora streaming for FileSet #{params[:id]}")
+    hyc_stream_show_active_fedora
+  end
+
+  def send_fedora_binary_content(local_original_path)
+    response.headers['Accept-Ranges'] = 'bytes'
+    return unless stale?(last_modified: file_last_modified, template: false)
+
+    Rails.logger.debug("DownloadsController: using local Fedora binary handoff for FileSet #{params[:id]} from #{local_original_path}")
+    send_file local_original_path,
+              content_options.merge(filename: file_name, type: file.mime_type)
+  end
+
+  def fedora_binary_path_for(repository_file)
+    return unless original_file_request?
+    return unless repository_file.is_a?(ActiveFedora::File)
+    return if fedora_binary_store_path.blank?
+
+    checksum = normalized_sha1_checksum_for(repository_file)
+    return if checksum.blank?
+
+    path = File.join(fedora_binary_store_path, *checksum.scan(/.{2}/).first(3), checksum)
+    Rails.logger.debug("DownloadsController: returning fedora binary from path #{path}")
+    path if File.exist?(path)
+  end
+
+  def fedora_binary_store_path
+    ENV['FEDORA_BINARY_STORAGE'].presence
+  end
+
+  def normalized_sha1_checksum_for(repository_file)
+    checksum = repository_file.checksum&.value.presence || repository_file.digest&.first.to_s.presence
+    return if checksum.blank?
+
+    normalized_checksum = checksum.sub(/\Aurn:sha1:/, '').sub(/\Asha1:/, '')
+    normalized_checksum if normalized_checksum.match?(/\A\h{40}\z/)
+  end
+
+  def original_file_request?
+    params[:file].blank? || params[:file].to_sym == self.class.default_content_path
+  end
 
   def file_set_parent(file_set_id)
     file_set = if defined?(Wings) && Hyrax.metadata_adapter.is_a?(Wings::Valkyrie::MetadataAdapter)

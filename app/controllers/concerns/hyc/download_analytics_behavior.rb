@@ -11,7 +11,7 @@ module Hyc
           Rails.logger.debug("Bot request detected: #{request.user_agent}")
           return
         end
-        if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
+        if analytics_tracking_enabled? && !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{fileset_id}")
           # Return early for nil work data
           if work_data.nil?
@@ -106,6 +106,10 @@ module Hyc
         end
         # fall back to a random id
         return SecureRandom.uuid
+      end
+
+      def analytics_tracking_enabled?
+        Hyrax.config.analytics? && Hyrax::Analytics.config.auth_token.present?
       end
 
     end

@@ -47,14 +47,17 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     @auth_token = ENV['MATOMO_AUTH_TOKEN']
     @site_id = ENV['MATOMO_SITE_ID']
     @matomo_base_url = ENV['MATOMO_BASE_URL']
+    @analytics = ENV['HYRAX_ANALYTICS']
     ENV['MATOMO_AUTH_TOKEN'] = spec_auth_token
     ENV['MATOMO_SITE_ID'] = spec_site_id
     ENV['MATOMO_BASE_URL'] = spec_base_analytics_url
+    ENV['HYRAX_ANALYTICS'] = 'true'
     example.run
     # Reset the environment variables
     ENV['MATOMO_AUTH_TOKEN'] = @auth_token
     ENV['MATOMO_SITE_ID'] = @site_id
     ENV['MATOMO_BASE_URL'] = @matomo_base_url
+    ENV['HYRAX_ANALYTICS'] = @analytics
   end
 
   before do
@@ -68,7 +71,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     @user = user
     sign_in @user
     allow(WorkUtilsHelper).to receive(:fetch_work_data_by_fileset_id).and_return(mock_work_data)
-    allow(Hyrax::Analytics.config).to receive(:site_id).and_return(spec_site_id)
     allow(SecureRandom).to receive(:uuid).and_return('555')
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
@@ -264,6 +266,50 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       it 'does not find admin set for file set' do
         expect(controller.set_record_admin_set).to eq('Unknown')
       end
+    end
+  end
+
+  describe 'original file sendfile handoff' do
+    let(:file_set) do
+      FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))
+    end
+
+    around do |example|
+      previous_binary_store_path = ENV['FEDORA_BINARY_STORAGE']
+      ENV['FEDORA_BINARY_STORAGE'] = '/opt/fedora/binaries'
+      example.run
+      ENV['FEDORA_BINARY_STORAGE'] = previous_binary_store_path
+    end
+
+    before do
+      allow(controller).to receive(:authorize!).and_return(true)
+      allow(controller).to receive(:workflow_restriction?).and_return(false)
+    end
+
+    it 'builds a local Fedora binary-store path from a sha1 checksum' do
+      checksum = 'urn:sha1:0123456789abcdef0123456789abcdef01234567'
+      repository_file = instance_double(ActiveFedora::File)
+      expected_path = '/opt/fedora/binaries/01/23/45/0123456789abcdef0123456789abcdef01234567'
+
+      allow(repository_file).to receive(:is_a?).with(ActiveFedora::File).and_return(true)
+      allow(repository_file).to receive(:checksum).and_return(double(value: checksum))
+      allow(File).to receive(:exist?).with(expected_path).and_return(true)
+
+      expect(controller.send(:fedora_binary_path_for, repository_file)).to eq(expected_path)
+    end
+
+    it 'uses send_file for original files when a local Fedora binary exists' do
+      local_binary_path = "#{fixture_path}/files/image.png"
+
+      allow(controller).to receive(:fedora_binary_path_for).and_return(local_binary_path)
+      expect(controller).to receive(:send_file).with(local_binary_path,
+                                                     hash_including(filename: 'image.png',
+                                                                    disposition: 'attachment',
+                                                                    type: 'image/png')).and_call_original
+
+      get :show, params: { id: file_set.id }
+
+      expect(response).to be_successful
     end
   end
 

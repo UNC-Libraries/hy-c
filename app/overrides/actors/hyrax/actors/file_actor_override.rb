@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/actors/hyrax/actors/file_actor.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/actors/hyrax/actors/file_actor.rb
 Hyrax::Actors::FileActor.class_eval do
 
   def ingest_file(io)
