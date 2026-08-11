@@ -14,7 +14,6 @@ module LanguagesService
     authority.find(Array.wrap(id).first).fetch('term')
   rescue StandardError
     Rails.logger.debug "LanguagesService: cannot find '#{id}'"
-    puts "LanguagesService: cannot find '#{id}'" # for migration log
     nil
   end
 
@@ -22,7 +21,7 @@ module LanguagesService
     return nil if id.blank?
     authority.find(id).fetch('iso639_1')
   rescue KeyError
-    Rails.logger.warn "LanguageService: cannot find '#{id}'"
+    Rails.logger.debug "LanguageService: cannot find '#{id}'"
     nil
   end
 
