@@ -39,7 +39,7 @@ gem 'google-analytics-data', path: 'vendor/gems/google-analytics-data'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
-gem 'jquery-rails', '~> 4.5.0'
+gem 'jquery-rails', '~> 4.6.1'
 gem 'json-canonicalization', '0.3.1'
 gem 'json-ld', '~> 3.2'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
