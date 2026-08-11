@@ -686,7 +686,7 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
-    nio4r (2.7.4)
+    nio4r (2.7.5)
     noid (0.9.0)
     noid-rails (3.3.0)
       actionpack (>= 5.0.0, < 9)
@@ -753,7 +753,7 @@ GEM
     prism (1.5.2)
     psych (3.3.4)
     public_suffix (6.0.2)
-    puma (7.0.4)
+    puma (7.2.1)
       nio4r (~> 2.0)
     qa (5.16.0)
       activerecord-import
