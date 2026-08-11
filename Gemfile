@@ -54,7 +54,7 @@ gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 1.3.5'
+gem 'pg', '~> 1.6.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.1'
 gem 'rdf', '~> 3.3.4'
