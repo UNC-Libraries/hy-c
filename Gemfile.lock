@@ -231,7 +231,7 @@ GEM
     crack (1.0.0)
       bigdecimal
       rexml
-    crass (1.0.6)
+    crass (1.0.7)
     csv (3.3.5)
     database_cleaner (2.1.0)
       database_cleaner-active_record (>= 2, < 3)
@@ -631,9 +631,9 @@ GEM
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
     logger (1.7.0)
-    loofah (2.19.1)
+    loofah (2.25.2)
       crass (~> 1.0.2)
-      nokogiri (>= 1.5.9)
+      nokogiri (>= 1.12.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -1192,7 +1192,7 @@ DEPENDENCIES
   linkeddata
   listen (~> 3.9.0)
   logger (~> 1.5)
-  loofah (~> 2.19.1)
+  loofah (~> 2.25.2)
   mini_magick (~> 4.13.0)
   net-ftp
   nokogiri (~> 1.14.2)
