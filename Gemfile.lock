@@ -241,7 +241,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
     database_cleaner-core (2.0.1)
-    date (3.4.1)
+    date (3.5.1)
     declarative (0.0.20)
     deprecation (1.1.0)
       activesupport
@@ -677,7 +677,7 @@ GEM
       uri
     net-http-persistent (4.0.6)
       connection_pool (~> 2.2, >= 2.2.4)
-    net-imap (0.4.22)
+    net-imap (0.5.15)
       date
       net-protocol
     net-pop (0.1.2)
@@ -1094,7 +1094,7 @@ GEM
     tilt (2.6.1)
     time (0.4.2)
       date
-    timeout (0.4.3)
+    timeout (0.6.1)
     tinymce-rails (5.10.9)
       railties (>= 3.1.1)
     trailblazer-option (0.1.2)
