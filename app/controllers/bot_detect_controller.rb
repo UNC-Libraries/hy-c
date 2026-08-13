@@ -86,7 +86,10 @@ class BotDetectController < ApplicationController
       remoteip: request.remote_ip
     }
 
-    response = HTTParty.post(self.cf_turnstile_validation_url,  body: body, timeout: self.cf_timeout)
+    response = HTTParty.post(self.cf_turnstile_validation_url,
+                             body: body.to_json,
+                             timeout: self.cf_timeout,
+                             headers: { 'Content-Type' => 'application/json' })
     result = JSON.parse(response.body)
     # Example turnstile responses
     # {"success"=>true, "error-codes"=>[], "challenge_ts"=>"2025-02-26T18:03:55.394Z", "hostname"=>"catalog-qa.lib.unc.edu", "action"=>"", "cdata"=>"", "metadata"=>{"interactive"=>true}}
