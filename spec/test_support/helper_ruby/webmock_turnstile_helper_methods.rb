@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 module WebmockTurnstileHelperMethods
   def stub_turnstile_success(turnstile_response: {},
-                             request_body: "secret=#{BotDetectController.cf_turnstile_secret_key}&response=XXXX.DUMMY.TOKEN.XXXX&remoteip=0.0.0.0"
+                             request_body: {
+                               secret: BotDetectController.cf_turnstile_secret_key,
+                               response: 'XXXX.DUMMY.TOKEN.XXXX',
+                               remoteip: '0.0.0.0'
+                             }
   )
 
     turnstile_response.reverse_merge!(
@@ -26,7 +30,11 @@ module WebmockTurnstileHelperMethods
   end
 
   def stub_turnstile_failure(turnstile_response: {},
-                             request_body: "secret=#{BotDetectController.cf_turnstile_secret_key}&response=XXXX.DUMMY.TOKEN.XXXX&remoteip=0.0.0.0")
+                             request_body: {
+                               secret: BotDetectController.cf_turnstile_secret_key,
+                               response: 'XXXX.DUMMY.TOKEN.XXXX',
+                               remoteip: '0.0.0.0'
+                             })
 
     turnstile_response.reverse_merge!(
       {'success'=>false, 'error-codes' => ['invalid-input-response'], 'messages' => [], 'metadata' =>
