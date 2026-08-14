@@ -10,10 +10,6 @@ class General < ActiveFedora::Base
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
-    index.as :stored_searchable
-  end
-
   property :academic_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField') do |index|
     index.as :stored_searchable
   end
@@ -23,10 +19,6 @@ class General < ActiveFedora::Base
   end
 
   property :advisors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
     index.as :stored_searchable
   end
 

@@ -10,10 +10,6 @@ class ScholarlyWork < ActiveFedora::Base
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
-    index.as :stored_searchable
-  end
-
   property :admin_note, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdminNote'), multiple: false do |index|
     index.as :stored_searchable
   end
