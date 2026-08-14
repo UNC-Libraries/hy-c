@@ -15,7 +15,8 @@ module WebmockTurnstileHelperMethods
 
     stub_request(:post, BotDetectController.cf_turnstile_validation_url).
       with(
-        body: request_body
+        body: request_body.to_json,
+        headers: { 'Content-Type' => 'application/json' }
       ).to_return(status: 200,
                   body: turnstile_response.to_json,
                   headers: { 'Content-Type' => 'application/json; charset=utf-8' }
@@ -35,7 +36,8 @@ module WebmockTurnstileHelperMethods
 
     stub_request(:post, BotDetectController.cf_turnstile_validation_url).
       with(
-        body: request_body
+        body: request_body.to_json,
+        headers: { 'Content-Type' => 'application/json' }
       ).to_return(status: 200,
                   body: turnstile_response.to_json,
                   headers: { 'Content-Type' => 'application/json; charset=utf-8' }
