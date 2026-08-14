@@ -10,10 +10,6 @@ class MastersPaper < ActiveFedora::Base
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
-    index.as :stored_searchable
-  end
-
   property :academic_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField') do |index|
     index.as :stored_searchable
   end

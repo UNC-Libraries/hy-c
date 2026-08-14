@@ -8,7 +8,9 @@ module Hyrax
     extend ActiveSupport::Concern
 
     included do
-      property :alternative_title, predicate: ::RDF::Vocab::DC.alternative
+      property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+        index.as :stored_searchable
+      end
 
       property :label, predicate: ActiveFedora::RDF::Fcrepo::Model.downloadFilename, multiple: false
 
@@ -27,7 +29,9 @@ module Hyrax
       end
       property :contributor, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#Contributor')
       property :description, predicate: ::RDF::Vocab::DC11.description, multiple: false
-      property :abstract, predicate: ::RDF::Vocab::DC.abstract
+      property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
+        index.as :stored_searchable
+      end
       # predicate changed
       property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords
       # predicate changed
