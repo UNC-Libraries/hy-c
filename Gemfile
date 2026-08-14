@@ -38,6 +38,7 @@ gem 'hyrax', '5.3.0'
 # This project uses Matomo; grpc (a native extension that fails on RHEL 9)
 # is pulled in transitively by google-analytics-data and is not needed.
 gem 'google-analytics-data', path: 'vendor/gems/google-analytics-data'
+gem 'google-cloud-errors', path: 'vendor/gems/google-cloud-errors'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library

@@ -3,6 +3,11 @@ PATH
   specs:
     google-analytics-data (0.999.0)
 
+PATH
+  remote: vendor/gems/google-cloud-errors
+  specs:
+    google-cloud-errors (0.999.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -1203,6 +1208,7 @@ DEPENDENCIES
   fcrepo_wrapper (~> 0.9.0)
   ffaker
   google-analytics-data!
+  google-cloud-errors!
   httparty (~> 0.21.0)
   hydra-editor (~> 7.0.0)
   hydra-pcdm (~> 1.4.0)
