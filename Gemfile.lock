@@ -335,7 +335,8 @@ GEM
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     erubi (1.13.1)
-    execjs (2.8.1)
+    execjs (2.10.2)
+      json (>= 2)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
@@ -1188,7 +1189,7 @@ DEPENDENCIES
   devise-guests (~> 0.8.1)
   edtf-humanize (~> 2.1)
   equivalent-xml (~> 0.6)
-  execjs (= 2.8.1)
+  execjs (= 2.10.2)
   factory_bot_rails (~> 6.2.0)
   fcrepo_wrapper (~> 0.9.0)
   ffaker
