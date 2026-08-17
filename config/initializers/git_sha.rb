@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative '../../app/services/version_service'
+
 GIT_SHA = VersionService.git_sha
 BRANCH = VersionService.branch
 Rails.logger.debug("in initializer: #{Rails.env}")
