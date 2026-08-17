@@ -21,7 +21,7 @@ gem 'clamby', '~> 1.6', require: 'clamby'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0.0'
 gem 'concurrent-ruby', '1.3.4'
-gem 'devise', '~> 4.8.0'
+gem 'devise', '~> 4.9.4'
 gem 'devise-guests', '~> 0.8.1'
 gem 'edtf-humanize', '~> 2.1'
 gem 'faraday-net_http_persistent', '~> 2.3'
@@ -33,7 +33,7 @@ gem 'hydra-editor', '~> 7.0.0'
 gem 'hydra-pcdm', '~> 1.4.0'
 gem 'hydra-role-management', '~> 1.2.0'
 gem 'hydra-works', '~> 2.3.0'
-gem 'hyrax', '5.2.0'
+gem 'hyrax', '5.3.0'
 # Stub out the GA4 gem that Hyrax 5 requires as a hard dependency.
 # This project uses Matomo; grpc (a native extension that fails on RHEL 9)
 # is pulled in transitively by google-analytics-data and is not needed.
@@ -58,7 +58,7 @@ gem 'omniauth-shibboleth', '~> 1.3'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.6.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 7.2.3.2'
 gem 'rdf', '~> 3.3.4'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
@@ -71,7 +71,7 @@ gem 'sass-rails', '~> 6.0.0'
 gem 'sassc'
 gem 'sidekiq', '~> 6.5'
 gem 'sidekiq-status', '~> 3.0.0'
-gem 'sprockets', '3.7.2'
+gem 'sprockets-rails', '~> 3.5'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
@@ -87,7 +87,7 @@ group :development, :test do
   gem 'byebug', '~> 11.1.3', platform: :mri
   gem 'database_cleaner'
   gem 'fcrepo_wrapper', '~> 0.9.0'
-  gem 'rspec-rails', '~> 5.1.2'
+  gem 'rspec-rails', '~> 7.1.1'
   # Rubocop for style and error checking (linter), locking version for now since newer versions have more rules
   gem 'rubocop', '~> 1.58.0'
   gem 'rubocop-rails'
