@@ -25,7 +25,7 @@ gem 'devise', '~> 4.8.0'
 gem 'devise-guests', '~> 0.8.1'
 gem 'edtf-humanize', '~> 2.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'execjs', '2.8.1'
+gem 'execjs', '2.10.2'
 gem 'httparty', '~>0.21.0'
 gem 'hydra-editor', '~> 7.0.0'
 gem 'hydra-pcdm', '~> 1.4.0'
