@@ -34,6 +34,12 @@ RSpec.describe ApplicationController, type: :controller do
   end
 
   describe '#set_locale' do
+    around do |example|
+      previous_locale = I18n.locale
+      example.run
+      I18n.locale = previous_locale
+    end
+
     controller(ApplicationController) do
       def index
         @params = params

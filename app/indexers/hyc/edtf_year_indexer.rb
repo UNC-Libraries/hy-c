@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 module Hyc
   module EdtfYearIndexer
-    def self.index_dates(value)
-      humanized_date = Hyc::EdtfConvert.convert_from_edtf(value)
+    def self.index_dates(value, locale: I18n.locale)
+      humanized_date = Hyc::EdtfConvert.convert_from_edtf(value, locale: locale)
       years = humanized_date.scan(/\d{4}/).map { |y| y.to_i }
 
       # Date ranges
