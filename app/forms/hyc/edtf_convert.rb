@@ -20,7 +20,7 @@ module Hyc
       attrs
     end
 
-    def self.convert_from_edtf(value)
+    def self.convert_from_edtf(value, locale: I18n.locale)
       return '' if value.blank?
 
       edtf = Date.edtf(value)
@@ -30,7 +30,7 @@ module Hyc
         return value
       end
 
-      edtf.humanize
+      I18n.with_locale(locale) { edtf.humanize }
     end
 
     private

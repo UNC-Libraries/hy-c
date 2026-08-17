@@ -108,6 +108,13 @@ RSpec.describe ActiveFedora::RDF::IndexingService do
       end
       let(:indexer) { described_class.new(work, date_index_config) }
 
+      around do |example|
+        previous_locale = I18n.locale
+        I18n.locale = :fr
+        example.run
+        I18n.locale = previous_locale
+      end
+
       context 'when adding Date object' do
         let(:work) do
           General.create(
