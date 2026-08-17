@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class OstiReportMailer < BaseIngestReportMailer
-  def report_email(report:, zip_path: nil)
+  def report_email(report: params[:report], zip_path: params[:zip_path])
     ingest_report_email(
       report: report,
       zip_path: zip_path,

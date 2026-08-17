@@ -18,6 +18,6 @@ class Tasks::EricIngest::Backlog::Utilities::NotificationService < Tasks::Ingest
   end
 
   def send_mail(report, zip_path)
-    ERICReportMailer.eric_report_email(report: report, zip_path: zip_path).deliver_now
+    ERICReportMailer.with(report: report, zip_path: zip_path).eric_report_email.deliver_now
   end
 end

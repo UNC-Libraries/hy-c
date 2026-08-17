@@ -49,11 +49,12 @@ RSpec.describe Tasks::NASAIngest::Backlog::Utilities::NotificationService do
       zip_path = '/path/to/report.zip'
 
       mailer_double = double('Mailer', deliver_now: true)
-      allow(NASAReportMailer).to receive(:report_email).with(report: report, zip_path: zip_path).and_return(mailer_double)
+      mailer_params_double = double('NASAReportMailer params', report_email: mailer_double)
+      allow(NASAReportMailer).to receive(:with).with(report: report, zip_path: zip_path).and_return(mailer_params_double)
 
       service.send(:send_mail, report, zip_path)
 
-      expect(NASAReportMailer).to have_received(:report_email).with(report: report, zip_path: zip_path)
+      expect(NASAReportMailer).to have_received(:with).with(report: report, zip_path: zip_path)
       expect(mailer_double).to have_received(:deliver_now)
     end
   end

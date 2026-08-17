@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class PubmedReportMailer < BaseIngestReportMailer
-  def pubmed_report_email(report:, zip_path: nil)
+  def pubmed_report_email(report: params[:report], zip_path: params[:zip_path])
     ingest_report_email(
       report: report,
       zip_path: zip_path,

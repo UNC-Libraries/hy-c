@@ -78,7 +78,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
     allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id)
     allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report)
-    allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
+    allow(PubmedReportMailer).to receive(:with).and_return(double('PubmedReportMailer params', pubmed_report_email: mock_mailer))
 
     # Mock service instantiation
     allow(Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService)
@@ -572,7 +572,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       allow(Tasks::IngestHelperUtils::IngestReportingService)
         .to receive(:generate_report).and_return(mock_report)
-      allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
+      allow(PubmedReportMailer).to receive(:with).and_return(double('PubmedReportMailer params', pubmed_report_email: mock_mailer))
       allow(CSV).to receive(:open).and_yield(double('csv', :<< => true))
     end
 
@@ -593,7 +593,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       it 'skips email sending' do
         service.send(:format_results_and_notify)
 
-        expect(PubmedReportMailer).not_to have_received(:pubmed_report_email)
+        expect(PubmedReportMailer).not_to have_received(:with)
         expect(LogUtilsHelper).to have_received(:double_log).with(
           'Skipping email notification as it has already been sent.',
           :info,
@@ -614,8 +614,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       allow(Zip::File).to receive(:open).and_yield(double('zip', add: true))
 
 
-      allow(PubmedReportMailer).to receive(:pubmed_report_email)
-        .and_return(double(deliver_now: true))
+      allow(PubmedReportMailer).to receive(:with)
+        .and_return(double('PubmedReportMailer params', pubmed_report_email: double(deliver_now: true)))
 
       expect(tracker['progress']['retrieve_ids_within_date_range']['pubmed']['completed']).to be false
       expect(tracker['progress']['metadata_ingest']['pubmed']['completed']).to be false

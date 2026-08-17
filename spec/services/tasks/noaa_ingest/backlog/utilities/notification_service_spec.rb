@@ -55,11 +55,12 @@ RSpec.describe Tasks::NoaaIngest::Backlog::Utilities::NotificationService do
       zip_path = '/path/to/noaa_report.zip'
 
       mailer_double = double('Mailer', deliver_now: true)
-      allow(NoaaReportMailer).to receive(:report_email).with(report: report, zip_path: zip_path).and_return(mailer_double)
+      mailer_params_double = double('NoaaReportMailer params', report_email: mailer_double)
+      allow(NoaaReportMailer).to receive(:with).with(report: report, zip_path: zip_path).and_return(mailer_params_double)
 
       service.send(:send_mail, report, zip_path)
 
-      expect(NoaaReportMailer).to have_received(:report_email).with(report: report, zip_path: zip_path)
+      expect(NoaaReportMailer).to have_received(:with).with(report: report, zip_path: zip_path)
       expect(mailer_double).to have_received(:deliver_now)
     end
   end

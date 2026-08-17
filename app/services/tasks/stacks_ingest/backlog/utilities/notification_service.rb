@@ -19,6 +19,6 @@ class Tasks::StacksIngest::Backlog::Utilities::NotificationService < Tasks::Inge
   end
 
   def send_mail(report, zip_path)
-    StacksReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
+    StacksReportMailer.with(report: report, zip_path: zip_path).report_email.deliver_now
   end
 end

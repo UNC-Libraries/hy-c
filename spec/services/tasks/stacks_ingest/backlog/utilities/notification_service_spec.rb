@@ -55,11 +55,12 @@ RSpec.describe Tasks::StacksIngest::Backlog::Utilities::NotificationService do
       zip_path = '/path/to/stacks_report.zip'
 
       mailer_double = double('Mailer', deliver_now: true)
-      allow(StacksReportMailer).to receive(:report_email).with(report: report, zip_path: zip_path).and_return(mailer_double)
+      mailer_params_double = double('StacksReportMailer params', report_email: mailer_double)
+      allow(StacksReportMailer).to receive(:with).with(report: report, zip_path: zip_path).and_return(mailer_params_double)
 
       service.send(:send_mail, report, zip_path)
 
-      expect(StacksReportMailer).to have_received(:report_email).with(report: report, zip_path: zip_path)
+      expect(StacksReportMailer).to have_received(:with).with(report: report, zip_path: zip_path)
       expect(mailer_double).to have_received(:deliver_now)
     end
   end
