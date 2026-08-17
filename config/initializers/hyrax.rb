@@ -352,25 +352,27 @@ end
 
 Date::DATE_FORMATS[:standard] = '%Y-%m-%d'
 
-Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
-# Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
-Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
+Rails.application.config.to_prepare do
+  Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
+  # Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
+  Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
 
-# Set timeout for creating video derivatives. Otherwise the process sometimes silently fails.
-Hydra::Derivatives::Processors::Video::Processor.timeout = 30.minutes
-Hydra::Derivatives::Processors::Document.timeout = 5.minutes
-Hydra::Derivatives::Processors::Audio.timeout = 10.minutes
-Hydra::Derivatives::Processors::Image.timeout = 5.minutes
+  # Set timeout for creating video derivatives. Otherwise the process sometimes silently fails.
+  Hydra::Derivatives::Processors::Video::Processor.timeout = 30.minutes if defined?(Hydra::Derivatives::Processors::Video::Processor)
+  Hydra::Derivatives::Processors::Document.timeout = 5.minutes if defined?(Hydra::Derivatives::Processors::Document)
+  Hydra::Derivatives::Processors::Audio.timeout = 10.minutes if defined?(Hydra::Derivatives::Processors::Audio)
+  Hydra::Derivatives::Processors::Image.timeout = 5.minutes if defined?(Hydra::Derivatives::Processors::Image)
 
-# set bulkrax default work type to first curation_concern if it isn't already set
-Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
+  # set bulkrax default work type to first curation_concern if it isn't already set
+  Bulkrax.default_work_type = 'General' if defined?(Bulkrax) && Bulkrax.default_work_type.blank?
 
-# Load our local schema.org config instead of the default
-local_schema_file = Rails.root.join('config', 'schema_org.yml')
-local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
-Hyrax::Microdata.load_paths = local_filename
+  # Load our local schema.org config instead of the default
+  local_schema_file = Rails.root.join('config', 'schema_org.yml')
+  local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
+  Hyrax::Microdata.load_paths = local_filename
 
-# Dashboard menu extensions
-Hyrax::DashboardController.sidebar_partials[:activity] << 'hyrax/dashboard/sidebar/custom_activity'
-Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
-Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
+  # Dashboard menu extensions
+  Hyrax::DashboardController.sidebar_partials[:activity] << 'hyrax/dashboard/sidebar/custom_activity'
+  Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
+  Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
+end
