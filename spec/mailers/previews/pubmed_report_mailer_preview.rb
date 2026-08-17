@@ -23,6 +23,6 @@ class PubmedReportMailerPreview < ActionMailer::Preview
                             skipped_non_unc_affiliation: 'Skipped (No UNC Affiliation)'
                           }
       # Send Email
-    PubmedReportMailer.pubmed_report_email(report: report, zip_path: nil)
+    PubmedReportMailer.with(report: report, zip_path: nil).pubmed_report_email
   end
 end

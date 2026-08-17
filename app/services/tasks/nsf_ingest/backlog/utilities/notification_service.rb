@@ -14,6 +14,6 @@ class Tasks::NSFIngest::Backlog::Utilities::NotificationService < Tasks::IngestH
   end
 
   def send_mail(report, zip_path)
-    NSFReportMailer.nsf_report_email(report: report, zip_path: zip_path).deliver_now
+    NSFReportMailer.with(report: report, zip_path: zip_path).nsf_report_email.deliver_now
   end
 end

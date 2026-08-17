@@ -19,6 +19,6 @@ class Tasks::NoaaIngest::Backlog::Utilities::NotificationService < Tasks::Ingest
   end
 
   def send_mail(report, zip_path)
-    NoaaReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
+    NoaaReportMailer.with(report: report, zip_path: zip_path).report_email.deliver_now
   end
 end

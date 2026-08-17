@@ -12,7 +12,7 @@ module Tasks::IngestHelperUtils::NotificationHelper
       zip_path  = Tasks::IngestHelperUtils::ReportingHelper.compress_result_csvs(csv_paths: csv_paths, zip_output_dir: csv_output_dir)
 
       report = build_report(results: results, tracker: tracker)
-      mailer.pubmed_report_email(report: report, zip_path: zip_path).deliver_now
+      mailer.with(report: report, zip_path: zip_path).pubmed_report_email.deliver_now
 
       tracker['progress']['send_summary_email']['completed'] = true
       tracker.save

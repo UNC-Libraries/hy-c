@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class BaseIngestReportMailer < ApplicationMailer
-  def ingest_report_email(report:, zip_path:, template_name:)
+  def ingest_report_email(report: params[:report], zip_path: params[:zip_path], template_name: params[:template_name])
     if zip_path.blank? || !File.exist?(zip_path)
       LogUtilsHelper.double_log(
         'No ZIP provided for attachment; sending email without attachments.',

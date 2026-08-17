@@ -14,6 +14,6 @@ class Tasks::DTICIngest::Backlog::Utilities::NotificationService < Tasks::Ingest
   end
 
   def send_mail(report, zip_path)
-    DTICReportMailer.dtic_report_email(report: report, zip_path: zip_path).deliver_now
+    DTICReportMailer.with(report: report, zip_path: zip_path).dtic_report_email.deliver_now
   end
 end

@@ -57,6 +57,6 @@ rescue StandardError => e
   end
 
   def send_mail(report, zip_path)
-    OstiReportMailer.report_email(report: report, zip_path: zip_path).deliver_now
+    OstiReportMailer.with(report: report, zip_path: zip_path).report_email.deliver_now
   end
 end
