@@ -24,8 +24,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::NotificationService, t
   end
 
   before do
-    allow(PubmedReportMailer).to receive(:pubmed_report_email)
-      .and_return(double('Mail::Message', deliver_now: true))
+    mail_double = double('Mail::Message', deliver_now: true)
+    mailer_params_double = double('PubmedReportMailer params', pubmed_report_email: mail_double)
+    allow(PubmedReportMailer).to receive(:with).and_return(mailer_params_double)
   end
 
   describe '#source_name' do
@@ -59,14 +60,15 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::NotificationService, t
 
       service.send(:send_mail, report, zip_path)
 
-      expect(PubmedReportMailer).to have_received(:pubmed_report_email)
+      expect(PubmedReportMailer).to have_received(:with)
         .with(report: report, zip_path: zip_path)
     end
 
     it 'calls deliver_now on the mailer message' do
       mail_double = double('Mail::Message')
       allow(mail_double).to receive(:deliver_now)
-      allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mail_double)
+      mailer_params_double = double('PubmedReportMailer params', pubmed_report_email: mail_double)
+      allow(PubmedReportMailer).to receive(:with).and_return(mailer_params_double)
 
       report = { headers: {} }
       service.send(:send_mail, report, '/tmp/file.zip')

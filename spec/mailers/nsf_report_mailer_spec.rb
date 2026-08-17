@@ -23,7 +23,7 @@ RSpec.describe NSFReportMailer, type: :mailer do
     it 'delegates to ingest_report_email with correct template' do
       report = { subject: 'NSF Test Report' }
 
-      expect_any_instance_of(BaseIngestReportMailer)
+      expect_any_instance_of(described_class)
         .to receive(:ingest_report_email)
         .with(
           report: report,
@@ -31,7 +31,7 @@ RSpec.describe NSFReportMailer, type: :mailer do
           template_name: 'nsf_report_email'
         )
 
-      described_class.new.nsf_report_email(report: report, zip_path: zip_path)
+      described_class.with(report: report, zip_path: zip_path).nsf_report_email.message
     end
 
     describe 'the generated email' do
@@ -58,7 +58,7 @@ RSpec.describe NSFReportMailer, type: :mailer do
         }
       end
 
-      let(:mail) { described_class.new.nsf_report_email(report: report_hash, zip_path: zip_path) }
+      let(:mail) { described_class.with(report: report_hash, zip_path: zip_path).nsf_report_email }
 
       it 'renders depositor and total file count in the body' do
         expect(mail.body.encoded).to include('<strong>Depositor: </strong>nsf_user')

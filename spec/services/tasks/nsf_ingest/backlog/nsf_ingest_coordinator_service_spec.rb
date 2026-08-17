@@ -42,7 +42,8 @@ RSpec.describe Tasks::IngestHelperUtils::NotificationHelper, type: :helper do
       .and_return('/tmp/results.zip')
 
     email_double = double('Mail::Message', deliver_now: true)
-    allow(mailer).to receive(:pubmed_report_email).and_return(email_double)
+    mailer_params_double = double('Mailer params', pubmed_report_email: email_double)
+    allow(mailer).to receive(:with).and_return(mailer_params_double)
     allow(Rails.logger).to receive(:error)
   end
 
@@ -56,7 +57,7 @@ RSpec.describe Tasks::IngestHelperUtils::NotificationHelper, type: :helper do
         .with(results: results, csv_output_dir: csv_output_dir)
       expect(Tasks::IngestHelperUtils::ReportingHelper).to have_received(:compress_result_csvs)
         .with(csv_paths: ['/tmp/file1.csv', '/tmp/file2.csv'], zip_output_dir: csv_output_dir)
-      expect(mailer).to have_received(:pubmed_report_email)
+      expect(mailer).to have_received(:with)
         .with(hash_including(:report, :zip_path))
       expect(tracker_hash['progress']['send_summary_email']['completed']).to be true
       expect(tracker).to have_received(:save)
@@ -74,7 +75,7 @@ RSpec.describe Tasks::IngestHelperUtils::NotificationHelper, type: :helper do
     end
 
     it 'logs error if mail sending fails' do
-      allow(mailer).to receive(:pubmed_report_email).and_raise(StandardError, 'SMTP boom')
+      allow(mailer).to receive(:with).and_raise(StandardError, 'SMTP boom')
 
       described_class.send_report_and_notify(
         results: results, tracker: tracker, csv_output_dir: csv_output_dir, mailer: mailer

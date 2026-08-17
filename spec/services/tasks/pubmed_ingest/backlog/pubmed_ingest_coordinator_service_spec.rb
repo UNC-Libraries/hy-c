@@ -79,7 +79,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
     # Mock mailer
     mock_mailer = double('mailer', deliver_now: nil)
     allow(Tasks::IngestHelperUtils::IngestReportingService).to receive(:generate_report).and_return('test report')
-    allow(PubmedReportMailer).to receive(:pubmed_report_email).and_return(mock_mailer)
+    allow(PubmedReportMailer).to receive(:with).and_return(double('PubmedReportMailer params', pubmed_report_email: mock_mailer))
 
     # Stub virus checking
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -359,15 +359,16 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
         .and_return(report_hash)
 
       expect(PubmedReportMailer)
-        .to receive(:pubmed_report_email)
+        .to receive(:with)
         .with(report: satisfy { |r| r[:headers][:total_files] == 2 }, zip_path: nil)
+        .and_return(double('PubmedReportMailer params', pubmed_report_email: double(deliver_now: true)))
 
       service.send(:finalize_report_and_notify)
     end
 
     context 'when email sending fails' do
       before do
-        allow(PubmedReportMailer).to receive(:pubmed_report_email).and_raise(StandardError.new('Email error'))
+        allow(PubmedReportMailer).to receive(:with).and_raise(StandardError.new('Email error'))
         allow(service).to receive(:double_log).and_call_original
       end
 

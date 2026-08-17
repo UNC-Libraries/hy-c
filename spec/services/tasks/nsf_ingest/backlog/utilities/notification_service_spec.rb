@@ -8,7 +8,9 @@ RSpec.describe Tasks::NSFIngest::Backlog::Utilities::NotificationService, type: 
 
   before do
     allow(CSV).to receive(:read).and_return([%w[doi filename], ['10.1/a', 'f1.pdf'], ['10.2/b', 'f2.pdf']])
-    allow(NSFReportMailer).to receive(:nsf_report_email).and_return(double(deliver_now: true))
+    mail_double = double('Mail::Message', deliver_now: true)
+    mailer_params_double = double('NSFReportMailer params', nsf_report_email: mail_double)
+    allow(NSFReportMailer).to receive(:with).and_return(mailer_params_double)
   end
 
   describe '#source_name' do
@@ -52,9 +54,10 @@ RSpec.describe Tasks::NSFIngest::Backlog::Utilities::NotificationService, type: 
 
     it 'invokes NSFReportMailer with correct args and delivers email' do
       mail_double = double(deliver_now: true)
-      expect(NSFReportMailer).to receive(:nsf_report_email)
+      mailer_params_double = double('NSFReportMailer params', nsf_report_email: mail_double)
+      expect(NSFReportMailer).to receive(:with)
         .with(report: report, zip_path: zip_path)
-        .and_return(mail_double)
+        .and_return(mailer_params_double)
 
       expect(mail_double).to receive(:deliver_now)
       service.send(:send_mail, report, zip_path)

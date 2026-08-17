@@ -32,7 +32,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
       report = { subject: 'PubMed Test' }
       zip_path = '/fake/path/results.zip'
 
-      expect_any_instance_of(BaseIngestReportMailer)
+      expect_any_instance_of(described_class)
         .to receive(:ingest_report_email)
         .with(
           report: report,
@@ -40,7 +40,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
           template_name: 'pubmed_report_email'
         )
 
-      described_class.new.pubmed_report_email(report: report, zip_path: zip_path)
+      described_class.with(report: report, zip_path: zip_path).pubmed_report_email.message
     end
 
     describe 'the generated email' do
@@ -73,7 +73,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
         }
       end
 
-      let(:mail) { described_class.new.pubmed_report_email(report: report_hash, zip_path: zip_path) }
+      let(:mail) { described_class.with(report: report_hash, zip_path: zip_path).pubmed_report_email }
 
       it 'includes key header info in the email body' do
         expect(mail.body.encoded).to include('<strong>Depositor: </strong>recurring_user')
