@@ -11,13 +11,16 @@ Bundler.require(*Rails.groups)
 
 module Hyrax
   class Application < Rails::Application
+    config.load_defaults 7.0
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', ENV['LOCAL_ENV_FILE'] || 'local_env.yml')
+      env_vars = YAML.safe_load(File.read(env_file), aliases: true) || {}
 
-      YAML.load(File.open(env_file)).each do |key, value|
+      env_vars.each do |key, value|
         ENV[key.to_s] = value unless ENV.key?(key.to_s)
       end if File.exist?(env_file)
     end
@@ -43,19 +46,20 @@ module Hyrax
     # Prepend all log lines with the following tags.
     config.log_tags = [:request_id]
 
-    # Load override files
-    overrides = "#{Rails.root}/app/overrides"
+    # Load override files.
+    # These files patch existing classes and do not define constants matching
+    # their file paths, so they must be kept out of Zeitwerk autoloading.
+    overrides_path = Rails.root.join("app/overrides").to_s
+    Rails.autoloaders.main.ignore(overrides_path)
     config.to_prepare do
-      Dir.glob("#{overrides}/**/*_override.rb").sort.each do |c|
-        Rails.configuration.cache_classes ? require(c) : require_dependency(c)
-      end
+      Dir.glob("#{overrides_path}/**/*.rb").sort.each { |f| load f }
     end
 
     require_relative '../app/middleware/decode_query_string'
     config.middleware.insert_before Rack::Runtime, DecodeQueryString
 
-    # active-fedora's railtie uses `<<` to append to autoload_paths, but in
-    # Rails 6.1 + Ruby 3.x the array is frozen by the time initializers run.
+    # active_fedora's railtie uses `<<` to append to autoload_paths, so we
+    # duplicate the array before the railtie initializer runs.
     # This must be an initializer (not bare class-body code) so that `app.config`
     # returns the Engine::Configuration instance whose @autoload_paths attr_writer
     # is what the active_fedora.autoload initializer actually reads.
