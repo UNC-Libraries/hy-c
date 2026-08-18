@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreateHyraxCounterMetrics < ActiveRecord::Migration[6.1]
   def change
     create_table :hyrax_counter_metrics do |t|

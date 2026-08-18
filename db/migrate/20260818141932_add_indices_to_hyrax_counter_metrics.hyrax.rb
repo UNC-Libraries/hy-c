@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AddIndicesToHyraxCounterMetrics < ActiveRecord::Migration[6.1]
   def change
     add_index :hyrax_counter_metrics, :worktype

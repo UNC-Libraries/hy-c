@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AddFieldsToCounterMetric < ActiveRecord::Migration[6.1]
   def change
     add_column :hyrax_counter_metrics, :title, :string
