@@ -24,6 +24,7 @@ Rails.application.reloader.to_prepare do
     Riiif::Image.file_resolver = Hyrax::RiiifFileResolver.new
   else
     Riiif::Image.file_resolver = Riiif::HttpFileResolver.new
+    Riiif::Image.file_resolver.cache_path = File.join(ENV['TEMP_STORAGE'], 'riiif')
 
     Riiif::Image.file_resolver.id_to_uri = lambda do |id|
       Hyrax::Base.id_to_uri(CGI.unescape(id)).tap do |url|
