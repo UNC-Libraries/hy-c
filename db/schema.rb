@@ -13,54 +13,6 @@
 ActiveRecord::Schema[7.2].define(version: 2026_08_18_141933) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "uuid-ossp"
-
-  create_table "action_mailbox_inbound_emails", force: :cascade do |t|
-    t.integer "status", default: 0, null: false
-    t.string "message_id", null: false
-    t.string "message_checksum", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["message_id", "message_checksum"], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
-  end
-
-  create_table "action_text_rich_texts", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "body"
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
-  end
-
-  create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
-    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
-  end
-
-  create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.string "service_name", null: false
-    t.bigint "byte_size", null: false
-    t.string "checksum"
-    t.datetime "created_at", null: false
-    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
-
-  create_table "active_storage_variant_records", force: :cascade do |t|
-    t.bigint "blob_id", null: false
-    t.string "variation_digest", null: false
-    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
-  end
 
   create_table "bookmarks", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
@@ -449,19 +401,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_18_141933) do
     t.index ["namespace"], name: "index_minter_states_on_namespace", unique: true
   end
 
-  create_table "orm_resources", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
-    t.jsonb "metadata", default: {}, null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "internal_resource"
-    t.integer "lock_version"
-    t.index "(((metadata -> 'bulkrax_identifier'::text) ->> 0))", name: "index_on_bulkrax_identifier", where: "((metadata -> 'bulkrax_identifier'::text) IS NOT NULL)"
-    t.index ["internal_resource"], name: "index_orm_resources_on_internal_resource"
-    t.index ["metadata"], name: "index_orm_resources_on_metadata", using: :gin
-    t.index ["metadata"], name: "index_orm_resources_on_metadata_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
-    t.index ["updated_at"], name: "index_orm_resources_on_updated_at"
-  end
-
   create_table "permission_template_accesses", id: :serial, force: :cascade do |t|
     t.integer "permission_template_id"
     t.string "agent_type"
@@ -520,22 +459,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_18_141933) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["local_authority_id"], name: "index_qa_local_authority_entries_on_local_authority_id"
     t.index ["uri"], name: "index_qa_local_authority_entries_on_uri", unique: true
-  end
-
-  create_table "qa_mesh_trees", id: :serial, force: :cascade do |t|
-    t.string "term_id"
-    t.string "tree_number"
-    t.index ["term_id"], name: "index_qa_mesh_trees_on_term_id"
-    t.index ["tree_number"], name: "index_qa_mesh_trees_on_tree_number"
-  end
-
-  create_table "qa_subject_mesh_terms", id: :serial, force: :cascade do |t|
-    t.string "term_id"
-    t.string "term"
-    t.text "synonyms"
-    t.string "term_lower"
-    t.index ["term_id"], name: "index_qa_subject_mesh_terms_on_term_id"
-    t.index ["term_lower"], name: "index_qa_subject_mesh_terms_on_term_lower"
   end
 
   create_table "roles", id: :serial, force: :cascade do |t|
@@ -826,8 +749,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_18_141933) do
     t.index ["work_id"], name: "index_work_view_stats_on_work_id"
   end
 
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bulkrax_exporter_runs", "bulkrax_exporters", column: "exporter_id"
   add_foreign_key "bulkrax_importer_runs", "bulkrax_importers", column: "importer_id"
   add_foreign_key "bulkrax_pending_relationships", "bulkrax_importer_runs", column: "importer_run_id"
