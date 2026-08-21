@@ -15,7 +15,7 @@ Hyrax::CitationsBehaviors::NameBehavior.module_eval do
                     end
                   end
 
-    authors = author_vals.uniq.compact
+    authors = author_vals.compact.uniq.reject { |author| author.delete(',').strip.blank? }
     block_given? ? authors.map(&block) : authors
   end
 end

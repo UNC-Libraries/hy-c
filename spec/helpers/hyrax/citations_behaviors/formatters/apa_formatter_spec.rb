@@ -3,6 +3,18 @@ require Rails.root.join('app/overrides/helpers/hyrax/citations_behaviors/formatt
 
 RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
   subject(:formatter) { described_class.new(:no_context) }
+
+  let(:creator_display_with_blank_names) do
+    [
+      'index:72||Example, Zoltán||Other Affiliation: University.',
+      'index:161||, ',
+      'index:105||Painter, Test||Other Affiliation: Test University.',
+      'index:162||, ',
+      'index:8||Air, Test M||Other Affiliation: Another university.',
+      "index:194||O'Donovan, Apostro C||Other Affiliation: Somewhere."
+    ]
+  end
+
   let(:article) {
     Article.new(title: ['new article title'],
                 creators_attributes: { '0' => { 'name' => 'a depositor' } },
@@ -27,6 +39,15 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
       presenter_no_doi = Hyrax::WorkShowPresenter.new(SolrDocument.new(article_no_doi.to_solr), :no_ability)
 
       expect { formatter.format(presenter_no_doi) }.not_to raise_error
+    end
+
+    it 'handles creator_display values with blank names and diacritics' do
+      presenter_with_blank_creator_display = Hyrax::WorkShowPresenter.new(
+        SolrDocument.new(article.to_solr.merge('creator_display_tesim' => creator_display_with_blank_names)),
+        :no_ability
+      )
+
+      expect { formatter.format(presenter_with_blank_creator_display) }.not_to raise_error
     end
   end
 
@@ -60,6 +81,20 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
   describe '#all_authors' do
     it 'returns list of authors' do
       expect(formatter.all_authors(presenter)).to eq ['A Depositor']
+    end
+
+    it 'filters out creator_display entries that are only commas and whitespace' do
+      presenter_with_blank_creator_display = Hyrax::WorkShowPresenter.new(
+        SolrDocument.new(article.to_solr.merge('creator_display_tesim' => creator_display_with_blank_names)),
+        :no_ability
+      )
+
+      expect(formatter.all_authors(presenter_with_blank_creator_display)).to eq [
+        'Air, Test M',
+        'Example, Zoltán',
+        'Painter, Test',
+        "O'donovan, Apostro C"
+      ]
     end
   end
 
