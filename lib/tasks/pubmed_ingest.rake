@@ -45,18 +45,3 @@ task :pubmed_ingest, [:resume, :output_dir, :full_text_dir, :start_date, :end_da
   coordinator = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new(config, tracker)
   coordinator.run
 end
-
-desc 'Ingest new PubMed PDFs from the backlog and attach them to Hyrax works if matched'
-task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set_title] => :environment do |task, args|
-  return unless valid_args('pubmed_ingest', args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title])
-  file_retrieval_directory = Pathname.new(args[:file_retrieval_directory]).absolute? ?
-                             args[:file_retrieval_directory] :
-                             Rails.root.join(args[:file_retrieval_directory])
-  coordinator = Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService.new({
-    'admin_set_title' => args[:admin_set_title],
-    'depositor_onyen' => args[:depositor_onyen],
-    'file_retrieval_directory' => file_retrieval_directory,
-    'output_dir' => args[:output_dir]
-  })
-  res = coordinator.run
-end
