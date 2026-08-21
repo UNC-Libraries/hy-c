@@ -49,7 +49,7 @@ module Hyrax
     # Load override files.
     # These files patch existing classes and do not define constants matching
     # their file paths, so they must be kept out of Zeitwerk autoloading.
-    overrides_path = Rails.root.join("app/overrides").to_s
+    overrides_path = Rails.root.join('app/overrides').to_s
     Rails.autoloaders.main.ignore(overrides_path)
     config.to_prepare do
       Dir.glob("#{overrides_path}/**/*.rb").sort.each { |f| load f }
