@@ -57,7 +57,7 @@ RSpec.configure do |config|
   config.include WebmockTurnstileHelperMethods
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_paths = "#{::Rails.root}/spec/fixtures"
 
   # Keep last run of rspec locally in order to easily re-run failures
   config.example_status_persistence_file_path = 'rspec_examples.txt'

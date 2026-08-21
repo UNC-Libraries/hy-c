@@ -13,7 +13,8 @@ Bulkrax.setup do |config|
   # config.default_work_type = MyWork
 
   # Factory Class to use when generating and saving objects
-  config.object_factory = Bulkrax::ObjectFactory
+  # Defer class resolution so initialization does not fail before autoloading kicks in.
+  config.object_factory = 'Bulkrax::ObjectFactory'
 
   # Path to store pending imports
   config.import_path = "#{ENV['TEMP_STORAGE']}/hyrax/imports"
@@ -207,11 +208,18 @@ Bulkrax.setup do |config|
   # Overriding removed_image_path which by default refers to a file in the spec folder
   config.removed_image_path = Rails.root.join('app', 'assets', 'images', 'bulkrax', 'removed.png')
 
-  # Cleanup blank values during import
+  # Cleanup blank values during import (applied once the class is loaded).
+end
+
+Rails.application.config.to_prepare do
+  next unless defined?(Bulkrax::ObjectFactory)
+
   Bulkrax::ObjectFactory.transformation_removes_blank_hash_values = true
 end
 
 # Sidebar for hyrax 3+ support
-if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)
+Rails.application.config.to_prepare do
+  next unless defined?(Hyrax::DashboardController) && Hyrax::DashboardController.respond_to?(:sidebar_partials)
+
   Hyrax::DashboardController.sidebar_partials[:repository_content] << 'hyrax/dashboard/sidebar/bulkrax_sidebar_additions'
 end
