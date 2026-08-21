@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Hyrax::AdminSetSelectService do
+RSpec.describe AdminSetSelectService do
   let(:service) { described_class }
 
   describe '#select' do
