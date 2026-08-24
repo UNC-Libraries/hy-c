@@ -3,7 +3,7 @@
   "private": true,
   "repository": "git@github.com:samvera/hyrax.git",
   "dependencies": {
-    "universalviewer": "^3.0.36"
+    "universalviewer": "^4.4.4"
   },
   "scripts": {
     "preinstall": "rm -rf ./public/uv",
@@ -12,6 +12,6 @@
     "uv-config": "shx cp ./config/uv/uv.html ./public/uv/uv.html & shx cp ./config/uv/uv-config.json ./public/uv/"
   },
   "devDependencies": {
-    "shx": "^0.3.2"
+    "shx": "^0.4.0"
   }
 }
