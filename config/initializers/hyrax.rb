@@ -111,14 +111,25 @@ Hyrax.config do |config|
 
   # Returns a URL that resolves to an image provided by a IIIF image server
   config.iiif_image_url_builder = lambda do |file_id, base_url, size, format|
-    Riiif::Engine.routes.url_helpers.image_url(file_id, host: base_url, size: size)
+    uri = URI.parse(ENV['HYRAX_HOST'])
+    Riiif::Engine.routes.url_helpers.image_url(
+      file_id,
+      host: uri.host,
+      port: uri.port,
+      protocol: uri.scheme,
+      size: size
+    )
   end
 
   # Returns a URL that resolves to an info.json file provided by a IIIF image server
   config.iiif_info_url_builder = lambda do |file_id, base_url|
-    base_url = ENV['HYRAX_HOST'] if base_url != ENV['HYRAX_HOST']
-    uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
-    uri.sub(%r{/info\.json\Z}, '')
+    uri = URI.parse(ENV['HYRAX_HOST'])
+    Riiif::Engine.routes.url_helpers.info_url(
+      file_id,
+      host: uri.host,
+      port: uri.port,
+      protocol: uri.scheme
+    ).sub(%r{/info\.json\z}, '')
   end
 
   # Returns a URL that indicates your IIIF image server compliance level

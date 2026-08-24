@@ -91,3 +91,9 @@ Rails.application.configure do
 
   config.log_level = LogService.log_level
 end
+
+Rails.application.routes.default_url_options = {
+  host: "localhost",
+  port: 3000,
+  protocol: "http"
+}
