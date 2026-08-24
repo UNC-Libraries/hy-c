@@ -6,6 +6,15 @@ require 'faraday/retry'
 module Hyc
   class PooledSolrRepository < Blacklight::Solr::Repository
     def build_connection
+      # Reuse a connection object across requests within the same passenger/puma worker
+      self.class.shared_connection(connection_config)
+    end
+
+    def self.shared_connection(connection_config)
+      @shared_connection ||= build_raw_connection(connection_config)
+    end
+
+    def self.build_raw_connection(connection_config)
       opts = connection_config.symbolize_keys
       url = opts.fetch(:url)
       faraday = Faraday.new(

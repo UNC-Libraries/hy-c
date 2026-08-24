@@ -2,7 +2,7 @@ development:
   adapter: Hyc::PooledSolrRepository
   url: <%= ENV['SOLR_DEV_URL'] %>
 test: &test
-  adapter: Solr
+  adapter: solr
   url: <%= ENV['SOLR_TEST_URL'] %>
 production:
   adapter: Hyc::PooledSolrRepository
