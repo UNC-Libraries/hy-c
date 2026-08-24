@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # [hyc-override] Temporary shim for Hyrax 5.3.0.
 module Hyrax
-  # Temporary shim for Hyrax 5.3.0.
+  # [hyc-override] Temporary shim for Hyrax 5.3.0.
   #
   # `Hyrax::Forms::ResourceForm` includes `CompoundFieldBehavior`, but the gem
   # does not ship a definition for that module. Define a no-op behavior in the
@@ -12,4 +12,3 @@ module Hyrax
   module CompoundFieldBehavior
   end
 end
-
