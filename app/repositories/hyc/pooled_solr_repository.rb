@@ -27,7 +27,9 @@ module Hyc
             conn.request :retry, max: 2, interval: 0.05, interval_randomness: 0.5,
                         backoff_factor: 2, exceptions: [Faraday::ConnectionFailed, Faraday::TimeoutError]
             conn.response :raise_error
-            conn.adapter :net_http_persistent
+            conn.adapter :net_http_persistent do |http|
+              http.retry_change_requests = true
+            end
         end
       RSolr::Client.new(
         faraday,
