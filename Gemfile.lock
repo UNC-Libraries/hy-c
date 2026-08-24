@@ -893,8 +893,8 @@ GEM
       rdf (~> 3.2)
     rdf-vocab (3.2.7)
       rdf (~> 3.2, >= 3.2.4)
-    rdf-xsd (3.2.1)
-      rdf (~> 3.2)
+    rdf-xsd (3.3.0)
+      rdf (~> 3.3)
       rexml (~> 3.2)
     readline (0.0.4)
       reline
@@ -1157,11 +1157,11 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yaml-ld (0.0.2)
-      json-ld (~> 3.2, >= 3.2.3)
+    yaml-ld (0.0.3)
+      json-ld (~> 3.3)
       psych (>= 3.3)
-      rdf (~> 3.2, >= 3.2.9)
-      rdf-xsd (~> 3.2)
+      rdf (~> 3.3)
+      rdf-xsd (~> 3.3)
     zeitwerk (2.8.3)
 
 PLATFORMS
