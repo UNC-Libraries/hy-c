@@ -1577,7 +1577,6 @@ http-signature@~1.2.0:
 
 http-status-codes@edsilv/http-status-codes#v0.0.7:
   version "0.0.7"
-  uid af3a8ab9970b1f291a79b03c7382dc16aebee749
   resolved "https://codeload.github.com/edsilv/http-status-codes/tar.gz/af3a8ab9970b1f291a79b03c7382dc16aebee749"
 
 https-browserify@^1.0.0:
@@ -3165,7 +3164,7 @@ universalify@^0.2.0:
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.2.0.tgz#6451760566fa857534745ab1dde952d1b1761be0"
   integrity sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==
 
-universalviewer@^3.0.16:
+universalviewer@^3.0.36:
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/universalviewer/-/universalviewer-3.1.4.tgz#5355aa77e06a05d1252f473e7b437caa24ecd9ff"
   integrity sha512-1z/0iN0JcGlN3lNX3/hMts2WAaLdmvG+j50lgqdzKsGex6033XmE30otl0U2UvF21S5U7bVlW+KYlMeIQyTRww==
