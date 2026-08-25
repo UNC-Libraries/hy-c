@@ -7,6 +7,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
   describe '.perform' do
     let(:job) { DeregisterLongleafJob.new }
     let(:longleaf_api_url) { 'https://longleaf.example.com' }
+    let(:fixture_path) { RSpec.configuration.fixture_paths }
     let(:filepath) { File.join(fixture_path, 'hyrax/hyrax_test4.pdf') }
     let(:repository_file) do
       Hydra::PCDM::File.new.tap do |f|

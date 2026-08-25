@@ -16,6 +16,7 @@ RSpec.describe Bulkrax::FileFactory do
   let(:attributes) { {} }
   let(:object) { {} }
   let(:file_set) { FileSet.new }
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:temp_pdf_path) { File.join(fixture_path, 'tmp', 'hyrax_test4.pdf') }
 
   let(:file) do

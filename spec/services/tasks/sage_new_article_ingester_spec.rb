@@ -5,6 +5,7 @@ include ActiveSupport::Testing::TimeHelpers
 RSpec.describe Tasks::SageNewArticleIngester, :sage, :ingest do
   let(:ingester) { described_class.new }
   let(:user) { FactoryBot.create(:admin) }
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
 
   let(:sage_fixture_path) { File.join(fixture_path, 'sage') }
   let(:first_package_identifier) { 'CCX_2021_28_10.1177_1073274820985792' }

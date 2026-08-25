@@ -16,6 +16,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   let(:status_service) { Tasks::IngestStatusService.new(File.join(path_to_tmp, 'deposit_status.json')) }
   let(:service) { described_class.new(config, status_service) }
 
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:sage_fixture_path) { File.join(fixture_path, 'sage') }
   let(:path_to_tmp) { FileUtils.mkdir_p(File.join(fixture_path, 'sage', 'tmp')).first }
   let(:first_package_identifier) { 'CCX_2021_28_10.1177_1073274820985792' }

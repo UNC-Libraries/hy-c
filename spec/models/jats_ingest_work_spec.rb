@@ -2,6 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe JatsIngestWork, :sage, type: :model do
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:xml_file_path) { File.join(fixture_path, 'sage', 'CCX_2021_28_10.1177_1073274820985792', '10.1177_1073274820985792.xml') }
   let(:xml_file_path_no_keywords) { File.join(fixture_path, 'sage', '10.1177_08901171221077812.xml') }
   let(:work) { described_class.new(xml_path: xml_file_path) }

@@ -5,6 +5,7 @@ require Rails.root.join('spec/support/image_source_data.rb')
 RSpec.describe Hydra::Derivatives::Processors::Document do
   subject { described_class.new(source_path, directives) }
   PID = 991234
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
 
   let(:source_path)    { File.join(fixture_path, 'test.doc') }
   let(:output_service) { Hyrax::PersistDerivatives }
