@@ -24,17 +24,17 @@ module Hyc
             timeout: opts.fetch(:timeout, 10).to_f
           }
         ) do |conn|
-            conn.request :retry,
-                        max: 2,
-                        interval: 0.05,
-                        interval_randomness: 0.5,
-                        backoff_factor: 2,
-                        retry_if: lambda { |env, _exception|
-                          env.method == :post && !env.url.path.end_with?('/update')
-                        },
-                        exceptions: [Faraday::ConnectionFailed, Faraday::TimeoutError]
-            conn.response :raise_error
-            conn.adapter :net_http_persistent
+          conn.request :retry,
+                      max: 2,
+                      interval: 0.05,
+                      interval_randomness: 0.5,
+                      backoff_factor: 2,
+                      retry_if: lambda { |env, _exception|
+                        env.method == :post && !env.url.path.end_with?('/update')
+                      },
+                      exceptions: [Faraday::ConnectionFailed, Faraday::TimeoutError]
+          conn.response :raise_error
+          conn.adapter :net_http_persistent
         end
       RSolr::Client.new(
         faraday,

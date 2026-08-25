@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 require Rails.root.join('app/repositories/hyc/pooled_solr_repository.rb')
 
