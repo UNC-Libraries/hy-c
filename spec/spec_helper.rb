@@ -39,7 +39,6 @@ SimpleCov.start 'rails' do
 end
 
 require 'capybara/rspec'
-require 'webdrivers'
 require 'webmock/rspec'
 require 'shoulda/matchers'
 Shoulda::Matchers.configure do |config|

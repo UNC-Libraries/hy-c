@@ -112,10 +112,9 @@ group :test do
   gem 'factory_bot_rails', '~> 6.2.0'
   gem 'ffaker'
   gem 'rspec-mocks'
-  gem 'selenium-webdriver', '~> 4.8'
+  gem 'selenium-webdriver', '~> 4.47.0'
   gem 'shoulda-matchers', '~> 6.5.0'
   gem 'simplecov'
   gem 'webrick'
-  gem 'webdrivers', '~> 5.3', require: false
   gem 'webmock', '~> 3.14.0'
 end

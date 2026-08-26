@@ -41,7 +41,7 @@ RUN dnf -y update \
 # redhat-lsb-core was removed in RHEL 9 / AlmaLinux 9 and is no longer available
 && dnf -y install git libreoffice-core clamav-devel clamav clamav-update clamd libXScrnSaver wget unzip \
 && dnf -y install ghostscript GraphicsMagick \
-&& dnf -y install chromium \
+&& dnf -y install chromium chromedriver \
 # Install libvips build dependencies (libvips is not packaged for aarch64 in EPEL 9)
 && dnf -y install glib2-devel expat-devel meson ninja-build \
 && dnf clean all && rm -rf /var/cache/yum \
