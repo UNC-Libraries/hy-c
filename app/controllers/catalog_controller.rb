@@ -77,17 +77,11 @@ class CatalogController < ApplicationController
   end
 
   def facet
-    begin
-      facet_field_name = params[:id]
-      targeted_facet_list = ['affiliation_label_sim']
-      super
-      # Only calculate total unique facets for facets in the target list
-      @total_unique_facets =  targeted_facet_list.include?(facet_field_name) ? facet_total_count(facet_field_name) : 0
-    rescue StandardError => e
-      # Capture any errors that occur and log them
-      Rails.logger.error("Error during facet action: #{e.message}")
-      Rails.logger.error(e.backtrace.join("\n"))
-    end
+    facet_field_name = params[:id]
+    targeted_facet_list = ['affiliation_label_sim']
+    super
+    # Only calculate total unique facets for facets in the target list
+    @total_unique_facets =  targeted_facet_list.include?(facet_field_name) ? facet_total_count(facet_field_name) : 0
   end
 
   configure_blacklight do |config|
