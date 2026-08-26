@@ -9,7 +9,7 @@ RSpec.describe Hyrax::Statistic, type: :model do
   end
 
   let(:concrete_stat_class) do
-    stub_const("TestStatistics", Class.new(Hyrax::Statistic) do
+    stub_const('TestStatistics', Class.new(Hyrax::Statistic) do
       self.table_name = 'file_download_stats'
       self.cache_column = :downloads
       self.event_type = :totalEvents

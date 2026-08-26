@@ -57,7 +57,7 @@ RSpec.configure do |config|
   config.include WebmockTurnstileHelperMethods
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_paths = Rails.root.join("spec", "fixtures").to_s
+  config.fixture_paths = Rails.root.join('spec', 'fixtures').to_s
 
   # Keep last run of rspec locally in order to easily re-run failures
   config.example_status_persistence_file_path = 'rspec_examples.txt'
@@ -91,7 +91,7 @@ RSpec.configure do |config|
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
-  # config.filter_gems_from_backtrace("gem name")
+  # config.filter_gems_from_backtrace('gem name')
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
 
