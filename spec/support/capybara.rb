@@ -13,9 +13,7 @@ Capybara.register_driver :chrome_headless do |app|
   options.add_argument('--disable-dev-shm-usage')
   options.add_argument('--window-size=1400,1400')
 
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome
-
-  Capybara::Selenium::Driver.new(app, browser: :chrome, capabilities: [options, capabilities], http_client: client)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, http_client: client)
 end
 
 Capybara.javascript_driver = :chrome_headless
