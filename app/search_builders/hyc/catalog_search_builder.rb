@@ -11,38 +11,28 @@ module Hyc
     # This should always be the last processor in this processor chain.
     # Adds full text searching for :all_fields
     def join_works_from_files(solr_parameters)
-      all_fields_value = retrieve_all_fields_query
-      return if all_fields_value.blank?
+      return if retrieve_all_fields_query.blank?
 
-      # JSON query and q parameters are AND-ed together by solr, so we need to remove the JSON query and replace it with a custom combined query to achieve the desired OR behavior
-      # Retrieve the JSON query for metadata search
-      json_query = solr_parameters.dig(:json, :query, :bool, :must, 0)
-      return if json_query.nil? || json_query[:edismax].nil?
+      bool_query = solr_parameters.dig(:json, :query, :bool)
+      return if bool_query.blank?
 
-      # Extract the metadata search parameters
-      qf = json_query[:edismax][:qf]
-      pf = json_query[:edismax][:pf]
-      query_term = json_query[:edismax][:query]
+      # Preserve the surrounding advanced-search bool structure and only rewrite
+      # the all_fields clause into: metadata match OR joined file-text match.
+      %i[must should must_not].each do |operator|
+        next unless bool_query[operator].is_a?(Array)
 
-      # Sanitize the query term from JSON (handles unbalanced quotes)
-      query_term = QueryParserHelper.sanitize_query(query_term)
-      escaped_query_term = escape_local_param_query(query_term)
-
-      # Build metadata query using edismax
-      metadata_query = "_query_:\"{!edismax qf='#{qf}' pf='#{pf}'}#{escaped_query_term}\""
-
-      # Build combined query that includes both metadata search (from JSON query) and file text search
-      combined_query = "(#{metadata_query}) OR (#{all_fields_query(escaped_query_term)})"
-      solr_parameters.delete(:json)
-      # Use lucene defType to allow for the OR operator in the combined query
-      solr_parameters[:defType] = 'lucene'
-      solr_parameters[:q] = combined_query
+        bool_query[operator].map! do |clause|
+          all_fields_json_clause?(clause) ? build_all_fields_bool_clause(clause) : clause
+        end
+      end
     end
 
     def retrieve_all_fields_query
+      clauses = blacklight_params['clause'] || blacklight_params[:clause]
+
       # Advanced search uses clause params
-      if blacklight_params['clause'].present?
-        blacklight_params['clause']&.each do |_, entry|
+      if clauses.present?
+        clauses.each do |_, entry|
           if entry['field'] == 'all_fields'
             return QueryParserHelper.sanitize_query(entry['query'])
           end
@@ -50,15 +40,18 @@ module Hyc
       end
 
       # Basic search uses q param directly when search_field is all_fields
-      if blacklight_params[:search_field] == 'all_fields' && blacklight_params[:q].present?
-        return QueryParserHelper.sanitize_query(blacklight_params[:q])
+      search_field = blacklight_params[:search_field] || blacklight_params['search_field']
+      query = blacklight_params[:q] || blacklight_params['q']
+
+      if search_field == 'all_fields' && query.present?
+        return QueryParserHelper.sanitize_query(query)
       end
 
-      return nil
+      nil
     end
 
     def all_fields_query(all_fields_value)
-      " _query_:\"#{join_work_to_file}{!dismax qf=all_text_timv}#{all_fields_value}\""
+      "_query_:\"#{join_work_to_file}{!dismax qf=all_text_timv}#{all_fields_value}\""
     end
 
     def join_work_to_file
@@ -67,6 +60,40 @@ module Hyc
 
     def escape_local_param_query(query)
       query.gsub(/([\\"])/, '\\\\\1')
+    end
+
+    def build_all_fields_bool_clause(clause)
+      edismax = clause[:edismax] || clause['edismax']
+      query = QueryParserHelper.sanitize_query(edismax[:query] || edismax['query'])
+
+      {
+        bool: {
+          should: [
+            {
+              edismax: {
+                qf: edismax[:qf] || edismax['qf'],
+                pf: edismax[:pf] || edismax['pf'],
+                query: query
+              }
+            },
+            all_fields_query(escape_local_param_query(query))
+          ]
+        }
+      }
+    end
+
+    def all_fields_json_clause?(clause)
+      edismax = clause[:edismax] || clause['edismax']
+      return false unless edismax
+
+      qf = edismax[:qf] || edismax['qf']
+      pf = edismax[:pf] || edismax['pf']
+
+      qf == all_fields_edismax[:qf] && pf == all_fields_edismax[:pf]
+    end
+
+    def all_fields_edismax
+      @all_fields_edismax ||= CatalogController.blacklight_config.search_fields['all_fields'].clause_params[:edismax]
     end
   end
 end
