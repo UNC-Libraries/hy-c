@@ -7,9 +7,11 @@ module Hyc
       :join_works_from_files
     ]
 
-    # join from file id to work relationship solrized file_set_ids_ssim for full text searching in advanced search
-    # This should always be the last processor in this processor chain.
     # Adds full text searching for :all_fields
+    # Rewrites only the advanced-search all_fields clause so it matches either
+    # work metadata or joined file full text, while leaving sibling clauses in
+    # Blacklight's bool query untouched.
+    # This should always be the last processor in this processor chain.
     def join_works_from_files(solr_parameters)
       return if retrieve_all_fields_query.blank?
 
@@ -27,6 +29,8 @@ module Hyc
       end
     end
 
+    # We only need to run the rewrite when the request actually includes an
+    # all_fields search, either from advanced search clauses or a basic search.
     def retrieve_all_fields_query
       clauses = blacklight_params['clause'] || blacklight_params[:clause]
 
@@ -62,6 +66,8 @@ module Hyc
       query.gsub(/([\\"])/, '\\\\\1')
     end
 
+    # Keeps the outer bool operator from Blacklight intact, but expands the
+    # all_fields clause itself into: metadata match OR joined file-text match.
     def build_all_fields_bool_clause(clause)
       edismax = clause[:edismax] || clause['edismax']
       query = QueryParserHelper.sanitize_query(edismax[:query] || edismax['query'])
@@ -71,17 +77,23 @@ module Hyc
           should: [
             {
               edismax: {
+                # Preserve Blacklight's configured metadata fields for the
+                # original all_fields clause.
                 qf: edismax[:qf] || edismax['qf'],
                 pf: edismax[:pf] || edismax['pf'],
                 query: query
               }
             },
+            # The file-text side of the OR is still expressed as a local-param
+            # query string because it relies on a Solr join.
             all_fields_query(escape_local_param_query(query))
           ]
         }
       }
     end
 
+    # Identify the JSON clause Blacklight built for all_fields by matching the
+    # configured edismax fields, rather than assuming a fixed clause position.
     def all_fields_json_clause?(clause)
       edismax = clause[:edismax] || clause['edismax']
       return false unless edismax
@@ -92,6 +104,8 @@ module Hyc
       qf == all_fields_edismax[:qf] && pf == all_fields_edismax[:pf]
     end
 
+    # Memoize the configured all_fields edismax so clause matching stays tied to
+    # the controller config without repeating the lookup.
     def all_fields_edismax
       @all_fields_edismax ||= CatalogController.blacklight_config.search_fields['all_fields'].clause_params[:edismax]
     end
