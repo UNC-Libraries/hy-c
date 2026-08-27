@@ -26,12 +26,13 @@ module Hyc
 
       # Sanitize the query term from JSON (handles unbalanced quotes)
       query_term = QueryParserHelper.sanitize_query(query_term)
+      escaped_query_term = escape_local_param_query(query_term)
 
       # Build metadata query using edismax
-      metadata_query = "_query_:\"{!edismax qf='#{qf}' pf='#{pf}'}#{query_term}\""
+      metadata_query = "_query_:\"{!edismax qf='#{qf}' pf='#{pf}'}#{escaped_query_term}\""
 
       # Build combined query that includes both metadata search (from JSON query) and file text search
-      combined_query = "(#{metadata_query}) OR (#{all_fields_query(all_fields_value)})"
+      combined_query = "(#{metadata_query}) OR (#{all_fields_query(escaped_query_term)})"
       solr_parameters.delete(:json)
       # Use lucene defType to allow for the OR operator in the combined query
       solr_parameters[:defType] = 'lucene'
@@ -62,6 +63,10 @@ module Hyc
 
     def join_work_to_file
       "{!join from=#{ActiveFedora.id_field} to=file_set_ids_ssim}"
+    end
+
+    def escape_local_param_query(query)
+      query.gsub(/([\\"])/, '\\\\\1')
     end
   end
 end

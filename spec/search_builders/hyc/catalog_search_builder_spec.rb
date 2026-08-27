@@ -93,6 +93,39 @@ RSpec.describe Hyc::CatalogSearchBuilder do
         expect(solr_params[:q]).to include(') OR (')
       end
     end
+
+    context 'joining with a quoted phrase' do
+      let(:blacklight_params) do
+        {
+          search_field: 'advanced',
+          clause: { '0' => { field: 'all_fields', query: '"Doctor of Nursing Practice"' } }
+        }
+      end
+
+      before do
+        solr_params[:json] = {
+          query: {
+            bool: {
+              must: [{
+                edismax: {
+                  qf: 'title_tesim creator_label_tesim',
+                  pf: 'title_tesim',
+                  query: '"Doctor of Nursing Practice"'
+                }
+              }]
+            }
+          }
+        }
+      end
+
+      subject { builder.join_works_from_files(solr_params) }
+
+      it 'escapes embedded quotes so the combined local-param query stays valid' do
+        subject
+
+        expect(solr_params[:q]).to include('\\"Doctor of Nursing Practice\\"')
+      end
+    end
   end
 
   class FakeSearchBuilderScope
