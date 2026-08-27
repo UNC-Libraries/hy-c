@@ -95,6 +95,12 @@ RSpec.describe CatalogController, type: :controller do
 
       expect(response).to have_http_status(:bad_request)
     end
+
+    it 'returns not found for unsupported facet formats' do
+      get :facet, params: { id: CatalogController.blacklight_config.facet_fields.keys.first, format: 'php' }
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe 'search page limits' do
