@@ -126,5 +126,22 @@ RSpec.describe CatalogController, type: :controller do
 
       expect(response).to have_http_status(:bad_request)
     end
+
+    it 'allows quoted all_fields searches' do
+      get :index, params: { q: '"Doctor of Nursing Practice"', search_field: 'all_fields' }
+
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'allows advanced searches when all_fields is not the first clause' do
+      get :index, params: {
+        clause: {
+          '0' => { field: 'creator', query: 'Smith' },
+          '1' => { field: 'all_fields', query: 'thesis' }
+        }
+      }
+
+      expect(response).to have_http_status(:success)
+    end
   end
 end

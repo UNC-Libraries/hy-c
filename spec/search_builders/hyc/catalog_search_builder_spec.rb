@@ -6,91 +6,110 @@ RSpec.describe Hyc::CatalogSearchBuilder do
   let(:context) { FakeSearchBuilderScope.new }
   let(:builder) { described_class.new(context).with(blacklight_params) }
   let(:solr_params) { Blacklight::Solr::Request.new }
+  let(:all_fields_edismax) { CatalogController.blacklight_config.search_fields['all_fields'].clause_params[:edismax] }
 
-  context 'with a user query from the regular search' do
-    let(:blacklight_params) { { q: user_query, search_field: 'all_fields' } }
-    let(:user_query) { 'find me' }
+  describe '#join_works_from_files' do
+    subject(:join_works_from_files) { builder.join_works_from_files(solr_params) }
 
-    subject { builder.show_works_or_works_that_contain_files(solr_params) }
+    context 'with a quoted all_fields basic search' do
+      let(:blacklight_params) { { q: '"Doctor of Nursing Practice"', search_field: 'all_fields' } }
 
-    context 'with a user query' do
-      it 'creates a valid solr join for works and files' do
-        subject
-        expect(solr_params[:user_query]).to eq user_query
-        expect(solr_params[:q]).to eq '{!lucene}_query_:"{!dismax v=$user_query}" _query_:"{!join from=id to=member_ids_ssim}{!lucene q.op=AND}has_model_ssim:*FileSet{!dismax v=$user_query}"'
-      end
-    end
-
-    context 'joining with file_sets' do
-      let(:blacklight_params) do
-        {
-          search_field: 'advanced',
-          clause: { '0' => {field: 'all_fields', query: 'metalloprotease' } }
-        }
-      end
-
-      # Mock the JSON query that Blacklight would create
       before do
         solr_params[:json] = {
           query: {
             bool: {
               must: [{
-                edismax: {
-                  qf: 'title_tesim creator_label_tesim',
-                  pf: 'title_tesim',
-                  query: 'metalloprotease'
-                }
+                edismax: all_fields_edismax.merge(query: '"Doctor of Nursing Practice"')
               }]
             }
           }
         }
       end
 
-      subject { builder.join_works_from_files(solr_params) }
+      it 'replaces the all_fields clause with a nested OR query and preserves quoted phrases' do
+        join_works_from_files
 
-      it 'combines metadata and file text search with OR' do
-        subject
-        expect(solr_params[:q]).to eq '(_query_:"{!edismax qf=\'title_tesim creator_label_tesim\' pf=\'title_tesim\'}metalloprotease") OR ( _query_:"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv}metalloprotease")'
+        clause = solr_params.dig(:json, :query, :bool, :must, 0)
+
+        expect(solr_params[:q]).to be_nil
+        expect(solr_params[:defType]).to be_nil
+        expect(clause.dig(:bool, :should, 0, :edismax, :query)).to eq '"Doctor of Nursing Practice"'
+        expect(clause.dig(:bool, :should, 1)).to include('\\"Doctor of Nursing Practice\\"')
       end
     end
 
-    context 'joining with unbalanced quote' do
+    context 'with an advanced search where all_fields is not the first clause' do
       let(:blacklight_params) do
         {
           search_field: 'advanced',
-          clause: { '0' => {field: 'all_fields', query: 'un"balanced' } }
+          clause: {
+            '0' => { field: 'creator', query: 'Smith' },
+            '1' => { field: 'all_fields', query: 'thesis' }
+          }
         }
       end
 
-      # Mock the JSON query that Blacklight would create
+      before do
+        solr_params[:json] = {
+          query: {
+            bool: {
+              must: [
+                {
+                  edismax: {
+                    qf: 'creator_label_tesim',
+                    pf: 'creator_label_tesim',
+                    query: 'Smith'
+                  }
+                },
+                {
+                  edismax: all_fields_edismax.merge(query: 'thesis')
+                }
+              ]
+            }
+          }
+        }
+      end
+
+      it 'preserves the other advanced clauses and rewrites only the all_fields clause' do
+        join_works_from_files
+
+        must_clauses = solr_params.dig(:json, :query, :bool, :must)
+
+        expect(must_clauses.first.dig('edismax', 'query')).to eq('Smith')
+        expect(must_clauses.first.dig('edismax', 'qf')).to eq('creator_label_tesim')
+        expect(must_clauses.first.dig('edismax', 'pf')).to eq('creator_label_tesim')
+        expect(must_clauses.second.dig(:bool, :should, 0, :edismax, :query)).to eq('thesis')
+        expect(must_clauses.second.dig(:bool, :should, 1)).to include('thesis')
+      end
+    end
+
+    context 'with an advanced search using an unbalanced quote' do
+      let(:blacklight_params) do
+        {
+          search_field: 'advanced',
+          clause: { '0' => { field: 'all_fields', query: 'un"balanced' } }
+        }
+      end
+
       before do
         solr_params[:json] = {
           query: {
             bool: {
               must: [{
-                edismax: {
-                  qf: 'title_tesim creator_label_tesim',
-                  pf: 'title_tesim',
-                  query: 'un"balanced'
-                }
+                edismax: all_fields_edismax.merge(query: 'un"balanced')
               }]
             }
           }
         }
       end
 
-      subject { builder.join_works_from_files(solr_params) }
+      it 'sanitizes the query before building the nested OR clause' do
+        join_works_from_files
 
-      it 'removes the unbalanced quote' do
-        subject
-        # Should not contain the unbalanced quote anywhere
-        expect(solr_params[:q]).not_to include('"balanced')
+        clause = solr_params.dig(:json, :query, :bool, :must, 0)
 
-        # Should contain the sanitized version (no quote)
-        expect(solr_params[:q]).to include('unbalanced')
-
-        # Verify it still has the OR structure
-        expect(solr_params[:q]).to include(') OR (')
+        expect(clause.dig(:bool, :should, 0, :edismax, :query)).to eq('unbalanced')
+        expect(clause.dig(:bool, :should, 1)).to include('unbalanced')
       end
     end
   end
