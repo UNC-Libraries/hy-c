@@ -898,8 +898,8 @@ GEM
     rdf-turtle (3.2.1)
       ebnf (~> 2.3)
       rdf (~> 3.2)
-    rdf-vocab (3.2.7)
-      rdf (~> 3.2, >= 3.2.4)
+    rdf-vocab (3.3.3)
+      rdf (~> 3.3)
     rdf-xsd (3.3.0)
       rdf (~> 3.3)
       rexml (~> 3.2)
@@ -1121,7 +1121,7 @@ GEM
     unicode-types (1.11.0)
     uri (1.1.1)
     validatable (1.6.7)
-    valkyrie (3.5.1)
+    valkyrie (3.6.1)
       activemodel
       activesupport
       dry-struct
