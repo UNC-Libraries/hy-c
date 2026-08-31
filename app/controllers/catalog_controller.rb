@@ -85,6 +85,9 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
+    # Use our repository class, since setting it in blacklight.yml does not cause it to be used for queries
+    config.repository_class = Hyc::PooledSolrRepository
+
     # Advanced search configuration
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
     config.advanced_search[:url_key] ||= 'advanced'

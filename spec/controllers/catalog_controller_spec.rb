@@ -10,6 +10,11 @@ RSpec.describe CatalogController, type: :controller do
       expect(blacklight_config.per_page).to eq([10, 20])
       expect(blacklight_config.default_per_page).to eq(10)
     end
+
+    it 'uses the pooled Solr repository for catalog searches' do
+      expect(blacklight_config.repository_class).to eq(Hyc::PooledSolrRepository)
+      expect(controller.send(:search_service).repository).to be_a(Hyc::PooledSolrRepository)
+    end
   end
 
   describe 'search result size parameter limits' do
