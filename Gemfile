@@ -31,7 +31,7 @@ gem 'execjs', '2.10.2'
 gem 'httparty', '~>0.21.0'
 gem 'hydra-editor', '~> 7.0.0'
 gem 'hydra-pcdm', '~> 1.4.0'
-gem 'hydra-role-management', '~> 1.1.0'
+gem 'hydra-role-management', '~> 1.2.0'
 gem 'hydra-works', '~> 2.3.0'
 gem 'hyrax', '5.2.0'
 # Stub out the GA4 gem that Hyrax 5 requires as a hard dependency.
