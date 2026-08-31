@@ -112,7 +112,7 @@ group :test do
   gem 'ffaker'
   gem 'rspec-mocks'
   gem 'selenium-webdriver', '~> 4.8'
-  gem 'shoulda-matchers', '~> 5.3.0'
+  gem 'shoulda-matchers', '~> 6.5.0'
   gem 'simplecov'
   gem 'webrick'
   gem 'webdrivers', '~> 5.3', require: false
