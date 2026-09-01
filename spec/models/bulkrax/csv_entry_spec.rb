@@ -447,4 +447,3 @@ def stub_work(work_obj)
   allow(work_obj).to receive(:in_work_ids).and_return([])
   allow(work_obj).to receive(:member_work_ids).and_return([])
 end
-
