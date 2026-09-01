@@ -8,7 +8,7 @@ require_relative '../config/environment'
 require 'slop'
 
 def main(opts = {})
-  if opts[:importer_id].blank? || invalid?(opts)
+  if opts[:importer_id].blank? && invalid?(opts)
     puts 'Missing required parameters'
     help
   end
