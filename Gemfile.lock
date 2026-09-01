@@ -1031,7 +1031,7 @@ GEM
       rdf-xsd (~> 3.2)
       sparql (~> 3.2)
       sxp (~> 1.2)
-    shoulda-matchers (5.3.0)
+    shoulda-matchers (6.5.0)
       activesupport (>= 5.2.0)
     sidekiq (6.5.12)
       connection_pool (>= 2.2.5, < 3)
@@ -1243,7 +1243,7 @@ DEPENDENCIES
   sass-rails (~> 6.0.0)
   sassc
   selenium-webdriver (~> 4.8)
-  shoulda-matchers (~> 5.3.0)
+  shoulda-matchers (~> 6.5.0)
   sidekiq (~> 6.5)
   sidekiq-status (~> 3.0.0)
   simplecov
