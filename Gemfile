@@ -69,7 +69,7 @@ gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0.0'
 gem 'sassc'
-gem 'sidekiq', '~> 6.5'
+gem 'sidekiq', '~> 7.3'
 gem 'sidekiq-status', '~> 3.0.0'
 gem 'sprockets', '3.7.2'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
