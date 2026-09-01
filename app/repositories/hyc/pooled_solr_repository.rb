@@ -11,7 +11,12 @@ module Hyc
     end
 
     def self.shared_connection(connection_config)
-      @shared_connection ||= build_raw_connection(connection_config)
+      # Ensure that each passenger processor gets its own connection rather than attempting to share
+      if @shared_connection.nil? || @shared_connection_pid != Process.pid
+        @shared_connection = build_raw_connection(connection_config)
+        @shared_connection_pid = Process.pid
+      end
+      @shared_connection
     end
 
     def self.build_raw_connection(connection_config)
@@ -25,7 +30,7 @@ module Hyc
           }
         ) do |conn|
           conn.request :retry,
-                      max: 2,
+                      max: 1,
                       interval: 0.05,
                       interval_randomness: 0.5,
                       backoff_factor: 2,

@@ -1,11 +1,11 @@
 development:
-  adapter: Hyc::PooledSolrRepository
+  adapter: solr
   url: <%= ENV['SOLR_DEV_URL'] %>
 test: &test
   adapter: solr
   url: <%= ENV['SOLR_TEST_URL'] %>
 production:
-  adapter: Hyc::PooledSolrRepository
+  adapter: solr
   url: <%= ENV['SOLR_PRODUCTION_URL'] %>
   open_timeout: <%= ENV.fetch('SOLR_OPEN_TIMEOUT', 2) %>
   timeout: <%= ENV.fetch('SOLR_TIMEOUT', 5) %>
