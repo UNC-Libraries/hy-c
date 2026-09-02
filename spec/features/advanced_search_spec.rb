@@ -115,11 +115,11 @@ RSpec.describe 'Advanced search', type: :feature, js: false do
 
   it 'can start over from a prepopulated advanced search' do
     visit '/catalog/advanced'
-    fill_in('All Fields', with: "smith")
+    fill_in('All Fields', with: 'smith')
     click_button('Search')
     click_link('Advanced search', match: :first)
 
-    expect(find_field('All Fields').value).to eq("smith")
+    expect(find_field('All Fields').value).to eq('smith')
 
     click_link('Start over')
 
