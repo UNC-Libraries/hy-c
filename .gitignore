@@ -39,3 +39,4 @@ build_log.txt
 /node_modules
 
 .github/copilot-instructions.md
+agents.md

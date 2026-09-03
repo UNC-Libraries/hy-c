@@ -113,4 +113,17 @@ RSpec.describe 'Advanced search', type: :feature, js: false do
     expect(page).not_to have_content('Jones thesis decoy')
   end
 
+  it 'can start over from a prepopulated advanced search' do
+    visit '/catalog/advanced'
+    fill_in('All Fields', with: 'smith')
+    click_button('Search')
+    click_link('Advanced search', match: :first)
+
+    expect(find_field('All Fields').value).to eq('smith')
+
+    click_link('Start over')
+
+    expect(page).to have_current_path(%r{/catalog/advanced(?:\?locale=en)?})
+    expect(find_field('All Fields').value).to be_blank
+  end
 end
