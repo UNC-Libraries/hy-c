@@ -44,6 +44,11 @@ RSpec.feature 'Create a MastersPaper', js: false do
       Blacklight.default_index.connection.delete_by_query('*:*')
       Blacklight.default_index.connection.commit
 
+      # Stub background jobs that are environment-dependent in CI.
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?).and_return(false)
+      allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+      allow(CharacterizeJob).to receive(:perform_later)
+
       Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
