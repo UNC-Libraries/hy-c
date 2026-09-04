@@ -10,7 +10,7 @@
     <%# [hyc-override] Changes start here %>
     <% unless parent_solr_docs.blank? %>
       <% parent_solr_docs.first(1).each do |item| %>
-        <%= link_to 'Back to Parent Record', url_for_document(SolrDocument.find(item["id"])), class: 'btn btn-success', data: { turbolinks: false } %>
+        <%= link_to 'Back to Parent Record', url_for_document(SolrDocument.new(item)), class: 'btn btn-success', data: { turbolinks: false } %>
       <% end %>
     <% end %>
     <%# [hyc-override] Changes end here %>
