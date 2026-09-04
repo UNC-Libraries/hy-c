@@ -8,49 +8,49 @@ RSpec.describe 'Advanced search', type: :feature, js: false do
   let(:solr) { Blacklight.default_index.connection }
   let(:smith_work) do
     FULL_TEXT_WORK.merge(
-      'id' => 'smith-thesis-work',
-      'title_tesim' => ['Smith thesis target'],
-      'title_sort_ssi' => 'smith thesis target',
-      'file_set_ids_ssim' => ['smith-thesis-file-set'],
-      'member_ids_ssim' => ['smith-thesis-file-set'],
-      'creator_tesim' => ['smith'],
-      'creator_sim' => ['smith'],
-      'creator_label_tesim' => ['smith'],
-      'creator_label_sim' => ['smith']
+      id: 'smith-thesis-work',
+      title_tesim: ['Smith thesis target'],
+      title_sort_ssi: 'smith thesis target',
+      file_set_ids_ssim: ['smith-thesis-file-set'],
+      member_ids_ssim: ['smith-thesis-file-set'],
+      creator_tesim: ['smith'],
+      creator_sim: ['smith'],
+      creator_label_tesim: ['smith'],
+      creator_label_sim: ['smith']
     )
   end
 
   let(:smith_file_set) do
     FULL_TEXT_FILE_SET.merge(
-      'id' => 'smith-thesis-file-set',
-      'title_tesim' => ['smith-thesis.pdf'],
-      'label_tesim' => ['smith-thesis.pdf'],
-      'label_ssi' => 'smith-thesis.pdf',
-      'all_text_timv' => ['thesis']
+      id: 'smith-thesis-file-set',
+      title_tesim: ['smith-thesis.pdf'],
+      label_tesim: ['smith-thesis.pdf'],
+      label_ssi: 'smith-thesis.pdf',
+      all_text_timv: ['thesis']
     )
   end
 
   let(:jones_work) do
     FULL_TEXT_WORK.merge(
-      'id' => 'jones-thesis-work',
-      'title_tesim' => ['Jones thesis decoy'],
-      'title_sort_ssi' => 'jones thesis decoy',
-      'file_set_ids_ssim' => ['jones-thesis-file-set'],
-      'member_ids_ssim' => ['jones-thesis-file-set'],
-      'creator_tesim' => ['jones'],
-      'creator_sim' => ['jones'],
-      'creator_label_tesim' => ['jones'],
-      'creator_label_sim' => ['jones']
+      id: 'jones-thesis-work',
+      title_tesim: ['Jones thesis decoy'],
+      title_sort_ssi: 'jones thesis decoy',
+      file_set_ids_ssim: ['jones-thesis-file-set'],
+      member_ids_ssim: ['jones-thesis-file-set'],
+      creator_tesim: ['jones'],
+      creator_sim: ['jones'],
+      creator_label_tesim: ['jones'],
+      creator_label_sim: ['jones']
     )
   end
 
   let(:jones_file_set) do
     FULL_TEXT_FILE_SET.merge(
-      'id' => 'jones-thesis-file-set',
-      'title_tesim' => ['jones-thesis.pdf'],
-      'label_tesim' => ['jones-thesis.pdf'],
-      'label_ssi' => 'jones-thesis.pdf',
-      'all_text_timv' => ['thesis']
+      id: 'jones-thesis-file-set',
+      title_tesim: ['jones-thesis.pdf'],
+      label_tesim: ['jones-thesis.pdf'],
+      label_ssi: 'jones-thesis.pdf',
+      all_text_timv: ['thesis']
     )
   end
 

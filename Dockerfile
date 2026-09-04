@@ -27,8 +27,8 @@ RUN dnf -y update \
 && dnf config-manager --set-enabled crb \
 && dnf -y install gcc gcc-c++ make git \
 && dnf -y install libyaml libyaml-devel libxml2-devel libxslt-devel zlib-devel \
-# AlmaLinux 9 ships NodeJS 18 or 20. Ruby 3.2 not available in AlmaLinux 9, so using Ruby 3.3
-&& dnf -y module enable ruby:3.3 nodejs:18 \
+# AlmaLinux 9 ships NodeJS 18, 20 and 22. Ruby 3.2 not available in AlmaLinux 9, so using Ruby 3.3
+&& dnf -y module enable ruby:3.3 nodejs:22 \
 && dnf -y install ruby ruby-devel rubygem-irb \
 && dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-aarch64/pgdg-redhat-repo-latest.noarch.rpm \
 && dnf -qy module disable postgresql \
@@ -41,7 +41,7 @@ RUN dnf -y update \
 # redhat-lsb-core was removed in RHEL 9 / AlmaLinux 9 and is no longer available
 && dnf -y install git libreoffice-core clamav-devel clamav clamav-update clamd libXScrnSaver wget unzip \
 && dnf -y install ghostscript GraphicsMagick \
-&& dnf -y install chromium \
+&& dnf -y install chromium chromedriver \
 # Install libvips build dependencies (libvips is not packaged for aarch64 in EPEL 9)
 && dnf -y install glib2-devel expat-devel meson ninja-build \
 && dnf clean all && rm -rf /var/cache/yum \

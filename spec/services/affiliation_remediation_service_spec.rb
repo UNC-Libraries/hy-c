@@ -3,6 +3,7 @@ require 'rails_helper'
 require 'active_fedora/cleaner'
 
 RSpec.describe AffiliationRemediationService do
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:service) { described_class.new(unmappable_affiliations_path) }
   let(:unmappable_affiliations_path) { File.join(fixture_path, 'files', 'short_unmappable_affiliations.csv') }
   let(:uncontrolled_affiliation_one) { 'University of North Carolina at Chapel Hill. Library' }
