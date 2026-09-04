@@ -50,8 +50,7 @@
         var $UV = document.getElementById("uv");
 
         function resize() {
-            $UV.setAttribute("style", "width:" + window.innerWidth + "px");
-            $UV.setAttribute("style", "height:" + window.innerHeight + "px");
+            $UV.setAttribute("style", `width:${window.innerWidth}px;height:${window.innerHeight}px`);
         }
 
         addEventListener("resize", function() {
