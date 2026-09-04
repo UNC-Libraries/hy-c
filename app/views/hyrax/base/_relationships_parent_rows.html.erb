@@ -6,7 +6,7 @@
 <% end %>
 
 <%# [hyc-override] Show parent relationships for child %>
-<%= render 'parent_relationship_table', child_id: presenter.solr_document.id %>
+<%= render 'parent_relationship_table', parent_solr_docs: @parent_solr_docs %>
 
 <%# Render grouped presenters. Show rows if there are any items of that type %>
 <% presenter.presenter_types.each do |type| %>

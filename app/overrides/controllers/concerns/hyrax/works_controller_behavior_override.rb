@@ -9,6 +9,12 @@ Hyrax::WorksControllerBehavior.module_eval do
     format.xml { render body: presenter.export_as_oai_dc_xml, mime_type: Mime[:xml] }
   end
 
+  alias_method :original_show, :show
+  def show
+    original_show
+    @parent_solr_docs = ParentQueryService.query_parents_for_id(@presenter.id) if request.format.html?
+  end
+
   def available_admin_sets
     # only returns admin sets in which the user can deposit
     admin_set_results = Hyrax::AdminSetService.new(self).search_results(:deposit)

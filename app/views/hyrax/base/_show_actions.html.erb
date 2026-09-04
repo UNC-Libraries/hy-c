@@ -3,13 +3,11 @@
 <%# [hyc-override] Show link to parent record %>
 <%# [hyc-override] Hide admin only and speciality form links from non-admins %>
 <%# [hyc-override] Add aria attributes %>
-<% parent_solr_docs = ParentQueryService.query_parents_for_id(presenter.solr_document.id) %>
-
 <div class="row show-actions button-row-top-two-column">
   <div class="col-sm-6">
     <%# [hyc-override] Changes start here %>
-    <% unless parent_solr_docs.blank? %>
-      <% parent_solr_docs.first(1).each do |item| %>
+    <% unless @parent_solr_docs.blank? %>
+      <% @parent_solr_docs.first(1).each do |item| %>
         <%= link_to 'Back to Parent Record', url_for_document(SolrDocument.new(item)), class: 'btn btn-success', data: { turbolinks: false } %>
       <% end %>
     <% end %>
