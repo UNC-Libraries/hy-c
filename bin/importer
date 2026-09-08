@@ -115,7 +115,7 @@ def help
     end
   end
   puts '  --url'
-  puts "    Repository URL"
+  puts '    Repository URL'
   exit
 end
 
