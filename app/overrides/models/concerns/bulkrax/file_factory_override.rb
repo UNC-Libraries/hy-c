@@ -21,4 +21,6 @@ module HycBulkraxFileFactoryOverride
     ::CreateDerivativesJob.set(wait: 1.minute).perform_later(file_set, file_set.files.first.id)
   end
 end
-Bulkrax::FileFactory.prepend(HycBulkraxFileFactoryOverride)
+# Our overrided is actually called on fileFactory::InnerWorkings, so we need to prepend it there,
+# even though we are overriding the FileFactory class.
+Bulkrax::FileFactory::InnerWorkings.prepend(HycBulkraxFileFactoryOverride) unless Bulkrax::FileFactory::InnerWorkings.ancestors.include?(HycBulkraxFileFactoryOverride)

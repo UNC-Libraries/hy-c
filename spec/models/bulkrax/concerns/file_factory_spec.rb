@@ -4,7 +4,8 @@ require 'rails_helper'
 require Rails.root.join('app/overrides/models/concerns/bulkrax/file_factory_override.rb')
 
 RSpec.describe Bulkrax::FileFactory do
-  include Bulkrax::FileFactory
+  let(:object_factory) { instance_double('Bulkrax::ObjectFactoryInterface') }
+  let(:inner_workings) { Bulkrax::FileFactory::InnerWorkings.new(object_factory: object_factory) }
 
   after do
     ActiveFedora::Cleaner.clean!
@@ -51,16 +52,16 @@ RSpec.describe Bulkrax::FileFactory do
   it 'leaves updated files with their current access level' do
     # The upstream implementation uses @update_files to determine whether
     # the file set should remain public.
-    @update_files = true
-    remove_file_set(file_set: file_set)
+    inner_workings.instance_variable_set(:@update_files, true)
+    inner_workings.remove_file_set(file_set: file_set)
 
     expect(file_set.visibility).to eq(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)
     expect(file_set.files.first.mime_type).to eq('application/pdf')
   end
 
   it 'marks replaced files as private' do
-    @update_files = false
-    remove_file_set(file_set: file_set)
+    inner_workings.instance_variable_set(:@update_files, false)
+    inner_workings.remove_file_set(file_set: file_set)
 
     expect(file_set.visibility).to eq(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
     expect(file_set.files.first.mime_type).to eq('application/pdf')
