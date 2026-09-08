@@ -8,4 +8,5 @@ module Hyrax
     end
   end
 end
-::ContentDeleteEventJob.prepend(Hyrax::ContentDeleteEventJobOverride)
+::ContentDeleteEventJob.prepend(Hyrax::ContentDeleteEventJobOverride) unless
+  ::ContentDeleteEventJob.ancestors.include?(Hyrax::ContentDeleteEventJobOverride)

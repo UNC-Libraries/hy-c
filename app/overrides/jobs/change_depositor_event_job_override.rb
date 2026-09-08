@@ -11,4 +11,5 @@ module Hyrax
   end
 end
 
-::ChangeDepositorEventJob.prepend(Hyrax::ChangeDepositorEventJobOverride)
+::ChangeDepositorEventJob.prepend(Hyrax::ChangeDepositorEventJobOverride) unless
+  ::ChangeDepositorEventJob.ancestors.include?(Hyrax::ChangeDepositorEventJobOverride)

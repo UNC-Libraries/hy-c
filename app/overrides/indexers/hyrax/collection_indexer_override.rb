@@ -12,4 +12,4 @@ module CollectionIndexerOverride
     end
   end
 end
-Hyrax::CollectionIndexer.prepend(CollectionIndexerOverride)
+Hyrax::CollectionIndexer.prepend(CollectionIndexerOverride) unless Hyrax::CollectionIndexer.ancestors.include?(CollectionIndexerOverride)

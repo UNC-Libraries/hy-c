@@ -65,4 +65,4 @@ module HycBulkraxCsvEntryOverride
   end
 end
 
-Bulkrax::CsvEntry.prepend(HycBulkraxCsvEntryOverride)
+Bulkrax::CsvEntry.prepend(HycBulkraxCsvEntryOverride) unless Bulkrax::CsvEntry.ancestors.include?(HycBulkraxCsvEntryOverride)

@@ -20,4 +20,5 @@ module BlacklightOaiProvider
   end
 end
 
-BlacklightOaiProvider::ResumptionToken.prepend(BlacklightOaiProvider::ResumptionTokenOverride)
+BlacklightOaiProvider::ResumptionToken.prepend(BlacklightOaiProvider::ResumptionTokenOverride) unless
+  BlacklightOaiProvider::ResumptionToken.ancestors.include?(BlacklightOaiProvider::ResumptionTokenOverride)

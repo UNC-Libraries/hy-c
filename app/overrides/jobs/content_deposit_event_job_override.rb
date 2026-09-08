@@ -8,4 +8,5 @@ module Hyrax
     end
   end
 end
-::ContentDepositEventJob.prepend(Hyrax::ContentDepositEventJobOverride)
+::ContentDepositEventJob.prepend(Hyrax::ContentDepositEventJobOverride) unless
+  ::ContentDepositEventJob.ancestors.include?(Hyrax::ContentDepositEventJobOverride)

@@ -20,4 +20,4 @@ module HycBulkraxHasMatchersOverride
   end
 end
 
-Bulkrax::HasMatchers.prepend(HycBulkraxHasMatchersOverride)
+Bulkrax::HasMatchers.prepend(HycBulkraxHasMatchersOverride) unless Bulkrax::HasMatchers.ancestors.include?(HycBulkraxHasMatchersOverride)

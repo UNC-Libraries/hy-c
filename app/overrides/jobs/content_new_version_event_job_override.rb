@@ -8,4 +8,5 @@ module Hyrax
     end
   end
 end
-::ContentNewVersionEventJob.prepend(Hyrax::ContentNewVersionEventJobOverride)
+::ContentNewVersionEventJob.prepend(Hyrax::ContentNewVersionEventJobOverride) unless
+  ::ContentNewVersionEventJob.ancestors.include?(Hyrax::ContentNewVersionEventJobOverride)

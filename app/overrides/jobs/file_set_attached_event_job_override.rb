@@ -8,4 +8,5 @@ module Hyrax
     end
   end
 end
-::FileSetAttachedEventJob.prepend(Hyrax::FileSetAttachedEventJobOverride)
+::FileSetAttachedEventJob.prepend(Hyrax::FileSetAttachedEventJobOverride) unless
+  ::FileSetAttachedEventJob.ancestors.include?(Hyrax::FileSetAttachedEventJobOverride)

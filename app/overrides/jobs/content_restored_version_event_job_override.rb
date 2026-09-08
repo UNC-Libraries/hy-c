@@ -8,4 +8,5 @@ module Hyrax
     end
   end
 end
-::ContentRestoredVersionEventJob.prepend(Hyrax::ContentRestoredVersionEventJobOverride)
+::ContentRestoredVersionEventJob.prepend(Hyrax::ContentRestoredVersionEventJobOverride) unless
+  ::ContentRestoredVersionEventJob.ancestors.include?(Hyrax::ContentRestoredVersionEventJobOverride)

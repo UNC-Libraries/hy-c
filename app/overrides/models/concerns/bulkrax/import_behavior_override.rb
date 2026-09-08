@@ -9,4 +9,4 @@ module HycBulkraxImportBehaviorOverride
     self.parsed_metadata['rights_statement'] = parser.parser_fields['rights_statement'].presence
   end
 end
-Bulkrax::ImportBehavior.prepend(HycBulkraxImportBehaviorOverride)
+Bulkrax::ImportBehavior.prepend(HycBulkraxImportBehaviorOverride) unless Bulkrax::ImportBehavior.ancestors.include?(HycBulkraxImportBehaviorOverride)

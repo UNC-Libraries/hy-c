@@ -39,4 +39,4 @@ module HycBulkraxCsvParserOverride
     0644
   end
 end
-Bulkrax::CsvParser.prepend(HycBulkraxCsvParserOverride)
+Bulkrax::CsvParser.prepend(HycBulkraxCsvParserOverride) unless Bulkrax::CsvParser.ancestors.include?(HycBulkraxCsvParserOverride)
