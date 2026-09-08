@@ -13,8 +13,12 @@ Bulkrax.setup do |config|
   # config.default_work_type = MyWork
 
   # Factory Class to use when generating and saving objects
-  # Defer class resolution so initialization does not fail before autoloading kicks in.
-  config.object_factory = 'Bulkrax::ObjectFactory'
+  # Attempt assignment now; if Bulkrax classes are not loaded yet, the to_prepare block below assigns it.
+  begin
+    config.object_factory = Bulkrax::ObjectFactory
+  rescue NameError
+    # Bulkrax concerns may not be loaded yet during initializer boot.
+  end
 
   # Path to store pending imports
   config.import_path = "#{ENV['TEMP_STORAGE']}/hyrax/imports"
@@ -213,6 +217,10 @@ end
 
 Rails.application.config.to_prepare do
   next unless defined?(Bulkrax::ObjectFactory)
+
+  Bulkrax.setup do |config|
+    config.object_factory = Bulkrax::ObjectFactory
+  end
 
   Bulkrax::ObjectFactory.transformation_removes_blank_hash_values = true
 end

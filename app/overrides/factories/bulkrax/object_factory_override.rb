@@ -129,4 +129,4 @@ module HycBulkraxObjectFactoryOverride
   end
 end
 
-Bulkrax::ObjectFactory.prepend(HycBulkraxObjectFactoryOverride)
+Bulkrax::ObjectFactory.prepend(HycBulkraxObjectFactoryOverride) unless Bulkrax::ObjectFactory.ancestors.include?(HycBulkraxObjectFactoryOverride)
