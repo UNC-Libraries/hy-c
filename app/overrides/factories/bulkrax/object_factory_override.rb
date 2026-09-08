@@ -105,27 +105,15 @@ module HycBulkraxObjectFactoryOverride
   #
   # [hyc-override] override to allow '_attributes' properties for people objects
   # [hyc-override] override to add admin_set_id and dcmi_type to the list of
-  # permitted parameters
+  # permitted parameters while preserving upstream Bulkrax attributes
   def permitted_attributes
-    properties = klass.properties.keys.map(&:to_sym)
-    people = properties.select { |property| PersonHelper.person_field?(property) }
+    upstream_permitted = Array(super)
+    people = klass.properties.keys.select { |property| PersonHelper.person_field?(property) }
 
-    permitted =
-      properties +
-      people.map { |person| "#{person}_attributes".to_sym } +
-      %i[
-        id
-        edit_users
-        edit_groups
-        read_groups
-        visibility
-        work_members_attributes
-        dcmi_type
-      ]
-
+    permitted = upstream_permitted + people.map { |person| "#{person}_attributes".to_sym } + %i[dcmi_type]
     permitted += %i[admin_set_id] if klass != Collection
 
-    permitted
+    permitted.uniq
   end
 end
 
