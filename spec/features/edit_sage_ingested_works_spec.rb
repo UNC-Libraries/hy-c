@@ -5,6 +5,7 @@ include Warden::Test::Helpers
 
 RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   let(:ingest_progress_log_path) { File.join(Rails.configuration.log_directory, 'sage_progress.log') }
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:path_to_tmp) { FileUtils.mkdir_p(File.join(fixture_path, 'sage', 'tmp')).first }
   let(:ingest_from_dir) { Dir.mktmpdir }
   let(:config) {

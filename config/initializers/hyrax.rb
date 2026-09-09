@@ -61,10 +61,10 @@ Hyrax.config do |config|
   # Enable displaying usage statistics in the UI
   # Defaults to false
   # Requires a Google Analytics id and OAuth2 keyfile.  See README for more info
-  config.analytics = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS', 'false'))
+  config.analytics = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS', false))
   config.analytics_provider = ENV.fetch('HYRAX_ANALYTICS_PROVIDER', 'matomo')
   # This value determines whether to show reports on the dashboard, work and collection report pages
-  config.analytics_reporting = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS_REPORTING', 'false'))
+  config.analytics_reporting = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS_REPORTING', false))
 
   # Date you wish to start collecting Google Analytic statistics for
   # Leaving it blank will set the start date to when ever the file was uploaded by
@@ -111,14 +111,25 @@ Hyrax.config do |config|
 
   # Returns a URL that resolves to an image provided by a IIIF image server
   config.iiif_image_url_builder = lambda do |file_id, base_url, size, format|
-    Riiif::Engine.routes.url_helpers.image_url(file_id, host: base_url, size: size)
+    uri = URI.parse(ENV['HYRAX_HOST'])
+    Riiif::Engine.routes.url_helpers.image_url(
+      file_id,
+      host: uri.host,
+      port: uri.port,
+      protocol: uri.scheme,
+      size: size
+    )
   end
 
   # Returns a URL that resolves to an info.json file provided by a IIIF image server
   config.iiif_info_url_builder = lambda do |file_id, base_url|
-    base_url = ENV['HYRAX_HOST'] if base_url != ENV['HYRAX_HOST']
-    uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
-    uri.sub(%r{/info\.json\Z}, '')
+    uri = URI.parse(ENV['HYRAX_HOST'])
+    Riiif::Engine.routes.url_helpers.info_url(
+      file_id,
+      host: uri.host,
+      port: uri.port,
+      protocol: uri.scheme
+    ).sub(%r{/info\.json\z}, '')
   end
 
   # Returns a URL that indicates your IIIF image server compliance level
@@ -352,25 +363,27 @@ end
 
 Date::DATE_FORMATS[:standard] = '%Y-%m-%d'
 
-Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
-# Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
-Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
+Rails.application.config.to_prepare do
+  Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
+  # Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
+  Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
 
-# Set timeout for creating video derivatives. Otherwise the process sometimes silently fails.
-Hydra::Derivatives::Processors::Video::Processor.timeout = 30.minutes
-Hydra::Derivatives::Processors::Document.timeout = 5.minutes
-Hydra::Derivatives::Processors::Audio.timeout = 10.minutes
-Hydra::Derivatives::Processors::Image.timeout = 5.minutes
+  # Set timeout for creating video derivatives. Otherwise the process sometimes silently fails.
+  Hydra::Derivatives::Processors::Video::Processor.timeout = 30.minutes if defined?(Hydra::Derivatives::Processors::Video::Processor)
+  Hydra::Derivatives::Processors::Document.timeout = 5.minutes if defined?(Hydra::Derivatives::Processors::Document)
+  Hydra::Derivatives::Processors::Audio.timeout = 10.minutes if defined?(Hydra::Derivatives::Processors::Audio)
+  Hydra::Derivatives::Processors::Image.timeout = 5.minutes if defined?(Hydra::Derivatives::Processors::Image)
 
-# set bulkrax default work type to first curation_concern if it isn't already set
-Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
+  # set bulkrax default work type to first curation_concern if it isn't already set
+  Bulkrax.default_work_type = 'General' if defined?(Bulkrax) && Bulkrax.default_work_type.blank?
 
-# Load our local schema.org config instead of the default
-local_schema_file = Rails.root.join('config', 'schema_org.yml')
-local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
-Hyrax::Microdata.load_paths = local_filename
+  # Load our local schema.org config instead of the default
+  local_schema_file = Rails.root.join('config', 'schema_org.yml')
+  local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
+  Hyrax::Microdata.load_paths = local_filename
 
-# Dashboard menu extensions
-Hyrax::DashboardController.sidebar_partials[:activity] << 'hyrax/dashboard/sidebar/custom_activity'
-Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
-Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
+  # Dashboard menu extensions
+  Hyrax::DashboardController.sidebar_partials[:activity] << 'hyrax/dashboard/sidebar/custom_activity'
+  Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
+  Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
+end

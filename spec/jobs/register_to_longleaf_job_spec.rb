@@ -7,6 +7,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
   describe '.perform' do
     let(:job) { RegisterToLongleafJob.new }
     let(:longleaf_api_url) { 'https://longleaf.example.com' }
+    let(:fixture_path) { RSpec.configuration.fixture_paths }
     let(:filepath) { File.join(fixture_path, 'hyrax/hyrax_test4.pdf') }
     let(:prefix) { RegisterToLongleafJob::CHECKSUM_PREFIX }
     let(:repository_file) do

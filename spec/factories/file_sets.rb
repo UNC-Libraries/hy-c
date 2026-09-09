@@ -24,50 +24,50 @@ FactoryBot.define do
     end
 
     trait :image do
-      content { File.open("#{RSpec.configuration.fixture_path}/files/image.png") }
+      content { File.open("#{RSpec.configuration.fixture_paths}/files/image.png") }
     end
 
     trait :with_malformed_pdf do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/1022-0.pdf"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_paths}/files/1022-0.pdf"), :original_file)
       end
     end
 
     trait :with_original_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/image.png"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_paths}/files/image.png"), :original_file)
       end
     end
 
     trait :with_original_pdf_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_pdf.pdf"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_paths}/files/sample_pdf.pdf"), :original_file)
       end
     end
 
     trait :with_original_docx_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_docx.docx"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_paths}/files/sample_docx.docx"), :original_file)
       end
     end
 
     trait :with_original_msword_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_msword.docx"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_paths}/files/sample_msword.docx"), :original_file)
       end
     end
 
     trait :with_extracted_text do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_pdf.pdf"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_paths}/files/sample_pdf.pdf"), :original_file)
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/test.txt"), :extracted_text)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_paths}/files/test.txt"), :extracted_text)
       end
     end
 

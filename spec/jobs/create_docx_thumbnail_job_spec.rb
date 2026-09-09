@@ -20,7 +20,7 @@ RSpec.describe CreateDocxThumbnailJob, type: :job do
       ActiveJob::Base.queue_adapter = cached_adapter
     end
     it 'enqueues jobs' do
-      expect { described_class.perform_later }.to have_enqueued_job(described_class).on_queue('long_running_jobs')
+      expect { described_class.perform_later(file_set_id: file_set_one.id) }.to have_enqueued_job(described_class).on_queue('long_running_jobs')
     end
   end
 
@@ -35,12 +35,20 @@ RSpec.describe CreateDocxThumbnailJob, type: :job do
   end
 
   it 'runs the job without errors' do
-    described_class.perform_now(file_set_id: file_set_one.id)
+    allow(Hydra::Derivatives::DocumentDerivatives).to receive(:create)
+
+    expect do
+      described_class.perform_now(file_set_id: file_set_one.id)
+    end.not_to raise_error
   end
 
   context 'with an msword document' do
     it 'runs the job without errors' do
-      described_class.perform_now(file_set_id: file_set_two.id)
+      allow(Hydra::Derivatives::DocumentDerivatives).to receive(:create)
+
+      expect do
+        described_class.perform_now(file_set_id: file_set_two.id)
+      end.not_to raise_error
     end
   end
 end

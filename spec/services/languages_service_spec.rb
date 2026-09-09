@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Hyrax::LanguagesService do
+RSpec.describe LanguagesService do
   before do
     qa_fixtures = { local_path: File.expand_path('spec/fixtures/authorities') }
     allow(Qa::Authorities::Local).to receive(:config).and_return(qa_fixtures)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Hyrax::AuthorStatusService do
+RSpec.describe AuthorStatusService do
   before do
     # Configure QA to use fixtures
     qa_fixtures = { local_path: File.expand_path('spec/fixtures/authorities') }

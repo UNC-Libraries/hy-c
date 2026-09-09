@@ -19,7 +19,7 @@ RSpec.describe CreatePdfThumbnailJob, type: :job do
     end
 
     it 'enqueues jobs' do
-      expect { described_class.perform_later }.to have_enqueued_job(described_class).on_queue('long_running_jobs')
+      expect { described_class.perform_later(file_set_id: file_set_one.id) }.to have_enqueued_job(described_class).on_queue('long_running_jobs')
     end
   end
 

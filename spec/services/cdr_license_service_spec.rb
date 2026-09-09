@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Hyrax::CdrLicenseService do
+RSpec.describe CdrLicenseService do
   before do
     # Configure QA to use fixtures
     qa_fixtures = { local_path: File.expand_path('spec/fixtures/authorities') }

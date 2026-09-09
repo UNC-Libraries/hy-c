@@ -3,6 +3,7 @@ require 'rails_helper'
 require 'active_fedora/cleaner'
 
 RSpec.describe RemediateAffiliationsJob, type: :job do
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:unmappable_affiliations_path) { File.join(fixture_path, 'files', 'short_unmappable_affiliations.csv') }
   before do
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
