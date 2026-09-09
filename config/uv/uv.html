@@ -34,20 +34,25 @@
         uv = UV.init("uv", data);
 
 
-        const configUrl = urlAdapter.get('config');
+        const configUrl = urlAdapter.get('config') || "/uv-config.json";
         if (configUrl) {
             uv.on("configure", function({ config, cb }) {
-                cb(
-                    // new Promise(function (resolve) {
-                    //   fetch(configUrl).then(function (response) {
-                    //     resolve(response.json());
-                    //   });
-                    // })
-                );
-            })
+                cb(new Promise(function (resolve) {
+                fetch(configUrl)
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error(
+                                `Unable to load UV config: ${response.status}`
+                            );
+                        }
+
+                        resolve(response.json());
+                    });
+                }));
+            });
         }
 
-        var $UV = document.getElementById("uv");
+        const $UV = document.getElementById("uv");
 
         function resize() {
             $UV.setAttribute("style", `width:${window.innerWidth}px;height:${window.innerHeight}px`);
