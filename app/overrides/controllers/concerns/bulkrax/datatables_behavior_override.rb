@@ -8,8 +8,8 @@ Bulkrax::DatatablesBehavior.module_eval do
       {
         name: view_context.link_to(i.name, view_context.importer_path(i)),
         status_message: status_message_for(i),
-        last_imported_at: i.last_imported_at,
-        next_import_at: i.next_import_at,
+        last_imported_at: i.attributes["last_imported_at"]&.strftime("%b %d, %Y"),
+        next_import_at: i.next_import_at&.strftime("%b %d, %Y"),
         enqueued_records: i.last_run&.enqueued_records,
         processed_records: i.last_run&.processed_records || 0,
         failed_records: i.last_run&.failed_records || 0,
