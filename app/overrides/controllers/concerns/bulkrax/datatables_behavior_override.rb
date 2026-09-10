@@ -3,12 +3,23 @@
 #  @TODO Fixes upstream bug, where pagination is not working correctly. This is a temporary fix until the bug is fixed upstream.
 
 Bulkrax::DatatablesBehavior.module_eval do
+  def importer_table_order
+    return Arel.sql('COALESCE(last_imported_at, created_at) DESC') if table_order.blank?
+
+    column = order_value(params&.[]('order')&.[]('0')&.[]('column'))
+    direction = params&.[]('order')&.[]('0')&.[]('dir') == 'asc' ? 'ASC' : 'DESC'
+
+    return Arel.sql("COALESCE(last_imported_at, created_at) #{direction}") if column == 'last_imported_at'
+
+    table_order
+  end
+
   def format_importers(importers, filtered_count = Bulkrax::Importer.count)
     result = importers.map do |i|
       {
         name: view_context.link_to(i.name, view_context.importer_path(i)),
         status_message: status_message_for(i),
-        last_imported_at: i.attributes["last_imported_at"]&.strftime("%b %d, %Y"),
+        last_imported_at: i.last_imported_at&.strftime("%b %d, %Y"),
         next_import_at: i.next_import_at&.strftime("%b %d, %Y"),
         enqueued_records: i.last_run&.enqueued_records,
         processed_records: i.last_run&.processed_records || 0,
