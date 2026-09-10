@@ -10,9 +10,9 @@ Bulkrax::ImportersController.class_eval do
     filtered_count = @importers.count
     @importers = @importers.reorder(order)
 
-    Rails.logger.debug "ORDER PARAMETER: #{order.inspect}"
-    Rails.logger.debug "SQL: #{@importers.to_sql}"
-    Rails.logger.debug "DATES: #{@importers.limit(20).pluck(:id, :last_imported_at)}"
+    Rails.logger.warn "ORDER PARAMETER: #{order.inspect}"
+    Rails.logger.warn "SQL: #{@importers.to_sql}"
+    Rails.logger.warn "DATES: #{@importers.limit(20).pluck(:id, :last_imported_at)}"
 
     @importers = @importers.reorder(order).page(table_page).per(table_per_page)
     respond_to do |format|
