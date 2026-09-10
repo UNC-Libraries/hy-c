@@ -8,6 +8,12 @@ Bulkrax::ImportersController.class_eval do
     @importers = Bulkrax::Importer.all
     @importers = @importers.where(importer_table_search) if importer_table_search.present?
     filtered_count = @importers.count
+    @importers = @importers.reorder(order)
+
+    Rails.logger.debug "ORDER PARAMETER: #{order.inspect}"
+    Rails.logger.debug "SQL: #{@importers.to_sql}"
+    Rails.logger.debug "DATES: #{@importers.limit(20).pluck(:id, :last_imported_at)}"
+
     @importers = @importers.reorder(order).page(table_page).per(table_per_page)
     respond_to do |format|
       format.json { render json: format_importers(@importers, filtered_count) }
