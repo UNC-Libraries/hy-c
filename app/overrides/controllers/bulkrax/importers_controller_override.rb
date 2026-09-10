@@ -14,6 +14,15 @@ Bulkrax::ImportersController.class_eval do
     Rails.logger.warn "SQL: #{@importers.to_sql}"
     Rails.logger.warn "DATES: #{@importers.limit(20).pluck(:id, :last_imported_at)}"
 
+    importer = Bulkrax::Importer.find(5)
+
+    Rails.logger.warn({
+                         id: importer.id,
+                         attribute: importer.attributes["last_imported_at"],
+                         read_attribute: importer.read_attribute(:last_imported_at),
+                         method: importer.last_imported_at
+                       }.inspect)
+
     @importers = @importers.reorder(order).page(table_page).per(table_per_page)
     respond_to do |format|
       format.json { render json: format_importers(@importers, filtered_count) }
