@@ -7,7 +7,7 @@ Bulkrax::ImportersController.class_eval do
     @importers = Bulkrax::Importer.all
     @importers = @importers.where(importer_table_search) if importer_table_search.present?
     filtered_count = @importers.count
-    @importers = Importer.order(importer_table_order).page(table_page).per(table_per_page)
+    @importers = Bulkrax::Importer.order(importer_table_order).page(table_page).per(table_per_page)
     respond_to do |format|
       format.json { render json: format_importers(@importers, filtered_count) }
     end
