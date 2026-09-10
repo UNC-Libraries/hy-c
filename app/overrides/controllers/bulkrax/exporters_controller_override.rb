@@ -7,7 +7,7 @@ Bulkrax::ExportersController.class_eval do
     @exporters = Bulkrax::Exporter.all
     @exporters = @exporters.where(exporter_table_search) if exporter_table_search.present?
     filtered_count = @exporters.count
-    @exporters = @exporters.order(table_order).page(table_page).per(table_per_page)
+    @exporters = @exporters.reorder(table_order).page(table_page).per(table_per_page)
     respond_to do |format|
       format.json { render json: format_exporters(@exporters, filtered_count) }
     end
