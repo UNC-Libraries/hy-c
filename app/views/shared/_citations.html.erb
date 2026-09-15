@@ -1,4 +1,5 @@
 <%# [hyc-override] Updating meta tags for google scholar %>
+<% thumbnail_path = @presenter.solr_document['thumbnail_path_ss'] %>
 <% content_for(:twitter_meta) do %>
   <meta name="twitter:card" content="product" />
   <meta name="twitter:site" content="<%= t('hyrax.product_twitter_handle') %>" />
@@ -7,7 +8,7 @@
   <meta property="og:type" content="object" />
   <meta property="og:title" content="<%= @presenter.title.first %>" />
   <meta property="og:description" content="<%= @presenter.description.first.truncate(200) rescue @presenter.title.first %>" />
-  <meta property="og:image" content="<%= @presenter.download_url %>" />
+  <meta property="og:image" content="<%= URI.join(request.base_url, thumbnail_path).to_s if thumbnail_path.present? %>" />
   <meta property="og:url" content="<%= polymorphic_url([main_app, @presenter]) %>" />
   <meta name="twitter:data1" content="<%= @presenter.keyword.join(', ') %>" />
   <meta name="twitter:label1" content="Keywords" />

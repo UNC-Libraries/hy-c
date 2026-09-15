@@ -24,7 +24,8 @@ RSpec.describe 'shared/_citations.html.erb', type: :view do
           page_end_tesim: ['106'],
           keyword_tesim: ['bacon', 'sausage', 'eggs'],
           publisher_tesim: ['French Press'],
-          description_tesim: ['Abstraction layer']
+          description_tesim: ['Abstraction layer'],
+          thumbnail_path_ss: '/downloads/123456?file=thumbnail'
         )
       end
 
@@ -67,6 +68,12 @@ RSpec.describe 'shared/_citations.html.erb', type: :view do
 
         tag = gs_rendered.xpath("//meta[@name='citation_publisher']")
         expect(tag.attribute('content').value).to eq('French Press')
+      end
+
+      it 'uses the indexed thumbnail for the Open Graph image' do
+        tag = Nokogiri::HTML(view.content_for(:twitter_meta)).at_xpath("//meta[@property='og:image']")
+
+        expect(tag.attribute('content').value).to eq('http://test.host/downloads/123456?file=thumbnail')
       end
     end
 
