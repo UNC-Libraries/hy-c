@@ -29,6 +29,7 @@ module Bulkrax
         allow_any_instance_of(described_class).to receive(:collections_created?).and_return(true)
         # allow_any_instance_of(described_class).to receive(:find_collection).and_return(collection)
         allow(subject).to receive(:hyrax_record).and_return(hyrax_record)
+        allow(subject).to receive(:field_supported?).with(anything).and_return(true)
       end
       let(:importer) { FactoryBot.create(:bulkrax_importer_csv) }
       subject { described_class.new(importerexporter: importer) }
@@ -73,6 +74,10 @@ module Bulkrax
     describe 'reads entry' do
       subject { described_class.new(importerexporter: exporter) }
 
+      before do
+        allow(subject).to receive(:build_system_metadata).and_return({})
+      end
+
       context 'with people object fields prefixed' do
         let(:exporter) do
           FactoryBot.create(:bulkrax_exporter_worktype, field_mapping: {
@@ -113,8 +118,9 @@ module Bulkrax
           end
 
           before do
-            allow_any_instance_of(ObjectFactory).to receive(:run!)
+            allow_any_instance_of(Bulkrax::ObjectFactory).to receive(:run!)
             allow(subject).to receive(:hyrax_record).and_return(work_obj)
+            allow(exporter).to receive(:export_source).and_return(work_obj.class)
             allow(work_obj).to receive(:id).and_return('test123')
             allow(work_obj).to receive(:member_of_work_ids).and_return([])
             allow(work_obj).to receive(:in_work_ids).and_return([])
@@ -148,12 +154,7 @@ module Bulkrax
           end
 
           before do
-            allow_any_instance_of(ObjectFactory).to receive(:run!)
-            allow(subject).to receive(:hyrax_record).and_return(work_obj)
-            allow(work_obj).to receive(:id).and_return('test123')
-            allow(work_obj).to receive(:member_of_work_ids).and_return([])
-            allow(work_obj).to receive(:in_work_ids).and_return([])
-            allow(work_obj).to receive(:member_work_ids).and_return([])
+            stub_work(work_obj)
           end
 
           it 'succeeds' do
@@ -190,12 +191,7 @@ module Bulkrax
         end
 
         before do
-          allow_any_instance_of(ObjectFactory).to receive(:run!)
-          allow(subject).to receive(:hyrax_record).and_return(work_obj)
-          allow(work_obj).to receive(:id).and_return('test123')
-          allow(work_obj).to receive(:member_of_work_ids).and_return([])
-          allow(work_obj).to receive(:in_work_ids).and_return([])
-          allow(work_obj).to receive(:member_work_ids).and_return([])
+          stub_work(work_obj)
         end
 
         it 'succeeds' do
@@ -231,12 +227,7 @@ module Bulkrax
         end
 
         before do
-          allow_any_instance_of(ObjectFactory).to receive(:run!)
-          allow(subject).to receive(:hyrax_record).and_return(work_obj)
-          allow(work_obj).to receive(:id).and_return('test123')
-          allow(work_obj).to receive(:member_of_work_ids).and_return([])
-          allow(work_obj).to receive(:in_work_ids).and_return([])
-          allow(work_obj).to receive(:member_work_ids).and_return([])
+          stub_work(work_obj)
         end
 
         it 'succeeds' do
@@ -281,12 +272,7 @@ module Bulkrax
         end
 
         before do
-          allow_any_instance_of(ObjectFactory).to receive(:run!)
-          allow(subject).to receive(:hyrax_record).and_return(work_obj)
-          allow(work_obj).to receive(:id).and_return('test123')
-          allow(work_obj).to receive(:member_of_work_ids).and_return([])
-          allow(work_obj).to receive(:in_work_ids).and_return([])
-          allow(work_obj).to receive(:member_work_ids).and_return([])
+          stub_work(work_obj)
         end
 
         it 'succeeds' do
@@ -334,12 +320,7 @@ module Bulkrax
         end
 
         before do
-          allow_any_instance_of(ObjectFactory).to receive(:run!)
-          allow(subject).to receive(:hyrax_record).and_return(work_obj)
-          allow(work_obj).to receive(:id).and_return('test123')
-          allow(work_obj).to receive(:member_of_work_ids).and_return([])
-          allow(work_obj).to receive(:in_work_ids).and_return([])
-          allow(work_obj).to receive(:member_work_ids).and_return([])
+          stub_work(work_obj)
         end
 
         it 'succeeds' do
@@ -384,12 +365,17 @@ module Bulkrax
         end
 
         before do
-          allow_any_instance_of(ObjectFactory).to receive(:run!)
-          allow(subject).to receive(:hyrax_record).and_return(work_obj)
-          allow(work_obj).to receive(:id).and_return('test123')
-          allow(work_obj).to receive(:member_of_work_ids).and_return([])
-          allow(work_obj).to receive(:in_work_ids).and_return([])
-          allow(work_obj).to receive(:member_work_ids).and_return([])
+          stub_work(work_obj)
+        end
+
+        it 'succeeds' do
+          metadata = subject.build_export_metadata
+          expect(metadata['multiple_objects_first_name_1']).to eq('Fake')
+          expect(metadata['multiple_objects_last_name_1']).to eq('Fakerson')
+          expect(metadata['multiple_objects_first_name_2']).to eq('Judge')
+          expect(metadata['multiple_objects_last_name_2']).to eq('Hines')
+          expect(metadata['multiple_objects_position_2_1']).to eq('King')
+          expect(metadata['multiple_objects_position_2_2']).to eq('Lord')
         end
 
         it 'succeeds' do
@@ -434,12 +420,7 @@ module Bulkrax
         end
 
         before do
-          allow_any_instance_of(ObjectFactory).to receive(:run!)
-          allow(subject).to receive(:hyrax_record).and_return(work_obj)
-          allow(work_obj).to receive(:id).and_return('test123')
-          allow(work_obj).to receive(:member_of_work_ids).and_return([])
-          allow(work_obj).to receive(:in_work_ids).and_return([])
-          allow(work_obj).to receive(:member_work_ids).and_return([])
+          stub_work(work_obj)
         end
 
         it 'succeeds' do
@@ -457,3 +438,12 @@ module Bulkrax
   end
 end
 # rubocop: enable Metrics/BlockLength
+
+def stub_work(work_obj)
+  allow_any_instance_of(Bulkrax::ObjectFactory).to receive(:run!)
+  allow(subject).to receive(:hyrax_record).and_return(work_obj)
+  allow(work_obj).to receive(:id).and_return('test123')
+  allow(work_obj).to receive(:member_of_work_ids).and_return([])
+  allow(work_obj).to receive(:in_work_ids).and_return([])
+  allow(work_obj).to receive(:member_work_ids).and_return([])
+end

@@ -26,6 +26,7 @@ RSpec.describe CreateDerivativesJob, :active_fedora do
   # TODO: Get tests passing when these are set to different values
   # These tests currently assume that the upload_file is in the same place as the WorkingFile
   # And as of 11/22/2021 they were in different places in production
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:temp_storage_path) { File.join(fixture_path, 'tmp') }
   let(:data_storage_path) { File.join(fixture_path, 'tmp') }
 

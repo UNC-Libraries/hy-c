@@ -44,6 +44,11 @@ RSpec.feature 'Create a MastersPaper', js: false do
       Blacklight.default_index.connection.delete_by_query('*:*')
       Blacklight.default_index.connection.commit
 
+      # Stub background jobs that are environment-dependent in CI.
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?).and_return(false)
+      allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+      allow(CharacterizeJob).to receive(:perform_later)
+
       Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
@@ -137,6 +142,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#masters_paper_dcmi_type')
+      expect(find('#masters_paper_admin_set_id', visible: false).value).to eq(dept_admin_set.id)
 
       within('div#add-files') do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
@@ -147,6 +153,9 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
+
+      # Ensure the newly indexed work is visible to dashboard search queries.
+      Blacklight.default_index.connection.commit
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test MastersPaper work'
@@ -255,6 +264,9 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
+
+      # Ensure the newly indexed work is visible to dashboard search queries.
+      Blacklight.default_index.connection.commit
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test MastersPaper work'

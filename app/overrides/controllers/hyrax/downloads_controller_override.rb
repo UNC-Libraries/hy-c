@@ -1,18 +1,28 @@
 # frozen_string_literal: true
 # https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/downloads_controller.rb
-Hyrax::DownloadsController.class_eval do
-  # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
-  include Hyc::DownloadAnalyticsBehavior
-  alias hyc_stream_show_active_fedora show_active_fedora
+module HycDownloadsControllerOverride
+  # prepend is necessary so this module's overridden methods are found before
+  # Hyrax's controller methods, while super still calls the original Hyrax
+  # implementation. The ancestor check prevents the override from being
+  # prepended more than once when Rails reloads classes.
+  def self.prepended(base)
+    # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
+    base.include Hyc::DownloadAnalyticsBehavior unless
+      base.ancestors.include?(Hyc::DownloadAnalyticsBehavior)
+
+    base.before_action(
+      :enforce_bot_detection,
+      if: -> { BotDetectController.cf_challenge_downloads_enabled? }
+    )
+
+    # [hyc-override] Loading the admin set for record
+    base.before_action :set_record_admin_set
+  end
+
 
   def enforce_bot_detection
     BotDetectController.bot_detection_enforce_filter(self)
   end
-
-  before_action :enforce_bot_detection, if: -> { BotDetectController.cf_challenge_downloads_enabled? }
-
-  # [hyc-override] Loading the admin set for record
-  before_action :set_record_admin_set
 
   def set_record_admin_set
     record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
@@ -32,7 +42,7 @@ Hyrax::DownloadsController.class_eval do
     return send_fedora_binary_content(local_original_path) if local_original_path.present?
 
     Rails.logger.warn("DownloadsController: falling back to Fedora streaming for FileSet #{params[:id]}")
-    hyc_stream_show_active_fedora
+    super
   end
 
   def send_fedora_binary_content(local_original_path)
@@ -109,4 +119,9 @@ Hyrax::DownloadsController.class_eval do
     # [hyc-override] Send permission failures to
     render_401
   end
+end
+controller = Hyrax::DownloadsController
+
+unless controller.ancestors.include?(HycDownloadsControllerOverride)
+  controller.prepend(HycDownloadsControllerOverride)
 end

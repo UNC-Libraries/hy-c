@@ -9,7 +9,9 @@
       }
     },
     "footerPanel": {
-      "downloadEnabled": false
+      "options": {
+        "downloadEnabled": false
+      }
     }
   }
 }

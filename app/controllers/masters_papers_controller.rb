@@ -19,6 +19,16 @@ class MastersPapersController < ApplicationController
   private
 
   def masters_papers_params
-    params.require(:masters_paper).permit(:affiliation, :add_works_to_collection).reject { |_, v| v.blank? }
+    # Department selection can arrive as either a single value or an array
+    # (the form select is configured with multiple), so permit both.
+    permitted = params.require(:masters_paper).permit(:add_works_to_collection, :affiliation, affiliation: [])
+
+    # Normalize to one non-blank affiliation for the redirect query string.
+    affiliation = Array(permitted[:affiliation]).compact_blank.first
+
+    {
+      affiliation: affiliation,
+      add_works_to_collection: permitted[:add_works_to_collection]
+    }.compact_blank
   end
 end

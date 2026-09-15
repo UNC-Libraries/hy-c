@@ -24,6 +24,8 @@ config/local_env_solr8.yml
 /public/assets/*
 /public/uv
 fits.log
+test.log
+test.yml
 
 /**/.DS_Store
 

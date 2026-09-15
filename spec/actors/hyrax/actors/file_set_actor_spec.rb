@@ -6,7 +6,7 @@ require Rails.root.join('app/overrides/actors/hyrax/actors/file_set_actor_overri
 RSpec.describe Hyrax::Actors::FileSetActor do
   let(:file_set) { FactoryBot.create(:file_set) }
   let(:user) { FactoryBot.create(:user) }
-  let(:file_path) { File.join(fixture_path, 'files', 'image.png') }
+  let(:file_path) { File.join(fixture_paths, 'files', 'image.png') }
   let(:file) { File.new(file_path) }
   let(:relation) { :original_file }
   let(:actor) { described_class.new(file_set, user) }

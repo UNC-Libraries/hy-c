@@ -7,7 +7,7 @@ RSpec.describe Hyrax::Actors::FileActor do
   let(:file_set) { FactoryBot.create(:file_set) }
   let(:user) { FactoryBot.create(:user) }
   let(:actor) { described_class.new(file_set, :original_file, user) }
-  let(:file_path) { File.join(fixture_path, 'files', 'image.png') }
+  let(:file_path) { File.join(fixture_paths, 'files', 'image.png') }
   let(:file) { File.new(file_path) }
   let(:job_wrapper) { JobIoWrapper.create_with_varied_file_handling!(file_set: file_set, user: user, file: file, relation: 'some_string') }
 

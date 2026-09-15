@@ -17,12 +17,12 @@ RSpec.describe 'hyrax/file_sets/_actions.html.erb', type: :view do
     allow(controller).to receive(:current_ability).and_return(ability)
     allow(file_set).to receive(:parent).and_return(:parent)
     allow(file_set).to receive(:id).and_return('fake')
-    allow(file_set).to receive(:extensions_and_mime_types).and_return([])
     assign(:presenter, parent_presenter)
     allow(view).to receive(:workflow_restriction?).and_return(false)
     allow(view).to receive(:can?).with(:edit, file_set.id).and_return(true)
     allow(view).to receive(:can?).with(:destroy, file_set.id).and_return(true)
     allow(view).to receive(:can?).with(:download, file_set.id).and_return(true)
+    allow(solr_document).to receive(:extensions_and_mime_types).and_return([])
     allow(solr_document).to receive(:to_model).and_return(file_set_model)
   end
 

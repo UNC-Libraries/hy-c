@@ -99,7 +99,21 @@ jobs:
     - name: Install OS packages
       run: |
         sudo apt-get update
-        sudo apt-get install unzip ghostscript libpq-dev graphicsmagick libreoffice libxml2-dev libxslt1-dev libvips-dev
+        sudo apt-get install -y curl gpg unzip ghostscript libpq-dev graphicsmagick libreoffice libxml2-dev libxslt1-dev libvips-dev
+        sudo install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg
+        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list >/dev/null
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+
+    - name: Install matching ChromeDriver
+      run: |
+        CHROME_MAJOR=$(google-chrome-stable --product-version | cut -d '.' -f 1)
+        CHROMEDRIVER_VERSION=$(curl -fsSL "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_MAJOR}")
+        curl -fsSL -o /tmp/chromedriver-linux64.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip"
+        unzip -o /tmp/chromedriver-linux64.zip -d /tmp
+        sudo install -m 0755 /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+        rm -rf /tmp/chromedriver-linux64 /tmp/chromedriver-linux64.zip
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
@@ -116,10 +130,10 @@ jobs:
     - name: Run RuboCop
       run: bundle exec rubocop --parallel --config .rubocop.yml
 
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: 11
+        java-version: 17
         distribution: 'temurin'
 
     - name: Setup test database
@@ -143,12 +157,17 @@ jobs:
       run: docker exec solr_container solr create_core -c hydra-test -d /var/solr/configsets/hy-c
 
     - name: Run rspec tests
-      run: bundle exec rspec
+      run: bundle exec rspec spec
       env:
         REDIS_URL: redis://localhost:6379
         POSTGRES_USER: hyrax
         POSTGRES_PASSWORD: password
         TMPDIR: /tmp
+
+    - name: Set up nodejs
+      uses: actions/setup-node@v2
+      with:
+        node-version: '22'
 
     - uses: actions/upload-artifact@v4
       with:

@@ -200,5 +200,45 @@ module Bulkrax
         end
       end
     end
+
+    describe 'permitted_attributes' do
+      subject do
+        described_class.new(attributes: {},
+                            source_identifier_value: '9p2909328',
+                            work_identifier: '9p2909328',
+                            work_identifier_search_field: 'id',
+                            klass: klass)
+      end
+
+      let(:klass) { General }
+
+      it 'includes upstream permitted attributes' do
+        permitted = subject.send(:permitted_attributes)
+
+        expect(permitted).to include(:visibility, :work_members_attributes)
+      end
+
+      it 'includes custom dcmi_type and person nested attributes' do
+        permitted = subject.send(:permitted_attributes)
+
+        expect(permitted).to include(:dcmi_type, :creators_attributes)
+      end
+
+      it 'includes admin_set_id for non-Collection classes' do
+        permitted = subject.send(:permitted_attributes)
+
+        expect(permitted).to include(:admin_set_id)
+      end
+
+      context 'when klass is a Collection' do
+        let(:klass) { Collection }
+
+        it 'preserves upstream collection attributes' do
+          permitted = subject.send(:permitted_attributes)
+
+          expect(permitted).to include(:admin_set_id)
+        end
+      end
+    end
   end
 end

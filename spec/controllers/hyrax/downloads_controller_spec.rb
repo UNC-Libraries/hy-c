@@ -38,6 +38,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters'
   }
   }
+  let(:fixture_path) { RSpec.configuration.fixture_paths }
   let(:file_set) do
     FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
   end
