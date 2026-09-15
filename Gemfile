@@ -62,7 +62,7 @@ gem 'pg', '~> 1.6.3'
 gem 'rails', '~> 7.2.3.2'
 gem 'rdf', '~> 3.3.4'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 4.5.0'
+gem 'redis', '~> 4.8.1'
 gem 'redlock' # version determined by hyrax
 gem 'riiif', '~> 2.8.1'
 gem 'roo', '~>2.9.0'
