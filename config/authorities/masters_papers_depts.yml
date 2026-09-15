@@ -41,9 +41,12 @@ terms:
   - id: Physician Assistant Program
     term: School of Medicine; Department of Allied Health Sciences; Physician Assistant Program
     active: true
+  - id: School of Data and Information Sciences
+    term: School of Data and Information Sciences
+    active: true
   - id: School of Information and Library Science
     term: School of Information and Library Science
-    active: true
+    active: false
   - id: Studio Art Program
     term: College of Arts and Sciences; Department of Art; Studio Art Program
     active: true
