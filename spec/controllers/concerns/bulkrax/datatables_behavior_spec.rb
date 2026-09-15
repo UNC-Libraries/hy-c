@@ -8,6 +8,7 @@ RSpec.describe Bulkrax::DatatablesBehavior, type: :controller do
   end
 
   let(:view_context_double) { double('view_context') }
+  let(:two_day_frequency) { double('frequency', to_seconds: 2.days) }
 
   before do
     allow(controller).to receive(:view_context).and_return(view_context_double)
@@ -34,6 +35,48 @@ RSpec.describe Bulkrax::DatatablesBehavior, type: :controller do
       expect(result[:recordsTotal]).to eq(3)
       expect(result[:recordsFiltered]).to eq(2)
       expect(result[:data].size).to eq(1)
+    end
+
+    it 'formats last_imported_at and next_import_at for schedulable importers with a previous import time' do
+      importer = FactoryBot.create(:bulkrax_importer_csv, name: 'Scheduled Import')
+      importer.update_column(:last_imported_at, Time.zone.local(2024, 1, 15))
+      importer.reload
+
+      allow(importer).to receive(:schedulable?).and_return(true)
+      allow(importer).to receive(:frequency).and_return(two_day_frequency)
+
+      result = controller.send(:format_importers, [importer])
+
+      expect(result[:data].first[:last_imported_at]).to eq('Jan 15, 2024')
+      expect(result[:data].first[:next_import_at]).to eq('Jan 17, 2024')
+    end
+
+    it 'leaves next_import_at blank when a schedulable importer has not been imported yet' do
+      importer = FactoryBot.create(:bulkrax_importer_csv, name: 'Pending Scheduled Import')
+      importer.update_column(:last_imported_at, nil)
+      importer.reload
+
+      allow(importer).to receive(:schedulable?).and_return(true)
+      allow(importer).to receive(:frequency).and_return(two_day_frequency)
+
+      result = controller.send(:format_importers, [importer])
+
+      expect(result[:data].first[:last_imported_at]).to be_nil
+      expect(result[:data].first[:next_import_at]).to be_nil
+    end
+
+    it 'leaves next_import_at blank for non-schedulable importers' do
+      importer = FactoryBot.create(:bulkrax_importer_csv, name: 'Manual Import')
+      importer.update_column(:last_imported_at, Time.zone.local(2024, 1, 15))
+      importer.reload
+
+      allow(importer).to receive(:schedulable?).and_return(false)
+      allow(importer).to receive(:frequency).and_return(two_day_frequency)
+
+      result = controller.send(:format_importers, [importer])
+
+      expect(result[:data].first[:last_imported_at]).to eq('Jan 15, 2024')
+      expect(result[:data].first[:next_import_at]).to be_nil
     end
   end
 
