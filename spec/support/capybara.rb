@@ -1,23 +1,50 @@
 # frozen_string_literal: true
 
-Webdrivers.cache_time = 3
-
-# Setup chrome headless driver
 Capybara.server = :webrick
+
+def find_executable(commands: [], paths: [])
+  from_path = commands.map { |command| `command -v #{command} 2>/dev/null`.strip }
+  (from_path + paths).reject(&:empty?).uniq.find { |path| File.executable?(path) }
+end
 
 Capybara.register_driver :chrome_headless do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 120
 
-  options = ::Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless')
-  options.add_argument('--no-sandbox')
-  options.add_argument('--disable-dev-shm-usage')
-  options.add_argument('--window-size=1400,1400')
+  chrome_binary = find_executable(
+    commands: %w[google-chrome-stable google-chrome chromium chromium-browser],
+    paths: %w[/usr/bin/google-chrome-stable /opt/google/chrome/chrome /usr/bin/chromium /usr/bin/chromium-browser /snap/bin/chromium]
+  )
 
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome
+  chromedriver_path = find_executable(
+    commands: ['chromedriver'],
+    paths: %w[/usr/bin/chromedriver /usr/local/bin/chromedriver]
+  )
 
-  Capybara::Selenium::Driver.new(app, browser: :chrome, capabilities: [options, capabilities], http_client: client)
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.binary = chrome_binary if chrome_binary
+
+  %w[
+    --headless
+    --no-sandbox
+    --disable-dev-shm-usage
+    --disable-gpu
+    --no-zygote
+    --disable-software-rasterizer
+    --remote-debugging-port=0
+    --window-size=1400,1400
+  ].each { |argument| options.add_argument(argument) }
+
+  service = chromedriver_path ? Selenium::WebDriver::Service.chrome(path: chromedriver_path) : Selenium::WebDriver::Service.chrome
+
+  Capybara::Selenium::Driver.new(
+    app,
+    browser: :chrome,
+    options: options,
+    service: service,
+    http_client: client
+  )
 end
 
+Capybara.default_driver = :rack_test
 Capybara.javascript_driver = :chrome_headless

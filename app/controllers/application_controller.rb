@@ -139,18 +139,18 @@ class ApplicationController < ActionController::Base
       if redirect_path # Redirect to Hy-C
         updated_path = "#{request_host}/concern/#{redirect_path['new_path']}"
         Rails.logger.info "In hy-c uuid redirect match: #{updated_path}"
-        redirect_to updated_path, status: :moved_permanently
+        redirect_to updated_path, status: :moved_permanently, allow_other_host: true
       elsif full_path.starts_with?('/search', '/listContent') # All Box-C searches with uuids should go to the 404 page
         updated_path = "#{request_host}/concern/404"
         Rails.logger.info "Forwarding Box-c search to 404, user requested #{full_path}"
-        redirect_to updated_path, status: :moved_permanently
+        redirect_to updated_path, status: :moved_permanently, allow_other_host: true
       elsif full_path.starts_with?('/content', '/list', '/record', '/indexablecontent') # Redirect to Box-C
         path_rewrite = request.url.gsub(/https\:\/\/#{ENV['REDIRECT_OLD_DOMAIN']}/, "https://#{ENV['REDIRECT_NEW_DOMAIN']}")
         Rails.logger.info "Still in box-c: #{path_rewrite}"
-        redirect_to path_rewrite, status: :moved_permanently
+        redirect_to path_rewrite, status: :moved_permanently, allow_other_host: true
       else # Redirect to Hy-C homepage
         Rails.logger.info "box-c fall through to hy-c homepage: #{request_host}"
-        redirect_to request_host, status: :moved_permanently
+        redirect_to request_host, status: :moved_permanently, allow_other_host: true
       end
 
       return

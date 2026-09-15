@@ -8,6 +8,7 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 require 'webmock/rspec'
 require 'test_support/helper_ruby/webmock_turnstile_helper_methods'
+require Rails.root.join('spec/support/capybara')
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['fedora:8080', 'solr8:8983', 'fcrepo:8080', 'solr:8983', 'opaquenamespace.org',
                                                             'googlechromelabs.github.io', 'chromedriver.storage.googleapis.com', 'https://edgedl.me.gvt1.com',
@@ -57,7 +58,7 @@ RSpec.configure do |config|
   config.include WebmockTurnstileHelperMethods
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_paths = Rails.root.join('spec', 'fixtures').to_s
 
   # Keep last run of rspec locally in order to easily re-run failures
   config.example_status_persistence_file_path = 'rspec_examples.txt'
@@ -91,7 +92,7 @@ RSpec.configure do |config|
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
-  # config.filter_gems_from_backtrace("gem name")
+  # config.filter_gems_from_backtrace('gem name')
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
 

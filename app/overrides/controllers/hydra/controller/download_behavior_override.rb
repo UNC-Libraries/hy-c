@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hydra-head/blob/v13.2.0/hydra-core/app/controllers/concerns/hydra/controller/download_behavior.rb
-Hydra::Controller::DownloadBehavior.class_eval do
+Hydra::Controller::DownloadBehavior.module_eval do
   protected
 
   # [hyc-override] Remove from upstream behavior in order to use the default 404 from ApplicationController
-  remove_method :render_404
+  remove_method :render_404 if protected_method_defined?(:render_404)
 
   # [hyc-override] Add extension to files on download
   # Override this if you'd like a different filename

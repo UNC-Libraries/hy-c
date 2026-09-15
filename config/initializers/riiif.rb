@@ -46,19 +46,27 @@ module Hyrax
   # Adds file locking to Riiif::File
   # @see RiiifFileResolver
   Rails.application.reloader.to_prepare do
-    class RiiifFile < Riiif::File
+    if Hyrax.const_defined?(:RiiifFile, false)
+      next if Hyrax::RiiifFile.superclass == ::Riiif::File
+
+      Hyrax.send(:remove_const, :RiiifFile)
+    end
+
+    class Hyrax::RiiifFile < ::Riiif::File
       include ActiveSupport::Benchmarkable
 
       attr_reader :id
+
       def initialize(input_path, tempfile = nil, id:)
         super(input_path, tempfile)
         raise(ArgumentError, 'must specify id') if id.blank?
+
         @id = id
       end
 
       # Wrap extract in a read lock and benchmark it
       def extract(transformation, image_info = nil)
-        Riiif::Image.file_resolver.file_locks[id].with_read_lock do
+        ::Riiif::Image.file_resolver.file_locks[id].with_read_lock do
           benchmark "RiiifFile extracted #{path} with #{transformation.to_params}", level: :debug do
             super
           end
@@ -77,14 +85,14 @@ module Hyrax
     include ActiveSupport::Benchmarkable
 
     # @param [String] id from iiif manifest
-    # @return [Riiif::File]
+    # @return [::Riiif::File]
     def find(id)
       path = nil
       file_locks[id].with_write_lock do
         path = build_path(id)
         path = build_path(id, force: true) unless File.exist?(path) # Ensures the file is locally available
       end
-      RiiifFile.new(path, id: id)
+      Hyrax::RiiifFile.new(path, id: id)
     end
 
     # tracks individual file locks
