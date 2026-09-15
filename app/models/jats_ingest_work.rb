@@ -204,15 +204,21 @@ class JatsIngestWork
   end
 
   def electronic_publication_date
-    article_metadata.xpath('.//pub-date[@pub-type="epub"]')
+    old_schema = article_metadata.xpath('.//pub-date[@pub-type="epub"]')
+    new_schema = article_metadata.xpath('.//pub-date[@publication-format="electronic", @date-type="pub"]')
+    old_schema.present? ? old_schema : new_schema
   end
 
   def electronic_and_physical_publication_date
-    article_metadata.xpath('.//pub-date[@pub-type="epub-ppub"]')
+    old_schema = article_metadata.xpath('.//pub-date[@pub-type="epub-ppub"]')
+    new_schema = article_metadata.xpath('.//pub-date[@publication-format="electronic-print", @date-type="pub"]')
+    old_schema.present? ? old_schema : new_schema
   end
 
   def physical_publication_date
-    article_metadata.xpath('.//pub-date[@pub-type="ppub"]')
+    old_schema = article_metadata.xpath('.//pub-date[@pub-type="ppub"]')
+    new_schema = article_metadata.xpath('.//pub-date[@publication-format="print", @date-type="pub"]')
+    old_schema.present? ? old_schema : new_schema
   end
 
   def surname(contributor)
