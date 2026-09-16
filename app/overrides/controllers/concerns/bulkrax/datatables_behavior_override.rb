@@ -5,11 +5,15 @@
 Bulkrax::DatatablesBehavior.module_eval do
   def format_importers(importers, filtered_count = Bulkrax::Importer.count)
     result = importers.map do |i|
+      db_last_imported_at = i.read_attribute(:last_imported_at)
+      db_next_import_at = nil
+      db_next_import_at = db_last_imported_at + i.frequency.to_seconds if i.schedulable? && db_last_imported_at.present?
+
       {
         name: view_context.link_to(i.name, view_context.importer_path(i)),
         status_message: status_message_for(i),
-        last_imported_at: i.last_imported_at&.strftime('%b %d, %Y'),
-        next_import_at: i.next_import_at&.strftime('%b %d, %Y'),
+        last_imported_at: db_last_imported_at&.strftime('%b %d, %Y'),
+        next_import_at: db_next_import_at&.strftime('%b %d, %Y'),
         enqueued_records: i.last_run&.enqueued_records,
         processed_records: i.last_run&.processed_records || 0,
         failed_records: i.last_run&.failed_records || 0,
