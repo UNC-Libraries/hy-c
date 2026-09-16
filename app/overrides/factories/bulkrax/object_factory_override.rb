@@ -2,6 +2,15 @@
 # https://github.com/samvera-labs/bulkrax/blob/v9.5.1/app/factories/bulkrax/object_factory.rb
 
 module HycBulkraxObjectFactoryOverride
+  # [hyc-override] fix issue with Bulkrax looking in the wrong place for index_field_mapper method.
+  def solr_name(field_name)
+    if defined?(Hyrax) && Hyrax.respond_to?(:config) && Hyrax.config.respond_to?(:index_field_mapper)
+      Hyrax.config.index_field_mapper.solr_name(field_name)
+    else
+      ActiveFedora.index_field_mapper.solr_name(field_name)
+    end
+  end
+
   private
 
   # Override if we need to map the attributes from the parser in
@@ -116,5 +125,5 @@ module HycBulkraxObjectFactoryOverride
     permitted.uniq
   end
 end
-
+Bulkrax::ObjectFactory.singleton_class.prepend(HycBulkraxObjectFactoryOverride) unless Bulkrax::ObjectFactory.singleton_class.ancestors.include?(HycBulkraxObjectFactoryOverride)
 Bulkrax::ObjectFactory.prepend(HycBulkraxObjectFactoryOverride) unless Bulkrax::ObjectFactory.ancestors.include?(HycBulkraxObjectFactoryOverride)
