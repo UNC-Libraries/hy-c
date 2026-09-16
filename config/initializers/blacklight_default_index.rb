@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 Rails.application.config.after_initialize do
-  Blacklight.default_index = Hyc::PooledSolrRepository.new(Blacklight.default_configuration)
-  Rails.logger.info do
-    repository = Blacklight.default_index
-    connection = repository.connection
-    adapter = connection.instance_variable_get(:@connection).builder.adapter.klass
+  # RuntimeRegistry stores the default index per thread, so initialize each entry with the pooled repository.
+  Blacklight.singleton_class.prepend(Module.new do
+    def default_index
+      repository = Blacklight::RuntimeRegistry.connection
+      return repository if repository.is_a?(Hyc::PooledSolrRepository)
 
-    "[Solr] Blacklight.default_index=#{repository.class} adapter=#{adapter}"
-  end
+      Blacklight::RuntimeRegistry.connection =
+        Hyc::PooledSolrRepository.new(default_configuration)
+    end
+  end)
 end
