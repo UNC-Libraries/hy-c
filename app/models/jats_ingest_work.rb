@@ -203,25 +203,22 @@ class JatsIngestWork
     end
   end
 
-  # Sage has a new schema but unsure of start date
   def electronic_publication_date
     old_schema = article_metadata.xpath('.//pub-date[@pub-type="epub"]')
     new_schema = article_metadata.xpath('.//pub-date[@publication-format="electronic" and @date-type="pub"]')
-    old_schema.present? ? old_schema : new_schema
+    new_schema.present? ? new_schema : old_schema
   end
 
-  # Sage has a new schema but unsure of start date
   def electronic_and_physical_publication_date
     old_schema = article_metadata.xpath('.//pub-date[@pub-type="epub-ppub"]')
     new_schema = article_metadata.xpath('.//pub-date[@publication-format="electronic-print" and @date-type="pub"]')
-    old_schema.present? ? old_schema : new_schema
+    new_schema.present? ? new_schema : old_schema
   end
 
-  # Sage has a new schema but unsure of start date
   def physical_publication_date
     old_schema = article_metadata.xpath('.//pub-date[@pub-type="ppub"]')
     new_schema = article_metadata.xpath('.//pub-date[@publication-format="print" and @date-type="pub"]')
-    old_schema.present? ? old_schema : new_schema
+    new_schema.present? ? new_schema : old_schema
   end
 
   def surname(contributor)

@@ -147,7 +147,6 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
     end
   end
 
-  # Sage has a new schema but unsure of start date
   context 'with an article that has a physical print and new pub date schema' do
     let(:xml_file_path) { File.join(fixture_path, 'sage', '10.1177_2192568219888179_new.xml') }
 
