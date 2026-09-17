@@ -270,6 +270,14 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
+  describe 'thumbnail downloads' do
+    it 'does not load the parent work for download analytics' do
+      expect(controller).not_to receive(:set_record_admin_set)
+
+      get :show, params: { id: file_set.id, file: 'thumbnail' }
+    end
+  end
+
   describe 'original file sendfile handoff' do
     let(:file_set) do
       FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))

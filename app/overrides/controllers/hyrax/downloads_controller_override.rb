@@ -15,8 +15,8 @@ module HycDownloadsControllerOverride
       if: -> { BotDetectController.cf_challenge_downloads_enabled? }
     )
 
-    # [hyc-override] Loading the admin set for record
-    base.before_action :set_record_admin_set
+    # [hyc-override] Loading the admin set for analytics, unless it is a thumbnail
+    base.before_action :set_record_admin_set, unless: -> { params[:file] == 'thumbnail' }
   end
 
 
