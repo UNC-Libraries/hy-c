@@ -146,4 +146,12 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
       expect(work.title).to eq(['The Prevalence of Bacterial Infection in Patients Undergoing Elective ACDF for Degenerative Cervical Spine Conditions: A Prospective Cohort Study With Contaminant Control'])
     end
   end
+
+  context 'with an article that has a physical print and new pub date schema' do
+    let(:xml_file_path) { File.join(fixture_path, 'sage', '10.1177_2192568219888179_new.xml') }
+
+    it 'can return metadata from the xml' do
+      expect(work.date_of_publication).to eq '2021-01'
+    end
+  end
 end
