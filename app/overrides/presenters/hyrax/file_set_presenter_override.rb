@@ -17,11 +17,15 @@ Hyrax::FileSetPresenter.class_eval do
     if ids.empty?
       Hyrax.logger.warn("Couldn't find a parent work for FileSet: #{id}.")
     else
-      doc = ::SolrDocument.find(ids.first)
-      unless current_ability.can?(:edit, doc)
+      parent_presenter = Hyrax::PresenterFactory.build_for(ids: ids,
+                                                            presenter_class: Hyrax::WorkShowPresenter,
+                                                            presenter_args: current_ability).first
+      parent_document = parent_presenter.solr_document
+      unless current_ability.can?(:edit, parent_document)
         # [hyc-override] throw exception when suppressed if user CANNOT read the doc, rather than if they can
-        raise Hyrax::WorkflowAuthorizationException if doc.suppressed? && !current_ability.can?(:read, doc)
+        raise Hyrax::WorkflowAuthorizationException if parent_document.suppressed? && !current_ability.can?(:read, parent_document)
       end
+      return parent_presenter
     end
     Hyrax::PresenterFactory.build_for(ids: ids,
                                       presenter_class: Hyrax::WorkShowPresenter,
