@@ -28,7 +28,7 @@ gem 'faraday-net_http_persistent', '~> 2.3'
 gem 'faraday-retry'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.10.2'
-gem 'httparty', '~>0.21.0'
+gem 'httparty', '~>0.24.0'
 gem 'hydra-editor', '~> 7.0.0'
 gem 'hydra-pcdm', '~> 1.4.0'
 gem 'hydra-role-management', '~> 1.2.0'

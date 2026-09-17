@@ -448,7 +448,8 @@ GEM
       domain_name (~> 0.5)
     http-form_data (2.3.0)
     http_logger (1.0.1)
-    httparty (0.21.0)
+    httparty (0.24.2)
+      csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     hydra-access-controls (13.2.0)
@@ -1261,7 +1262,7 @@ DEPENDENCIES
   ffaker
   google-analytics-data!
   google-cloud-errors!
-  httparty (~> 0.21.0)
+  httparty (~> 0.24.0)
   hydra-editor (~> 7.0.0)
   hydra-pcdm (~> 1.4.0)
   hydra-role-management (~> 1.2.0)
