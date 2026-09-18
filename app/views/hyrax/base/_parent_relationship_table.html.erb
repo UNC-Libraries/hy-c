@@ -6,6 +6,7 @@
     <ul class="tabular">
       <% parent_solr_docs.each do |item| %>
         <li class='attribute attribute-title'>
+          <%# Reusing parent solr docs loaded in works behavior %>
           <%= link_to item["title_tesim"].first, url_for_document(SolrDocument.new(item)) %>
         </li>
       <% end %>

@@ -5,7 +5,7 @@
   <%= render 'relationships_parent_row', type: model_name, items: items, presenter: presenter %>
 <% end %>
 
-<%# [hyc-override] Show parent relationships for child %>
+<%# [hyc-override] Show parent relationships for child and reusing already loaded parent docs %>
 <%= render 'parent_relationship_table', parent_solr_docs: @parent_solr_docs %>
 
 <%# Render grouped presenters. Show rows if there are any items of that type %>

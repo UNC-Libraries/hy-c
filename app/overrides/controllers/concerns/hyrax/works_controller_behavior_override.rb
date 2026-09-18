@@ -9,6 +9,7 @@ Hyrax::WorksControllerBehavior.module_eval do
     format.xml { render body: presenter.export_as_oai_dc_xml, mime_type: Mime[:xml] }
   end
 
+  # [hyc-override] Load the parent works once for reuse in work show pages
   alias_method :original_show, :show
   def show
     original_show
