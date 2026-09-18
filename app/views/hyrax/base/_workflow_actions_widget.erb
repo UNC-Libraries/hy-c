@@ -1,11 +1,12 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_workflow_actions_widget.erb %>
 <%# [hyc-override] Overriding partial in hyrax gem in order to change the workflow action panel (most of file is additions) %>
+<%# [hyc-override] Loading workflow actions once to avoid repeated calls in conditionals %>
+<% actions = @presenter.workflow.actions %>
+<% deletion_actions = actions.select { |action| action[0] == 'request_deletion' } %>
 <div class="col-12">
   <div class="workflow-actions">
-    <%= render 'workflow_actions', presenter: @presenter if @presenter.workflow.actions.present? &&
-        @presenter.workflow.actions.select{|action| action[0] == 'request_deletion'}.blank? %>
-    <% if @presenter.workflow.actions.present? &&
-        !@presenter.workflow.actions.select{|action| action[0] == 'request_deletion'}.blank? %>
+    <%= render 'workflow_actions', presenter: @presenter if actions.present? && deletion_actions.blank? %>
+    <% if actions.present? && deletion_actions.present? %>
       <div class="modal fade" id="deletion-request-modal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
