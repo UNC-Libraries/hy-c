@@ -158,7 +158,7 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
   context 'with an article that has a nested affiliation schema' do
     let(:xml_file_path) { File.join(fixture_path, 'sage', '10.1177_27526461231159920.xml') }
     let(:work) { described_class.new(xml_path: xml_file_path) }
-    let(:affiliation_ids) {work.affiliation_ids(work.creators_metadata.xpath('.//contrib'))}
+    let(:affiliation_ids) { work.affiliation_ids(work.creators_metadata.xpath('.//contrib')) }
 
     it 'can map affiliations to institution names' do
       expect(work.affiliation_map).to be_instance_of Hash
