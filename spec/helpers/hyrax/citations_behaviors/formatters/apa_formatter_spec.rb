@@ -24,10 +24,26 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
                 doi: 'doi.org/some-doi')
   }
   let(:presenter) { Hyrax::WorkShowPresenter.new(SolrDocument.new(article.to_solr), :no_ability) }
+  let(:journal_article) {
+    Article.new(title: ['new article title'],
+                creators_attributes: { '0' => { 'name' => 'a depositor' } },
+                date_issued: '2019-10-11',
+                journal_title: 'Journal of Testing',
+                journal_volume: '12',
+                journal_issue: '3',
+                page_start: '10',
+                page_end: '18',
+                doi: 'doi.org/some-doi')
+  }
+  let(:journal_presenter) { Hyrax::WorkShowPresenter.new(SolrDocument.new(journal_article.to_solr), :no_ability) }
 
   describe '#format' do
     it 'returns a citation in apa format with a doi' do
       expect(formatter.format(presenter)).to eq '<span class="citation-author">Depositor, A.</span> (2019). <i class="citation-title">new article title.</i> NC: a publisher. doi.org/some-doi'
+    end
+
+    it 'returns a journal citation in apa format with volume, issue, pages, and doi' do
+      expect(formatter.format(journal_presenter)).to eq '<span class="citation-author">Depositor, A.</span> (2019). <span class="citation-title">new article title.</span> <i class="citation-journal-title">Journal of Testing, 12</i>(3), 10-18. doi.org/some-doi'
     end
 
     it 'handles nil doi value gracefully' do

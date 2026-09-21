@@ -187,4 +187,74 @@ RSpec.describe Hyrax::CitationsBehaviors::PublicationBehavior, type: :helper do
       end
     end
   end
+
+  describe '#journal_citation?' do
+    it 'returns true when journal metadata is present' do
+      work = Article.new(title: ['new article title'], journal_title: 'Journal of Testing')
+
+      expect(helper.journal_citation?(work)).to be true
+    end
+
+    it 'returns false when journal metadata is absent' do
+      work = General.new(title: ['new article title'])
+
+      expect(helper.journal_citation?(work)).to be false
+    end
+  end
+
+  describe '#setup_page_range' do
+    it 'formats page ranges without style-specific prefixes' do
+      work = Article.new(title: ['new article title'], page_start: '10', page_end: '18')
+
+      expect(helper.setup_page_range(work)).to eq '10-18'
+    end
+
+    it 'formats a single page article correctly' do
+      work = Article.new(title: ['new article title'], page_start: '10')
+
+      expect(helper.setup_page_range(work)).to eq '10'
+    end
+  end
+
+  describe '#setup_mla_page_range' do
+    it 'formats mla page ranges with pp. and p. prefixes' do
+      range_work = Article.new(title: ['new article title'], page_start: '10', page_end: '18')
+      single_page_work = Article.new(title: ['new article title'], page_start: '10')
+
+      expect(helper.setup_mla_page_range(range_work)).to eq 'pp. 10-18'
+      expect(helper.setup_mla_page_range(single_page_work)).to eq 'p. 10'
+    end
+  end
+
+  describe '#setup_journal_metadata' do
+    let(:work) do
+      Article.new(title: ['new article title'],
+                  date_issued: '2019-10-11',
+                  journal_title: 'Journal of Testing',
+                  journal_volume: '12',
+                  journal_issue: '3',
+                  page_start: '10',
+                  page_end: '18')
+    end
+
+    it 'returns style-neutral journal metadata' do
+      expect(helper.setup_journal_metadata(work)).to eq(
+        {
+          journal_title: 'Journal of Testing',
+          journal_volume: '12',
+          journal_issue: '3',
+          pub_date: '2019',
+          page_range: '10-18'
+        }
+      )
+    end
+  end
+
+  describe '#setup_doi' do
+    it 'returns a doi value when present' do
+      work = Article.new(title: ['new article title'], doi: 'doi.org/test-doi')
+
+      expect(helper.setup_doi(work)).to eq 'doi.org/test-doi'
+    end
+  end
 end
