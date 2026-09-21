@@ -69,12 +69,17 @@ class JatsIngestWork
   end
 
   def affiliation_ids(elem)
-    references = elem.xpath('xref')
-    references.map do |ref|
-      reference_type = ref['ref-type']
-      next unless reference_type == 'aff'
-
-      ref['rid']
+    xref_ids = elem.xpath('xref').map do |ref|
+        reference_type = ref['ref-type']
+        next unless reference_type == 'aff'
+        ref['rid']
+    end.compact
+    return xref_ids if xref_ids.present?
+    
+    # get sibling aff elements
+    aff_references = elem.xpath('../aff')
+    aff_references.map do |aff|
+        aff['id']
     end.compact
   end
 
