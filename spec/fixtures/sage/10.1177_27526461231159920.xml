@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD with MathML3 v1.4 20241031//EN" "JATS-journalpublishing1-4-mathml3.dtd">
+<article article-type="research-article" dtd-version="1.4" xml:lang="en" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<front>
+<journal-meta>
+<journal-id journal-id-type="hwp">spees</journal-id>
+<journal-id journal-id-type="publisher-id">EES</journal-id>
+<journal-title-group>
+<journal-title>Equity in Education &amp; Society</journal-title>
+</journal-title-group>
+<issn publication-format="electronic">2752-6461</issn>
+<publisher>
+<publisher-name>SAGE Publications</publisher-name>
+<publisher-loc>Sage UK: London, England</publisher-loc>
+</publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="publisher-id">10.1177_27526461231159920</article-id>
+<article-id pub-id-type="doi">10.1177/27526461231159920</article-id>
+<article-categories>
+<subj-group subj-group-type="heading">
+<subject>Special Issue on Equity &amp; Inclusion Efforts: Tackling inequality in educational and other contexts</subject>
+</subj-group>
+</article-categories>
+<title-group>
+<article-title>Implementing measurable goals for diversity, equity, and inclusion in Clinical and Translational Science Awards leadership</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" corresp="yes">
+<name>
+<surname>Taylor</surname>
+<given-names>Monica M</given-names>
+</name>
+<degrees>Ph.D., MPH</degrees>
+<xref ref-type="corresp" rid="corresp1-27526461231159920"/>
+</contrib>
+<aff id="aff1-27526461231159920">Center for Health Equity Research, School of Medicine, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+</contrib-group>
+<contrib-group>
+<contrib contrib-type="author">
+<name>
+<surname>Fernandez</surname>
+<given-names>Claudia SP</given-names>
+</name>
+<degrees>DrPH</degrees>
+</contrib>
+<aff id="aff2-27526461231159920">Gillings School of Global Public Health, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+</contrib-group>
+<contrib-group>
+<contrib contrib-type="author">
+<name>
+<surname>Dave</surname>
+<given-names>Gaurav</given-names>
+</name>
+<degrees>M.D., DrPH, MPH</degrees>
+</contrib>
+<aff id="aff3-27526461231159920">Center for Health Equity Research, School of Medicine, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+<aff id="aff4-27526461231159920">Department of Medicine, School of Medicine, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+<aff id="aff5-27526461231159920">Abacus Evaluation, School of Medicine, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+</contrib-group>
+<contrib-group>
+<contrib contrib-type="author">
+<name>
+<surname>Brandert</surname>
+<given-names>Kathleen</given-names>
+</name>
+<degrees>MPH</degrees>
+</contrib>
+<aff id="aff6-27526461231159920"><institution-wrap>
+<institution-id institution-id-type="Ringgold">220788</institution-id>
+<institution content-type="university">University of Nebraska Medical Center College of Public Health</institution>
+</institution-wrap>, Omaha, NE, USA</aff>
+</contrib-group>
+<contrib-group>
+<contrib contrib-type="author">
+<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-9070-5343</contrib-id>
+<name>
+<surname>Larkin</surname>
+<given-names>Suzanna</given-names>
+</name>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Mollenkopf</surname>
+<given-names>Katherine</given-names>
+</name>
+</contrib>
+<aff id="aff7-27526461231159920">Gillings School of Global Public Health, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+</contrib-group>
+<contrib-group>
+<contrib contrib-type="author">
+<name>
+<surname>Corbie</surname>
+<given-names>Giselle</given-names>
+</name>
+<degrees>M.D., M.Sc.</degrees>
+</contrib>
+<aff id="aff8-27526461231159920">Department of Medicine, School of Medicine, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+<aff id="aff9-27526461231159920">Department of Social Medicine, School of Medicine, <institution-wrap>
+<institution-id institution-id-type="Ringgold">6797</institution-id>
+<institution content-type="university">The University of North Carolina Chapel Hill</institution>
+</institution-wrap>, Chapel Hill, NC, USA</aff>
+</contrib-group>
+<author-notes>
+<corresp id="corresp1-27526461231159920">Monica M Taylor, Center for Health Equity Research, Social Medicine, University of North Carolina at Chapel Hill, 333 South Columbia Street, Chapel Hill, NC 27516, USA. Email: <email>Monica_Taylor@med.unc.edu</email></corresp>
+</author-notes>
+<pub-date publication-format="electronic" date-type="collection">
+<month>8</month>
+<year>2023</year>
+</pub-date>
+<pub-date date-type="pub" publication-format="electronic"><day>22</day><month>2</month><year>2023</year></pub-date>
+<volume>2</volume>
+<issue>2</issue>
+<fpage>198</fpage>
+<lpage>205</lpage>
+<pub-history>
+<event event-type="received">
+<date date-type="received">
+<day>4</day>
+<month>11</month>
+<year>2022</year>
+</date>
+</event>
+<event event-type="accepted">
+<date date-type="accepted">
+<day>5</day>
+<month>2</month>
+<year>2023</year>
+</date>
+</event>
+</pub-history>
+<permissions>
+<copyright-statement>© The Author(s) 2023</copyright-statement>
+<copyright-year>2023</copyright-year>
+<copyright-holder content-type="sage">SAGE Publications</copyright-holder>
+<license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by-nc/4.0/">
+<license-p>This article is distributed under the terms of the Creative Commons Attribution-NonCommercial 4.0 License (<ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</ext-link>) which permits non-commercial use, reproduction and distribution of the work without further permission provided the original work is attributed as specified on the SAGE and Open Access page (<ext-link ext-link-type="uri" xlink:href="https://us.sagepub.com/en-us/nam/open-access-at-sage">https://us.sagepub.com/en-us/nam/open-access-at-sage</ext-link>).</license-p>
+</license>
+</permissions>
+<self-uri content-type="pdf" xlink:href="10.1177_27526461231159920.pdf"/>
+<abstract>
+<p>Charting a benchmarking strategy is recommended to measure improvements in equal leadership opportunities for minorities and women in the Clinical Translational Science Awards Consortium (CTSAs). Academic institutions that support diversity, equity, and inclusion (DEI) initiatives should demonstrate a willingness to track their progress with established metrics. In the fall of 2020, the CTSAs convened a virtual conference, which started a dialogue on developing measurable objectives to ensure accountability for DEI goals. Using qualitative and quantitative data from breakout sessions, the authors analyze participant responses to the following recommendation, “<italic>develop a common metric and dashboard with regular reporting on diversity in CTSA leadership</italic>, <italic>with an emphasis on increasing female and Black Indigenous, People Of Color (BIPOC) representation to 30% each,</italic>” to understand the impact and challenges associated with implementing metrics within CTSAs. Thematic analysis revealed that white supremacist culture and demographic composition are obstacles to establishing metrics. Participants expressed uncertainty about the perception of token roles. Additionally, participants believed that DEI targets can increase diversity in perspectives and approaches to translational science. Implications for CTSAs include establishing CTSA-wide benchmarks for DEI initiatives, which includes a baseline of the existing DEI climate to assess institutional norms and measurable objectives to track progress.</p>
+</abstract>
+<kwd-group>
+<kwd>diversity</kwd>
+<kwd>equity and inclusion</kwd>
+<kwd>black</kwd>
+<kwd>indigenous and people of color (BIPOC)</kwd>
+<kwd>underrepresented minorities</kwd>
+<kwd>racism</kwd>
+<kwd>benchmarking</kwd>
+<kwd>smart objectives</kwd>
+<kwd>white privilege</kwd>
+</kwd-group>
+<funding-group specific-use="FundRef">
+<award-group id="award1-27526461231159920">
+<funding-source id="funding1-27526461231159920">
+<institution-wrap>
+<institution>National Institutes of Health</institution>
+<institution-id institution-id-type="FundRef">https://doi.org/10.13039/100000002</institution-id>
+</institution-wrap>
+</funding-source>
+<award-id rid="funding1-27526461231159920">1U24MD016258</award-id>
+<award-id rid="funding1-27526461231159920">UL1TR002489</award-id>
+</award-group>
+</funding-group>
+<custom-meta-group>
+<custom-meta>
+<meta-name>typesetter</meta-name>
+<meta-value>ts10</meta-value>
+</custom-meta>
+</custom-meta-group>
+</article-meta>
+</front>
+<body>
+<sec id="sec1-27526461231159920" sec-type="intro">
+<title>Introduction</title>
+<p>Diversity in the scientific workforce adds creativity and brings innovative ideas in problem solving (<xref ref-type="bibr" rid="bibr14-27526461231159920">National Institutes of Health, 2019</xref>). Despite such evidence, minorities and women lack equal representation in academic leadership roles. A 2016 status report from the American Council of Education reported that 21.1% of faculty members at institutions were faculty of color, 16.8% of university presidencies were held by people of color, and 5.1% of university presidencies were held by women of color (<xref ref-type="bibr" rid="bibr7-27526461231159920">Espinosa et al., 2019</xref>). In Fall 2020, the National Center for Education Statistics reported the demographic make-up of full-time faculty at institutions of higher education in the US as 67.4% white, 10.9% Asian/Pacific Islander, 5.7% Black, and 5.3% Hispanic (<xref ref-type="bibr" rid="bibr13-27526461231159920">National Center for Education Statistics, 2021</xref>). A 2017 meta-analysis by Quillian et al. found that discrimination against populations of color and women has not significantly declined over the past 25 years across industries (<xref ref-type="bibr" rid="bibr19-27526461231159920">Quillian et al., 2017</xref>). Additional studies examined hiring practices of minoritized and female candidates and found that racism, discrimination, and white supremacy culture persist as key barriers to hiring (<xref ref-type="bibr" rid="bibr19-27526461231159920">Quillian et al., 2017</xref>; <xref ref-type="bibr" rid="bibr3-27526461231159920">Antwi-Boasiako, 2008</xref>; <xref ref-type="bibr" rid="bibr23-27526461231159920">Zschirnt and Ruedin, 2016</xref>).</p>
+<p>In 2020, the American Council on Education reported that fewer than half of higher education institutions felt like they had adequate resources and tools to focus on and achieve DEI efforts (<xref ref-type="bibr" rid="bibr6-27526461231159920">Cheung et al., 2020</xref>: 2). In order to best address this gap, the Council recommends that academic institutions implement accountability measures, such as measurable DEI goals and hiring metrics (<xref ref-type="bibr" rid="bibr6-27526461231159920">Cheung et al., 2020</xref>: 3–4). Additional literature suggests that many organizations’ DEI efforts do not lead to structural change (<xref ref-type="bibr" rid="bibr2-27526461231159920">Anand, 2019</xref>; <xref ref-type="bibr" rid="bibr11-27526461231159920">Melaku and Winkler, 2022</xref>; <xref ref-type="bibr" rid="bibr20-27526461231159920">Singleton et al., 2021</xref>). DEI efforts are often viewed as “diversity checkboxes,” lacking accountability and ignoring underlying barriers to progress (<xref ref-type="bibr" rid="bibr2-27526461231159920">Anand, 2019</xref>). <xref ref-type="bibr" rid="bibr11-27526461231159920">Melaka and Winkler (2022)</xref> stress the importance of measuring the progress, or lack thereof, of DEI efforts through accountability metrics. They suggest that metrics need to include requirements, for example, hiring metrics that connect the organizational structure to DEI progress. In addition, <xref ref-type="bibr" rid="bibr5-27526461231159920">Boulware et al. (2022)</xref> recommend that metrics be used to assess the state of DEI in clinical and translational research and ensure accountability in DEI efforts and improvements.</p>
+<p>Many scientific organizations, including the NIH, public health agencies, national medical organizations, and academic institutions, continue to bring awareness of the need to improve DEI in biomedical, clinical, and translational research and have established committees, training programs, altered recruitment strategies, and funded programs to support women and URM, junior faculty and investigators (<xref ref-type="bibr" rid="bibr15-27526461231159920">National Institutes of Health, 2021</xref>; <xref ref-type="bibr" rid="bibr16-27526461231159920">Ofili et al., 2021</xref>; <xref ref-type="bibr" rid="bibr22-27526461231159920">UC Berkeley, n.d.</xref>). While this demonstrates some advancements from knowledge to practice, operationalizing DEI efforts and tracking performance using realistic metrics is needed to ensure progress. Benchmarking represents another pathway scientific fields can use to monitor progress in their DEI efforts (<xref ref-type="bibr" rid="bibr18-27526461231159920">O’Mara et al., 2021</xref>). With different ideologies of what inclusive excellence means, benchmarking serves an important role in setting standards and reaching agreement upon the desired state of DEI, identifying the current state, engaging employees, determining short and long-term goals, and then tracking progress toward those goals (<xref ref-type="bibr" rid="bibr18-27526461231159920">O’Mara et al., 2021</xref>; <xref ref-type="bibr" rid="bibr12-27526461231159920">Moriarty, 2011</xref>).</p>
+<p>The evidence in the scientific literature is clear cut on the value of identifying metrics and discrete objectives for DEI goals to monitor progression (<xref ref-type="bibr" rid="bibr1-27526461231159920">Abdel-Rahman et al., 2021</xref>). With this in mind, the Fall 2020 virtual Clinical and Translational Science Awards (CTSA) Consortium Meeting prioritized recommendations to advance DEI at CTSA hubs and identify benchmarks to examine success in achieving those priority goals (<xref ref-type="bibr" rid="bibr5-27526461231159920">Boulware et al., 2022</xref>). This analysis focuses on the recommendation: <italic>Define a target of 30% of leaders (Principal Investigators/Core Directors) of translational science awards are women and 30% of the leaders are Black Indigenous and People of Color (BIPOC). Develop a common metric and dashboard with regular reporting on diversity in CTSA leadership</italic> (henceforth referred to as “targets, metrics, and dashboards”). Chats and polling data from this session were analyzed using thematic analysis. The results of this analysis provides recommendations to CTSAs on the critical importance of establishing measurable and sustainable DEI objectives to foster equity, accountability, and an inclusive culture that prioritizes minority and female leadership opportunities through the voices of those currently engaged at the CTSAs.</p>
+</sec>
+<sec id="sec2-27526461231159920" sec-type="methods">
+<title>Methods</title>
+<sec id="sec3-27526461231159920">
+<title>Participants and setting</title>
+<p>During the virtual annual meeting of the CTSA Consortium, the steering committee chose to use the meeting to identify ways to improve diversity, equity, and inclusion in four strategic areas: leadership diversity, workforce development, research in health equity/disparities, and clinical trials recruitment. Registrants of the virtual Fall 2020 CTSA Consortium Meeting included: Executive Director/Administrators (<italic>n</italic> = 35), UL1 Principal Investigators (<italic>n</italic> = 30), KL2 Directors (<italic>n</italic> = 22), CTSA Program Hub Steering Committee Members (<italic>n</italic> = 18), TL1 Directors (<italic>n</italic> = 15), NCATS Program Officers or NIH Representatives (<italic>n</italic> = 7), and participants holding other positions (<italic>n</italic> = 117). Participants were asked to self-select to attend one of the four strategic areas and each breakout room included discussions about DEI in the respective topic areas, drawing on stakeholder participation to develop recommendations for moving forward. The data from the leadership breakout room constitutes the focus of this analysis, specifically responses to the “targets, metrics, and dashboards” recommendation. The leadership breakout room consisted of 67 participants from the overall group. Participants were informed of a consent clause during online registration and this research adhered to UNC’s IRB and ethical procedures.</p>
+</sec>
+<sec id="sec4-27526461231159920">
+<title>Data collection and analysis</title>
+<p>This study analyzed qualitative and quantitative data of Zoom chat and PollEverywhere poll result transcripts from the leadership diversity breakout session during the 2020 virtual national CTSA meeting. Participants were prompted to send in short, written responses to six recommendations, with the “targets, metrics, and dashboards” recommendation being one of them, which were aimed at advancing DEI efforts in CTSAs and the translational science field. Participants were asked one question about potential risks and one question about potential opportunities for pursuing the “targets, metrics, and dashboards” recommendation and voluntarily responded in the Zoom chat function. After the recommendation was presented and commented on, participants responded to three polls, using PollEverywhere, on the potential feasibility, impact, and priority of “targets, metrics and dashboards”. On each of the three polls, participants ranked the six recommendations from first place to sixth place, according to the three domains.</p>
+<p>Two investigators independently coded the chat transcript data to look for emerging themes and cross-cutting themes across participant responses in order to identify main challenges and opportunities identified around “targets, metrics and dashboards.” After each coder identified preliminary themes, the two met to reach consensus and create an overall codebook of primary themes. The chat responses were inductively coded in NVivo software, and the tallies of each code were used to identify the most common themes (see Table <xref ref-type="table" rid="table1-27526461231159920">1</xref>). Polling data from the three PollEverywhere polls was also analyzed by examining the average ranking position of “targets, metrics, and dashboards” across polling results in order to identify respondents' perceptions of the feasibility, impact, and priority of this recommendation.<table-wrap id="table1-27526461231159920" position="float"><label>Table 1.</label><caption>
+<p>Emerging themes, definitions, and example quotes in response to a common metric and dashboard for tracking DEI in CTSAs.</p>
+</caption><alternatives>
+<graphic specific-use="table1-27526461231159920" xlink:href="10.1177_27526461231159920-table1.tif"/>
+<table>
+<thead valign="top">
+<tr>
+<th align="left">Emerging theme</th>
+<th align="left">Definition</th>
+<th align="left" colspan="2">Example quotes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr>
+<td align="left">Whiteness and racism</td>
+<td align="left">White supremacy culture and divisions among white members of CTSAs and institutions</td>
+<td align="left">“White supremacy culture is deepened and BIPOC people and communities are further harmed.”</td>
+<td align="left">“Is it equitable? Was the most qualified individual selected or to meet this criteria a qualified individual is left out.”</td>
+</tr>
+<tr>
+<td align="left">Structural change</td>
+<td align="left">Large scale shift in the practices of CTSAs and their broader institutions. The need for large-scale change in order to achieve these priorities-change beyond the CTSA</td>
+<td align="left">“Would take a paradigm shift, but there would be buy-in at some point and impact positively.”</td>
+<td align="left">“No structural change; just gaming the system.”</td>
+</tr>
+<tr>
+<td align="left">Superficial change</td>
+<td align="left">Fear that the changes resulting from these priorities may not lead to structural change</td>
+<td align="left">“Risk is that this will be isolated, rather than seen as paradigmatic for an institution, where these larger biases may also exist- so it might be an island, instead of the water.”</td>
+<td align="left">“People will be placed into token roles without any power.”</td>
+</tr>
+<tr>
+<td align="left">New perspectives</td>
+<td align="left">Expanding DEI in CTSA leadership could result in new, broader, more diverse perspectives</td>
+<td align="left">“Diverse ways of thinking/approaching translational science.”</td>
+<td align="left">“Impact on leadership: Improved diversity of perspective and models.”</td>
+</tr>
+</tbody>
+</table>
+</alternatives></table-wrap></p>
+</sec>
+</sec>
+<sec id="sec5-27526461231159920" sec-type="results">
+<title>Results</title>
+<sec id="sec6-27526461231159920">
+<title>Chat results</title>
+<p>Table <xref ref-type="table" rid="table1-27526461231159920">1</xref> presents Zoom chat quotes from participants in the leadership diversity breakout session by theme from individuals in CTSAs to the recommendation of developing “targets, metrics and dashboards.” Question 2A asked about potential risks in carrying out a common metric and dashboard for DEI efforts in CTSAs. Participants described concerns about isolated impact, white supremacy culture, and demographic makeup at different locations serving as barriers hindering the utility of “targets, metrics, and dashboards.” Additionally, respondents questioned if creating this benchmark would be equitable and if it risks placing individuals into “token roles.” Question 2B asked about potential impacts “targets, metrics, and dashboards” could have on leadership in CTSAs. In response, participants expressed feelings of excitement over new perspectives, ideas, and creativity that enacting such strategies could bring. Others talked about how “targets, metrics, and dashboards” would require a paradigm shift in current leadership and institutions, but improved DEI leadership inside CTSAs would lead to increased diversity in the broader community. Four primary themes emerged from the analysis of the “targets, metrics, and dashboards” recommendation: whiteness and racism (<italic>n</italic> = 5 references, 10.20% of responses), structural change (<italic>n</italic> = 3 references, 6.12% of responses), new perspectives (<italic>n</italic> = 7 references, 14.29% of responses), and superficial change (<italic>n</italic> = 3 references, 6.12% of responses). The greatest opportunity “targets, metrics, and dashboards” presented, as determined by respondents, was the increase in new perspectives which could result in broader, more diverse ideas, projects, etc. Whiteness, racism, and discrimination that are embedded in institutional culture was identified as a key barrier to moving forward with a common “targets, metrics and dashboard” system. Additionally, the debate over whether recommending “targets, metrics, and dashboards” would result in structural or superficial change was present throughout many responses.</p>
+</sec>
+<sec id="sec7-27526461231159920">
+<title>Polling results</title>
+<p>The subsequent poll asked participants to upvote or downvote the recommendation of “targets, metrics, and dashboards”, along with the five other recommendations presented. Looking at the polling data to determine the averaged ranking position, participants ranked the recommendation of “targets, metrics and dashboards” overall as the fifth of the six possible to recommend future action. Poll One questioned the feasibility of the six recommendations, and garnered 53 responses (79% engagement), with the results placing “targets, metrics and dashboards” in fifth place as compared to the other issues. Poll Two asked participants to rank the six issues on the greatest impact, which garnered 58 responses (88% engagement) and left “targets, metrics and dashboards” in fourth place. Poll Three asked about which recommendation should receive the highest priority in implementation. This poll had 88% engagement (59 responses) and placed “targets, metrics and dashboards” in fifth place. The recommendations that ranked above “targets, metric and dashboards” discussed developing transparent hiring policies, identifying cross-institutional work groups, defining a clear succession plan for BIPOC leaders, and making room for structural change through leaders giving over space, influence, and resources (<xref ref-type="bibr" rid="bibr8-27526461231159920">Fernandez et al., 2022</xref>). For more detailed findings from the polls and overall results, refer to complementary article Fernandez (<xref ref-type="bibr" rid="bibr8-27526461231159920">2022</xref>).</p>
+</sec>
+</sec>
+<sec id="sec8-27526461231159920" sec-type="discussion">
+<title>Discussion</title>
+<p>Beyond published work, CTSA’s can take actionable steps to eliminate systemic barriers that perpetuate inequities in DEI initiatives within their walls. The CTSA virtual conference in 2020 gave CTSA members a space to authentically dialogue on challenges that hinder academic institutions from establishing metrics to monitor DEI progress. The findings from this qualitative work are intended to highlight the voices of these participants so that academic institutions can learn what behaviors to target to improve equity and move towards the creation of defined, transparent, and measurable DEI goals to evaluate success and opportunities for correction. The findings from this study shows workforce of the CTSAs felt less optimistic about the feasibility, the impact, or the priority of using “targets, metrics and dashboards” as a key strategy to advance DEI goals in CTSA leadership, when compared to five other recommendations described in our other published work (<xref ref-type="bibr" rid="bibr8-27526461231159920">Fernandez et al., 2022</xref>). Respondents expressed concerns that lack of institutional buy-in and backlash from white leadership and staff could serve as barriers to measuring DEI efforts. Consistent with the academic discourse on barriers to measuring DEI efforts in academia, the CTSA workforce in this study also identified racism and discrimination as impediments towards a commitment to DEI performance measures. (<xref ref-type="bibr" rid="bibr10-27526461231159920">Hinton and Lambert, 2022</xref>; <xref ref-type="bibr" rid="bibr9-27526461231159920">Grindstaff, 2022</xref>). Many of the participants also noted that recommendations to set metrics for DEI goals would be superficial and the historical roots of exclusionary practices in CTSAs would still exist. As a result, the participants ranked other recommendations such as transparency in selection processes, cross institutional action learning strategies, and intentional succession planning as having greater feasibility, impact, and priority for recommendations.</p>
+<p>Interestingly, such goal setting has been demonstrated to be useful in achieving sustainable goals with DEI initiatives (<xref ref-type="bibr" rid="bibr21-27526461231159920">Sweeney and Bothwick, 2016</xref>) and could be similarly useful in facilitating measurable change in CTSAs. For example, organizations can follow Sweeney and Bothwick’s STAR framework to create and achieve sustainable goals with metrics in their DEI initiatives (<xref ref-type="bibr" rid="bibr21-27526461231159920">Sweeney and Bothwick, 2016</xref>). The acronym STAR stands for “starting out, taking the leap, achieving change, and reaping the rewards” and allows for organizations to guide DEI efforts and track change (<xref ref-type="bibr" rid="bibr21-27526461231159920">Sweeney and Bothwick, 2016</xref>). Objectives for DEI plans and programs should also incorporate the SMART criteria (Specific, Measurable, Assigned, Realistic, and Timed), considered the gold standard for the development of goals and objectives (<xref ref-type="bibr" rid="bibr4-27526461231159920">Bjerke and Renger, 2017</xref>). SMART objectives provide a framework for creating specific and outcome-oriented goals that allow for more effective goal setting, planning, and implementation (<xref ref-type="bibr" rid="bibr17-27526461231159920">Ogbeiwi, 2017</xref>: 328). Ogbeiwi stresses the importance of creating SMART objectives that specify outcome, indicator, target-level, and timeframe in order to best create results-oriented action (<xref ref-type="bibr" rid="bibr17-27526461231159920">Ogbeiwi, 2017</xref>: 329–330). The Centers for Disease Control and Prevention, the United Way, the W.K. Kellogg Foundation, and the United States Department of Education all recommend using SMART criteria to create objectives, as SMART objectives allow for greater and accessible evaluation (<xref ref-type="bibr" rid="bibr4-27526461231159920">Bjerke and Renger, 2017</xref>).</p>
+<p>While participants seemed less optimistic about the feasibility, impact, and priority of “targets, metrics, and dashboards”, establishing benchmarks with targeted SMART objectives that include increasing women and minority representation in leadership in a realistic timeframe could help guide the efforts aligning with the other higher ranking priorities, such as creating action-learning workgroups specifically populated with women and under-represented scientists or applying the “targets, metrics, and dashboard” models to intentional mentoring and succession planning efforts. Additionally, implementing a consortium-wide dashboard can monitor progress towards achieving SMART objectives and help illuminate which other strategies help move the needle in effective ways. Honest efforts to accomplish equitable leadership representation requires institutional leaders to introspectively, reflect on the culture of whiteness and acknowledge the loss of ideas and opportunities that result from subtle and overt racism, in order to achieve an inclusive culture and impact systemic change. Implementing some form of metrics and dashboards can be a useful tool to keeping on track with these larger aims.</p>
+<sec id="sec9-27526461231159920">
+<title>Limitations</title>
+<p>The Consortium meeting had broad representation of the CTSA workforce and 29% of the virtual conference participants self-selected to attend the leadership breakout session. While this participation is a slight over-representation of the entire group, the composition of the roles and responsibilities of the breakout group participants is unknowable. It is possible that the group represented a cluster rather than a broad range of roles and responsibilities, which theoretically could result in a particular or non-representative viewpoint. Another limitation is that conference participants typically use their real names for their zoom identity, which shows up on the screen and is visible in the chat box. Additionally, although chat responses were gathered in a “waterfall” format, where the group simultaneously submits responses making individual comments challenging to peruse, nevertheless the knowledge that others could see one’s comment might have affected participation. It is possible that when asked to respond to sensitive, politically delicate, or emotionally tense issues that some hesitated to participate if their comments might be perceived as different from the whole or as non-supportive of DEI efforts.</p>
+</sec>
+</sec>
+<sec id="sec10-27526461231159920" sec-type="conclusions">
+<title>Conclusions</title>
+<p>Diversity in the scientific workforce offers benefits of creativity and innovation as well as promotes cultural sensitivity, which can be reflected in the experiences of research teams as well as the communities served. Yet it can be difficult to track the success of DEI initiatives, particularly in large and complex organizations such as research intensive universities. In this paper, we recommend academic institutions who support DEI initiatives set clearly defined benchmarks that are based on the science and the voices of their constituents. Lessons learned for CTSA’s include engaging with their respective member constituents to understand race and discriminatory perceptions, practices, and power dynamics within their institutions. Additionally, they should move beyond diversity, equity and inclusion surveys and invest in resources in qualitative research to get a better understanding of the breadth and depth of inequitable practices and beliefs. Following this, CTSA’s can create more realistic and targeted DEI benchmarks (and more effective implementation) if they develop strategies to achieve such benchmarks based on the outcomes from qualitative studies, which should include a bi-directional dialogue of DEI concerns with their CTSA members. While not seen as the most important priority by CTSA workforce members in this study, employing strategies around targets, metrics, and dashboards can be helpful in demonstrating a willingness to track progress and can facilitate advancement of other identified priorities.</p>
+</sec>
+</body>
+<back>
+<ack>
+<title>Acknowledgments</title>
+<p>The project described was supported by the National Center for Advancing Translational Sciences (NCATS), National Institutes of Health, through Grant Award Number UL1TR002489 and Rapid Acceleration of Diagnostics-Underserved Populations (RADx-UP) Coordination and Data Collection Center (CDCC), National Institutes of Health, through Grant Award Number 1U24MD016258. The content is solely the responsibility of the authors and does not necessarily represent the official views of the NIH.</p>
+</ack>
+<fn-group>
+<fn fn-type="conflict">
+<label>Declaration of conflicting interests</label>
+<p>The author(s) declared no potential conflicts of interest with respect to the research, authorship, and/or publication of this article.</p>
+</fn>
+<fn fn-type="financial-disclosure">
+<label>Funding</label>
+<p>The author(s) disclosed receipt of the following financial support for the research, authorship, and/or publication of this article: This work was supported by the National Institutes of Health; 1U24MD016258; UL1TR002489.</p>
+</fn>
+</fn-group>
+<sec id="sec13-27526461231159920">
+<title>ORCID iD</title>
+<p>Suzanna Larkin <ext-link ext-link-type="uri" xlink:href="https://orcid.org/0000-0001-9070-5343">https://orcid.org/0000-0001-9070-5343</ext-link></p>
+</sec>
+<ref-list>
+<title>References</title>
+<ref id="bibr1-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Abdel‐Rahman</surname>
+<given-names>SM</given-names>
+</name>, <name>
+<surname>Wimes</surname>
+<given-names>MP</given-names>
+</name>, <name>
+<surname>Curran</surname>
+<given-names>T</given-names>
+</name></person-group> (<year>2021</year>) <article-title>A call to action: issuing a diversity and inclusion challenge to research organizations</article-title>. <source>Clinical and Translational Science</source> <volume>14</volume>(<issue>6</issue>): <fpage>2095</fpage>–<lpage>2098</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr2-27526461231159920">
+<mixed-citation publication-type="book"><person-group person-group-type="author"><name>
+<surname>Anand</surname>
+<given-names>N</given-names>
+</name></person-group> (<year>2019</year>) <article-title>Checkbox Diversity” must be left behind for DEI efforts to succeed</article-title>. <publisher-loc>Stanford Social Innovation Review</publisher-loc>.</mixed-citation>
+</ref>
+<ref id="bibr3-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Antwi-Boasiako</surname>
+<given-names>KB</given-names>
+</name></person-group> (<year>2008</year>) <article-title>The dilemma of hiring minorities and conservative resistance: the diversity game</article-title>. <source>Journal of Instructional Psychology</source> <volume>35</volume>(<issue>3</issue>).</mixed-citation>
+</ref>
+<ref id="bibr4-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Bjerke</surname>
+<given-names>MB</given-names>
+</name>, <name>
+<surname>Renger</surname>
+<given-names>R</given-names>
+</name></person-group> (<year>2017</year>) <article-title>Being smart about writing SMART objectives</article-title>. <source>Evaluation and Program Planning</source> <volume>61</volume>: <fpage>125</fpage>–<lpage>127</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr5-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Boulware</surname>
+<given-names>LE</given-names>
+</name>, <name>
+<surname>Corbie</surname>
+<given-names>G</given-names>
+</name>, <name>
+<surname>Aguilar-Gaxiola</surname>
+<given-names>S</given-names>
+</name></person-group>, <etal>et al.</etal> (<year>2022</year>) <article-title>Combating structural inequities-diversity, equity, and inclusion in clinical and translational research</article-title>. <source>The New England Journal of Medicine</source> <volume>386</volume>: <fpage>201</fpage>–<lpage>203</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr6-27526461231159920">
+<mixed-citation publication-type="other"><person-group person-group-type="author"><name>
+<surname>Cheung</surname>
+<given-names>F</given-names>
+</name>, <name>
+<surname>Cox</surname>
+<given-names>L</given-names>
+</name>, <name>
+<surname>Darbandi</surname>
+<given-names>S</given-names>
+</name></person-group>, <etal>et al.</etal> (<year>2020</year>) <article-title>Communities of practice: diversity, equity, and inclusion</article-title>. <comment>Available at</comment>: <ext-link ext-link-type="uri" xlink:href="https://www.acenet.edu/Documents/ace_dei_cop_strengthening_dei.pdf">https://www.acenet.edu/Documents/ace_dei_cop_strengthening_dei.pdf</ext-link> (<comment>accessed 01 May 2022).</comment></mixed-citation>
+</ref>
+<ref id="bibr7-27526461231159920">
+<mixed-citation publication-type="book"><person-group person-group-type="author"><name>
+<surname>Espinosa</surname>
+<given-names>L</given-names>
+</name>, <name>
+<surname>Turk</surname>
+<given-names>J</given-names>
+</name>, <name>
+<surname>Taylor</surname>
+<given-names>M</given-names>
+</name></person-group>, <etal>et al.</etal> (<year>2019</year>) <source>Race and Ethnicity in Higher Education: A Status Report</source>. <publisher-name>American Council on Education</publisher-name>.</mixed-citation>
+</ref>
+<ref id="bibr8-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Fernandez</surname>
+<given-names>CSP</given-names>
+</name>, <name>
+<surname>Taylor</surname>
+<given-names>MM</given-names>
+</name>, <name>
+<surname>Dave</surname>
+<given-names>G</given-names>
+</name></person-group>, <etal>et al.</etal> (<year>2022</year>) <article-title>Accelerating diversity, equity and inclusion goals: a qualitative assessment from the lens of scientists at the 2020 clinical translational science awards annual meeting</article-title>. <source>Journal of Clinical and Translational Science</source> <volume>7</volume>: <fpage>e35</fpage>. <comment>Epub ahead of print 7 December 2022</comment>. DOI: <pub-id pub-id-type="doi">10.1017/cts.2022.516</pub-id>.</mixed-citation>
+</ref>
+<ref id="bibr9-27526461231159920">
+<mixed-citation publication-type="book"><person-group person-group-type="author"><name>
+<surname>Grindstaff</surname>
+<given-names>L</given-names>
+</name></person-group> (<year>2022</year>) <article-title>Barriers to inclusion: social roots and current concerns</article-title>. In: <person-group person-group-type="editor"><name>
+<surname>Bisson</surname>
+<given-names>LF</given-names>
+</name>, <name>
+<surname>Grindstaff</surname>
+<given-names>L</given-names>
+</name>, <name>
+<surname>Brazil-Cruz</surname>
+<given-names>L</given-names>
+</name></person-group>, <etal>et al.</etal> (eds), <source>Uprooting Bias in the Academy</source>. <publisher-name>Springer</publisher-name>, pp. <fpage>19</fpage>–<lpage>44</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr10-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Hinton</surname>
+<given-names>A</given-names>
+<suffix>Jr</suffix>
+</name>, <name>
+<surname>Lambert</surname>
+<given-names>WM</given-names>
+</name></person-group> (<year>2022</year>) <article-title>Moving diversity, equity, and inclusion from opinion to evidence</article-title>. <source>Cell Reports. Medicine</source> <volume>3</volume>(<issue>4</issue>): <fpage>100619</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr11-27526461231159920">
+<mixed-citation publication-type="other"><person-group person-group-type="author"><name>
+<surname>Melaku</surname>
+<given-names>TM</given-names>
+</name>, <name>
+<surname>Winkler</surname>
+<given-names>C</given-names>
+</name></person-group> (<year>2022</year>) <article-title>Are your organization’s DEI efforts superficial or structural?</article-title> <comment>Available at</comment>: <ext-link ext-link-type="uri" xlink:href="https://hbr.org/2022/06/are-your-organizations-dei-efforts-superficial-or-structural">https://hbr.org/2022/06/are-your-organizations-dei-efforts-superficial-or-structural</ext-link> (<comment>accessed 31 October 2022).</comment></mixed-citation>
+</ref>
+<ref id="bibr12-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Moriarty</surname>
+<given-names>JP</given-names>
+</name></person-group> (<year>2011</year>) <article-title>A theory of benchmarking</article-title>. <source>Benchmarking: An International Journal</source> <volume>18</volume>(<issue>4</issue>): <fpage>588</fpage>–<lpage>611</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr13-27526461231159920">
+<mixed-citation publication-type="book"><person-group person-group-type="author"><collab-name>National Center for Education Statistics</collab-name></person-group> (<year>2021</year>) <source>Digest of Education Statistics 2021</source>. <comment>Available at:</comment> <ext-link ext-link-type="uri" xlink:href="https://nces.ed.gov/programs/digest/2021menu_tables.asp">https://nces.ed.gov/programs/digest/2021menu_tables.asp</ext-link> (<comment>accessed 26 April 2022).</comment></mixed-citation>
+</ref>
+<ref id="bibr14-27526461231159920">
+<mixed-citation publication-type="other"><person-group person-group-type="author"><collab-name>National Institutes of Health</collab-name></person-group> (<year>2019</year>) <article-title>Notice of NIH’s interest in diversity</article-title>. <comment>Available at</comment>: <ext-link ext-link-type="uri" xlink:href="https://grants.nih.gov/grants/guide/notice-files/NOT-OD-20-031.html">https://grants.nih.gov/grants/guide/notice-files/NOT-OD-20-031.html</ext-link> (<comment>accessed 01 August 2022).</comment></mixed-citation>
+</ref>
+<ref id="bibr15-27526461231159920">
+<mixed-citation publication-type="book"><person-group person-group-type="author"><collab-name>National Institutes of Health</collab-name></person-group> (<year>2021</year>) <source>The Advisory Committee to the Director Working Group on Diversity Racism in Science Report</source>. <publisher-loc>Bethesda, MD</publisher-loc>: <publisher-name>Report, National Institutes of Health</publisher-name>.</mixed-citation>
+</ref>
+<ref id="bibr16-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Ofili</surname>
+<given-names>EO</given-names>
+</name>, <name>
+<surname>Sarpong</surname>
+<given-names>D</given-names>
+</name>, <name>
+<surname>Yanagihara</surname>
+<given-names>R</given-names>
+</name></person-group>, <etal>et al.</etal> (<year>2021</year>) <article-title>The research centers in minority institutions (RCMI) consortium: a blueprint for inclusive excellence</article-title>. <source>International Journal of Environmental Research and Public Health</source> <volume>18</volume>(<issue>13</issue>): <fpage>6848</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr17-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Ogbeiwi</surname>
+<given-names>O</given-names>
+</name></person-group> (<year>2017</year>) <article-title>Why written objectives need to be really SMART</article-title>. <source>British Journal of Healthcare Management</source> <volume>23</volume>(<issue>7</issue>): <fpage>324</fpage>–<lpage>336</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr18-27526461231159920">
+<mixed-citation publication-type="other"><person-group person-group-type="author"><name>
+<surname>O’Mara</surname>
+<given-names>J</given-names>
+</name>, <name>
+<surname>Molefi</surname>
+<given-names>N</given-names>
+</name>, <name>
+<surname>Richter</surname>
+<given-names>A</given-names>
+</name></person-group> (<year>2021</year>) <article-title>A Global Diversity, Equity, and Inclusion Bookmarks: Standards for Organizations Around the World</article-title>. <comment>Available at:</comment> <ext-link ext-link-type="uri" xlink:href="https://www.qedconsulting.com/component/content/article/104-services/products/161-global-diversity-equity-inclusion-benchmarks?Itemid=566">https://www.qedconsulting.com/component/content/article/104-services/products/161-global-diversity-equity-inclusion-benchmarks?Itemid=566</ext-link> (<comment>accessed 26 April 2022).</comment></mixed-citation>
+</ref>
+<ref id="bibr19-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Quillian</surname>
+<given-names>L</given-names>
+</name>, <name>
+<surname>Pager</surname>
+<given-names>D</given-names>
+</name>, <name>
+<surname>Hexel</surname>
+<given-names>O</given-names>
+</name></person-group>, <etal>et al.</etal> (<year>2017</year>) <article-title>Meta-analysis of field experiments shows no change in racial discrimination in hiring over time</article-title>. <source>Proceedings of the National Academy of Sciences of the United States of America</source> <volume>114</volume>(<issue>41</issue>): <fpage>10870</fpage>–<lpage>10875</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr20-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Singleton</surname>
+<given-names>KS</given-names>
+</name>, <name>
+<surname>Murray</surname>
+<given-names>DSRK</given-names>
+</name>, <name>
+<surname>Dukes</surname>
+<given-names>AJ</given-names>
+</name></person-group>, <etal>et al.</etal> (<year>2021</year>) <article-title>A year in review: are diversity, equity, and inclusion initiatives fixing systemic barriers?</article-title> <source>Neuron</source> <volume>109</volume>(<issue>21</issue>): <fpage>3365</fpage>–<lpage>3367</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr21-27526461231159920">
+<mixed-citation publication-type="book"><person-group person-group-type="author"><name>
+<surname>Sweeney</surname>
+<given-names>C</given-names>
+</name>, <name>
+<surname>Bothwick</surname>
+<given-names>F</given-names>
+</name></person-group> (<year>2016</year>) <source>Inclusive Leadership: The Definitive Guide to Developing and Executing an Impactful Diversity and Inclusion Strategy: Locally and Globally</source>. <publisher-name>Pearson UK</publisher-name>.</mixed-citation>
+</ref>
+<ref id="bibr22-27526461231159920">
+<mixed-citation publication-type="book"><person-group person-group-type="author"><collab-name>UC Berkley</collab-name></person-group> (n.d.) <source>Rubric for Assessing Candidate Contributions to Diversity, Equity, Inclusion, and Belonging</source>. <comment>Available at:</comment> <ext-link ext-link-type="uri" xlink:href="https://ofew.berkeley.edu/recruitment/contributions-diversity/rubric-assessing-candidate-contributions-diversity-equity">https://ofew.berkeley.edu/recruitment/contributions-diversity/rubric-assessing-candidate-contributions-diversity-equity</ext-link> (<comment>accessed 26 April 2022).</comment></mixed-citation>
+</ref>
+<ref id="bibr23-27526461231159920">
+<mixed-citation publication-type="journal"><person-group person-group-type="author"><name>
+<surname>Zschirnt</surname>
+<given-names>E</given-names>
+</name>, <name>
+<surname>Ruedin</surname>
+<given-names>D</given-names>
+</name></person-group> (<year>2016</year>) <article-title>Ethnic discrimination in hiring decisions: a meta-analysis of correspondence tests 1990–2015</article-title>. <source>Journal of Ethnic and Migration Studies</source> <volume>42</volume>(<issue>7</issue>): <fpage>1115</fpage>–<lpage>1134</lpage>.</mixed-citation>
+</ref>
+</ref-list>
+</back>
+</article>

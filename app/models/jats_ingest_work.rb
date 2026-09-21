@@ -62,7 +62,8 @@ class JatsIngestWork
   end
 
   def affiliation_map
-    @affiliation_map ||= document.xpath('//aff').map do |affil|
+    affiliations = document.xpath('//aff')
+    @affiliation_map ||= affiliations.map do |affil|
       [affil.attributes['id'].value, affiliation_to_s(affil)]
     end.to_h
   end

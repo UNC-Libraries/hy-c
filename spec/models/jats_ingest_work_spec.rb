@@ -147,11 +147,22 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
     end
   end
 
-  context 'with an article that has a physical print and new pub date schema' do
+  context 'with an article that has a new pub date schema' do
     let(:xml_file_path) { File.join(fixture_path, 'sage', '10.1177_2192568219888179_new.xml') }
 
     it 'can return metadata from the xml' do
       expect(work.date_of_publication).to eq '2021-01'
+    end
+  end
+
+  context 'with an article that has a nested affiliation schema' do
+    let(:xml_file_path) { File.join(fixture_path, 'sage', '10.1177_27526461231159920.xml') }
+    let(:work) { described_class.new(xml_path: xml_file_path) }
+
+    it 'can map affiliation ids to institution names' do
+      expect(work.affiliation_map).to be_instance_of Hash
+      expect(work.affiliation_map['aff1-27526461231159920']).to eq('Center for Health Equity Research, School of Medicine, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
+      expect(work.affiliation_map['aff6-27526461231159920']).to eq('University of Nebraska Medical Center College of Public Health, Omaha, NE, USA')
     end
   end
 end
