@@ -988,7 +988,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    retriable (3.1.2)
+    retriable (3.8.0)
     rexml (3.4.4)
     riiif (2.8.1)
       deprecation (>= 1.0.0)
