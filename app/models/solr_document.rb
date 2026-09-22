@@ -86,8 +86,10 @@ class SolrDocument
     'Working Paper' => 'RPRT'
   }.freeze
 
+  # Author should be the second key. Just return everything if there is no second key.
   def self.format_author(name)
-    name.split('|').last.strip
+    author = name.split('||')[1] || name.split('||')[0]
+    author.strip
   end
 
   def self.format_ris_type(resource_type)
