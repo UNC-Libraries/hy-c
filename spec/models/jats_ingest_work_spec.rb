@@ -178,5 +178,23 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
       expect(affiliation_ids).to include 'aff8-27526461231159920'
       expect(affiliation_ids).to include 'aff9-27526461231159920'
     end
+
+    it 'can create a properly constructed person object' do
+      expect(work.creators).to be_instance_of Hash
+      expect(work.creators.count).to eq 7
+      expect(work.creators[0]).to be_instance_of Hash
+      expect(work.creators[0]).to include('name' => 'Swift, Taylor A')
+      expect(work.creators[0]).to include('orcid' => '')
+      expect(work.creators[0]).to include('affiliation' => '')
+      expect(work.creators[0]).to include('other_affiliation' => 'Center for Health Equity Research, School of Medicine, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
+      expect(work.creators[2]).to include('name' => 'Dave, Gaurav')
+      expect(work.creators[2]).to include('index' => '3')
+      expect(work.creators[2]).to include('orcid' => '')
+      expect(work.creators[2]).to include('other_affiliation' => 'Center for Health Equity Research, School of Medicine, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
+      expect(work.creators[4]).to include('name' => 'Larkin, Suzanna')
+      expect(work.creators[4]).to include('orcid' => 'https://orcid.org/0000-0001-9070-5343')
+      expect(work.creators[4]).to include('index' => '5')
+      expect(work.creators[4]).to include('other_affiliation' => 'Gillings School of Global Public Health, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
+    end
   end
 end
