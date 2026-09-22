@@ -21,7 +21,7 @@ Hyrax::CitationsBehaviors::Formatters::MlaFormatter.class_eval do
       text += format_title(title_info)
 
       pub_info = clean_end_punctuation(setup_pub_info(work, true))
-      text += (pub_info + ".") if pub_info.present?
+      text += (pub_info + '.') if pub_info.present?
     end
 
     doi = setup_doi(work)
