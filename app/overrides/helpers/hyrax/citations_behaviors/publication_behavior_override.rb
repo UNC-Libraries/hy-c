@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # [hyc-override] Overriding helper in order to use date_issued, if present, for publication date
 # [hyc-override] Add check that presenter has place of publication method
+# [hyc-override] Add custom formatting for journal citations, which require different formatting.
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/helpers/hyrax/citations_behaviors/publication_behavior.rb
 Hyrax::CitationsBehaviors::PublicationBehavior.module_eval do
   def setup_pub_date(work)

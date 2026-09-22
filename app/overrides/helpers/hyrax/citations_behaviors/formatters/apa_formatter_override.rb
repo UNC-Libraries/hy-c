@@ -10,6 +10,7 @@ Hyrax::CitationsBehaviors::Formatters::ApaFormatter.class_eval do
     text += authors_text_for(work)
     text += pub_date_text_for(work)
 
+    # [hyc-override] Add DOI
     if journal_citation?(work)
       text += format_journal_title(setup_title_info(work))
 
@@ -20,6 +21,7 @@ Hyrax::CitationsBehaviors::Formatters::ApaFormatter.class_eval do
       text += add_publisher_text_for(work)
     end
 
+    # [hyc-override] Add DOI
     doi = setup_doi(work)
     text = "#{text.strip} #{doi}" if doi.present?
 

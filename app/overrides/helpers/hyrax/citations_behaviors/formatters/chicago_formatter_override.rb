@@ -15,6 +15,8 @@ Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter.class_eval do
     text = "<span class=\"citation-author\">#{text}</span>" if text.present?
 
     pub_date = setup_pub_date(work)
+    # [hyc-override] Add publication date if present and not thw work is not a journal citation,
+    # which requires different formatting
     text += " #{whitewash(pub_date)}." if pub_date.present? && !journal_citation?(work)
 
     if journal_citation?(work)
@@ -28,6 +30,7 @@ Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter.class_eval do
       text += " #{whitewash(pub_info)}." if pub_info.present?
     end
 
+    # [hyc-override] Add DOI
     doi = setup_doi(work)
     text = "#{text.strip} #{doi}" if doi.present?
 

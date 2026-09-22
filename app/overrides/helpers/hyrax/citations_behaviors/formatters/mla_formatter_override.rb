@@ -8,10 +8,12 @@ Hyrax::CitationsBehaviors::Formatters::MlaFormatter.class_eval do
   def format(work)
     text = ''
 
+    # setup formatted author list
     authors = author_list(work).reject(&:blank?)
     text += "<span class=\"citation-author\">#{format_authors(authors)}</span>"
     title_info = setup_title_info(work)
 
+    #[hyc-override] Use separate formatting structure for journal citations,
     if journal_citation?(work)
       text += format_journal_title(title_info)
 
@@ -24,6 +26,7 @@ Hyrax::CitationsBehaviors::Formatters::MlaFormatter.class_eval do
       text += (pub_info + '.') if pub_info.present?
     end
 
+    # [hyc-override] Add DOI
     doi = setup_doi(work)
     text = "#{text.strip} #{doi}" if doi.present?
 
