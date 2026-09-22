@@ -147,11 +147,54 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
     end
   end
 
-  context 'with an article that has a physical print and new pub date schema' do
+  context 'with an article that has a new pub date schema' do
     let(:xml_file_path) { File.join(fixture_path, 'sage', '10.1177_2192568219888179_new.xml') }
 
     it 'can return metadata from the xml' do
       expect(work.date_of_publication).to eq '2021-01'
+    end
+  end
+
+  context 'with an article that has a nested affiliation schema' do
+    let(:xml_file_path) { File.join(fixture_path, 'sage', '10.1177_27526461231159920.xml') }
+    let(:work) { described_class.new(xml_path: xml_file_path) }
+    let(:affiliation_ids) { work.affiliation_ids(work.creators_metadata.xpath('.//contrib')) }
+
+    it 'can map affiliations to institution names' do
+      expect(work.affiliation_map).to be_instance_of Hash
+      expect(work.affiliation_map['aff1-27526461231159920']).to eq('Center for Health Equity Research, School of Medicine, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
+      expect(work.affiliation_map['aff6-27526461231159920']).to eq('University of Nebraska Medical Center College of Public Health, Omaha, NE, USA')
+    end
+
+    it 'can gather affiliation IDs' do
+      expect(affiliation_ids).to be_instance_of Array
+      expect(affiliation_ids).to include 'aff1-27526461231159920'
+      expect(affiliation_ids).to include 'aff2-27526461231159920'
+      expect(affiliation_ids).to include 'aff3-27526461231159920'
+      expect(affiliation_ids).to include 'aff4-27526461231159920'
+      expect(affiliation_ids).to include 'aff5-27526461231159920'
+      expect(affiliation_ids).to include 'aff6-27526461231159920'
+      expect(affiliation_ids).to include 'aff7-27526461231159920'
+      expect(affiliation_ids).to include 'aff8-27526461231159920'
+      expect(affiliation_ids).to include 'aff9-27526461231159920'
+    end
+
+    it 'can create a properly constructed person object' do
+      expect(work.creators).to be_instance_of Hash
+      expect(work.creators.count).to eq 7
+      expect(work.creators[0]).to be_instance_of Hash
+      expect(work.creators[0]).to include('name' => 'Swift, Taylor A')
+      expect(work.creators[0]).to include('orcid' => '')
+      expect(work.creators[0]).to include('affiliation' => '')
+      expect(work.creators[0]).to include('other_affiliation' => 'Center for Health Equity Research, School of Medicine, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
+      expect(work.creators[2]).to include('name' => 'Dave, Gaurav')
+      expect(work.creators[2]).to include('index' => '3')
+      expect(work.creators[2]).to include('orcid' => '')
+      expect(work.creators[2]).to include('other_affiliation' => 'Center for Health Equity Research, School of Medicine, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
+      expect(work.creators[4]).to include('name' => 'Larkin, Suzanna')
+      expect(work.creators[4]).to include('orcid' => 'https://orcid.org/0000-0001-9070-5343')
+      expect(work.creators[4]).to include('index' => '5')
+      expect(work.creators[4]).to include('other_affiliation' => 'Gillings School of Global Public Health, The University of North Carolina Chapel Hill, Chapel Hill, NC, USA')
     end
   end
 end

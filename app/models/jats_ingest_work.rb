@@ -68,12 +68,21 @@ class JatsIngestWork
   end
 
   def affiliation_ids(elem)
-    references = elem.xpath('xref')
-    references.map do |ref|
+    # elem is the element located at './/contrib'
+    # affiliation IDs may be located like so:
+    # <contrib><xref ref-type='aff' rid={AFFILIATION-ID}></xref></contrib
+    xref_ids = elem.xpath('xref').map do |ref|
       reference_type = ref['ref-type']
       next unless reference_type == 'aff'
-
       ref['rid']
+    end.compact
+    return xref_ids if xref_ids.present?
+
+    # or they may be located as follows:
+    # <contrib></contrib><aff id={AFFILIATION_ID}></aff>
+    aff_references = elem.xpath('../aff')
+    aff_references.map do |aff|
+      aff['id']
     end.compact
   end
 
