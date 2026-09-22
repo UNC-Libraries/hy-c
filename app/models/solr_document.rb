@@ -11,6 +11,10 @@ class SolrDocument
   # Adds Hyrax behaviors to the SolrDocument.
   include Hyrax::SolrDocumentBehavior
 
+  # Add RIS export behavior to the SolrDocument.
+  include Blacklight::Ris::DocumentFields
+  use_extension(Blacklight::Ris::DocumentExport)
+
   # self.unique_key = 'id'
 
   # Email uses the semantic field mappings below to generate the body of an email.
@@ -47,6 +51,21 @@ class SolrDocument
   # Do content negotiation for AF models.
 
   use_extension(Hydra::ContentNegotiation)
+
+  # Configure RIS field mappings.
+  def self.ris_mappings
+    {
+      TY: 'resource_type_tesim',
+      TI: 'title_tesim',
+      AU: 'creator_display_tesim',
+      PY: 'date_issued_edtf_tesim',
+      PB: 'publisher_tesim',
+      KW: 'keyword_tesim',
+      DO: 'doi_tesim'
+    }
+  end
+
+  ris_field_mappings.merge!(ris_mappings)
 
   def abstract
     self['abstract_tesim']

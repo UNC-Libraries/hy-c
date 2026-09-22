@@ -61,6 +61,8 @@ en:
     institution_name_full:  "The University of North Carolina at Chapel Hill"
     account_name:           "My Institution Account Id"
     base:
+      citations:
+        ris: "RIS"
       form_files:
         dropzone: "Drag and drop your files here."
         local_upload_browse_everything_html: "<p>Fill out the form below to deposit your work.</p>
