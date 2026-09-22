@@ -2,6 +2,7 @@
 # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/concerns/hyrax/works_controller_behavior.rb
 Hyrax::WorksControllerBehavior.module_eval do
   # [hyc-override] Add in missing xml and dc_xml extensions that are linked in the atom feed but not exposed by hyrax
+  # [hyc-override] Add in ris extension for exporting citations in RIS format
   alias_method :original_additional_response_formats, :additional_response_formats
   def additional_response_formats(format)
     original_additional_response_formats(format)

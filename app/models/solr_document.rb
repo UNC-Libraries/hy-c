@@ -52,16 +52,73 @@ class SolrDocument
 
   use_extension(Hydra::ContentNegotiation)
 
+  # Configure RIS export behavior for the SolrDocument.
+  RIS_TYPE_MAPPINGS = {
+    '3D Object' => 'GEN',
+    'Art' => 'ART',
+    'Article' => 'JOUR',
+    'Audio' => 'SOUND',
+    'Book' => 'BOOK',
+    'Capstone Project' => 'RPRT',
+    'Conference Proceeding' => 'CONF',
+    'Dataset' => 'DATA',
+    'Dissertation' => 'THES',
+    'Educational Resource' => 'ELEC',
+    'Honors Thesis' => 'THES',
+    'Image' => 'IMG',
+    'Journal' => 'JFULL',
+    'Journal Item' => 'JOUR',
+    'Map or Cartographic Material' => 'MAP',
+    'Masters Paper' => 'RPRT',
+    'Masters Thesis' => 'THES',
+    'Newsletter' => 'NEWS',
+    'Other' => 'GEN',
+    'Part of Book' => 'CHAP',
+    'Poster' => 'SLIDE',
+    'Presentation'  => 'SLIDE',
+    'Project' => 'RPRT',
+    'Report' => 'RPRT',
+    'Research Paper' => 'RPRT',
+    'Research Protocol' => 'RPRT',
+    'Software or Program Code' => 'COMP',
+    'Undergraduate Thesis' => 'THES',
+    'Video' => 'VIDEO',
+    'Working Paper' => 'RPRT'
+  }.freeze
+
+  def self.format_author(name)
+    name.split('|').last.strip
+  end
+
+  def self.format_ris_type(resource_type)
+    RIS_TYPE_MAPPINGS.fetch(resource_type, 'GEN')
+  end
+
   # Configure RIS field mappings.
   def self.ris_mappings
     {
-      TY: 'resource_type_tesim',
-      TI: 'title_tesim',
-      AU: 'creator_display_tesim',
-      PY: 'date_issued_edtf_tesim',
-      PB: 'publisher_tesim',
+      AU: proc do |doc|
+        Array(doc['creator_display_tesim']).map do |name|
+          SolrDocument.format_author(name)
+        end
+      end,
+      DO: 'doi_tesim',
+      EP: 'journal_end_page_tesim',
+      ID: 'identifier_tesim',
+      IS: 'journal_issue_tesim',
+      JF: 'journal_title_tesim',
       KW: 'keyword_tesim',
-      DO: 'doi_tesim'
+      LA: 'language_label_tesim',
+      M3: 'medium_tesim',
+      PB: 'publisher_tesim',
+      PY: 'date_issued_edtf_tesim',
+      SN: 'issn_tesim',
+      SP: 'journal_start_page_tesim',
+      TI: 'title_tesim',
+      TY: proc do |doc|
+        SolrDocument.format_ris_type(Array(doc['resource_type_tesim']).first)
+      end,
+      VL: 'journal_volume_tesim'
     }
   end
 

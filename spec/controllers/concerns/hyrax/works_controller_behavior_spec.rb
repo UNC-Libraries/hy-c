@@ -114,16 +114,18 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
 
     before do
       sign_in user
-      allow(controller).to receive(:presenter).and_return(double('presenter', export_as_oai_dc_xml: '<xml>test</xml>'))
+      allow(controller).to receive(:presenter).and_return(double('presenter', export_as_oai_dc_xml: '<xml>test</xml>', export_as_ris: 'TY  - TEST'))
     end
 
-    it 'adds dc_xml and xml formats' do
+    it 'adds dc_xml, xml, and ris formats' do
       # Capture the format blocks that get registered
       dc_xml_block = nil
       xml_block = nil
+      ris_block = nil
 
       allow(format_collector).to receive(:dc_xml) { |&block| dc_xml_block = block }
       allow(format_collector).to receive(:xml) { |&block| xml_block = block }
+      allow(format_collector).to receive(:ris) { |&block| ris_block = block }
       allow(format_collector).to receive(:endnote)
       allow(format_collector).to receive(:ttl)
       allow(format_collector).to receive(:jsonld)
@@ -133,6 +135,7 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
 
       expect(dc_xml_block).not_to be_nil
       expect(xml_block).not_to be_nil
+      expect(ris_block).not_to be_nil
     end
   end
 end
