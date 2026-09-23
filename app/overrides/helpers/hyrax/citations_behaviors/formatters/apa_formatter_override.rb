@@ -10,7 +10,7 @@ Hyrax::CitationsBehaviors::Formatters::ApaFormatter.class_eval do
     text += authors_text_for(work)
     text += pub_date_text_for(work)
 
-    # [hyc-override] Add DOI
+    # [hyc-override] Add separate handling for journal citations, which is not handled in Hyrax proper
     if journal_citation?(work)
       text += format_journal_title(setup_title_info(work))
 

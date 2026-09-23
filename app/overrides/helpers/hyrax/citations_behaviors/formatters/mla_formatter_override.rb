@@ -13,7 +13,7 @@ Hyrax::CitationsBehaviors::Formatters::MlaFormatter.class_eval do
     text += "<span class=\"citation-author\">#{format_authors(authors)}</span>"
     title_info = setup_title_info(work)
 
-    #[hyc-override] Use separate formatting structure for journal citations,
+    # [hyc-override] Use separate formatting structure for journal citations
     if journal_citation?(work)
       text += format_journal_title(title_info)
 
