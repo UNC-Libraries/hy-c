@@ -32,7 +32,8 @@
           <span class="chicago-citation"><%= export_as_chicago_citation(presenter) %></span>
         </div>
         <ul class="list-inline">
-          <li><%= link_to t('.endnote'), polymorphic_path([main_app, presenter], format: 'endnote') %></li>
+          <li class="list-inline-item"><%= link_to t('.endnote'), polymorphic_path([main_app, presenter], format: 'endnote') %></li>
+          <li class="list-inline-item"><%= link_to t('.ris'), polymorphic_path([main_app, presenter], format: :ris) %></li>
         </ul>
       </div>
     </div>

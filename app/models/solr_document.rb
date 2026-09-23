@@ -11,6 +11,10 @@ class SolrDocument
   # Adds Hyrax behaviors to the SolrDocument.
   include Hyrax::SolrDocumentBehavior
 
+  # Add RIS export behavior to the SolrDocument.
+  include Blacklight::Ris::DocumentFields
+  use_extension(Blacklight::Ris::DocumentExport)
+
   # self.unique_key = 'id'
 
   # Email uses the semantic field mappings below to generate the body of an email.
@@ -47,6 +51,80 @@ class SolrDocument
   # Do content negotiation for AF models.
 
   use_extension(Hydra::ContentNegotiation)
+
+  # Configure RIS export behavior for the SolrDocument.
+  RIS_TYPE_MAPPINGS = {
+    '3D Object' => 'GEN',
+    'Art' => 'ART',
+    'Article' => 'JOUR',
+    'Audio' => 'SOUND',
+    'Book' => 'BOOK',
+    'Capstone Project' => 'THES',
+    'Conference Proceeding' => 'CONF',
+    'Dataset' => 'DATA',
+    'Dissertation' => 'THES',
+    'Educational Resource' => 'ELEC',
+    'Honors Thesis' => 'THES',
+    'Image' => 'IMG',
+    'Journal' => 'JFULL',
+    'Journal Item' => 'JOUR',
+    'Map or Cartographic Material' => 'MAP',
+    'Masters Paper' => 'THES',
+    'Masters Thesis' => 'THES',
+    'Newsletter' => 'NEWS',
+    'Other' => 'GEN',
+    'Part of Book' => 'CHAP',
+    'Poster' => 'SLIDE',
+    'Presentation'  => 'SLIDE',
+    'Project' => 'RPRT',
+    'Report' => 'RPRT',
+    'Research Paper' => 'RPRT',
+    'Research Protocol' => 'RPRT',
+    'Software or Program Code' => 'COMP',
+    'Undergraduate Thesis' => 'THES',
+    'Video' => 'VIDEO',
+    'Working Paper' => 'RPRT'
+  }.freeze
+
+  # Author should be the second key. Just return everything if there is no second key.
+  def self.format_author(name)
+    author = name.split('||')[1] || name.split('||')[0]
+    author.strip
+  end
+
+  def self.format_ris_type(resource_type)
+    RIS_TYPE_MAPPINGS.fetch(resource_type, 'GEN')
+  end
+
+  # Configure RIS field mappings.
+  def self.ris_mappings
+    {
+      AU: proc do |doc|
+        Array(doc['creator_display_tesim']).map do |name|
+          SolrDocument.format_author(name)
+        end
+      end,
+      DO: 'doi_tesim',
+      EP: 'journal_end_page_tesim',
+      ID: 'identifier_tesim',
+      IS: 'journal_issue_tesim',
+      JF: 'journal_title_tesim',
+      KW: 'keyword_tesim',
+      LA: 'language_label_tesim',
+      M3: 'medium_tesim',
+      PB: 'publisher_tesim',
+      PY: 'date_issued_edtf_tesim',
+      SN: 'issn_tesim',
+      SP: 'journal_start_page_tesim',
+      TI: 'title_tesim',
+      TY: proc do |doc|
+        SolrDocument.format_ris_type(Array(doc['resource_type_tesim']).first)
+      end,
+      VL: 'journal_volume_tesim'
+    }
+  end
+
+  ris_field_mappings.merge!(ris_mappings)
 
   def abstract
     self['abstract_tesim']

@@ -2,11 +2,15 @@
 # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/concerns/hyrax/works_controller_behavior.rb
 Hyrax::WorksControllerBehavior.module_eval do
   # [hyc-override] Add in missing xml and dc_xml extensions that are linked in the atom feed but not exposed by hyrax
+  # [hyc-override] Add in ris extension for exporting citations in RIS format
   alias_method :original_additional_response_formats, :additional_response_formats
   def additional_response_formats(format)
     original_additional_response_formats(format)
     format.dc_xml { render body: presenter.export_as_oai_dc_xml, mime_type: Mime[:xml] }
     format.xml { render body: presenter.export_as_oai_dc_xml, mime_type: Mime[:xml] }
+    format.ris do
+      render body: presenter.export_as_ris, mime_type: Mime[:ris]
+    end
   end
 
   # [hyc-override] Load the parent works once for reuse in work show pages
