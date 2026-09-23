@@ -66,11 +66,12 @@ Hyrax.config do |config|
   # This value determines whether to show reports on the dashboard, work and collection report pages
   config.analytics_reporting = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS_REPORTING', false))
 
-  # Date you wish to start collecting Google Analytic statistics for
+  # Date you wish to start collecting Google Analytics statistics for
   # Leaving it blank will set the start date to when ever the file was uploaded by
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
   # config.analytic_start_date = DateTime.new(2019, 6, 5)
 
+  config.iiif_av_viewer = :clover
   config.iiif_image_server = true
   config.work_requires_files = false
   # Enables a link to the citations page for a work
