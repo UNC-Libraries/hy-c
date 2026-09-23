@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # [hyc-override] Overriding helper in order to use date_issued, if present, for publication date
 # [hyc-override] Add check that presenter has place of publication method
+# [hyc-override] Add custom formatting for journal citations, which require different formatting.
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/helpers/hyrax/citations_behaviors/publication_behavior.rb
 Hyrax::CitationsBehaviors::PublicationBehavior.module_eval do
   def setup_pub_date(work)
@@ -44,5 +45,63 @@ Hyrax::CitationsBehaviors::PublicationBehavior.module_eval do
 
     # [hyc-override] Remove any trailing commas
     pub_info.strip.chomp(',').presence
+  end
+
+  def journal_citation?(work)
+    %i[journal_title journal_volume journal_issue page_start page_end].any? do |field|
+      citation_field_value(work, field).present?
+    end
+  end
+
+  def setup_journal_metadata(work)
+    {
+      journal_title: citation_field_value(work, :journal_title),
+      journal_volume: citation_field_value(work, :journal_volume),
+      journal_issue: citation_field_value(work, :journal_issue),
+      pub_date: setup_pub_date(work),
+      page_range: setup_page_range(work)
+    }
+  end
+
+  def setup_page_range(work)
+    page_start = citation_field_value(work, :page_start)
+    page_end = citation_field_value(work, :page_end)
+    return nil if page_start.blank? && page_end.blank?
+
+    if page_start.present? && page_end.present? && page_start != page_end
+      "#{page_start}-#{page_end}"
+    else
+      page_start.presence || page_end
+    end
+  end
+
+  def setup_mla_page_range(work)
+    page_range = setup_page_range(work)
+    return nil if page_range.blank?
+
+    prefix = page_range.include?('-') ? 'pp.' : 'p.'
+    "#{prefix} #{page_range}"
+  end
+
+  def setup_doi(work)
+    doi = citation_field_value(work, :doi)
+    clean_end_punctuation(doi) if doi.present?
+  end
+
+  private
+
+  def citation_field_value(work, field)
+    return nil unless work.respond_to?(field)
+
+    value = work.public_send(field)
+    value = value.first if value.respond_to?(:first) && !value.is_a?(String)
+    value = CGI.escapeHTML(value.to_s.strip)
+    value.presence
+  end
+
+  def append_period(text)
+    return nil if text.blank?
+
+    text.end_with?('.') ? text : "#{text}."
   end
 end
