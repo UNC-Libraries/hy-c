@@ -10,7 +10,7 @@ Hydra::Derivatives::Processors::Document.class_eval do
   LOCK_KEY = 'soffice:document_conversion'
   LOCK_TIMEOUT = 6 * 60 * 1000 # Lock timeout should be longer than the job timeout
   JOB_TIMEOUT_SECONDS = 5 * 60
-  LOCK_MANAGER = Redlock::Client.new([Redis.current])
+  LOCK_MANAGER = Redlock::Client.new([Rails.application.config.x.redis])
 
   # [hyc-override] Adding in a graceful termination before hard kill, reap the process after kill
   def self.execute_with_timeout(timeout, command, context)
