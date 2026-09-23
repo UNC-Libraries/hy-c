@@ -117,8 +117,11 @@ export class FieldManager {
     // [hyc-override] - Update the field ID to be unique
     _updateFieldId($field) {
         let currentId = $field.attr('id');
-        let idParts = currentId.split('_');
+        if (currentId === undefined) {
+            return $field;
+        }
 
+        let idParts = currentId.split('_');
         if (idParts.length === 1) {
             $field.attr('id', `${currentId}_1`)
         } else {
