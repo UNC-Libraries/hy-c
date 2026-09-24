@@ -7,8 +7,6 @@ body,
 
 body {
   font-family: system-ui, sans-serif;
-  background: #f5f5f5;
-  color: #222;
 }
 
 .app {
@@ -18,8 +16,8 @@ body {
 }
 
 .viewer {
-  height: 600px;
   background: #111;
   border: 1px solid;
   border-radius: 8px;
+  color: #fff
 }
