@@ -1,16 +1,14 @@
-<html>
-<head>
+<!doctype html>
+<html lang="en">
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="stylesheet" type="text/css" href="clover.css">
-</head>
-<body>
-<script type="text/javascript" src="clover.js"></script>
-<clover-viewer />
-<script>
-    manifestUrl = new URLSearchParams(window.location.search).get('manifest');
-    viewer = document.querySelector('clover-viewer')
-    viewer.setAttribute('id', manifestUrl)
-</script>
-</body>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clover-viewer</title>
+    <script type="module" crossorigin src="clover-index.js"></script>
+    <link rel="stylesheet" crossorigin href="index.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
