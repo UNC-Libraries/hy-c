@@ -10,7 +10,7 @@
     "postinstall": "yarn run uv-install && yarn run uv-config && yarn run clover-install",
     "uv-install": "shx cp -r ./node_modules/universalviewer/dist ./public/uv",
     "uv-config": "shx cp ./config/uv/uv.html ./public/uv/uv.html & shx cp ./config/uv/uv-config.json ./public/uv/",
-    "clover-install": "npm run build --prefix ./app/javascripts/clover-viewer && shx cp -r ./app/javascripts/clover-viewer/dist/. ./public/clover"
+    "clover-install": "shx cp -r ./app/javascripts/clover-viewer/dist/. ./public/clover && shx mv ./public/clover/index.html ./public/clover/clover.html"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.0",
