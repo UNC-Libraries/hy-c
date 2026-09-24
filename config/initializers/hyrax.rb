@@ -66,7 +66,7 @@ Hyrax.config do |config|
   # This value determines whether to show reports on the dashboard, work and collection report pages
   config.analytics_reporting = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS_REPORTING', false))
 
-  # Date you wish to start collecting Google Analytic statistics for
+  # Date you wish to start collecting Google Analytics statistics for
   # Leaving it blank will set the start date to when ever the file was uploaded by
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
   # config.analytic_start_date = DateTime.new(2019, 6, 5)
@@ -92,6 +92,8 @@ Hyrax.config do |config|
   # Hyrax uses NOIDs for files and collections instead of Fedora UUIDs
   # where NOID = 10-character string and UUID = 32-character string w/ hyphens
   config.enable_noids = true
+
+  config.iiif_av_viewer = :clover
 
   # Enable IIIF image service. This is required to use the
   # IIIF viewer enabled show page
