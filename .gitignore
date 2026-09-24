@@ -22,6 +22,7 @@ config/local_env_solr8.yml
 .ruby-*
 /.idea/*
 /public/assets/*
+!public/assets/audio.png
 /public/uv
 fits.log
 test.log
@@ -42,6 +43,3 @@ build_log.txt
 
 .github/copilot-instructions.md
 agents.md
-
-/public/clover/*
-!/public/clover/.gitkeep
