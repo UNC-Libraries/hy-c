@@ -1,0 +1,23 @@
+html,
+body,
+#root {
+    min-height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+}
+
+.app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.viewer {
+    background: #111;
+    border: 1px solid;
+    border-radius: 8px;
+    color: #fff
+}
