@@ -71,8 +71,6 @@ Hyrax.config do |config|
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
   # config.analytic_start_date = DateTime.new(2019, 6, 5)
 
-  config.iiif_av_viewer = :clover
-  config.iiif_image_server = true
   config.work_requires_files = false
   # Enables a link to the citations page for a work
   # Default is false
@@ -93,6 +91,8 @@ Hyrax.config do |config|
   # Hyrax uses NOIDs for files and collections instead of Fedora UUIDs
   # where NOID = 10-character string and UUID = 32-character string w/ hyphens
   config.enable_noids = true
+
+  config.iiif_av_viewer = :clover
 
   # Enable IIIF image service. This is required to use the
   # IIIF viewer enabled show page
