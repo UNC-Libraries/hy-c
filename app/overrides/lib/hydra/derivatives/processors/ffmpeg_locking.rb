@@ -8,7 +8,7 @@ module Hydra::Derivatives::Processors
     DEFAULT_LOCK_EXPIRY = 60 * 30 * 1000 # 30 minutes
 
     def self.lock_manager
-      @lock_manager ||= Redlock::Client.new([Redis.current])
+      @lock_manager ||= Redlock::Client.new([Rails.application.config.x.redis])
     end
 
     # Execute with a distributed lock to prevent too many ffmpeg processes

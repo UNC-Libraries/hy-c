@@ -14,8 +14,8 @@ RSpec.describe Hydra::Derivatives::Processors::FfmpegLocking do
       described_class.remove_instance_variable(:@lock_manager)
     end
 
-    # Mock Redis.current used in lock_manager
-    allow(Redis).to receive(:current).and_return(double('redis_instance'))
+    # Mock the configured Redis instance used in lock_manager
+    allow(Rails.application.config.x).to receive(:redis).and_return(double('redis_instance'))
     allow(Redlock::Client).to receive(:new).and_return(mock_lock_manager)
   end
 
