@@ -117,5 +117,5 @@ group :test do
   gem 'shoulda-matchers', '~> 6.5.0'
   gem 'simplecov'
   gem 'webrick'
-  gem 'webmock', '~> 3.14.0'
+  gem 'webmock', '~> 3.26.4'
 end
