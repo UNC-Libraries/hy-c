@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 # [hyc-override] based off of upstream version of the initializer
-# https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/.dassie/config/initializers/riiif.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v5.3.0/.dassie/config/initializers/riiif.rb
 Rails.application.reloader.to_prepare do
   Riiif::Image.info_service = lambda do |id, _file|
-    # id will look like a path to a pcdm:file
-    # (e.g. rv042t299%2Ffiles%2F6d71677a-4f80-42f1-ae58-ed1063fd79c7)
-    # but we just want the id for the FileSet it's attached to.
-
-    fs_id = id.sub(/\A([^\/]*)\/.*/, '\1')
+    fs_id = normalize_iiif_id(id).split('/').first
     resp = Hyrax::SolrService.get("id:#{fs_id}")
     doc = resp['response']['docs'].first
     raise "Unable to find solr document with id:#{fs_id}" unless doc
@@ -87,12 +83,13 @@ module Hyrax
     # @param [String] id from iiif manifest
     # @return [::Riiif::File]
     def find(id)
+      normalized = normalize_iiif_id(id)
       path = nil
-      file_locks[id].with_write_lock do
-        path = build_path(id)
-        path = build_path(id, force: true) unless File.exist?(path) # Ensures the file is locally available
+      file_locks[normalized].with_write_lock do
+        path = build_path(normalized)
+        path = build_path(normalized, force: true) unless File.exist?(path) # Ensures the file is locally available
       end
-      Hyrax::RiiifFile.new(path, id: id)
+      Hyrax::RiiifFile.new(path, id: normalized)
     end
 
     # tracks individual file locks
@@ -118,11 +115,26 @@ module Hyrax
 
     def load_file(id)
       benchmark "RiiifFileResolver loaded #{id}", level: :debug do
-        fs_id = id.sub(/\A([^\/]*)\/.*/, '\1')
+        fs_id = normalize_iiif_id(id).split('/').first
         file_set = Hyrax.query_service.find_by(id: fs_id)
         file_metadata = Hyrax.custom_queries.find_original_file(file_set: file_set)
         file_metadata.file.disk_path.to_s # Stores a local copy in tmpdir
       end
+    end
+
+    # [hyc-override] normalize iiif id path. It can come in double-encoded from some clients (%252F).
+    # This avoids the need for a regex to figure out the file set id from the path, which can incorrectly
+    # match, e.g. 6682x5878%2Ffiles%2Fd88e5017-6ccb-4117-9715-538b6ebcb71c%2Ffcr:versions%2Fversion1.
+    # Would match the entire string, but we only want the file set id (6682x5878).
+    def normalize_iiif_id(value)
+      decoded = value.to_s
+      2.times do
+        next_decoded = CGI.unescape(decoded)
+        break if next_decoded == decoded
+
+        decoded = next_decoded
+      end
+      decoded
     end
 
     def logger
