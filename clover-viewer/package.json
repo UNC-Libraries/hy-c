@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "copy": "shx cp -r ./dist/. ../public/clover && shx mv ../public/clover/index.html ../public/clover/clover.html",
+    "copy": "shx cp -r ./dist/. ../public/clover/dist/.",
     "postinstall": "npm run build && npm run copy",
     "preinstall": "rm -rf ./public/clover",
     "lint": "eslint .",

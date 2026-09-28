@@ -1,0 +1,9 @@
+<%# [hyc-override] Clover IIIF viewer  File doesn't exist in the main hyrax branch %>
+<%# If it did, it would be here:  https://github.com/samvera/hyrax/blob/main/app/views/hyrax/base/iiif_viewers/_clover.html.erb %>
+<div class="viewer-wrapper clover-viewer-wrapper">
+  <iframe title="image view"
+          src="<%= iiif_viewer_base_url(presenter.iiif_viewer) %>?manifest=<%= main_app.polymorphic_url [main_app, :manifest, presenter], { locale: nil } %>"
+          allowfullscreen="true"
+          frameborder="0"
+  ></iframe>
+</div>
