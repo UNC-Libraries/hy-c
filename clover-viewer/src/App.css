@@ -2,7 +2,6 @@ html,
 body,
 #root {
     min-height: 100%;
-    margin: 0;
 }
 
 body {
@@ -11,8 +10,6 @@ body {
 
 .app {
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
 }
 
 .viewer {
