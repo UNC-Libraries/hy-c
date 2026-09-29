@@ -16,7 +16,7 @@ Hyrax::WorkShowPresenter.class_eval do
     :clover
   end
 
-  # @todo the following methods have been addd/updated on the main hyrax branch, but are not yet in a hyrax release.
+  # @todo the following methods have been added/updated on the main hyrax branch, but are not yet in a hyrax release.
   # Once hyrax is updated, these methods can probably be removed.
 
   def iiif_viewer?
