@@ -10,6 +10,7 @@ const viewerOptions = {
         }
     },
     showIIIFBadge: false,
+    showMediaSearch: false,
     informationPanel: {
         open: false
     }
