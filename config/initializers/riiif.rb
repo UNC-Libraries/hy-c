@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 # [hyc-override] based off of upstream version of the initializer
 # https://github.com/samvera/hyrax/blob/hyrax-v5.3.0/.dassie/config/initializers/riiif.rb
+
+# [hyc-override] Decode the file set id from the path instead of using a regex to extract it.
+# This avoids the need for a regex to figure out the file set id from the path, which can incorrectly
+# match, e.g. 6682x5878%2Ffiles%2Fd88e5017-6ccb-4117-9715-538b6ebcb71c%2Ffcr:versions%2Fversion1.
+# Would match the entire string, but we only want the file set id (6682x5878).
 Rails.application.reloader.to_prepare do
   Riiif::Image.info_service = lambda do |id, _file|
-    fs_id = normalize_iiif_id(id).split('/').first
+    fs_id = CGI.unescape(id).split('/').first
     resp = Hyrax::SolrService.get("id:#{fs_id}")
     doc = resp['response']['docs'].first
     raise "Unable to find solr document with id:#{fs_id}" unless doc
@@ -83,7 +88,7 @@ module Hyrax
     # @param [String] id from iiif manifest
     # @return [::Riiif::File]
     def find(id)
-      normalized = normalize_iiif_id(id)
+      normalized = CGI.unescape(id)
       path = nil
       file_locks[normalized].with_write_lock do
         path = build_path(normalized)
@@ -115,27 +120,13 @@ module Hyrax
 
     def load_file(id)
       benchmark "RiiifFileResolver loaded #{id}", level: :debug do
-        fs_id = normalize_iiif_id(id).split('/').first
+        fs_id = CGI.unescape(id).split('/').first
         file_set = Hyrax.query_service.find_by(id: fs_id)
         file_metadata = Hyrax.custom_queries.find_original_file(file_set: file_set)
         file_metadata.file.disk_path.to_s # Stores a local copy in tmpdir
       end
     end
 
-    # [hyc-override] normalize iiif id path. It can come in double-encoded from some clients (%252F).
-    # This avoids the need for a regex to figure out the file set id from the path, which can incorrectly
-    # match, e.g. 6682x5878%2Ffiles%2Fd88e5017-6ccb-4117-9715-538b6ebcb71c%2Ffcr:versions%2Fversion1.
-    # Would match the entire string, but we only want the file set id (6682x5878).
-    def normalize_iiif_id(value)
-      decoded = value.to_s
-      2.times do
-        next_decoded = CGI.unescape(decoded)
-        break if next_decoded == decoded
-
-        decoded = next_decoded
-      end
-      decoded
-    end
 
     def logger
       Hyrax.logger
