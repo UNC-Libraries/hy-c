@@ -17,7 +17,7 @@ Hyrax::WorkShowPresenter.class_eval do
   end
 
   # @todo the following methods have been added/updated on the main hyrax branch, but are not yet in a hyrax release.
-  # Once hyrax is updated, these methods can probably be removed.
+  # Once hyrax is updated, these methods can be removed.
 
   def iiif_viewer?
     return @iiif_viewer if defined?(@iiif_viewer)
@@ -25,24 +25,13 @@ Hyrax::WorkShowPresenter.class_eval do
   end
   alias universal_viewer? iiif_viewer?
 
-  def iiif_viewer?(seen: Set.new)
-    return @iiif_viewer if defined?(@iiif_viewer)
-    @iiif_viewer = (representative_id.present? &&
-      representative_presenter.present? &&
-      (av_viewable? || image_viewable? || pdf_viewable?)) ||
-                   child_works_viewable?(seen)
-  end
-
   def representative_viewable?
     representative_id.present? &&
       representative_presenter.present? &&
       (av_viewable? || image_viewable? || pdf_viewable?)
   end
 
-  def child_works_viewable?(seen)
-    work_presenters.any? do |presenter|
-      next unless seen.add?(presenter.id)
-      presenter.iiif_viewer?(seen: seen)
-    end
+  def child_works_viewable?
+    Hyrax::ViewableChildWorksService.viewable?(solr_document: solr_document, ability: current_ability)
   end
 end
