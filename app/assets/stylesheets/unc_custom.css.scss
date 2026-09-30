@@ -1357,5 +1357,6 @@ Hide it entirely until the issue is resolved upstreeam
 }
 
 .viewer-wrapper.clover-viewer-wrapper {
-  height: 885px;
+  height: auto;
+  min-height: 580px;
 }

@@ -4,6 +4,7 @@ const manifestUrl = new URLSearchParams(window.location.search).get('manifest');
 
 const viewerOptions = {
     canvasBackgroundColor: '#252523',
+    canvasHeight: 'auto',
     openSeadragon: {
         gestureSettingsMouse: {
             scrollToZoom: true

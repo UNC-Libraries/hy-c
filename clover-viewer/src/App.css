@@ -7,8 +7,3 @@ body,
 .app {
     max-width: 1200px;
 }
-
-.viewer {
-    border: 1px solid;
-    border-radius: 8px;
-}
