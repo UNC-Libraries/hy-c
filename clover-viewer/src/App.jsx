@@ -20,7 +20,7 @@ const viewerOptions = {
 export default function App() {
     return (
         <main className="app">
-            <div className="viewer">
+            <div className="viewer" style={{ height: "80vh" }}>
                 <Viewer
                     iiifContent={manifestUrl}
                     options={viewerOptions}
