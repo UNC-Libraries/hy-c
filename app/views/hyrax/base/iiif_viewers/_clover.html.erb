@@ -6,11 +6,3 @@
           allowfullscreen="allowfullscreen" style="width: 100%; border: none; min-height: 600px;"
   ></iframe>
 </div>
-<script>
-    const iframe = document.getElementById('unc-clover-viewer');
-
-    iframe.onload = function() {
-        // Resizes the iframe height to match the internal content's scroll height
-        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
-    };
-</script>
