@@ -3,6 +3,6 @@
 <div class="viewer-wrapper clover-viewer-wrapper">
   <iframe title="image view" id="unc-clover-viewer">
           src="<%= iiif_viewer_base_url(presenter.iiif_viewer) %>?manifest=<%= main_app.polymorphic_url [main_app, :manifest, presenter], { locale: nil } %>"
-          allowfullscreen="allowfullscreen" style="width: 100%; border: none; min-height: 600px;"
+          allowfullscreen="allowfullscreen" border="0" style="width: 100%"
   ></iframe>
 </div>
