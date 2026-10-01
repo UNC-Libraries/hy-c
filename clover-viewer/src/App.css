@@ -3,7 +3,3 @@ body,
 #root {
     min-height: 100%;
 }
-
-.app {
-    max-width: 1200px;
-}
