@@ -1,0 +1,62 @@
+<script type="application/ld+json" id="detailed-schema-org">
+{
+  "name": "<%= presenter.title.first %>",
+  "description": "<%= presenter.description.first %>",
+  "@context": "https://schema.org",
+  "@type": "<%= presenter.resource_type %>",
+  "datePublished": "<%= presenter.date_issued %>",
+  "creator": [
+    <% creators = presenter.creators %>
+    <% creators.each do |creator| %>
+      {
+        "@type": "Person",
+        "affiliation": "<%= creator.affiliation %>",
+        "name": "<%= creator.name %>",
+        "sameAs": "<%= creator.orcid %>"
+      }
+      <% unless creator.last? %>
+        <%=  ","  %>
+      <% end %>
+    <% end %>
+  ],
+  "contributor": [
+    <% contributors = presenter.contributors %>
+    <% contributors.each do |contributor| %>
+        {
+          "@type": "Person",
+          "affiliation": "<%= contributor.affiliation %>",
+          "name": "<%= contributor.name %>",
+          "sameAs": "<%= contributor.orcid %>"
+        }
+        <% unless contributor.last? %>
+          <%=  ","  %>
+        <% end %>
+    <%  end %>
+  ],
+  "about": [
+    <% subjects = presenter.subject %>
+    <% subjects.each do |subject| %>
+      {
+        "@type": "Thing",
+        "name": "<%= subject.name %>"
+      }
+      <% unless subject.last? %>
+        <%=  ","  %>
+      <% end %>
+    <% end %>
+  ],
+  "keywords": [
+    <%= presenter.keyword.to_json %>
+  ],
+  "license": "<%= presenter.license %>>",
+  "inLanguage": [
+    {
+      "@type": "Language",
+      "alternateName": "<%= presenter.language.first.name %>"
+    }
+  ],
+  "identifier": "<%= presenter.identifier %>",
+  "version": "1",
+  "@id": "PAGE URL"
+}
+</script>
