@@ -1,14 +1,7 @@
 html,
 body,
 #root {
-    min-height: 100%;
-}
-
-.app {
-    max-width: 1200px;
-}
-
-.viewer {
-    border: 1px solid;
-    border-radius: 8px;
+    margin: 0;
+    min-height: 0;
+    height: auto;
 }
