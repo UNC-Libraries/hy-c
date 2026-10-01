@@ -7,6 +7,8 @@
 </div>
 
 <script>
+    // Listen for messages from the clover viewer iframe to adjust the height of the iframe and wrapper
+    // based on the height of the viewer.
     (function() {
         const wrapper = document.querySelector(".clover-viewer-wrapper");
         const iframe = document.getElementById("unc-clover-viewer");

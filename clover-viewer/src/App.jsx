@@ -19,6 +19,7 @@ const viewerOptions = {
 
 export default function App() {
     useEffect(() => {
+        // Post the height of the clover viewer to the parent window
         const postHeight = () => {
             const html = document.documentElement;
             const body = document.body;
