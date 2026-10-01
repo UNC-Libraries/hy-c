@@ -45,9 +45,7 @@
       <% end %>
     <% end %>
   ],
-  "keywords": [
-    <%= presenter.keyword.to_json %>
-  ],
+  "keywords": <%= presenter.keyword.to_json %>,
   "license": "<%= presenter.license %>>",
   "inLanguage": [
     {
@@ -57,6 +55,6 @@
   ],
   "identifier": "<%= presenter.identifier %>",
   "version": "1",
-  "@id": "PAGE URL"
+  "@id": "<%= polymorphic_url([main_app, presenter]) %>"
 }
 </script>
