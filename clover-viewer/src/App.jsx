@@ -20,7 +20,7 @@ const viewerOptions = {
 export default function App() {
     return (
         <main className="app">
-            <div className="viewer" style={{ position: "relative", height: "98vh", zIndex: "0" }}>
+            <div className="viewer" style={{ position: "relative", height: "96vh", zIndex: "0" }}>
                 <Viewer
                     iiifContent={manifestUrl}
                     options={viewerOptions}
