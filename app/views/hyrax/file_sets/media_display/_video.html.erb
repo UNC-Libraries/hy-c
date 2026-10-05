@@ -1,10 +1,11 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v5.2.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
 <%
   # [hyc-override] Pull size from Solr/document metadata
-  file_size_bytes = file_set.solr_document['file_size_lts'].to_i    
-  file_size_mb    = (file_size_bytes / 1.megabyte.to_f).round(2)
+  # file_size_bytes = file_set.solr_document['file_size_lts'].to_i
+  # file_size_mb    = (file_size_bytes / 1.megabyte.to_f).round(2)
   # [hyc-override] Show video only if file size is less than or equal to 500MB, since that's our max upload size
-  show_video = file_size_bytes <= 500.megabytes
+  # show_video = file_size_bytes <= 500.megabytes
+  show_video = false
 %>
 
 <% if display_media_download_link?(file_set: file_set) %>
