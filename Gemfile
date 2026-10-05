@@ -86,7 +86,7 @@ end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', '~> 11.1.3', platform: :mri
+  gem 'byebug', '~> 13.0.0', platform: :mri
   gem 'database_cleaner'
   gem 'fcrepo_wrapper', '~> 0.9.0'
   gem 'rspec-rails', '~> 7.1.1'
