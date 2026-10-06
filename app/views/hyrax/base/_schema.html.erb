@@ -1,60 +1,75 @@
+
 <script type="application/ld+json" id="detailed-schema-org">
 {
   "name": "<%= presenter.title.first %>",
-  "description": "<%= presenter.description.first %>",
+  "description": "<%= sanitize(presenter.abstract.first, tags: []) %>",
   "@context": "https://schema.org",
-  "@type": "<%= presenter.resource_type %>",
-  "datePublished": "<%= presenter.date_issued %>",
+  "@type": "<%= SchemaService.resource_type(presenter.resource_type.first) %>",
+  "datePublished": "<%= presenter.date_issued.first %>",
   "creator": [
-    <% creators = presenter.creators %>
-    <% creators.each do |creator| %>
+    <% creators = presenter.creator_display %>
+    <% creators.each_with_index do |creator_string, i| %>
+      <% creator_info = SchemaService.person_details(creator_string) %>
       {
         "@type": "Person",
-        "affiliation": "<%= creator.affiliation %>",
-        "name": "<%= creator.name %>",
-        "sameAs": "<%= creator.orcid %>"
-      }
-      <% unless creator.last? %>
-        <%=  ","  %>
-      <% end %>
+        "affiliation": "<%= creator_info[:affiliation] %>",
+        "name": "<%= creator_info[:name] %>",
+        "sameAs": "<%= creator_info[:orcid] %>"
+      }<% if i < creators.size - 1 %><%=  ","  %><% end %>
     <% end %>
   ],
   "contributor": [
-    <% contributors = presenter.contributors %>
-    <% contributors.each do |contributor| %>
+    <% contributors = presenter.contributor_display %>
+    <% contributors.each_with_index do |contributor, i| %>
+      <% contributor_info = SchemaService.person_details(contributor) %>
         {
           "@type": "Person",
-          "affiliation": "<%= contributor.affiliation %>",
-          "name": "<%= contributor.name %>",
-          "sameAs": "<%= contributor.orcid %>"
-        }
-        <% unless contributor.last? %>
-          <%=  ","  %>
-        <% end %>
+          "affiliation": "<%= contributor_info[:affiliation] %>",
+          "name": "<%= contributor_info[:name] %>",
+          "sameAs": "<%= contributor_info[:orcid] %>"
+        }<% if i < contributors.size - 1 %><%=  ","  %><% end %>
     <%  end %>
   ],
   "about": [
     <% subjects = presenter.subject %>
-    <% subjects.each do |subject| %>
+    <% subjects.each_with_index do |subject, i| %>
       {
         "@type": "Thing",
-        "name": "<%= subject.name %>"
-      }
-      <% unless subject.last? %>
-        <%=  ","  %>
-      <% end %>
+        "name": "<%= subject %>"
+      }<% if i < subjects.size - 1 %><%=  ","  %><% end %>
     <% end %>
   ],
-  "keywords": <%= presenter.keyword.to_json %>,
-  "license": "<%= presenter.license %>>",
-  "inLanguage": [
-    {
-      "@type": "Language",
-      "alternateName": "<%= presenter.language.first.name %>"
-    }
+  "keywords": [
+    <% keywords = presenter.keyword %>
+    <% keywords.each_with_index do |keyword, i| %>
+      "<%= keyword %>"<% if i < keywords.size - 1 %><%=  ","  %><% end %>
+    <% end %>
   ],
-  "identifier": "<%= presenter.identifier %>",
+  "license": "<%= presenter.license.first %>",
+  "inLanguage": [
+    <% languages = presenter.language_label %>
+    <% languages.each_with_index do |language, i| %>
+      {
+         "@type": "Language",
+          "name": "<%= language %>"
+      }<% if  i < languages.size - 1 %><%=  ","  %><% end %>
+    <% end %>
+  ],
+  "identifier": "<%= presenter.doi.first %>",
   "version": "1",
-  "@id": "<%= polymorphic_url([main_app, presenter]) %>"
+  "@id": "<%= polymorphic_url([main_app, presenter]) %>",
+  "publisher": [
+    <% publishers = presenter.publisher %>
+    <% publishers.each_with_index do |publisher, i| %>
+      {
+         "@type": "Organization",
+          "name": "<%= publisher %>"
+      }<% if i < publishers.size - 1 %><%=  ","  %><% end %>
+    <% end %>
+  ],
+"contentLocation": {
+    "@type": "Place",
+    "name": "<%= presenter.based_near_label.first %>"
+  }
 }
 </script>
