@@ -4,7 +4,7 @@ module SchemaService
   require 'yaml'
   def self.person_details(person_string)
     array = {}
-    creator_array = person_string.split("||")
+    creator_array = person_string.split('||')
     array[:name] = creator_array[1]
     creator_array.each do |text|
       if text =~ /ORCID:.*?http/
@@ -30,6 +30,6 @@ module SchemaService
   def self.resource_type(hyc_value)
     data = YAML.load_file('config/schema_org.yml')
     puts data.inspect
-    return data["schema_org"]["resource_type"][hyc_value]
+    return data['schema_org']['resource_type'][hyc_value]
   end
 end
