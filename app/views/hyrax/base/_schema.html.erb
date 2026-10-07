@@ -2,10 +2,10 @@
 <script type="application/ld+json" id="detailed-schema-org">
 {
   "name": "<%= SchemaService.sanitized_value(presenter.title) %>",
-  "description": "<%= sanitize(presenter.abstract.first, tags: []) %>",
+  "description": "<%= sanitize(SchemaService.sanitized_value(presenter.abstract), tags: []) %>",
   "@context": "https://schema.org",
   "@type": "<%= SchemaService.resource_type(presenter.resource_type.first) %>",
-  "datePublished": "<%= presenter.date_issued.first %>",
+  "datePublished": "<%= SchemaService.sanitized_value(presenter.date_issued) %>",
   "creator": [
     <% creators = presenter.creator_display %>
     <% creators&.each_with_index do |creator_string, i| %>
