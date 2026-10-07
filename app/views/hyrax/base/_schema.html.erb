@@ -8,7 +8,7 @@
   "datePublished": "<%= presenter.date_issued.first %>",
   "creator": [
     <% creators = presenter.creator_display %>
-    <% creators.each_with_index do |creator_string, i| %>
+    <% creators&.each_with_index do |creator_string, i| %>
       <% creator_info = SchemaService.person_details(creator_string) %>
       {
         "@type": "Person",
@@ -20,7 +20,7 @@
   ],
   "contributor": [
     <% contributors = presenter.contributor_display %>
-    <% contributors.each_with_index do |contributor, i| %>
+    <% contributors&.each_with_index do |contributor, i| %>
       <% contributor_info = SchemaService.person_details(contributor) %>
         {
           "@type": "Person",
@@ -32,7 +32,7 @@
   ],
   "about": [
     <% subjects = presenter.subject %>
-    <% subjects.each_with_index do |subject, i| %>
+    <% subjects&.each_with_index do |subject, i| %>
       {
         "@type": "Thing",
         "name": "<%= subject %>"
@@ -41,26 +41,26 @@
   ],
   "keywords": [
     <% keywords = presenter.keyword %>
-    <% keywords.each_with_index do |keyword, i| %>
+    <% keywords&.each_with_index do |keyword, i| %>
       "<%= keyword %>"<% if i < keywords.size - 1 %><%=  ","  %><% end %>
     <% end %>
   ],
-  "license": "<%= presenter.license.first %>",
+  "license": "<%= SchemaService.sanitized_value(presenter.license) %>",
   "inLanguage": [
     <% languages = presenter.language_label %>
-    <% languages.each_with_index do |language, i| %>
+    <% languages&.each_with_index do |language, i| %>
       {
          "@type": "Language",
           "name": "<%= language %>"
       }<% if  i < languages.size - 1 %><%=  ","  %><% end %>
     <% end %>
   ],
-  "identifier": "<%= presenter.doi.first %>",
+  "identifier": "<%= SchemaService.sanitized_value(presenter.doi) %>",
   "version": "1",
   "@id": "<%= polymorphic_url([main_app, presenter]) %>",
   "publisher": [
     <% publishers = presenter.publisher %>
-    <% publishers.each_with_index do |publisher, i| %>
+    <% publishers&.each_with_index do |publisher, i| %>
       {
          "@type": "Organization",
           "name": "<%= publisher %>"
@@ -69,7 +69,7 @@
   ],
 "contentLocation": {
     "@type": "Place",
-    "name": "<%= presenter.based_near_label.first %>"
+    "name": "<%= SchemaService.sanitized_value(presenter.based_near_label) %>"
   }
 }
 </script>

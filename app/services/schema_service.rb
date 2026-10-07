@@ -2,6 +2,7 @@
 # # This service formats information for schema org script tag
 module SchemaService
   require 'yaml'
+  
   def self.person_details(person_string)
     array = {}
     creator_array = person_string.split('||')
@@ -29,7 +30,11 @@ module SchemaService
 
   def self.resource_type(hyc_value)
     data = YAML.load_file('config/schema_org.yml')
-    puts data.inspect
     return data['schema_org']['resource_type'][hyc_value]
+  end
+
+  def self.sanitized_value(hyc_value)
+    return nil if hyc_value.nil?
+    hyc_value.first
   end
 end
