@@ -1,7 +1,7 @@
 
 <script type="application/ld+json" id="detailed-schema-org">
 {
-  "name": "<%= presenter.title.first %>",
+  "name": "<%= SchemaService.sanitized_value(presenter.title) %>",
   "description": "<%= sanitize(presenter.abstract.first, tags: []) %>",
   "@context": "https://schema.org",
   "@type": "<%= SchemaService.resource_type(presenter.resource_type.first) %>",
