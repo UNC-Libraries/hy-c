@@ -2,7 +2,7 @@
 # # This service formats information for schema org script tag
 module SchemaService
   require 'yaml'
-  
+
   def self.person_details(person_string)
     array = {}
     creator_array = person_string.split('||')
