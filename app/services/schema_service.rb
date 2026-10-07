@@ -30,7 +30,9 @@ module SchemaService
 
   def self.resource_type(hyc_value)
     data = YAML.load_file('config/schema_org.yml')
-    return data['schema_org']['resource_type'][hyc_value]
+    resource_type = data['schema_org']['resource_type'][hyc_value]
+    return resource_type unless resource_type.blank?
+    hyc_value
   end
 
   def self.sanitized_value(hyc_value)
