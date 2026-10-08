@@ -1,7 +1,7 @@
 <script type="application/ld+json" id="detailed-schema-org">
 {
   "name": "<%= SchemaService.sanitized_value(presenter.title) %>",
-  "description": <%= sanitize(SchemaService.sanitized_value(presenter.abstract).&dump, tags: []) %>,
+  "description": <%= sanitize(SchemaService.sanitized_value(presenter.abstract)&.dump, tags: []) %>,
   "@context": "https://schema.org",
   "@type": "<%= SchemaService.resource_type(presenter.resource_type.first) %>",
   "datePublished": "<%= SchemaService.sanitized_value(presenter.date_issued) %>",
@@ -55,7 +55,6 @@
     <% end %>
   ],
   "identifier": "<%= SchemaService.sanitized_value(presenter.doi) %>",
-  "version": "1",
   "@id": "<%= polymorphic_url([main_app, presenter]) %>",
   "publisher": [
     <% publishers = presenter.publisher %>
