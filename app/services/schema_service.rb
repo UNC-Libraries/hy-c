@@ -37,6 +37,6 @@ module SchemaService
 
   def self.sanitized_value(hyc_value)
     return nil if hyc_value.nil?
-    hyc_value.first.dump
+    hyc_value.first
   end
 end
