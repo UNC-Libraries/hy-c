@@ -12,6 +12,8 @@ module SchemaService
         text_pieces = text.split(' ')
         url = text_pieces[1].strip
         array[:orcid] = url
+      elsif text =~ /Other Affiliation:/
+        array[:other_affiliation] = text.delete_prefix('Other Affiliation: ')
       elsif text =~ /Affiliation:/
         # Get the full hierarchy of terms, with correct short labels, for the affiliation id
         term = DepartmentsService.term(text.split(':').last.strip)
@@ -22,9 +24,10 @@ module SchemaService
             end.join(', ')
           end
         end
-        array[:affiliation] = text.first
+        array[:unc_affiliation] = text.first
       end
     end
+    array[:affiliation] = self.affiliation(array[:unc_affiliation], array[:other_affiliation])
     array
   end
 
@@ -38,5 +41,10 @@ module SchemaService
   def self.sanitized_value(hyc_value)
     return nil if hyc_value.nil?
     hyc_value.first
+  end
+
+  def self.affiliation(unc_affiliation, other_affiliation)
+    return unc_affiliation if unc_affiliation.present?
+    other_affiliation
   end
 end
