@@ -1,0 +1,50 @@
+# frozen_string_literal: true
+# # This service formats information for schema org script tag
+module SchemaService
+  require 'yaml'
+
+  def self.person_details(person_string)
+    array = {}
+    creator_array = person_string.split('||')
+    array[:name] = creator_array[1]
+    creator_array.each do |text|
+      if text =~ /ORCID:.*?http/
+        text_pieces = text.split(' ')
+        url = text_pieces[1].strip
+        array[:orcid] = url
+      elsif text =~ /Other Affiliation:/
+        array[:other_affiliation] = text.delete_prefix('Other Affiliation: ')
+      elsif text =~ /Affiliation:/
+        # Get the full hierarchy of terms, with correct short labels, for the affiliation id
+        term = DepartmentsService.term(text.split(':').last.strip)
+        if term.present?
+          text = Array(term).map { |t| t.split(';') }.map do |term_list|
+            term_list.map do |term_val|
+              DepartmentsService.short_label(term_val.strip) || term_val.strip
+            end.join(', ')
+          end
+        end
+        array[:unc_affiliation] = text.first
+      end
+    end
+    array[:affiliation] = self.affiliation(array[:unc_affiliation], array[:other_affiliation])
+    array
+  end
+
+  def self.resource_type(hyc_value)
+    data = YAML.load_file('config/schema_org.yml')
+    resource_type = data['schema_org']['resource_type'][hyc_value]
+    return resource_type unless resource_type.blank?
+    hyc_value
+  end
+
+  def self.sanitized_value(hyc_value)
+    return nil if hyc_value.nil?
+    hyc_value.first
+  end
+
+  def self.affiliation(unc_affiliation, other_affiliation)
+    return unc_affiliation if unc_affiliation.present?
+    other_affiliation
+  end
+end

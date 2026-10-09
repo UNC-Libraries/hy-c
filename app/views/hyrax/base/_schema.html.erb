@@ -1,0 +1,76 @@
+<script type="application/ld+json" id="detailed-schema-org">
+{
+  "name": "<%= SchemaService.sanitized_value(presenter.title) %>",
+  "description": <%= sanitize(SchemaService.sanitized_value(presenter.abstract)&.dump, tags: []) %>,
+  "@context": "https://schema.org",
+  "@type": "<%= SchemaService.resource_type(presenter.resource_type.first) %>",
+  "datePublished": "<%= SchemaService.sanitized_value(presenter.date_issued) %>",
+  "creator": [
+    <% creators = presenter.creator_display %>
+    <% creators&.each_with_index do |creator_string, i| %>
+      <% creator_info = SchemaService.person_details(creator_string) %>
+      {
+        "@type": "Person",
+        "affiliation": "<%= creator_info[:affiliation] %>",
+        "name": "<%= creator_info[:name] %>",
+        "sameAs": "<%= creator_info[:orcid] %>"
+      }<% if i < creators.size - 1 %><%=  ","  %><% end %>
+    <% end %>
+  ],
+  "contributor": [
+    <% contributors = presenter.contributor_display %>
+    <% contributors&.each_with_index do |contributor, i| %>
+      <% contributor_info = SchemaService.person_details(contributor) %>
+        {
+          "@type": "Person",
+          "affiliation": "<%= contributor_info[:affiliation] %>",
+          "name": "<%= contributor_info[:name] %>",
+          "sameAs": "<%= contributor_info[:orcid] %>"
+        }<% if i < contributors.size - 1 %><%=  ","  %><% end %>
+    <%  end %>
+  ],
+  "about": [
+    <% subjects = presenter.subject %>
+    <% subjects&.each_with_index do |subject, i| %>
+      {
+        "@type": "Thing",
+        "name": "<%= subject %>"
+      }<% if i < subjects.size - 1 %><%=  ","  %><% end %>
+    <% end %>
+  ],
+  "keywords": [
+    <% keywords = presenter.keyword %>
+    <% keywords&.each_with_index do |keyword, i| %>
+      "<%= keyword %>"<% if i < keywords.size - 1 %><%=  ","  %><% end %>
+    <% end %>
+  ],
+  "license": "<%= SchemaService.sanitized_value(presenter.license) %>",
+  "inLanguage": [
+    <% languages = presenter.language_label %>
+    <% languages&.each_with_index do |language, i| %>
+      {
+         "@type": "Language",
+          "name": "<%= language %>"
+      }<% if  i < languages.size - 1 %><%=  ","  %><% end %>
+    <% end %>
+  ],
+  "identifier": "<%= SchemaService.sanitized_value(presenter.doi) %>",
+  "publisher": [
+    <% publishers = presenter.publisher %>
+    <% publishers&.each_with_index do |publisher, i| %>
+      {
+         "@type": "Organization",
+          "name": "<%= publisher %>"
+      }<% if i < publishers.size - 1 %><%=  ","  %><% end %>
+    <% end %>
+  ],
+  <% location = SchemaService.sanitized_value(presenter.based_near_label) %>
+  <% if location.present? %>
+    "contentLocation": {
+      "@type": "Place",
+      "name": "<%= location %>"
+    },
+  <% end %>
+  "@id": "<%= polymorphic_url([main_app, presenter]) %>"
+}
+</script>
