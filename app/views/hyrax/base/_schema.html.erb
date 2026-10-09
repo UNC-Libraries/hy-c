@@ -55,7 +55,6 @@
     <% end %>
   ],
   "identifier": "<%= SchemaService.sanitized_value(presenter.doi) %>",
-  "@id": "<%= polymorphic_url([main_app, presenter]) %>",
   "publisher": [
     <% publishers = presenter.publisher %>
     <% publishers&.each_with_index do |publisher, i| %>
@@ -65,9 +64,13 @@
       }<% if i < publishers.size - 1 %><%=  ","  %><% end %>
     <% end %>
   ],
-"contentLocation": {
-    "@type": "Place",
-    "name": "<%= SchemaService.sanitized_value(presenter.based_near_label) %>"
-  }
+  <% location = SchemaService.sanitized_value(presenter.based_near_label) %>
+  <% if location.present? %>
+    "contentLocation": {
+      "@type": "Place",
+      "name": "<%= location %>"
+    },
+  <% end %>
+  "@id": "<%= polymorphic_url([main_app, presenter]) %>"
 }
 </script>
