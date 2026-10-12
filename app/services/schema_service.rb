@@ -2,18 +2,40 @@
 # # This service formats information for schema org script tag
 module SchemaService
   require 'yaml'
-
+  def self.schema_object(presenter)
+    schema = {
+      '@context' => 'https://schema.org',
+      '@type' => self.resource_type(presenter.resource_type.first),
+      'name' => self.sanitized_value(presenter.title),
+      'description' => sanitize( self.sanitized_value(presenter.abstract)),
+      'creator' => presenter.creator_display.to_a.map { |person| self.person_details(person) },
+      'contributor' => presenter.creator_display.to_a.map { |person| self.person_details(person) },
+      'datePublished' => self.sanitized_value(presenter.date_issued),
+      'about' => self.about(presenter),
+      'keywords' => self.keywords(presenter),
+      'license' => self.sanitized_value(presenter.license),
+      'inLanguage' => self.language(presenter),
+      'identifier' => self.sanitized_value(presenter.doi),
+      'publisher' => self.publisher(presenter),
+      'contentLocation' => self.location(presenter),
+      '@id' => polymorphic_url([main_app, presenter])
+    }.compact
+    return schema
+  end
   def self.person_details(person_string)
-    array = {}
+    hash = {}
+    unc_affiliation = ''
+    other_affiliation = ''
     creator_array = person_string.split('||')
-    array[:name] = creator_array[1]
+    hash[:name] = creator_array[1]
+    hash['@type'] = 'Person'
     creator_array.each do |text|
       if text =~ /ORCID:.*?http/
         text_pieces = text.split(' ')
         url = text_pieces[1].strip
-        array[:orcid] = url
+        hash[:sameAs] = url
       elsif text =~ /Other Affiliation:/
-        array[:other_affiliation] = text.delete_prefix('Other Affiliation: ')
+        other_affiliation = text.delete_prefix('Other Affiliation: ')
       elsif text =~ /Affiliation:/
         # Get the full hierarchy of terms, with correct short labels, for the affiliation id
         term = DepartmentsService.term(text.split(':').last.strip)
@@ -24,11 +46,11 @@ module SchemaService
             end.join(', ')
           end
         end
-        array[:unc_affiliation] = text.first
+        unc_affiliation = text.first
       end
     end
-    array[:affiliation] = self.affiliation(array[:unc_affiliation], array[:other_affiliation])
-    array
+    hash[:affiliation] = self.affiliation(unc_affiliation, other_affiliation)
+    hash
   end
 
   def self.resource_type(hyc_value)
@@ -38,13 +60,58 @@ module SchemaService
     hyc_value
   end
 
-  def self.sanitized_value(hyc_value)
-    return nil if hyc_value.nil?
-    hyc_value.first
+  def self.about(presenter)
+    array = []
+    subjects = presenter.subject
+    subjects.each do |subject|
+      array << { '@type' => "Thing", 'name' => subject }
+    end
+    array
+  end
+
+  def self.keywords(presenter)
+    array = []
+    keywords = presenter.keyword
+    keywords.each do |keyword|
+      array<< keyword
+    end
+    array
   end
 
   def self.affiliation(unc_affiliation, other_affiliation)
     return unc_affiliation if unc_affiliation.present?
     other_affiliation
+  end
+
+  def self.language(presenter)
+    array = []
+    languages = presenter.language
+    languages.each do |language|
+      array << { '@type' => 'Language', 'name' => language }
+    end
+    array
+  end
+
+  def self.publisher(presenter)
+    array = []
+    publishers = presenter.publisher
+    publishers.each do |publisher|
+      array << { '@type' => 'Organization', 'name' => publisher }
+    end
+    array
+  end
+
+  def self.location(presenter)
+    hash = {}
+    location = presenter.based_near_label
+    if location.present?
+      hash = { '@type' => 'Place', 'name' => location }
+    end
+    hash
+  end
+
+  def self.sanitized_value(hyc_value)
+    return nil if hyc_value.nil?
+    hyc_value.first
   end
 end

@@ -74,3 +74,6 @@
   "@id": "<%= polymorphic_url([main_app, presenter]) %>"
 }
 </script>
+<script type="application/ld+json" id="detailed-schema-org">
+  <%= raw json_escape(SchemaService.build_schema_object(presenter).to_json) %>
+</script>
