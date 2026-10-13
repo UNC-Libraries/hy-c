@@ -5,7 +5,9 @@ class FileSet < ActiveFedora::Base
   # This property must be added BEFORE ::Hyc::FileSetBehavior for it to work correctly.
   property :alt_text,
            predicate: ::RDF::URI.new("https://schema.org/description"),
-           multiple: false
+           multiple: false do |index|
+    index.as :stored_searchable
+  end
 
   include ::Hyc::FileSetBehavior
 end
