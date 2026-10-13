@@ -4,7 +4,7 @@ class FileSet < ActiveFedora::Base
   # [hy-c override] Add alternative text to FileSets
   # This property must be added BEFORE ::Hyc::FileSetBehavior for it to work correctly.
   property :alt_text,
-           predicate: ::RDF::URI.new("https://schema.org/description"),
+           predicate: ::RDF::URI.new('https://schema.org/description'),
            multiple: false do |index|
     index.as :stored_searchable
   end
