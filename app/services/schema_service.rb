@@ -2,12 +2,13 @@
 # # This service formats information for schema org script tag
 module SchemaService
   require 'yaml'
-  def self.schema_object(presenter)
+
+  def self.schema_object(presenter, url)
     schema = {
       '@context' => 'https://schema.org',
       '@type' => self.resource_type(presenter.resource_type.first),
       'name' => self.sanitized_value(presenter.title),
-      'description' => sanitize( self.sanitized_value(presenter.abstract)),
+      'description' => self.plain_text(self.sanitized_value(presenter.abstract)),
       'creator' => presenter.creator_display.to_a.map { |person| self.person_details(person) },
       'contributor' => presenter.creator_display.to_a.map { |person| self.person_details(person) },
       'datePublished' => self.sanitized_value(presenter.date_issued),
@@ -18,22 +19,23 @@ module SchemaService
       'identifier' => self.sanitized_value(presenter.doi),
       'publisher' => self.publisher(presenter),
       'contentLocation' => self.location(presenter),
-      '@id' => polymorphic_url([main_app, presenter])
+      '@id' => url
     }.compact
     return schema
   end
+
   def self.person_details(person_string)
     hash = {}
     unc_affiliation = ''
     other_affiliation = ''
     creator_array = person_string.split('||')
-    hash[:name] = creator_array[1]
+    hash['name'] = creator_array[1]
     hash['@type'] = 'Person'
     creator_array.each do |text|
       if text =~ /ORCID:.*?http/
         text_pieces = text.split(' ')
         url = text_pieces[1].strip
-        hash[:sameAs] = url
+        hash['sameAs'] = url
       elsif text =~ /Other Affiliation:/
         other_affiliation = text.delete_prefix('Other Affiliation: ')
       elsif text =~ /Affiliation:/
@@ -49,7 +51,7 @@ module SchemaService
         unc_affiliation = text.first
       end
     end
-    hash[:affiliation] = self.affiliation(unc_affiliation, other_affiliation)
+    hash['affiliation'] = self.affiliation(unc_affiliation, other_affiliation)
     hash
   end
 
@@ -102,16 +104,20 @@ module SchemaService
   end
 
   def self.location(presenter)
-    hash = {}
     location = presenter.based_near_label
     if location.present?
-      hash = { '@type' => 'Place', 'name' => location }
+      return { '@type' => 'Place', 'name' => location }
     end
-    hash
+    nil
   end
 
   def self.sanitized_value(hyc_value)
-    return nil if hyc_value.nil?
+    return if hyc_value.nil?
     hyc_value.first
+  end
+
+  def self.plain_text(value)
+    return if value.nil?
+    ActionController::Base.helpers.strip_tags(value.to_s)
   end
 end
