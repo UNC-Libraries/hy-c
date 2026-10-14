@@ -5,20 +5,23 @@ require 'rails_helper'
 RSpec.describe 'hyrax/base/show.html.erb', type: :view do
   let(:user) { FactoryBot.create(:user) }
   let(:object_profile) { ["{'id':'999'}"] }
-  let(:contributor) { ['Frodo'] }
-  let(:creator)     { ['Bilbo'] }
   let(:solr_document) do
     SolrDocument.new(
       id: '999',
       object_profile_ssm: object_profile,
       has_model_ssim: ['FileSet'],
       human_readable_type_tesim: ['File'],
-      contributor_tesim: contributor,
-      creator_tesim: creator,
-      rights_tesim: ['http://creativecommons.org/licenses/by/3.0/us/']
+      contributor_display_tesim: ['index:1||Kelce, Travis||Affiliation: Bowles Center for Alcohol Studies||ORCID: http://example.org'],
+      creator_display_tesim: ['index:1||Swift, Taylor||Other Affiliation: Heartbreak University'],
+      license_tesim: ['http://creativecommons.org/licenses/by/3.0/us/'],
+      abstract_tesim: ['pop music'],
+      title_tesim: ['Best Title'],
+      subject_tesim: ['This album was created with love'],
+      keyword_tesim: %w[pop country],
+      language_tesim: ['English'],
+      publisher_tesim: ['UNC Publishing']
     )
   end
-  let(:decorated_solr_document) { Hyrax::SolrDocument::OrderedMembers.decorate(solr_document) }
   let(:ability) { Ability.new(user) }
   let(:presenter) do
     Hyrax::WorkShowPresenter.new(solr_document, ability)
@@ -60,6 +63,23 @@ RSpec.describe 'hyrax/base/show.html.erb', type: :view do
   end
 
   it 'shows schema org script tag' do
-    expect(page).to have_content('https://schema.org')
+    schema = {
+      '@context' => 'https://schema.org',
+      'name' => 'Best Title',
+      'description' => 'pop music',
+      'creator' => [{ '@type' => 'Person', 'name' => 'Swift, Taylor', 'affiliation' => 'Heartbreak University' }],
+      'contributor' => [{ '@type' => 'Person',
+                         'name' => 'Kelce, Travis',
+                         'sameAs' => 'http://example.org',
+                         'affiliation' => 'School of Medicine, Bowles Center for Alcohol Studies'}],
+      'about' => [{ '@type' => 'Thing', 'name' =>'This album was created with love' }],
+      'keywords' => %w[pop country],
+      'license' => 'http://creativecommons.org/licenses/by/3.0/us/',
+      'inLanguage' => [{ '@type' => 'Language', 'name' => 'English' }],
+      'publisher' => [{ '@type' => 'Organization', 'name' => 'UNC Publishing' }],
+      '@id' => 'polymorphic_url',
+    }.compact
+
+    expect(page).to have_content(schema.to_json)
   end
 end

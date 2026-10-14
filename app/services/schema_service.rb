@@ -10,7 +10,7 @@ module SchemaService
       'name' => self.sanitized_value(presenter.title),
       'description' => self.plain_text(self.sanitized_value(presenter.abstract)),
       'creator' => presenter.creator_display.to_a.map { |person| self.person_details(person) },
-      'contributor' => presenter.creator_display.to_a.map { |person| self.person_details(person) },
+      'contributor' => presenter.contributor_display.to_a.map { |person| self.person_details(person) },
       'datePublished' => self.sanitized_value(presenter.date_issued),
       'about' => self.about(presenter),
       'keywords' => self.keywords(presenter),
@@ -29,8 +29,8 @@ module SchemaService
     unc_affiliation = ''
     other_affiliation = ''
     creator_array = person_string.split('||')
-    hash['name'] = creator_array[1]
     hash['@type'] = 'Person'
+    hash['name'] = creator_array[1]
     creator_array.each do |text|
       if text =~ /ORCID:.*?http/
         text_pieces = text.split(' ')
