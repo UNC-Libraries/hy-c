@@ -62,6 +62,10 @@ RSpec.describe SchemaService do
                                                               'sameAs' => 'http://example.org',
                                                               'affiliation' => '' })
       end
+      it 'returns person display string as name if there are no ||' do
+        person_string = 'Kelce, Travis ORCID: http://example.org'
+        expect(service.person_details(person_string)).to eq({ '@type' => 'Person', 'name' => person_string })
+      end
     end
 
     describe '#resource_type' do

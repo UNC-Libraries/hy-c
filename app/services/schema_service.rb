@@ -28,31 +28,35 @@ module SchemaService
     hash = {}
     unc_affiliation = ''
     other_affiliation = ''
-    creator_array = person_string.split('||')
     hash['@type'] = 'Person'
-    hash['name'] = creator_array[1]
-    creator_array.each do |text|
-      if text =~ /ORCID:.*?http/
-        text_pieces = text.split(' ')
-        url = text_pieces[1].strip
-        hash['sameAs'] = url
-      elsif text =~ /Other Affiliation:/
-        other_affiliation = text.delete_prefix('Other Affiliation: ')
-      elsif text =~ /Affiliation:/
-        unc_affiliation = text.delete_prefix('Affiliation: ')
-        # Get the full hierarchy of terms, with correct short labels, for the affiliation id
-        term = DepartmentsService.term(text.split(':').last.strip)
-        if term.present?
-          text = Array(term).map { |t| t.split(';') }.map do |term_list|
-            term_list.map do |term_val|
-              DepartmentsService.short_label(term_val.strip) || term_val.strip
-            end.join(', ')
+    if person_string.include? '||'
+      creator_array = person_string.split('||')
+      hash['name'] = creator_array[1]
+      creator_array.each do |text|
+        if text =~ /ORCID:.*?http/
+          text_pieces = text.split(' ')
+          url = text_pieces[1].strip
+          hash['sameAs'] = url
+        elsif text =~ /Other Affiliation:/
+          other_affiliation = text.delete_prefix('Other Affiliation: ')
+        elsif text =~ /Affiliation:/
+          unc_affiliation = text.delete_prefix('Affiliation: ')
+          # Get the full hierarchy of terms, with correct short labels, for the affiliation id
+          term = DepartmentsService.term(text.split(':').last.strip)
+          if term.present?
+            text = Array(term).map { |t| t.split(';') }.map do |term_list|
+              term_list.map do |term_val|
+                DepartmentsService.short_label(term_val.strip) || term_val.strip
+              end.join(', ')
+            end
+            unc_affiliation = text.first
           end
-          unc_affiliation = text.first
         end
       end
+      hash['affiliation'] = self.affiliation(unc_affiliation, other_affiliation)
+    else
+      hash['name'] = person_string
     end
-    hash['affiliation'] = self.affiliation(unc_affiliation, other_affiliation)
     hash
   end
 
