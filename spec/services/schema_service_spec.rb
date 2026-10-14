@@ -162,4 +162,3 @@ RSpec.describe SchemaService do
     return Hyrax::WorkShowPresenter.new(solr_doc, ability, request)
   end
 end
-
