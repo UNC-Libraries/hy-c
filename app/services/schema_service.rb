@@ -39,6 +39,7 @@ module SchemaService
       elsif text =~ /Other Affiliation:/
         other_affiliation = text.delete_prefix('Other Affiliation: ')
       elsif text =~ /Affiliation:/
+        unc_affiliation = text.delete_prefix('Affiliation: ')
         # Get the full hierarchy of terms, with correct short labels, for the affiliation id
         term = DepartmentsService.term(text.split(':').last.strip)
         if term.present?
@@ -47,8 +48,8 @@ module SchemaService
               DepartmentsService.short_label(term_val.strip) || term_val.strip
             end.join(', ')
           end
+          unc_affiliation = text.first
         end
-        unc_affiliation = text.first
       end
     end
     hash['affiliation'] = self.affiliation(unc_affiliation, other_affiliation)

@@ -25,7 +25,7 @@ RSpec.describe SchemaService do
     let(:default_presenter) { build_presenter(solr_document) }
 
     describe '#person_details' do
-      it 'returns parsed person details with UNC Affiliation prioritized' do
+      it 'returns parsed person details with mapped UNC Affiliation prioritized' do
         person_string = 'index:1||Kelce, Travis||Affiliation: Bowles Center for Alcohol Studies||
           Other Affiliation: Heartbreak University|| ORCID: http://example.org'
         expect(service.person_details(person_string)).to eq({ '@type' => 'Person',
@@ -33,12 +33,34 @@ RSpec.describe SchemaService do
                                                               'sameAs' => 'http://example.org',
                                                               'affiliation' => 'School of Medicine, Bowles Center for Alcohol Studies' })
       end
+      it 'returns parsed person details with non-mapped UNC Affiliation prioritized' do
+        person_string = 'index:1||Kelce, Travis||Affiliation: Kansas City Chiefs||
+          Other Affiliation: Heartbreak University|| ORCID: http://example.org'
+        expect(service.person_details(person_string)).to eq({ '@type' => 'Person',
+                                                              'name' => 'Kelce, Travis',
+                                                              'sameAs' => 'http://example.org',
+                                                              'affiliation' => 'Kansas City Chiefs' })
+      end
       it 'returns parsed person details with Other Affiliation' do
         person_string = 'index:1||Kelce, Travis||Other Affiliation: Heartbreak University|| ORCID: http://example.org'
         expect(service.person_details(person_string)).to eq({ '@type' => 'Person',
                                                               'name' => 'Kelce, Travis',
                                                               'sameAs' => 'http://example.org',
                                                               'affiliation' => 'Heartbreak University' })
+      end
+      it 'returns blank affiliation if affiliation is a blank string' do
+        person_string = 'index:1||Kelce, Travis||Affiliation: ||Other Affiliation: ||ORCID: http://example.org'
+        expect(service.person_details(person_string)).to eq({ '@type' => 'Person',
+                                                              'name' => 'Kelce, Travis',
+                                                              'sameAs' => 'http://example.org',
+                                                              'affiliation' => '' })
+      end
+      it 'returns blank affiliation if there are no affiliations' do
+        person_string = 'index:1||Kelce, Travis||ORCID: http://example.org'
+        expect(service.person_details(person_string)).to eq({ '@type' => 'Person',
+                                                              'name' => 'Kelce, Travis',
+                                                              'sameAs' => 'http://example.org',
+                                                              'affiliation' => '' })
       end
     end
 
