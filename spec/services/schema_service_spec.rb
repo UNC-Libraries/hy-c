@@ -149,7 +149,7 @@ RSpec.describe SchemaService do
   end
 
   describe '#plain_text' do
-    let(:string) {"<p>Peter Erspamer explores the 'Jewish question' in German literature.</p>"}
+    let(:string) { "<p>Peter Erspamer explores the 'Jewish question' in German literature.</p>" }
     it 'strips all tags from the string' do
       expect(service.plain_text(string)).to eq("Peter Erspamer explores the 'Jewish question' in German literature.")
     end

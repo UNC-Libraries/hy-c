@@ -67,7 +67,7 @@ module SchemaService
     array = []
     subjects = presenter.subject
     subjects.each do |subject|
-      array << { '@type' => "Thing", 'name' => subject }
+      array << { '@type' => 'Thing', 'name' => subject }
     end
     array
   end
