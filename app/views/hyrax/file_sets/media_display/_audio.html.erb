@@ -3,7 +3,7 @@
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
 
-      <% unless FlipFlop.enabled?(:iiif_av) %>
+      <% unless Flipflop.iiif_av? %>
           <audio controls="controls" class="audiojs" style="width:100%" controlsList="nodownload" preload="auto">
             <source src="<%= hyrax.download_path(file_set, file: 'ogg', mime_type: 'audio/ogg') %>" type="audio/ogg" />
            <source src="<%= hyrax.download_path(file_set, file: 'mp3', mime_type: 'audio/mpeg') %>" type="audio/mpeg" />
