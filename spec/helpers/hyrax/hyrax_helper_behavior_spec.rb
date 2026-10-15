@@ -1,18 +1,16 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require Rails.root.join('app/overrides/controllers/hyrax/my/works_controller_override.rb')
+require Rails.root.join('app/overrides/helpers/hyrax/hyrax_helper_behavior_override.rb')
 
-RSpec.describe Hyrax::My::WorksController, type: :controller do
+RSpec.describe Hyrax::HyraxHelperBehavior, type: :helper do
   let(:ability) { instance_double(Ability) }
-  let(:query_service) { instance_double('query_service') }
 
   before do
-    allow(controller).to receive(:current_ability).and_return(ability)
-    allow(Hyrax).to receive(:query_service).and_return(query_service)
+    allow(Flipflop).to receive(:assign_admin_set?).and_return(true)
   end
 
-  describe '#admin_sets_for_select' do
+  describe '#available_admin_sets_for_creating_works' do
     context 'when depositable admin sets are available' do
       let(:source_ids) { ['z-admin-set', Hyrax::AdminSetCreateService::DEFAULT_ID, 'a-admin-set'] }
       let(:solr_query_service) { instance_double(Hyrax::SolrQueryService) }
@@ -52,10 +50,10 @@ RSpec.describe Hyrax::My::WorksController, type: :controller do
           .and_return(solr_documents)
       end
 
-      it 'builds the select options from Solr without loading admin sets through the query service' do
-        expect(query_service).not_to receive(:find_many_by_ids)
+      it 'builds select options from Solr without loading admin sets through the query service' do
+        expect(Hyrax).not_to receive(:query_service)
 
-        expect(controller.send(:admin_sets_for_select)).to eq(
+        expect(helper.available_admin_sets_for_creating_works(ability: ability)).to eq(
           [
             ['Default Admin Set', Hyrax::AdminSetCreateService::DEFAULT_ID],
             ['Alpha Admin Set', 'a-admin-set'],
@@ -75,9 +73,9 @@ RSpec.describe Hyrax::My::WorksController, type: :controller do
 
       it 'returns an empty list without querying Solr' do
         expect(Hyrax::SolrQueryService).not_to receive(:new)
-        expect(query_service).not_to receive(:find_many_by_ids)
+        expect(Hyrax).not_to receive(:query_service)
 
-        expect(controller.send(:admin_sets_for_select)).to eq([])
+        expect(helper.available_admin_sets_for_creating_works(ability: ability)).to eq([])
       end
     end
   end

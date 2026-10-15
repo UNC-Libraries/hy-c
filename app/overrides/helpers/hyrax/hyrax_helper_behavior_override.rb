@@ -1,12 +1,13 @@
 # frozen_string_literal: true
-# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.2.0/app/controllers/hyrax/my/works_controller.rb
+# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v5.3.0/app/helpers/hyrax/hyrax_helper_behavior.rb
 
-Hyrax::My::WorksController.class_eval do
-  private
+Hyrax::HyraxHelperBehavior.module_eval do
+  def available_admin_sets_for_creating_works(ability:)
+    return [] unless Flipflop.assign_admin_set?
+    return [] unless ability
 
-  def admin_sets_for_select
     source_ids = Hyrax::Collections::PermissionsService.source_ids_for_deposit(
-      ability: current_ability,
+      ability: ability,
       source_type: 'admin_set'
     )
     return [] if source_ids.blank?
