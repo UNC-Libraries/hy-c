@@ -110,7 +110,7 @@ RSpec.describe SchemaService do
 
     describe '#language' do
       it 'returns an array with language hash if present' do
-        solr_doc = SolrDocument.new(attributes.merge({ 'language_tesim' => ['Korean'] }))
+        solr_doc = SolrDocument.new(attributes.merge({ 'language_tesim' => ['http://id.loc.gov/vocabulary/iso639-2/kor'] }))
         presenter = build_presenter(solr_doc)
         expect(service.language(presenter)).to eq([{ '@type' => 'Language', 'name' => 'Korean' }])
       end

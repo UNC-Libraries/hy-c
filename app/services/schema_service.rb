@@ -94,7 +94,7 @@ module SchemaService
     array = []
     languages = presenter.language
     languages.each do |language|
-      array << { '@type' => 'Language', 'name' => language }
+      array << { '@type' => 'Language', 'name' => LanguagesService.label(language) }
     end
     array
   end
