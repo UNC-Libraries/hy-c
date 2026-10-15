@@ -1,0 +1,9 @@
+<%#= https://github.com/samvera/hyrax/blob/main/app/views/hyrax/base/_representative_media.html.erb %>
+<%#= @todo this method has been updated on the main hyrax branch, but it is not yet in a hyrax release. Once hyrax is updated, this can be removed. %>
+<% if defined?(viewer) && viewer %>
+  <%= iiif_viewer_display presenter %>
+<% elsif presenter.representative_id.present? && presenter.representative_presenter.present? %>
+  <%= render media_display_partial(presenter.representative_presenter), file_set: presenter.representative_presenter %>
+<% else %>
+  <%= image_tag 'default.png', class: "canonical-image", alt: 'default representative image' %>
+<% end %>
