@@ -26,7 +26,10 @@ module Hyc
           url: url,
           request: {
             open_timeout: opts.fetch(:open_timeout, 2).to_f,
-            timeout: opts.fetch(:timeout, 10).to_f
+            timeout: opts.fetch(:timeout, 10).to_f,
+            # RSolr passes its already-encoded URI to Faraday. Preserve repeated
+            # parameters such as fq instead of retaining only the final value.
+            params_encoder: Faraday::FlatParamsEncoder
           }
         ) do |conn|
           conn.request :retry,

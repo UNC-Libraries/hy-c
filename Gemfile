@@ -60,7 +60,7 @@ gem 'omniauth-shibboleth', '~> 1.3'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.6.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.2.3.2'
+gem 'rails', '~> 7.2.4'
 gem 'rdf', '~> 3.3.4'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.8.1'
@@ -86,7 +86,7 @@ end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', '~> 11.1.3', platform: :mri
+  gem 'byebug', '~> 13.0.0', platform: :mri
   gem 'database_cleaner'
   gem 'fcrepo_wrapper', '~> 0.9.0'
   gem 'rspec-rails', '~> 7.1.1'
@@ -114,8 +114,8 @@ group :test do
   gem 'ffaker'
   gem 'rspec-mocks'
   gem 'selenium-webdriver', '~> 4.47.0'
-  gem 'shoulda-matchers', '~> 6.5.0'
+  gem 'shoulda-matchers', '~> 8.0.1'
   gem 'simplecov'
   gem 'webrick'
-  gem 'webmock', '~> 3.14.0'
+  gem 'webmock', '~> 3.26.4'
 end

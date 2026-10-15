@@ -16,7 +16,7 @@ RSpec.describe Hyrax::Renderers::PersonAttributeRenderer do
           <dt>Creator display</dt>
           <dd>
             <ul class="tabular">
-              <li itemprop="creator" itemtype="http://schema.org/Person" class="attribute attribute-creator_display">
+              <li class="attribute attribute-creator_display">
                 <span>art, person</span>
                 <ul>
                   <li>College of Arts and Sciences, Department of Art and Art History, Art History</li>
@@ -38,7 +38,7 @@ RSpec.describe Hyrax::Renderers::PersonAttributeRenderer do
           <dt>Creator display</dt>
           <dd>
             <ul class="tabular">
-              <li itemprop="creator" itemtype="http://schema.org/Person" class="attribute attribute-creator_display">
+              <li class="attribute attribute-creator_display">
                 <span>person</span>
                 <ul>
                   <li>School of Medicine, Neurobiology Curriculum</li>
@@ -61,7 +61,7 @@ RSpec.describe Hyrax::Renderers::PersonAttributeRenderer do
           <dt>Creator display</dt>
           <dd>
             <ul class="tabular">
-              <li itemprop="creator" itemtype="http://schema.org/Person" class="attribute attribute-creator_display">
+              <li class="attribute attribute-creator_display">
                 <span>lone, person</span>
               </li>
             </ul>
