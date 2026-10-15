@@ -34,7 +34,7 @@ gem 'hydra-editor', '~> 7.0.0'
 gem 'hydra-pcdm', '~> 1.4.0'
 gem 'hydra-role-management', '~> 1.2.0'
 gem 'hydra-works', '~> 2.3.0'
-gem 'hyrax', '5.3.0'
+gem 'hyrax', '5.3.1'
 # Stub out the GA4 gem that Hyrax 5 requires as a hard dependency.
 # This project uses Matomo; grpc (a native extension that fails on RHEL 9)
 # is pulled in transitively by google-analytics-data and is not needed.
