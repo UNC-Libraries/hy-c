@@ -1,0 +1,4 @@
+<script type="application/ld+json" id="detailed-schema-org">
+  <% url = polymorphic_url([main_app, presenter]) %>
+  <%= raw json_escape(SchemaService.schema_object(presenter, url).to_json) %>
+</script>
