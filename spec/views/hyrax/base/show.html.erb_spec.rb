@@ -18,7 +18,7 @@ RSpec.describe 'hyrax/base/show.html.erb', type: :view do
       title_tesim: ['Best Title'],
       subject_tesim: ['This album was created with love'],
       keyword_tesim: %w[pop country],
-      language_tesim: ['English'],
+      language_tesim: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
       publisher_tesim: ['UNC Publishing']
     )
   end
