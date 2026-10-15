@@ -22,7 +22,7 @@ gem 'clamby', '~> 1.6', require: 'clamby'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0.0'
 gem 'concurrent-ruby', '1.3.4'
-gem 'devise', '~> 4.9.4'
+gem 'devise', '~> 5.0.4'
 gem 'devise-guests', '~> 0.8.1'
 gem 'edtf-humanize', '~> 2.1'
 gem 'faraday-net_http_persistent', '~> 2.3'
