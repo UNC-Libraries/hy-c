@@ -3,6 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe Hyrax::FileSetPresenter do
+  describe '#alt_text' do
+    let(:ability) { instance_double(Ability) }
+    let(:file_set_document) { instance_double(SolrDocument, id: 'file-set-id', alt_text: 'A descriptive alt text') }
+    let(:presenter) { described_class.new(file_set_document, ability) }
+
+    it 'returns alt text from the Solr document' do
+      expect(presenter.alt_text).to eq('A descriptive alt text')
+    end
+  end
+
   describe '#fetch_parent_presenter' do
     let(:ability) { instance_double(Ability) }
     let(:file_set_document) { instance_double(SolrDocument, id: 'file-set-id') }
