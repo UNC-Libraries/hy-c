@@ -3,12 +3,12 @@
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <%# [hyc-override] Hide thumbnail when IIIF viewer present %>
-      <% if !@presenter.respond_to?(:iiif_viewer?) || !@presenter.iiif_viewer? %>
+      <%# if !@presenter.respond_to?(:iiif_viewer?) || !@presenter.iiif_viewer? %>
         <%= document_presenter(file_set)&.thumbnail&.thumbnail_tag(
                     class: "representative-media",
                     alt: file_set.alt_text || "",
                     role: "presentation") %>
-      <% end %>
+      <%# end %>
       <%# [hyc-override] Style download link %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.image_link'),
                   hyrax.download_path(file_set),
