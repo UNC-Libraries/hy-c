@@ -2,6 +2,15 @@
 require 'rails_helper'
 
 RSpec.describe OmniauthController, type: :request do
+  describe 'Devise keyword arguments' do
+    it 'allows arbitrary keyword args in respond_to_on_destroy' do
+      parameters = OmniauthController.instance_method(:respond_to_on_destroy).parameters
+
+      expect(parameters).to include([:key, :non_navigational_status])
+      expect(parameters.any? { |kind, _name| kind == :keyrest }).to be(true)
+    end
+  end
+
   describe '#new' do
     context 'using database auth' do
       it 'is successful' do
