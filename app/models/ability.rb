@@ -45,6 +45,15 @@ class Ability
     current_user.admin?
   end
 
+  # Importer/Exporter permission methods required for Bulkrax 10
+  def can_admin_importers?
+    current_user.admin?
+  end
+
+  def can_admin_exporters?
+    current_user.admin?
+  end
+
   private
 
   # [hyc-override] Overriding review ability to include entity-specific permissions
