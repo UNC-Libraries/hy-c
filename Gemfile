@@ -19,8 +19,6 @@ gem 'bootsnap', '~> 1.24.6'
 gem 'bootstrap', '~> 4.0'
 gem 'bulkrax', '9.5.1'
 gem 'clamby', '~> 1.6', require: 'clamby'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 5.0.0'
 gem 'concurrent-ruby', '1.3.4'
 gem 'devise', '~> 4.9.4'
 gem 'devise-guests', '~> 0.8.1'
