@@ -2,9 +2,10 @@
 # [hyc-override] Adding permissions to admin group
 class Ability
   include Hydra::Ability
-
   include Hyrax::Ability
-  self.ability_logic += [:everyone_can_create_curation_concerns]
+  include Bulkrax::AbilityBehavior
+
+  self.ability_logic += [:everyone_can_create_curation_concerns, :bulkrax_default_abilities]
 
   # Define any customized permissions here.
   def custom_permissions
