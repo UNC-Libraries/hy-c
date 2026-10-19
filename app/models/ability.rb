@@ -2,9 +2,10 @@
 # [hyc-override] Adding permissions to admin group
 class Ability
   include Hydra::Ability
-
   include Hyrax::Ability
-  self.ability_logic += [:everyone_can_create_curation_concerns]
+  include Bulkrax::AbilityBehavior
+
+  self.ability_logic += [:everyone_can_create_curation_concerns, :bulkrax_default_abilities]
 
   # Define any customized permissions here.
   def custom_permissions
@@ -42,6 +43,15 @@ class Ability
 
   # [hyc-override] Added by bulkrax, changed to only permit admins
   def can_export_works?
+    current_user.admin?
+  end
+
+  # Importer/Exporter permission methods required for Bulkrax 10
+  def can_admin_importers?
+    current_user.admin?
+  end
+
+  def can_admin_exporters?
     current_user.admin?
   end
 
