@@ -796,7 +796,7 @@ GEM
     popper_js (1.16.1)
     pp (0.6.4)
       prettyprint
-    prettyprint (0.2.0)
+    prettyprint (0.2.1)
     prism (1.9.0)
     pstore (0.2.1)
     psych (3.3.4)
@@ -1169,7 +1169,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    twitter-typeahead-rails (0.11.1.pre.corejavascript)
+    twitter-typeahead-rails (0.11.1)
       actionpack (>= 3.1)
       jquery-rails
       railties (>= 3.1)
@@ -1309,7 +1309,7 @@ DEPENDENCIES
   sprockets (~> 3.7.2)
   terser (~> 1.1)
   turbolinks (~> 5.2.1)
-  twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
+  twitter-typeahead-rails (= 0.11.1)
   web-console (~> 4.2)
   webmock (~> 3.26.4)
   webrick
