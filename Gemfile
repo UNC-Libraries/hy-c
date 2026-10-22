@@ -74,7 +74,7 @@ gem 'sidekiq-status', '~> 3.0.0'
 gem 'sprockets', '~> 3.7.2'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
-gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
+gem 'twitter-typeahead-rails', '0.11.1'
 # Use terser as compressor for JavaScript assets
 gem 'terser', '~> 1.1'
 
