@@ -162,6 +162,10 @@ class SolrDocument
     self['alternative_title_tesim']
   end
 
+  def alt_text
+    self['alt_text_tesim']
+  end
+
   def arranger
     self['arranger_tesim']
   end
