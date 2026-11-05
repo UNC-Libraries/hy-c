@@ -64,7 +64,7 @@ gem 'rdf', '~> 3.3.4'
 gem 'redis', '~> 4.8.1'
 gem 'redlock' # version determined by hyrax
 gem 'riiif', '~> 2.8.1'
-gem 'roo', '~>2.9.0'
+gem 'roo', '~>3.0.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0.0'
