@@ -1,0 +1,42 @@
+<%# https://github.com/samvera/hyrax/blob/hyrax-v5.3.1/app/views/hyrax/file_sets/_form.html.erb %>
+<%# [hyc override] Add alternative text to editable fields %>
+<%= simple_form_for [main_app, curation_concern], html: { multipart: true, class: 'nav-safety' } do |f| %>
+  <fieldset class="required">
+    <legend>
+      <%= t('.title') %>
+    </legend>
+    <%= text_field_tag 'file_set[title][]', curation_concern.title.first, class: 'form-control', required: true %>
+  </fieldset>
+
+  <fieldset class="mt-2">
+    <legend>
+      <%= t("simple_form.labels.file_set.alt_text") %>
+    </legend>
+    <div class="form-group">
+      <%= text_field_tag('file_set[alt_text]', curation_concern.alt_text.to_s, class: 'form-control') %>
+    </div>
+  </fieldset>
+
+  <fieldset class="mt-2">
+    <legend>
+      <%= t("simple_form.labels.file_set.language") %>
+    </legend>
+    <div class="form-group">
+      <span class="form-text"><%= sanitize(t("simple_form.hints.file_set.language")) %></span>
+      <%= text_field_tag 'file_set[language][]', curation_concern.language.first, class: 'form-control' %>
+    </div>
+  </fieldset>
+  <% if Hyrax.config.file_set_include_metadata? %>
+    <%= render 'records/edit_fields/transcript_ids', f: f, curation_concern: curation_concern %>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-12 form-actions">
+      <%= f.submit(
+            (curation_concern.persisted? ? t('.save') : t('.attach_to', parent: @parent.human_readable_type)),
+            class: 'btn btn-primary'
+          ) %>
+      <%= link_to t('.cancel'), parent_path(@parent), class: 'btn btn-link' %>
+    </div>
+  </div>
+<% end %>

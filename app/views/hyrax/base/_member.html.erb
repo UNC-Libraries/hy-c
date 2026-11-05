@@ -1,7 +1,7 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_member.html.erb %>
 <tr class="<%= dom_class(member) %> attributes">
   <td class="thumbnail">
-    <%= document_presenter(member).thumbnail.thumbnail_tag(alt: 'file details') %>
+    <%= document_presenter(member).thumbnail.thumbnail_tag(alt: member.alt_text || "") %>
   </td>
   <td class="attribute attribute-filename ensure-wrapped"><%= link_to(member.link_name, contextual_path(member, @presenter)) %></td>
   <%# [hyc-override] show date_created instead of date_uploaded if present %>

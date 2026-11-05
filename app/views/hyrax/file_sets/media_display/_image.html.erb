@@ -6,7 +6,7 @@
       <% if !@presenter.respond_to?(:iiif_viewer?) || !@presenter.iiif_viewer? %>
         <%= document_presenter(file_set)&.thumbnail&.thumbnail_tag(
                     class: "representative-media",
-                    alt: "",
+                    alt: file_set.alt_text || "",
                     role: "presentation") %>
       <% end %>
       <%# [hyc-override] Style download link %>
