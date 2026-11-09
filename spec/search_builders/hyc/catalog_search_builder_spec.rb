@@ -8,6 +8,35 @@ RSpec.describe Hyc::CatalogSearchBuilder do
   let(:solr_params) { Blacklight::Solr::Request.new }
   let(:all_fields_edismax) { CatalogController.blacklight_config.search_fields['all_fields'].clause_params[:edismax] }
 
+  describe '#unlimited_advanced_search_facets' do
+    let(:blacklight_params) { {} }
+    let(:controller) { instance_double(CatalogController, action_name: action_name) }
+
+    before do
+      allow(builder).to receive(:search_state).and_return(instance_double(Blacklight::SearchState, controller: controller))
+      solr_params['f.keyword_sim.facet.limit'] = 6
+      solr_params['f.date_issued_isim.facet.limit'] = 6
+      builder.unlimited_advanced_search_facets(solr_params)
+    end
+
+    context 'on the advanced search form' do
+      let(:action_name) { 'advanced_search' }
+
+      it 'removes limits for multi-select facets but not the date facet' do
+        expect(solr_params['f.keyword_sim.facet.limit']).to eq(-1)
+        expect(solr_params['f.date_issued_isim.facet.limit']).to eq(6)
+      end
+    end
+
+    context 'on search results' do
+      let(:action_name) { 'index' }
+
+      it 'leaves ordinary facet limits unchanged' do
+        expect(solr_params['f.keyword_sim.facet.limit']).to eq(6)
+      end
+    end
+  end
+
   describe '#join_works_from_files' do
     subject(:join_works_from_files) { builder.join_works_from_files(solr_params) }
 

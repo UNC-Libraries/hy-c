@@ -1,3 +1,6 @@
 en:
   blacklight:
     application_name: 'Blacklight'
+    advanced_search:
+      facet_placeholder: 'Select option(s)'
+      facet_field_limit: 'Select values from no more than %{count} facet fields.'
