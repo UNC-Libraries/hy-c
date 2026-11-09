@@ -92,16 +92,6 @@ class CatalogController < ApplicationController
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
-    config.advanced_search[:form_solr_parameters] ||= {}
-    config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        %w[member_of_collections_ssim date_issued_isim affiliation_label_sim edition_sim wcag_compliance_sim]
-    config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.wcag_compliance_sim.facet.limit'] ||= -1
-
-    # config.advanced_search[:form_facet_partial] ||= 'advanced_search_facets_as_select'
 
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     config.show.partials.insert(1, :openseadragon)
@@ -169,6 +159,12 @@ class CatalogController < ApplicationController
     # The generic_type isn't displayed on the facet list
     # It's used to give a label to the filter that comes from the user profile
     config.add_facet_field solr_name('generic_type', :facetable), if: false
+
+    config.facet_fields.each_value do |field|
+      next if field.range || field.include_in_advanced_search == false
+
+      field.advanced_search_component = AdvancedSearch::MultiSelectFacetComponent
+    end
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
