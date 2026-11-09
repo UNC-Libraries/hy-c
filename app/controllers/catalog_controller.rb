@@ -3,6 +3,7 @@ class CatalogController < ApplicationController
   MAX_SEARCH_PAGE = 20
   MAX_FACET_PAGE = 20
   MAX_SEARCH_FACET_FIELDS = 5
+  MAX_ADVANCED_FACET_VALUES = 5
   MAX_SEARCH_RESULTS_PER_PAGE = 20
 
   def self.turnstile_enabled?
@@ -11,6 +12,7 @@ class CatalogController < ApplicationController
   prepend_before_action :reject_dest_query_param
   prepend_before_action :clamp_search_result_size_params, only: :index
   prepend_before_action :enforce_search_facet_field_limit, only: :index
+  prepend_before_action :enforce_advanced_facet_limits, only: :index
   prepend_before_action :enforce_search_page_limit, only: :index
   prepend_before_action :enforce_facet_page_limit, only: :facet
   before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
@@ -602,6 +604,30 @@ class CatalogController < ApplicationController
     return unless selected_facet_field_count > MAX_SEARCH_FACET_FIELDS
 
     head :not_found
+  end
+
+  def enforce_advanced_facet_limits
+    return unless params.delete(:advanced_facet_form) == '1'
+
+    counts = Hash.new(0)
+    %i[f f_inclusive].each do |key|
+      facet_params = params[key]
+      next unless facet_params.is_a?(ActionController::Parameters) || facet_params.is_a?(Hash)
+
+      facet_params.each_pair do |field, values|
+        values = values.values if values.is_a?(ActionController::Parameters) || values.is_a?(Hash)
+        counts[field.to_s] += Array.wrap(values).flatten.compact_blank.size
+      end
+    end
+
+    error = if counts.values.any? { |count| count > MAX_ADVANCED_FACET_VALUES }
+              I18n.t('blacklight.advanced_search.facet_value_limit', count: MAX_ADVANCED_FACET_VALUES)
+            elsif counts.count { |_field, count| count.positive? } > MAX_SEARCH_FACET_FIELDS
+              I18n.t('blacklight.advanced_search.facet_field_limit', count: MAX_SEARCH_FACET_FIELDS)
+            end
+    return unless error
+
+    redirect_to search_action_path(search_state.params_for_search.merge(action: 'advanced_search')), alert: error
   end
 
   def enforce_facet_page_limit

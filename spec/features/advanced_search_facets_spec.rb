@@ -94,4 +94,41 @@ RSpec.describe 'Advanced search facets', type: :feature do
     expect(page).to have_current_path('/catalog/advanced')
     expect(page).to have_css('.advanced-search-facet-error', text: 'no more than 5 facet fields')
   end
+
+  it 'blocks more than five values in one facet and allows submission after removing one', js: true do
+    visit '/catalog/advanced'
+    find('.blacklight-keyword_sim .collapse-toggle').click
+    6.times do |index|
+      page.execute_script(
+        'document.querySelector(arguments[0]).tomselect.addItem(arguments[1])',
+        keyword_select, "Facet keyword #{format('%02d', index + 1)}"
+      )
+    end
+
+    click_button 'Search'
+    expect(page).to have_current_path('/catalog/advanced')
+    expect(page).to have_css('.advanced-search-facet-value-error', text: 'no more than 5 values')
+    expect(page).not_to have_css('.advanced-search-facet-error')
+
+    page.execute_script('document.querySelector(arguments[0]).tomselect.removeItem(arguments[1])', keyword_select, 'Facet keyword 06')
+    click_button 'Search'
+    expect(page).to have_current_path(%r{/catalog\?})
+    expect(page).to have_content('Facet test work 1')
+    expect(page).to have_content('Facet test work 5')
+    expect(page).not_to have_content('Facet test work 6')
+  end
+
+  it 'rejects more than five values without JavaScript and preserves the selections' do
+    visit '/catalog/advanced'
+    fill_in('All Fields', with: 'test')
+    6.times do |index|
+      find(keyword_select).find('option', text: "Facet keyword #{format('%02d', index + 1)} (1)").select_option
+    end
+    click_button 'Search'
+
+    expect(page).to have_current_path(%r{/catalog/advanced\?})
+    expect(page).to have_content('Select no more than 5 values within each facet field.')
+    expect(find(keyword_select).value.size).to eq(6)
+    expect(find_field('All Fields').value).to eq('test')
+  end
 end

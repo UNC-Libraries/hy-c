@@ -30,23 +30,29 @@ document.addEventListener('turbolinks:load', function () {
       let facets = form.querySelector('#advanced_search_facets');
       if (!facets) return;
 
-      // Collect the field names from non-empty form entries into a Set, so each field is included only once.
-      let fields = new Set();
+      // Count submitted values by field, including existing ordinary and inclusive filters.
+      let fields = new Map();
       new FormData(form).forEach(function (value, name) {
         // Match names like "f[name][]" or "f_inclusive[name][]".
         let match = name.match(/^f(?:_inclusive)?\[([^\]]+)]\[]$/);
         // If the name matches and its value isn't blank, add the captured field name
         if (match && value.trim()) {
-          fields.add(match[1]);
+          fields.set(match[1], (fields.get(match[1]) || 0) + 1);
         }
       });
 
       // The form's data-max-facet-fields comes from the server's search limit.
       let error = form.querySelector('.advanced-search-facet-error');
+      let valueError = form.querySelector('.advanced-search-facet-value-error');
       error.hidden = fields.size <= Number(facets.dataset.maxFacetFields);
-      if (!error.hidden) {
+      valueError.hidden = !Array.from(fields.values()).some(function (count) {
+        return count > Number(facets.dataset.maxFacetValues);
+      });
+      if (!error.hidden || !valueError.hidden) {
         event.preventDefault();
-        error.scrollIntoView({ block: 'center' });
+        // Stop propagation of the event to prevent Rails UJS from disabling the submit button even for a canceled submission.
+        event.stopPropagation();
+        (error.hidden ? valueError : error).scrollIntoView({ block: 'center' });
       }
     });
   });
@@ -61,5 +67,7 @@ document.addEventListener('turbolinks:before-cache', function () {
     delete form.dataset.facetLimitBound;
     let error = form.querySelector('.advanced-search-facet-error');
     if (error) error.hidden = true;
+    let valueError = form.querySelector('.advanced-search-facet-value-error');
+    if (valueError) valueError.hidden = true;
   });
 });

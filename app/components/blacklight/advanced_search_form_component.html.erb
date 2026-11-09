@@ -9,8 +9,9 @@
 <% end %>
 
 <%= form_tag @url, method: @method, class: @classes.join(' '), role: 'search', 'aria-label' => t('blacklight.search.form.submit') do %>
-  <%# Preserve existing search parameters without changing the original search state. %>
-  <% hidden_params = @params.deep_dup.with_indifferent_access %>
+  <%# Preserve existing search parameters without changing the original search state.
+      Remove any previous form marker so only one fresh marker is submitted below. %>
+  <% hidden_params = @params.deep_dup.with_indifferent_access.except(:advanced_facet_form) %>
   <% if hidden_params[:f_inclusive] %>
     <%# Multi-select controls submit their own f_inclusive values. Omitting their hidden
         fields prevents removed selections from being submitted again; other filters remain. %>
@@ -19,6 +20,9 @@
     <% end %>
   <% end %>
   <%= render_hash_as_hidden_fields(hidden_params) %>
+  <%# Identifies this submission so the controller enforces advanced-search facet limits,
+      including when JavaScript is disabled, without changing ordinary catalog searches. %>
+  <%= hidden_field_tag :advanced_facet_form, '1' %>
 
   <div class="input-criteria">
     <div class="query-criteria mb-4">
@@ -36,12 +40,15 @@
     <% if search_filter_controls? %>
       <div class="limit-criteria mb-4">
         <h2 class="limit-criteria-heading h3"><%= t('blacklight.advanced_search.form.limit_criteria_heading_html') %></h2>
-        <%# Show the server's maximum and provide an error for client-side validation. %>
+        <%# Explain facet limits before submission: total facet fields and values per field. %>
         <p><%= t('blacklight.advanced_search.facet_field_limit', count: CatalogController::MAX_SEARCH_FACET_FIELDS) %></p>
+        <p><%= t('blacklight.advanced_search.facet_value_limit', count: CatalogController::MAX_ADVANCED_FACET_VALUES) %></p>
+        <%# JavaScript reveals the relevant alert when a limit is exceeded. %>
         <div class="alert alert-danger advanced-search-facet-error" role="alert" hidden><%= t('blacklight.advanced_search.facet_field_limit', count: CatalogController::MAX_SEARCH_FACET_FIELDS) %></div>
+        <div class="alert alert-danger advanced-search-facet-value-error" role="alert" hidden><%= t('blacklight.advanced_search.facet_value_limit', count: CatalogController::MAX_ADVANCED_FACET_VALUES) %></div>
 
-        <%# JavaScript reads this limit to check the number of selected facet fields before submission. %>
-        <div id="advanced_search_facets" class="limit_input row" data-max-facet-fields="<%= CatalogController::MAX_SEARCH_FACET_FIELDS %>">
+        <%# JavaScript uses the server limits to validate fields and values before submission. %>
+        <div id="advanced_search_facets" class="limit_input row" data-max-facet-fields="<%= CatalogController::MAX_SEARCH_FACET_FIELDS %>" data-max-facet-values="<%= CatalogController::MAX_ADVANCED_FACET_VALUES %>">
           <div class="advanced-facet-limits panel-group col-md-9 offset-md-3">
             <% search_filter_controls.each do |control| %>
               <%= control %>
