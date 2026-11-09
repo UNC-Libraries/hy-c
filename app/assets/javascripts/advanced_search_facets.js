@@ -5,7 +5,7 @@ document.addEventListener('turbolinks:load', function () {
 
     let select = new TomSelect(element, {
       // Show checkboxes in the dropdown and provide a button to clear selections.
-      plugins: ['checkbox_options', 'clear_button'],
+      plugins: ['checkbox_options', 'clear_button', 'remove_button'],
       // Include values beyond Tom Select's default option limit.
       maxOptions: null,
       // Keep selected options visible so their checkboxes can be unchecked.
