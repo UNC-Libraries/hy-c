@@ -4,3 +4,4 @@ en:
     advanced_search:
       facet_placeholder: 'Select option(s)'
       facet_field_limit: 'Select values from no more than %{count} facet fields.'
+      facet_value_limit: 'Select no more than %{count} values within each facet field.'

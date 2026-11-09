@@ -76,6 +76,23 @@ RSpec.describe CatalogController, type: :controller do
       expect(response).not_to have_http_status(:not_found)
     end
 
+    it 'counts ordinary and inclusive selections together for advanced forms' do
+      get :index, params: {
+        advanced_facet_form: '1',
+        f: { keyword_sim: %w[one two three] },
+        f_inclusive: { keyword_sim: %w[four five six] }
+      }
+
+      expect(response).to redirect_to(/\/catalog\/advanced/)
+      expect(flash[:alert]).to include('no more than 5 values')
+    end
+
+    it 'preserves existing non-advanced searches with more than five values' do
+      get :index, params: { f_inclusive: { keyword_sim: %w[one two three four five six] } }
+
+      expect(response).not_to have_http_status(:redirect)
+    end
+
     def facet_params_for(count)
       CatalogController.blacklight_config.facet_fields.keys.first(count).each_with_object({}) do |field, params|
         params[field] = ['test']

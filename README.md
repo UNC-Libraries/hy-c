@@ -20,7 +20,8 @@
 * Updated deposit/edit form with combined files and metadata tabs
 * Import scripts for new ProQuest deposits
 * Merges old and new analytics data from Google Analytics
-* Advanced search loads all values for its searchable facet dropdowns; facets with large numbers of options can increase Solr load and page size. Searches remain limited to five facet fields.
+* Advanced search loads all values for its searchable facet dropdowns; facets with large numbers of options can increase Solr load and page size.
+* Advanced searches are limited to five facet fields and five selected values per field.
 
 ##### Sage or Proquest ingest rake task
 The preferred way to perform sage and proquest ingests is via the "Ingest from FTP" action in the dashboard. However, they can still be executed from the commandline as follows:
