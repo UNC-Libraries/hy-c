@@ -3,18 +3,31 @@ module Hyc
   class CatalogSearchBuilder < Hyrax::CatalogSearchBuilder
     include BlacklightRangeLimit::RangeLimitBuilder
 
+    ADVANCED_SEARCH_FACET_PAGE_SIZE = 50
+
     self.default_processor_chain += [
-      :unlimited_advanced_search_facets,
+      :lazy_advanced_search_facets,
       :join_works_from_files
     ]
 
-    def unlimited_advanced_search_facets(solr_parameters)
-      return unless search_state.controller&.action_name == 'advanced_search'
+    def lazy_advanced_search_facets(solr_parameters)
+      advanced_search_form = search_state.controller&.action_name == 'advanced_search'
+      advanced_search_facet = blacklight_params[:advanced_search_facet] == '1'
+      return unless advanced_search_form || advanced_search_facet
 
       blacklight_config.facet_fields.each_value do |field|
         next unless field.advanced_search_component == AdvancedSearch::MultiSelectFacetComponent
+        next if advanced_search_facet && field.key != blacklight_params[:id]
 
-        solr_parameters[:"f.#{field.field}.facet.limit"] = -1
+        solr_parameters[:"f.#{field.field}.facet.limit"] =
+          advanced_search_form ? 0 : ADVANCED_SEARCH_FACET_PAGE_SIZE + 1
+        next unless advanced_search_facet
+
+        # Facet endpoints normally request every configured field; return only this dropdown's values.
+        solr_parameters[:'facet.field'] = [field.field]
+        page = blacklight_params[:'facet.page'].to_i
+        solr_parameters[:"f.#{field.field}.facet.offset"] =
+          [page - 1, 0].max * ADVANCED_SEARCH_FACET_PAGE_SIZE
       end
     end
 

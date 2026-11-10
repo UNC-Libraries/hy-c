@@ -1,4 +1,11 @@
 // Enhance the native multi-selects while retaining their standard form values.
+// Bootstrap emits this event once a facet panel has finished opening.
+$(document).on('shown.bs.collapse', '.collapse', function () {
+  this.querySelectorAll('.advanced-search-multi-select').forEach(function (element) {
+    if (element.loadFacetValues) element.loadFacetValues();
+  });
+});
+
 document.addEventListener('turbolinks:load', function () {
   document.querySelectorAll('.advanced-search-multi-select').forEach(function (element) {
     if (element.tomselect) return;
@@ -14,13 +21,77 @@ document.addEventListener('turbolinks:load', function () {
         // data contains the selected option; escape safely encodes its label as HTML.
         item: function (data, escape) {
           // Selected items show the facet label without the option's result count.
-          return '<div>' + escape(data.$option.dataset.label) + '</div>';
+          return '<div>' + escape((data.$option && data.$option.dataset.label) || data.label || data.text) + '</div>';
         }
       }
     });
     // Tom Select creates its own combobox and list, so label those as well.
     select.focus_node.setAttribute('aria-label', element.getAttribute('aria-label'));
     select.dropdown_content.setAttribute('aria-label', element.getAttribute('aria-label'));
+
+    // Load this field's values only when its containing advanced-search facet is expanded.
+    let page = 0;
+    let loading = false;
+    let hasMore = true;
+    element.loadFacetValues = function () {
+      if (loading || !hasMore) return;
+
+      loading = true;
+      let params = new URLSearchParams(new FormData(element.closest('form')));
+      params.set('advanced_search_facet', '1');
+      params.set('facet.page', String(page + 1));
+      params.delete('f[' + element.dataset.facetKey + '][]');
+      params.delete('f_inclusive[' + element.dataset.facetKey + '][]');
+
+      fetch(element.dataset.facetUrl + '?' + params.toString(), {
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Facet request failed with status ' + response.status);
+          return response.json();
+        })
+        .then(function (data) {
+          let facets = data.response.facets;
+          facets.items.forEach(function (item) {
+            if (Object.prototype.hasOwnProperty.call(select.options, item.value)) return;
+
+            let label = item.label || item.value;
+            select.addOption({
+              value: item.value,
+              text: label + ' (' + new Intl.NumberFormat().format(item.hits) + ')',
+              label: label
+            });
+            let option = Array.from(element.options).find(function (candidate) {
+              return candidate.value === item.value;
+            });
+            if (option) option.dataset.label = label;
+          });
+          page += 1;
+          hasMore = facets.items.length === facets.limit;
+        })
+        .catch(function (error) {
+          let message = select.wrapper.nextElementSibling;
+          if (!message || !message.classList.contains('advanced-search-facet-load-error')) {
+            message = document.createElement('div');
+            message.className = 'advanced-search-facet-load-error alert alert-danger';
+            message.setAttribute('role', 'alert');
+            select.wrapper.insertAdjacentElement('afterend', message);
+          }
+          message.textContent = element.dataset.facetLoadError;
+          message.hidden = false;
+          console.error(error);
+        })
+        .finally(function () {
+          loading = false;
+        });
+    };
+
+    // Subsequent values load as the user scrolls to the end of the select dropdown.
+    select.dropdown_content.addEventListener('scroll', function () {
+      let dropdown = select.dropdown_content;
+      if (dropdown.scrollTop + dropdown.clientHeight >= dropdown.scrollHeight - 20) element.loadFacetValues();
+    });
+    select.on('dropdown_open', element.loadFacetValues);
   });
 
   document.querySelectorAll('form.advanced').forEach(function (form) {

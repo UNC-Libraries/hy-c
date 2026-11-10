@@ -31,27 +31,33 @@ RSpec.describe 'Advanced search facets', type: :feature do
     solr.commit
   end
 
-  it 'loads all facet values and preserves and removes inclusive selections without JavaScript' do
+  it 'loads values when a facet opens and preserves and removes inclusive selections', js: true do
     visit '/catalog/advanced'
-    expect(page).to have_css("#{keyword_select} option", minimum: 55)
-    expect(page).to have_css("#{keyword_select} option", text: 'Facet keyword 55 (1)')
+    select_element = find(keyword_select, visible: :all)
+    expect(select_element).to have_css('option', count: 0, visible: :all)
+    creator_select = find('select[name="f_inclusive[creator_label_sim][]"]', visible: :all)
+    expect(creator_select).to have_css('option', count: 0, visible: :all)
     expect(page).not_to have_css('.blacklight-keyword_sim .more_facets')
     expect(page).to have_field('range_date_issued_isim_begin')
 
-    find(keyword_select).find('option', text: 'Facet keyword 01 (1)').select_option
-    find(keyword_select).find('option', text: 'Facet keyword 55 (1)').select_option
+    find('.blacklight-keyword_sim .collapse-toggle').click
+    expect(select_element).to have_css('option', minimum: 50, visible: :all)
+    expect(select_element).not_to have_css('option', text: 'Facet keyword 55 (1)', visible: :all)
+    expect(creator_select).to have_css('option', count: 0, visible: :all)
+    select_element.find('option', text: 'Facet keyword 01 (1)', visible: :all).select_option
+    select_element.find('option', text: 'Facet keyword 50 (1)', visible: :all).select_option
     click_button 'Search'
     expect(page).to have_content('Facet test work 1')
-    expect(page).to have_content('Facet test work 55')
-    expect(page).not_to have_content('Facet test work 2')
+    expect(page).to have_content('Facet test work 50')
+    expect(page).not_to have_content('Facet test work 51')
 
     click_link 'Advanced search', match: :first
-    expect(find(keyword_select).value).to match_array(['Facet keyword 01', 'Facet keyword 55'])
+    expect(find(keyword_select, visible: :all).value).to match_array(['Facet keyword 01', 'Facet keyword 50'])
     expect(page).not_to have_css('form.advanced input[type=hidden][name^="f_inclusive[keyword_sim]"]', visible: :all)
-    find(keyword_select).find('option', text: 'Facet keyword 01 (1)').unselect_option
+    find(keyword_select, visible: :all).find('option', text: 'Facet keyword 01 (1)', visible: :all).unselect_option
     click_button 'Search'
     expect(page).not_to have_content('Facet test work 1')
-    expect(page).to have_content('Facet test work 55')
+    expect(page).to have_content('Facet test work 50')
   end
 
   it 'offers a searchable dropdown and retains values beyond the first 50 options', js: true do
@@ -62,7 +68,8 @@ RSpec.describe 'Advanced search facets', type: :feature do
     wrapper = select_element.sibling('.ts-wrapper')
     expect(wrapper.find('[role=combobox]')['aria-label']).to eq(select_element['aria-label'])
     wrapper.find('.ts-control input').click
-    wrapper.find('.ts-control input').fill_in with: 'Facet keyword 55'
+    dropdown = wrapper.find('.ts-dropdown-content')
+    page.execute_script('arguments[0].scrollTop = arguments[0].scrollHeight; arguments[0].dispatchEvent(new Event("scroll"));', dropdown)
     expect(wrapper).to have_css('.option', text: 'Facet keyword 55')
     wrapper.find('.option', text: 'Facet keyword 55').click
     expect(wrapper).to have_css('.item', text: 'Facet keyword 55')
@@ -84,6 +91,9 @@ RSpec.describe 'Advanced search facets', type: :feature do
       'advisor_label_sim' => 'Facet advisor',
       'edition_sim' => 'Facet version'
     }.each do |field, value|
+      find(".blacklight-#{field} .collapse-toggle").click
+      select = find("select[name='f_inclusive[#{field}][]']", visible: :all)
+      expect(select).to have_css('option', text: value, visible: :all)
       page.execute_script(
         'document.querySelector(arguments[0]).tomselect.addItem(arguments[1])',
         "select[name='f_inclusive[#{field}][]']", value
@@ -118,17 +128,21 @@ RSpec.describe 'Advanced search facets', type: :feature do
     expect(page).not_to have_content('Facet test work 6')
   end
 
-  it 'rejects more than five values without JavaScript and preserves the selections' do
+  it 'preserves selections rejected by the server after lazy loading', js: true do
     visit '/catalog/advanced'
+    find('.blacklight-keyword_sim .collapse-toggle').click
+    select = find(keyword_select, visible: :all)
+    expect(select).to have_css('option', minimum: 50, visible: :all)
     fill_in('All Fields', with: 'test')
     6.times do |index|
-      find(keyword_select).find('option', text: "Facet keyword #{format('%02d', index + 1)} (1)").select_option
+      select.find('option', text: "Facet keyword #{format('%02d', index + 1)} (1)", visible: :all).select_option
     end
+    page.execute_script("document.querySelector('form.advanced').addEventListener('submit', event => event.stopImmediatePropagation(), true)")
     click_button 'Search'
 
     expect(page).to have_current_path(%r{/catalog/advanced\?})
     expect(page).to have_content('Select no more than 5 values within each facet field.')
-    expect(find(keyword_select).value.size).to eq(6)
+    expect(find(keyword_select, visible: :all).value.size).to eq(6)
     expect(find_field('All Fields').value).to eq('test')
   end
 end

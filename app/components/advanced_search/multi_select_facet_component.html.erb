@@ -5,7 +5,7 @@
   <% component.with_body do %>
     <select <%= tag.attributes(select_attributes) %>>
       <% presenters.each do |presenter| %>
-        <option <%= tag.attributes(option_attributes(presenter: presenter)) %>><%= strip_tags(presenter.label.to_s) %> (<%= number_with_delimiter(presenter.hits) %>)</option>
+        <option <%= tag.attributes(option_attributes(presenter: presenter)) %>><%= strip_tags(presenter.label.to_s) %><%= " (#{number_with_delimiter(presenter.hits)})" if presenter.hits.present? %></option>
       <% end %>
     </select>
   <% end %>
