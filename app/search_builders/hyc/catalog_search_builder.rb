@@ -3,19 +3,35 @@ module Hyc
   class CatalogSearchBuilder < Hyrax::CatalogSearchBuilder
     include BlacklightRangeLimit::RangeLimitBuilder
 
+    # Keep the initial advanced-search response small; the extra value tells Blacklight whether another page exists.
+    ADVANCED_SEARCH_FACET_PAGE_SIZE = 50
+
     self.default_processor_chain += [
-      :unlimited_advanced_search_facets,
+      :limit_advanced_search_facets,
       :join_works_from_files
     ]
 
-    def unlimited_advanced_search_facets(solr_parameters)
-      return unless search_state.controller&.action_name == 'advanced_search'
+    def limit_advanced_search_facets(solr_parameters)
+      # Ordinary catalog facets keep their existing limits; only advanced-search multi-selects are paged here.
+      return unless advanced_search_facet_request?
 
       blacklight_config.facet_fields.each_value do |field|
         next unless field.advanced_search_component == AdvancedSearch::MultiSelectFacetComponent
 
-        solr_parameters[:"f.#{field.field}.facet.limit"] = -1
+        solr_parameters[:"f.#{field.field}.facet.limit"] = ADVANCED_SEARCH_FACET_PAGE_SIZE + 1
+        next unless blacklight_params[:advanced_search_facet] == '1'
+
+        # Blacklight's facet.page is one-based, while Solr's facet.offset is a value offset.
+        page = blacklight_params[:'facet.page'].to_i
+        solr_parameters[:"f.#{field.field}.facet.offset"] =
+          [page - 1, 0].max * ADVANCED_SEARCH_FACET_PAGE_SIZE
       end
+    end
+
+    def advanced_search_facet_request?
+      # The marker lets facet JSON requests use the same paging without changing regular facet requests.
+      search_state.controller&.action_name == 'advanced_search' ||
+        blacklight_params[:advanced_search_facet] == '1'
     end
 
     # Adds full text searching for :all_fields

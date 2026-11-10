@@ -14,13 +14,85 @@ document.addEventListener('turbolinks:load', function () {
         // data contains the selected option; escape safely encodes its label as HTML.
         item: function (data, escape) {
           // Selected items show the facet label without the option's result count.
-          return '<div>' + escape(data.$option.dataset.label) + '</div>';
+          return '<div>' + escape(data.label || (data.$option && data.$option.dataset.label) || data.text) + '</div>';
         }
       }
     });
     // Tom Select creates its own combobox and list, so label those as well.
     select.focus_node.setAttribute('aria-label', element.getAttribute('aria-label'));
     select.dropdown_content.setAttribute('aria-label', element.getAttribute('aria-label'));
+
+    let page = 0;
+    let loading = false;
+    let hasMore = true;
+    let form = element.closest('form');
+    let loadMore = function () {
+      if (loading || !hasMore) return;
+
+      loading = true;
+      // Reuse the form's query and other filters so each page reflects the current advanced-search context.
+      let params = new URLSearchParams(new FormData(form));
+      params.set('advanced_search_facet', '1');
+      params.set('facet.page', String(page + 1));
+      params.delete('f[' + element.dataset.facetKey + '][]');
+      params.delete('f_inclusive[' + element.dataset.facetKey + '][]');
+      let loaded = false;
+
+      fetch(element.dataset.facetUrl + '?' + params.toString(), {
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Facet request failed with status ' + response.status);
+          return response.json();
+        })
+        .then(function (data) {
+          let facets = data.response.facets;
+          // Add returned options to the native select so both Tom Select and normal form submission see them.
+          facets.items.forEach(function (item) {
+            if (Object.prototype.hasOwnProperty.call(select.options, item.value)) return;
+
+            let label = item.label || item.value;
+            let text = label + ' (' + new Intl.NumberFormat().format(item.hits) + ')';
+            select.addOption({ value: item.value, text: text, label: label });
+            let option = Array.from(element.options).find(function (candidate) {
+              return candidate.value === item.value;
+            });
+            if (option) option.dataset.label = label;
+          });
+          page += 1;
+          // The server requests one sentinel item; a full page means more values may be available.
+          hasMore = facets.items.length === facets.limit;
+          loaded = true;
+
+          let error = select.wrapper.nextElementSibling;
+          if (error && error.classList.contains('advanced-search-facet-load-error')) error.hidden = true;
+        })
+        .catch(function (error) {
+          // Keep the dropdown usable and show a visible error instead of silently ending pagination.
+          let message = select.wrapper.nextElementSibling;
+          if (!message || !message.classList.contains('advanced-search-facet-load-error')) {
+            message = document.createElement('div');
+            message.className = 'advanced-search-facet-load-error alert alert-danger';
+            message.setAttribute('role', 'alert');
+            select.wrapper.insertAdjacentElement('afterend', message);
+          }
+          message.textContent = element.dataset.facetLoadError;
+          message.hidden = false;
+          console.error(error);
+        })
+        .finally(function () {
+          loading = false;
+          let dropdown = select.dropdown_content;
+          if (loaded && select.isOpen && dropdown.scrollTop + dropdown.clientHeight >= dropdown.scrollHeight - 20) loadMore();
+        });
+    };
+
+    select.dropdown_content.addEventListener('scroll', function () {
+      let dropdown = select.dropdown_content;
+      // Fetch the next page before the user reaches the end of the current options.
+      if (dropdown.scrollTop + dropdown.clientHeight >= dropdown.scrollHeight - 20) loadMore();
+    });
+    select.on('dropdown_open', loadMore);
   });
 
   document.querySelectorAll('form.advanced').forEach(function (form) {

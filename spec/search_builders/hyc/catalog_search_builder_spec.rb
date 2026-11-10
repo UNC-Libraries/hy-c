@@ -8,7 +8,7 @@ RSpec.describe Hyc::CatalogSearchBuilder do
   let(:solr_params) { Blacklight::Solr::Request.new }
   let(:all_fields_edismax) { CatalogController.blacklight_config.search_fields['all_fields'].clause_params[:edismax] }
 
-  describe '#unlimited_advanced_search_facets' do
+  describe '#limit_advanced_search_facets' do
     let(:blacklight_params) { {} }
     let(:controller) { instance_double(CatalogController, action_name: action_name) }
 
@@ -16,14 +16,14 @@ RSpec.describe Hyc::CatalogSearchBuilder do
       allow(builder).to receive(:search_state).and_return(instance_double(Blacklight::SearchState, controller: controller))
       solr_params['f.keyword_sim.facet.limit'] = 6
       solr_params['f.date_issued_isim.facet.limit'] = 6
-      builder.unlimited_advanced_search_facets(solr_params)
+      builder.limit_advanced_search_facets(solr_params)
     end
 
     context 'on the advanced search form' do
       let(:action_name) { 'advanced_search' }
 
-      it 'removes limits for multi-select facets but not the date facet' do
-        expect(solr_params['f.keyword_sim.facet.limit']).to eq(-1)
+      it 'limits multi-select facets to a page but not the date facet' do
+        expect(solr_params['f.keyword_sim.facet.limit']).to eq(described_class::ADVANCED_SEARCH_FACET_PAGE_SIZE + 1)
         expect(solr_params['f.date_issued_isim.facet.limit']).to eq(6)
       end
     end
@@ -33,6 +33,16 @@ RSpec.describe Hyc::CatalogSearchBuilder do
 
       it 'leaves ordinary facet limits unchanged' do
         expect(solr_params['f.keyword_sim.facet.limit']).to eq(6)
+      end
+    end
+
+    context 'for an advanced search facet page request' do
+      let(:action_name) { 'facet' }
+      let(:blacklight_params) { { advanced_search_facet: '1', 'facet.page': '2' } }
+
+      it 'limits multi-select facets to a page' do
+        expect(solr_params['f.keyword_sim.facet.limit']).to eq(described_class::ADVANCED_SEARCH_FACET_PAGE_SIZE + 1)
+        expect(solr_params['f.keyword_sim.facet.offset']).to eq(described_class::ADVANCED_SEARCH_FACET_PAGE_SIZE)
       end
     end
   end

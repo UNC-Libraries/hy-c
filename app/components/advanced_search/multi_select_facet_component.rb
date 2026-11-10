@@ -27,7 +27,12 @@ module AdvancedSearch
         class: 'advanced-search-multi-select',
         multiple: true,
         aria: { label: @facet_field.label },
-        data: { placeholder: I18n.t('blacklight.advanced_search.facet_placeholder') }
+        data: {
+          placeholder: I18n.t('blacklight.advanced_search.facet_placeholder'),
+          facet_key: @facet_field.key,
+          facet_url: helpers.search_facet_path(id: @facet_field.key, format: :json),
+          facet_load_error: I18n.t('blacklight.advanced_search.facet_load_error', default: 'Additional facet values could not be loaded.')
+        }
       }
     end
 
