@@ -1,10 +1,11 @@
-<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_office_document.html.erb %>
-<% if display_media_download_link?(file_set: file_set) %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v5.3.1/app/views/hyrax/file_sets/media_display/_office_document.html.erb %>
+<%# Allow file set owner/editor to see the thumbnail and download button if they're not admins %>
+<% if display_media_download_link?(file_set: file_set) || can?(:edit, file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <%= image_tag thumbnail_url(file_set),
                     class: "representative-media",
-                    alt: "",
+                    alt: file_set&.alt_text || "",
                     role: "presentation" %>
       <%# [hyc-override] Style download link %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.office_link'),
@@ -19,7 +20,7 @@
     <%# <div> %>
       <%#= image_tag thumbnail_url(file_set),
                     class: "representative-media",
-                    alt: "",
+                    alt: file_set&.alt_text || "",
                     role: "presentation" %>
     <%# </div> %>
 <% end %>
