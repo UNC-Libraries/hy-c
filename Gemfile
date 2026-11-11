@@ -51,7 +51,7 @@ gem 'linkeddata'
 gem 'logger', '~>1.5'
 gem 'loofah', '~>2.25.2'
 gem 'mini_magick', '~>4.13.0'
-gem 'nokogiri', '~>1.19.4', platforms: :ruby
+gem 'nokogiri', '~>1.19.5', platforms: :ruby
 gem 'omniauth', '~> 2.2'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
