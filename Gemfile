@@ -49,7 +49,7 @@ gem 'sparql', '3.2.5'
 gem 'ldp', '~> 1.1'
 gem 'linkeddata'
 gem 'logger', '~>1.5'
-gem 'loofah', '~>2.25.2'
+gem 'loofah', '~>2.25.3'
 gem 'mini_magick', '~>4.13.0'
 gem 'nokogiri', '~>1.19.5', platforms: :ruby
 gem 'omniauth', '~> 2.2'

@@ -682,9 +682,9 @@ GEM
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
     logger (1.7.0)
-    loofah (2.25.2)
+    loofah (2.25.3)
       crass (~> 1.0.2)
-      nokogiri (>= 1.12.0)
+      nokogiri (>= 1.19.5)
     mail (2.9.1)
       logger
       mini_mime (>= 0.1.1)
@@ -1275,7 +1275,7 @@ DEPENDENCIES
   linkeddata
   listen (~> 3.9.0)
   logger (~> 1.5)
-  loofah (~> 2.25.2)
+  loofah (~> 2.25.3)
   mini_magick (~> 4.13.0)
   net-ftp
   nokogiri (~> 1.19.5)
