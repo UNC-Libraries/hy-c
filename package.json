@@ -3,6 +3,7 @@
   "private": true,
   "repository": "git@github.com:samvera/hyrax.git",
   "dependencies": {
+    "tom-select": "2.1.0"
   },
   "scripts": {
   },
