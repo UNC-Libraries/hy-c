@@ -567,6 +567,19 @@ div.unc-modal {
   }
 }
 
+.facet-values {
+  label {
+    display: initial;
+  }
+
+  .facet-label {
+    padding-right: 0;
+    text-indent: 0;
+    padding-left: 0;
+  }
+}
+
+
 /* Fixes https://github.com/samvera/hyrax/blob/f14958e665535be2696dc1cdf9e205d6fc54e668/app/assets/stylesheets/hyrax/_card.scss#L5
 Resets it to the default Bootstrap card margins
  */
