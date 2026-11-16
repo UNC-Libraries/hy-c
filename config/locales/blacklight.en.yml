@@ -3,5 +3,8 @@ en:
     application_name: 'Blacklight'
     advanced_search:
       facet_placeholder: 'Select option(s)'
+      browse_values: 'Browse %{field} values'
+      apply_values: 'Apply selections'
+      sort_values: 'Sort'
       facet_field_limit: 'Select values from no more than %{count} facet fields.'
       facet_value_limit: 'select no more than %{count} values within each facet field.'

@@ -1,28 +1,60 @@
-// Enhance the native multi-selects while retaining their standard form values.
-document.addEventListener('turbolinks:load', function () {
-  document.querySelectorAll('.advanced-search-multi-select').forEach(function (element) {
-    if (element.tomselect) return;
+$(document).on('click', '.advanced-facet-picker', function (event) {
+  event.preventDefault();
+  let url = new URL(this.formAction, window.location.href);
+  url.searchParams.set('advanced_facet_picker', '1');
+  $.ajax({ url: url.toString() }).fail(Blacklight.modal.onFailure).done(Blacklight.modal.receiveAjax);
+});
 
-    let select = new TomSelect(element, {
-      // Show checkboxes in the dropdown and provide a button to clear selections.
-      plugins: ['checkbox_options', 'clear_button', 'remove_button'],
-      // Include values beyond Tom Select's default option limit.
-      maxOptions: null,
-      // Keep selected options visible so their checkboxes can be unchecked.
-      hideSelected: false,
-      render: {
-        // data contains the selected option; escape safely encodes its label as HTML.
-        item: function (data, escape) {
-          // Selected items show the facet label without the option's result count.
-          return '<div>' + escape(data.$option.dataset.label) + '</div>';
-        }
-      }
-    });
-    // Tom Select creates its own combobox and list, so label those as well.
-    select.focus_node.setAttribute('aria-label', element.getAttribute('aria-label'));
-    select.dropdown_content.setAttribute('aria-label', element.getAttribute('aria-label'));
+$(document).on('loaded.blacklight.blacklight-modal', '#blacklight-modal', function () {
+  let picker = this.querySelector('.advanced-facet-picker-form');
+  if (!picker) return;
+  let list = Array.from(document.querySelectorAll('form.advanced .advanced-search-facet-values')).find(function (element) {
+    return element.dataset.facetField === picker.dataset.facetField;
   });
+  if (!list) return;
+  let selected = Array.from(list.querySelectorAll('input:checked')).map(function (input) { return input.value; });
+  picker.querySelectorAll('input[type=checkbox]').forEach(function (input) {
+    input.checked = selected.includes(input.value);
+  });
+});
 
+$(document).on('change', '#blacklight-modal .advanced-facet-picker-form input[type=checkbox]', function () {
+  let picker = this.closest('.advanced-facet-picker-form');
+  let list = Array.from(document.querySelectorAll('form.advanced .advanced-search-facet-values')).find(function (element) {
+    return element.dataset.facetField === picker.dataset.facetField;
+  });
+  if (!list) return;
+  let control = Array.from(list.querySelectorAll('input[type=checkbox]')).find((input) => input.value === this.value);
+  if (!control) {
+    let item = document.createElement('li');
+    let label = document.createElement('label');
+    control = document.createElement('input');
+    control.type = 'checkbox';
+    control.name = this.name;
+    control.value = this.value;
+    label.append(control, document.createTextNode(' ' + this.closest('li').querySelector('.facet-label').textContent));
+    item.append(label);
+    list.append(item);
+  }
+  control.checked = this.checked;
+});
+
+$(document).on('submit', '#blacklight-modal .advanced-facet-picker-form', function (event) {
+  event.preventDefault();
+  let submitter = event.originalEvent.submitter;
+  if (!submitter) return;
+  if (submitter.name === 'advanced_facet_apply') {
+    $('#blacklight-modal').modal('hide');
+    return;
+  }
+  let url = new URL(this.action, window.location.href);
+  url.searchParams.set('advanced_facet_picker', '1');
+  url.searchParams.set('facet.page', submitter.value);
+  url.searchParams.set('facet.sort', this.elements['facet.sort'].value);
+  $.ajax({ url: url.toString() }).fail(Blacklight.modal.onFailure).done(Blacklight.modal.receiveAjax);
+});
+
+document.addEventListener('turbolinks:load', function () {
   document.querySelectorAll('form.advanced').forEach(function (form) {
     if (form.dataset.facetLimitBound) return;
     form.dataset.facetLimitBound = 'true';
@@ -59,10 +91,6 @@ document.addEventListener('turbolinks:load', function () {
 });
 
 document.addEventListener('turbolinks:before-cache', function () {
-  // Cache the native controls so Turbolinks can recreate the widgets and listeners.
-  document.querySelectorAll('.advanced-search-multi-select').forEach(function (element) {
-    if (element.tomselect) element.tomselect.destroy();
-  });
   document.querySelectorAll('form.advanced').forEach(function (form) {
     delete form.dataset.facetLimitBound;
     let error = form.querySelector('.advanced-search-facet-error');

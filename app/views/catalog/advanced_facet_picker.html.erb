@@ -1,0 +1,30 @@
+<% selected = Array(params.dig(:f_inclusive, @facet.key)) %>
+<% items = @pagination.items.map { |item| (@facet.item_presenter || Blacklight::FacetItemPresenter).new(item, @facet, self, @facet.key, search_state) } %>
+<% other_params = picker_return_params.deep_dup %>
+<% other_params['f_inclusive']&.delete(@facet.key) %>
+<%= render Blacklight::System::ModalComponent.new do |component| %>
+  <% component.with_title { facet_field_label(@facet.key) } %>
+  <%= form_tag search_facet_path(id: @facet.key), method: :get, class: 'advanced-facet-picker-form', data: { facet_field: @facet.key } do %>
+    <%= hidden_field_tag :advanced_facet_picker, '1' %>
+    <%= render_hash_as_hidden_fields(other_params) %>
+    <% (selected - items.map(&:value)).each do |value| %>
+      <%= hidden_field_tag "f_inclusive[#{@facet.key}][]", value %>
+    <% end %>
+    <ul class="facet-values list-unstyled">
+      <% items.each_with_index do |presenter, index| %>
+        <% id = "picker_#{@facet.key}_#{index}" %>
+        <li>
+          <%= check_box_tag "f_inclusive[#{@facet.key}][]", presenter.value, selected.include?(presenter.value), id: id %>
+          <%= label_tag id do %><span class="facet-label"><%= strip_tags(presenter.label.to_s) %></span> (<%= number_with_delimiter(presenter.hits) %>)<% end %>
+        </li>
+      <% end %>
+    </ul>
+    <div class="facet-pagination">
+      <%= button_tag t('views.pagination.previous'), type: 'submit', name: 'facet.page', value: @pagination.prev_page, disabled: @pagination.first_page?, class: 'btn btn-link' %>
+      <%= button_tag t('views.pagination.next'), type: 'submit', name: 'facet.page', value: @pagination.next_page, disabled: @pagination.last_page? || @pagination.current_page >= CatalogController::MAX_FACET_PAGE, class: 'btn btn-link' %>
+      <%= select_tag 'facet.sort', options_for_select([[t('blacklight.search.facets.sort.count'), 'count'], [t('blacklight.search.facets.sort.index'), 'index']], @pagination.sort), aria: { label: t('blacklight.search.facets.sort.index') } %>
+      <%= button_tag t('blacklight.advanced_search.sort_values'), type: 'submit', name: 'facet.page', value: 1, class: 'btn btn-link' %>
+    </div>
+    <%= button_tag t('blacklight.advanced_search.apply_values'), type: 'submit', name: 'advanced_facet_apply', value: '1', class: 'btn btn-primary advanced-facet-apply' %>
+  <% end %>
+<% end %>

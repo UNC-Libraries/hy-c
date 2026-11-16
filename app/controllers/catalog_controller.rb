@@ -79,12 +79,43 @@ class CatalogController < ApplicationController
   end
 
   def facet
+    return advanced_facet_picker if params[:advanced_facet_picker] == '1'
+
     facet_field_name = params[:id]
     targeted_facet_list = ['affiliation_label_sim']
     super
     # Only calculate total unique facets for facets in the target list
     @total_unique_facets =  targeted_facet_list.include?(facet_field_name) ? facet_total_count(facet_field_name) : 0
   end
+
+  def advanced_facet_picker
+    @facet = blacklight_config.facet_fields[params[:id]]
+    unless @facet && @facet.advanced_search_component == AdvancedSearch::MultiSelectFacetComponent
+      raise ActionController::RoutingError, 'Not Found'
+    end
+
+    if params[:advanced_facet_apply]
+      return redirect_to search_action_path(picker_return_params.merge(action: 'advanced_search'))
+    end
+
+    picker_state = search_state_class.new(params.permit(:'facet.page', :'facet.sort', :'facet.prefix'), blacklight_config, self)
+    service = search_service_class.new(config: blacklight_config, search_state: picker_state, **search_service_context)
+    @response = service.facet_field_response(@facet.key)
+    @display_facet = @response.aggregations[@facet.field]
+    @presenter = (@facet.presenter || Blacklight::FacetFieldPresenter).new(@facet, @display_facet, view_context)
+    @pagination = @presenter.paginator
+    if request.xhr?
+      render :advanced_facet_picker, layout: false
+    else
+      render :advanced_facet_picker
+    end
+  end
+
+  def picker_return_params
+    params.to_unsafe_h.except('controller', 'action', 'id', 'advanced_facet_picker',
+                              'advanced_facet_apply', 'facet.page', 'facet.sort', 'facet.prefix')
+  end
+  helper_method :picker_return_params
 
   configure_blacklight do |config|
     # Use our repository class, since setting it in blacklight.yml does not cause it to be used for queries

@@ -4,11 +4,11 @@ module AdvancedSearch
   class MultiSelectFacetComponent < Blacklight::Component
     def initialize(facet_field:, layout: nil)
       @facet_field = facet_field
-      @layout = layout == false ? Blacklight::FacetFieldNoLayoutComponent : Blacklight::FacetFieldComponent
+      @layout = layout == false ? Blacklight::FacetFieldNoLayoutComponent : AdvancedSearch::FacetLayoutComponent
     end
 
     def render?
-      presenters.any?
+      presenters.any? || selected_values.any?
     end
 
     def presenters
@@ -21,22 +21,12 @@ module AdvancedSearch
       end
     end
 
-    def select_attributes
-      {
-        name: "f_inclusive[#{@facet_field.key}][]",
-        class: 'advanced-search-multi-select',
-        multiple: true,
-        aria: { label: @facet_field.label },
-        data: { placeholder: I18n.t('blacklight.advanced_search.facet_placeholder') }
-      }
+    def selected_values
+      Array(@facet_field.search_state.params.dig(:f_inclusive, @facet_field.key))
     end
 
-    def option_attributes(presenter:)
-      {
-        value: presenter.value,
-        selected: Array(@facet_field.search_state.params.dig(:f_inclusive, @facet_field.key)).include?(presenter.value),
-        data: { label: helpers.strip_tags(presenter.label.to_s) }
-      }
+    def extra_values
+      selected_values - presenters.map(&:value)
     end
   end
 end

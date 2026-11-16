@@ -3,10 +3,21 @@
     <%= @facet_field.label %>
   <% end %>
   <% component.with_body do %>
-    <select <%= tag.attributes(select_attributes) %>>
-      <% presenters.each do |presenter| %>
-        <option <%= tag.attributes(option_attributes(presenter: presenter)) %>><%= strip_tags(presenter.label.to_s) %> (<%= number_with_delimiter(presenter.hits) %>)</option>
+    <ul class="facet-values list-unstyled advanced-search-facet-values" data-facet-field="<%= @facet_field.key %>">
+      <% presenters.each_with_index do |presenter, index| %>
+        <% id = "advanced_#{@facet_field.key}_#{index}" %>
+        <li>
+          <%= check_box_tag "f_inclusive[#{@facet_field.key}][]", presenter.value, selected_values.include?(presenter.value), id: id %>
+          <%= label_tag id do %><%= strip_tags(presenter.label.to_s) %> (<%= number_with_delimiter(presenter.hits) %>)<% end %>
+        </li>
       <% end %>
-    </select>
+      <% extra_values.each_with_index do |value, index| %>
+        <% id = "advanced_#{@facet_field.key}_selected_#{index}" %>
+        <li>
+          <%= check_box_tag "f_inclusive[#{@facet_field.key}][]", value, true, id: id %>
+          <%= label_tag id, value %>
+        </li>
+      <% end %>
+    </ul>
   <% end %>
 <% end %>

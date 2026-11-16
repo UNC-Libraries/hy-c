@@ -1,0 +1,20 @@
+<div class="card facet-limit blacklight-<%= @facet_field.key %> <%= 'facet-limit-active' if @facet_field.active? %>">
+  <h3 class="card-header p-0 facet-field-heading" id="<%= @facet_field.html_id %>-header">
+    <button type="button" class="btn w-100 d-block btn-block p-2 text-start text-left collapse-toggle <%= 'collapsed' if @facet_field.collapsed? %>"
+            data-toggle="collapse" data-target="#<%= @facet_field.html_id %>" aria-expanded="<%= !@facet_field.collapsed? %>"
+            aria-controls="<%= @facet_field.html_id %>"><%= label %></button>
+  </h3>
+  <div id="<%= @facet_field.html_id %>" role="region" aria-labelledby="<%= @facet_field.html_id %>-header" class="panel-collapse facet-content collapse <%= 'show' unless @facet_field.collapsed? %>">
+    <div class="card-body">
+      <%= body %>
+      <% if @facet_field.modal_path %>
+        <div class="more_facets">
+          <%= button_tag t('blacklight.advanced_search.browse_values', field: @facet_field.label),
+                type: 'submit', name: 'advanced_facet_picker', value: '1',
+                formaction: helpers.search_facet_path(id: @facet_field.key), formmethod: 'get',
+                class: 'btn btn-link advanced-facet-picker', data: { facet_field: @facet_field.key } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
