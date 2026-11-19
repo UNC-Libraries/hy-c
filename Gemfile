@@ -79,7 +79,7 @@ gem 'twitter-typeahead-rails', '0.11.1'
 gem 'terser', '~> 1.1'
 
 group :production do
-  gem 'passenger', '6.1.4', require: 'phusion_passenger/rack_handler'
+  gem 'passenger', '6.2.2', require: 'phusion_passenger/rack_handler'
 end
 
 group :development, :test do
