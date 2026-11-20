@@ -46,5 +46,24 @@ Capybara.register_driver :chrome_headless do |app|
   )
 end
 
+# Chrome 158 rejects Capybara's wildcard storage-reset origin.
+# https://github.com/teamcapybara/capybara/issues/2865
+module ChromeStorageResetFallback
+  private
+
+  def execute_cdp(command, params = {})
+    super
+  rescue Selenium::WebDriver::Error::InvalidArgumentError
+    raise unless command == 'Storage.clearDataForOrigin' && params[:origin] == '*'
+
+    super('Network.clearBrowserCookies')
+    return unless params[:storageTypes].include?('local_storage')
+
+    super(command, origin: Capybara.current_session.server.base_url, storageTypes: 'local_storage')
+  end
+end
+
+Capybara::Selenium::Driver::ChromeDriver.prepend(ChromeStorageResetFallback)
+
 Capybara.default_driver = :rack_test
 Capybara.javascript_driver = :chrome_headless
