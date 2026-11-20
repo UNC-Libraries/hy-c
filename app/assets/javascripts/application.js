@@ -13,6 +13,8 @@
 //
 // [hyc-override] not using activestorage
 // # require activestorage
+// Tom Select's UMD bundle must load before Hyrax's AMD loader.
+//= require tom-select/dist/js/tom-select.complete.min
 //= require turbolinks
 
 // Required by Blacklight
@@ -36,6 +38,7 @@
 //= require 'bootstrap-slider'
 //= require 'blacklight_range_limit'
 
+//= require advanced_search_facets
 // [hyc-override] almond seems to be needed here even though its specified in hyrax includes
 //= require almond
 // [hyc-override] Enable type ahead in advanced search

@@ -4,8 +4,19 @@ module Hyc
     include BlacklightRangeLimit::RangeLimitBuilder
 
     self.default_processor_chain += [
+      :unlimited_advanced_search_facets,
       :join_works_from_files
     ]
+
+    def unlimited_advanced_search_facets(solr_parameters)
+      return unless search_state.controller&.action_name == 'advanced_search'
+
+      blacklight_config.facet_fields.each_value do |field|
+        next unless field.advanced_search_component == AdvancedSearch::MultiSelectFacetComponent
+
+        solr_parameters[:"f.#{field.field}.facet.limit"] = -1
+      end
+    end
 
     # Adds full text searching for :all_fields
     # Rewrites only the advanced-search all_fields clause so it matches either

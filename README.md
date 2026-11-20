@@ -7,7 +7,7 @@
 
 #### Hyrax based system underlying the Carolina Digital Repository
 
-* Currently using Hyrax version 3.5.0
+* Currently using Hyrax version 5.3.1
 * Currently in production
 * Hosts institutional repository content at UNC Chapel Hill
 
@@ -20,6 +20,8 @@
 * Updated deposit/edit form with combined files and metadata tabs
 * Import scripts for new ProQuest deposits
 * Merges old and new analytics data from Google Analytics
+* Advanced search loads all values for its searchable facet dropdowns; facets with large numbers of options can increase Solr load and page size.
+* Advanced searches are limited to five facet fields and five selected values per field.
 
 ##### Sage or Proquest ingest rake task
 The preferred way to perform sage and proquest ingests is via the "Ingest from FTP" action in the dashboard. However, they can still be executed from the commandline as follows:
@@ -86,6 +88,7 @@ docker compose exec web bash
     bundle exec rspec
     ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
+- JavaScript dependencies are installed on web container startup. Outside Docker, run `yarn install --frozen-lockfile` before starting Rails or compiling assets.
 - You should be able to see the application at http://localhost:3000/
 - If you are experiencing slow performance, you might want to increase the resources available to your Docker network, including CPUs, memory, and swap. If you're working on a Mac, go to Docker Desktop, click the gear icon -> Resources -> Advanced, drag the resources bars to the desired levels, and then click Apply & Restart
 
