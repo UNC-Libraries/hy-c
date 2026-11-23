@@ -76,7 +76,7 @@ gem 'sprockets', '~> 3.7.2'
 gem 'turbolinks', '~> 5.2.1'
 gem 'twitter-typeahead-rails', '0.11.1'
 # Use terser as compressor for JavaScript assets
-gem 'terser', '~> 1.1'
+gem 'terser', '~> 1.2'
 
 group :production do
   gem 'passenger', '6.2.2', require: 'phusion_passenger/rack_handler'
