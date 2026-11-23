@@ -20,7 +20,7 @@
 * Updated deposit/edit form with combined files and metadata tabs
 * Import scripts for new ProQuest deposits
 * Merges old and new analytics data from Google Analytics
-* Advanced search loads all values for its searchable facet dropdowns; facets with large numbers of options can increase Solr load and page size.
+* Advanced search initially loads each facet's configured number of values, then loads additional pages on demand. Both the dropdowns and the non-JavaScript fallback allow searching for values beyond the 20-page browsing limit.
 * Advanced searches are limited to five facet fields and five selected values per field.
 
 ##### Sage or Proquest ingest rake task

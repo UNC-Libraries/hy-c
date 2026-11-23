@@ -123,6 +123,22 @@ RSpec.describe CatalogController, type: :controller do
 
       expect(response).to have_http_status(:not_found)
     end
+
+    it 'returns a page of advanced facet options with a continuation' do
+      get :facet, params: { id: 'keyword_sim', format: :json, advanced_options: '1', 'facet.page': '1' }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to include('options', 'next_page', 'limited')
+      expect(response.parsed_body['options'].size).to be <= described_class.blacklight_config.default_more_limit
+    end
+
+    it 'rejects invalid facet queries and fields for advanced options' do
+      get :facet, params: { id: 'keyword_sim', format: :json, advanced_options: '1', facet_query: 'x' * 201 }
+      expect(response).to have_http_status(:bad_request)
+
+      get :facet, params: { id: 'date_issued_isim', format: :json, advanced_options: '1' }
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe 'search page limits' do
