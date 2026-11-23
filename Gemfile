@@ -39,7 +39,7 @@ gem 'hyrax', '5.3.1'
 gem 'google-analytics-data', path: 'vendor/gems/google-analytics-data'
 gem 'google-cloud-errors', path: 'vendor/gems/google-cloud-errors'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.11.2'
+gem 'jbuilder', '~> 2.15.1'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.6.1'
 gem 'json-canonicalization', '1.0.0'
