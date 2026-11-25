@@ -3,8 +3,6 @@ en:
     application_name: 'Blacklight'
     advanced_search:
       facet_placeholder: 'Select option(s)'
-      facet_search: 'Find %{facet} values'
-      facet_find: 'Find values'
       facet_load_error: 'Could not load facet values.'
       facet_retry: 'Try again'
       facet_page_limit: 'Search for more values.'

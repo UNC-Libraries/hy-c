@@ -1,4 +1,4 @@
-<%= render(@layout.new(facet_field: layout_facet_field)) do |component| %>
+<%= render(@layout.new(facet_field: @facet_field)) do |component| %>
   <% component.with_label do %>
     <%= @facet_field.label %>
   <% end %>
@@ -10,18 +10,7 @@
       <% end %>
     </select>
     <noscript>
-      <label for="advanced-facet-query-<%= @facet_field.key %>"><%= t('blacklight.advanced_search.facet_search', facet: @facet_field.label) %></label>
-      <input id="advanced-facet-query-<%= @facet_field.key %>" name="advanced_facet_query[<%= @facet_field.key %>]" value="<%= page&.dig(:query) %>" maxlength="200">
-      <button type="submit" formaction="<%= helpers.search_action_path(action: 'advanced_search') %>" name="advanced_facet_request" value="<%= @facet_field.key %>:1"><%= t('blacklight.advanced_search.facet_find') %></button>
-      <% paginator = page&.dig(:paginator) || @facet_field.paginator %>
-      <% if paginator&.prev_page %>
-        <button type="submit" formaction="<%= helpers.search_action_path(action: 'advanced_search') %>" name="advanced_facet_request" value="<%= @facet_field.key %>:<%= paginator.prev_page %>"><%= t('views.pagination.previous') %></button>
-      <% end %>
-      <% if paginator&.next_page && paginator.current_page < CatalogController::MAX_FACET_PAGE %>
-        <button type="submit" formaction="<%= helpers.search_action_path(action: 'advanced_search') %>" name="advanced_facet_request" value="<%= @facet_field.key %>:<%= page ? paginator.next_page : 1 %>"><%= t('views.pagination.next') %></button>
-      <% elsif paginator&.next_page %>
-        <span><%= t('blacklight.advanced_search.facet_page_limit') %></span>
-      <% end %>
+      <%= render Blacklight::FacetFieldCheckboxesComponent.new(facet_field: @facet_field, layout: false) %>
     </noscript>
   <% end %>
 <% end %>

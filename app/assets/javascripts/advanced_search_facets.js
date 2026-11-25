@@ -8,6 +8,9 @@ document.addEventListener('turbolinks:load', function () {
     let activeRequest;
     let destroyed = false;
     let retryState;
+    element.hidden = false;
+    let moreFacets = element.parentElement.querySelector('.more_facets');
+    if (moreFacets) moreFacets.hidden = true;
     let select = new TomSelect(element, {
       // Show checkboxes in the dropdown and provide a button to clear selections.
       plugins: ['checkbox_options', 'clear_button', 'remove_button', 'virtual_scroll'],

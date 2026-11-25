@@ -11,7 +11,7 @@
 <%= form_tag @url, method: @method, class: @classes.join(' '), role: 'search', 'aria-label' => t('blacklight.search.form.submit') do %>
   <%# Preserve existing search parameters without changing the original search state.
       Remove any previous form marker so only one fresh marker is submitted below. %>
-  <% hidden_params = @params.deep_dup.with_indifferent_access.except(:advanced_facet_form, :advanced_facet_request, :advanced_facet_query) %>
+  <% hidden_params = @params.deep_dup.with_indifferent_access.except(:advanced_facet_form) %>
   <% if hidden_params[:f_inclusive] %>
     <%# Multi-select controls submit their own f_inclusive values. Omitting their hidden
         fields prevents removed selections from being submitted again; other filters remain. %>
@@ -20,8 +20,8 @@
     <% end %>
   <% end %>
   <%= render_hash_as_hidden_fields(hidden_params) %>
-  <%# Identifies this submission so the controller enforces advanced-search facet limits,
-      including when JavaScript is disabled, without changing ordinary catalog searches. %>
+  <%# Identifies this submission so the controller enforces advanced-search facet limits
+      without changing ordinary catalog searches. %>
   <%= hidden_field_tag :advanced_facet_form, '1' %>
 
   <div class="input-criteria">

@@ -8,6 +8,7 @@ RSpec.describe 'Advanced search facets', type: :feature do
   let(:id_prefix) { "advanced-facet-test-#{SecureRandom.hex(8)}" }
   let(:ids) { (1..55).map { |number| "#{id_prefix}-#{number}" } }
   let(:keyword_select) { 'select[name="f_inclusive[keyword_sim][]"]' }
+  let(:keyword_checkboxes) { 'input[type="checkbox"][name="f_inclusive[keyword_sim][]"]' }
 
   before do
     documents = ids.each_with_index.map do |id, index|
@@ -33,51 +34,26 @@ RSpec.describe 'Advanced search facets', type: :feature do
     solr.commit
   end
 
-  it 'pages facet values and preserves and removes inclusive selections without JavaScript' do
+  it 'uses Blacklight checkbox facets and preserves and removes selections without JavaScript' do
     visit '/catalog/advanced'
-    expect(page).to have_css("#{keyword_select} option", count: CatalogController.blacklight_config.facet_fields['keyword_sim'].limit)
-    expect(page).not_to have_css("#{keyword_select} option", text: 'Facet keyword 55 (1)')
-    expect(page).not_to have_css('.blacklight-keyword_sim .more_facets')
+    expect(page).to have_css(keyword_checkboxes, count: CatalogController.blacklight_config.facet_fields['keyword_sim'].limit)
+    expect(page).not_to have_css(keyword_select, visible: true)
+    expect(page).not_to have_css(keyword_checkboxes, value: 'Facet keyword 55')
+    expect(page).to have_css('.blacklight-keyword_sim .more_facets')
     expect(page).to have_field('range_date_issued_isim_begin')
 
-    find(keyword_select).find('option', text: 'Facet keyword 01 (1)').select_option
-    within('.blacklight-keyword_sim') { click_button 'Next' }
-    expect(find(keyword_select).value).to include('Facet keyword 01')
-    within('.blacklight-keyword_sim') { click_button 'Next' }
-    within('.blacklight-keyword_sim') { click_button 'Next' }
-    find(keyword_select).find('option', text: 'Facet keyword 55 (1)').select_option
+    find(keyword_checkboxes, value: 'Facet keyword 01').check
     click_button 'Search'
     expect(page).to have_content('Facet test work 1')
-    expect(page).to have_content('Facet test work 55')
     expect(page).not_to have_content('Facet test work 2')
 
     click_link 'Advanced search', match: :first
-    expect(find(keyword_select).value).to match_array(['Facet keyword 01', 'Facet keyword 55'])
+    expect(find(keyword_checkboxes, value: 'Facet keyword 01')).to be_checked
     expect(page).not_to have_css('form.advanced input[type=hidden][name^="f_inclusive[keyword_sim]"]', visible: :all)
-    find(keyword_select).find('option', text: 'Facet keyword 01 (1)').unselect_option
+    find(keyword_checkboxes, value: 'Facet keyword 01').uncheck
     click_button 'Search'
     expect(page).not_to have_content('Facet test work 1')
-    expect(page).to have_content('Facet test work 55')
-  end
-
-  it 'offers a searchable dropdown and retains values beyond the first 50 options', js: true do
-    visit '/catalog/advanced'
-    find('.blacklight-keyword_sim .collapse-toggle').click
-    expect(page).to have_css('.ts-wrapper', visible: :all)
-    select_element = find(keyword_select, visible: :all)
-    wrapper = select_element.sibling('.ts-wrapper')
-    expect(wrapper.find('[role=combobox]')['aria-label']).to eq(select_element['aria-label'])
-    wrapper.find('.ts-control input').click
-    wrapper.find('.ts-control input').fill_in with: 'Facet keyword 55'
-    expect(wrapper).to have_css('.option', text: 'Facet keyword 55')
-    wrapper.find('.option', text: 'Facet keyword 55').click
-    expect(wrapper).to have_css('.item', text: 'Facet keyword 55')
-    click_button 'Search'
-    expect(page).to have_content('Facet test work 55')
-
-    click_link 'Advanced search', match: :first
-    find('.blacklight-keyword_sim .collapse-toggle').click
-    expect(find(keyword_select, visible: :all).sibling('.ts-wrapper')).to have_css('.item', text: 'Facet keyword 55')
+    expect(page).to have_content('Facet test work 2')
   end
 
   it 'loads subsequent pages when the dropdown is scrolled', js: true do
@@ -92,6 +68,7 @@ RSpec.describe 'Advanced search facets', type: :feature do
     JS
     find('.blacklight-keyword_sim .collapse-toggle').click
     wrapper = find(keyword_select, visible: :all).sibling('.ts-wrapper')
+    expect(page).not_to have_css('.blacklight-keyword_sim .more_facets', visible: true)
     wrapper.find('.ts-control input').click
     expect(wrapper).to have_css('.option', text: 'Facet keyword 05')
     expect(wrapper).not_to have_css('.option', text: 'Facet keyword 06')
@@ -125,14 +102,6 @@ RSpec.describe 'Advanced search facets', type: :feature do
     expect(wrapper).to have_css('.item', text: 'Facet keyword 55')
   end
 
-  it 'finds values outside the initial page without JavaScript' do
-    visit '/catalog/advanced'
-    fill_in 'Find Keyword values', with: 'keyword 55'
-    within('.blacklight-keyword_sim') { click_button 'Find values' }
-    expect(page).to have_css("#{keyword_select} option", text: 'Facet keyword 55 (1)')
-    expect(page).not_to have_css("#{keyword_select} option", text: 'Facet keyword 01 (1)')
-  end
-
   it 'loads more values using keyboard navigation', js: true do
     visit '/catalog/advanced'
     find('.blacklight-keyword_sim .collapse-toggle').click
@@ -160,17 +129,6 @@ RSpec.describe 'Advanced search facets', type: :feature do
     wrapper.find('.option', text: 'Facet resource').click
     expect(wrapper).to have_css('.item', text: 'Facet resource')
     expect(page.evaluate_script('window.facetRequests.length')).to eq(0)
-  end
-
-  it 'finds formatted language and department labels without JavaScript' do
-    visit '/catalog/advanced'
-    fill_in 'Find Language values', with: 'english'
-    within('.blacklight-language_sim') { click_button 'Find values' }
-    expect(page).to have_css('select[name="f_inclusive[language_sim][]"] option', text: 'English (55)')
-
-    fill_in 'Find Departments values', with: 'Adams'
-    within('.blacklight-affiliation_label_sim') { click_button 'Find values' }
-    expect(page).to have_css('select[name="f_inclusive[affiliation_label_sim][]"] option', text: 'Adams School of Dentistry (55)')
   end
 
   it 'finds a formatted language label in the searchable dropdown', js: true do
@@ -235,10 +193,6 @@ RSpec.describe 'Advanced search facets', type: :feature do
     expect(response['options'].size).to eq(20)
     expect(response['next_page']).to be_nil
     expect(response['limited']).to be(true)
-
-    page.driver.get('/catalog/advanced', advanced_facet_request: 'keyword_sim:20', advanced_facet_query: { keyword_sim: 'facet page limit' })
-    expect(page).to have_css('.blacklight-keyword_sim', text: 'Search for more values.')
-    within('.blacklight-keyword_sim') { expect(page).not_to have_button('Next') }
 
     page.driver.get('/catalog/facet/keyword_sim.json', advanced_options: '1', 'facet.page': '1', facet_query: 'facet page limit 401')
     response = JSON.parse(page.body)
@@ -354,18 +308,4 @@ RSpec.describe 'Advanced search facets', type: :feature do
     expect(page).not_to have_content('Facet test work 6')
   end
 
-  it 'rejects more than five values without JavaScript and preserves the selections' do
-    visit '/catalog/advanced'
-    fill_in('All Fields', with: 'test')
-    within('.blacklight-keyword_sim') { click_button 'Next' }
-    6.times do |index|
-      find(keyword_select).find('option', text: "Facet keyword #{format('%02d', index + 1)} (1)").select_option
-    end
-    click_button 'Search'
-
-    expect(page).to have_current_path(%r{/catalog/advanced\?})
-    expect(page).to have_content('select no more than 5 values within each facet field.')
-    expect(find(keyword_select).value.size).to eq(6)
-    expect(find_field('All Fields').value).to eq('test')
-  end
 end

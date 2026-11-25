@@ -88,35 +88,7 @@ class CatalogController < ApplicationController
     @total_unique_facets =  targeted_facet_list.include?(facet_field_name) ? facet_total_count(facet_field_name) : 0
   end
 
-  # Render the normal advanced search form, optionally replacing one facet's
-  # options with a requested page for users browsing without JavaScript.
-  # The submitted field and page must identify an enabled multi-select facet
-  # and stay within the same page limit enforced by the facet endpoint.
-  def advanced_search
-    super
-    return if params[:advanced_facet_request].blank?
-
-    field, page = params[:advanced_facet_request].to_s.split(':', 2)
-    config = advanced_facet_config(field)
-    return head :bad_request unless config && page.to_s.match?(/\A[1-9]\d*\z/) && page.to_i <= MAX_FACET_PAGE
-
-    queries = params[:advanced_facet_query]
-    query = queries.is_a?(ActionController::Parameters) ? queries[field] : nil
-    return head :bad_request unless query.nil? || (query.is_a?(String) && query.length <= 200)
-
-    @advanced_facet_page = { field: field, query: query.to_s, paginator: advanced_facet_paginator(config, page.to_i, query.to_s) }
-  end
-
-  helper_method :advanced_facet_page
-
-  # Return the non-JavaScript page only to the component for its facet field.
-  # Other components continue to render their initially fetched facet values.
-  def advanced_facet_page(field)
-    @advanced_facet_page if @advanced_facet_page && @advanced_facet_page[:field] == field
-  end
-
   # Resolve a field only if it is an enabled advanced-search multi-select.
-  # This prevents either pagination path from querying arbitrary Solr fields.
   def advanced_facet_config(field)
     config = blacklight_config.facet_fields[field]
     return unless config&.advanced_search_component == AdvancedSearch::MultiSelectFacetComponent
