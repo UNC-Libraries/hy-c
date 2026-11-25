@@ -1,3 +1,10 @@
 en:
   blacklight:
     application_name: 'Blacklight'
+    advanced_search:
+      facet_placeholder: 'Select option(s)'
+      facet_load_error: 'Could not load facet values.'
+      facet_retry: 'Try again'
+      facet_page_limit: 'Search for more values.'
+      facet_field_limit: 'Select values from no more than %{count} facet fields.'
+      facet_value_limit: 'select no more than %{count} values within each facet field.'

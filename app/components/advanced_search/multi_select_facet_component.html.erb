@@ -1,0 +1,16 @@
+<%= render(@layout.new(facet_field: @facet_field)) do |component| %>
+  <% component.with_label do %>
+    <%= @facet_field.label %>
+  <% end %>
+  <% component.with_body do %>
+    <p class="advanced-facet-load-error" role="alert" hidden><%= t('blacklight.advanced_search.facet_load_error') %> <button type="button" class="btn btn-link advanced-facet-retry"><%= t('blacklight.advanced_search.facet_retry') %></button></p>
+    <select <%= tag.attributes(select_attributes) %>>
+      <% presenters.each do |presenter| %>
+        <option <%= tag.attributes(option_attributes(presenter: presenter)) %>><%= strip_tags(presenter.label.to_s) %><% if presenter.hits %> (<%= number_with_delimiter(presenter.hits) %>)<% end %></option>
+      <% end %>
+    </select>
+    <noscript>
+      <%= render Blacklight::FacetFieldCheckboxesComponent.new(facet_field: @facet_field, layout: false) %>
+    </noscript>
+  <% end %>
+<% end %>

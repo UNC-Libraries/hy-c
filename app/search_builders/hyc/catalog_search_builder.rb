@@ -4,8 +4,23 @@ module Hyc
     include BlacklightRangeLimit::RangeLimitBuilder
 
     self.default_processor_chain += [
+      :page_advanced_search_facets,
       :join_works_from_files
     ]
+
+    # Keep the configured initial facet limits on the advanced form, but sort
+    # multi-select values by index to match subsequent modal pagination queries.
+    # Leave explicit facet requests untouched so their own paging parameters win.
+    def page_advanced_search_facets(solr_parameters)
+      return unless search_state.controller&.action_name == 'advanced_search'
+      return if facet.present?
+
+      blacklight_config.facet_fields.each_value do |field|
+        next unless field.advanced_search_component == AdvancedSearch::MultiSelectFacetComponent
+
+        solr_parameters[:"f.#{field.field}.facet.sort"] = 'index'
+      end
+    end
 
     # Adds full text searching for :all_fields
     # Rewrites only the advanced-search all_fields clause so it matches either
