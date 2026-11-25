@@ -72,7 +72,7 @@ RSpec.describe 'Advanced search facets', type: :feature do
     wrapper.find('.ts-control input').click
     expect(wrapper).to have_css('.option', text: 'Facet keyword 05')
     expect(wrapper).not_to have_css('.option', text: 'Facet keyword 06')
-    expect(page.evaluate_script("document.querySelector(arguments[0]).dataset.facetHasMore", keyword_select)).to eq('true')
+    expect(page.evaluate_script('document.querySelector(arguments[0]).dataset.facetHasMore', keyword_select)).to eq('true')
     expect(page.evaluate_script('window.facetRequests.length')).to eq(0)
     expect(wrapper).to have_css('.loading-more-results')
 
